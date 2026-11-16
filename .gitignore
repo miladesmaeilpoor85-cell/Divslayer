@@ -1,0 +1,39 @@
+# Godot generated files
+.godot/
+.import/
+export.cfg
+export_presets.cfg
+
+# Build outputs
+build/
+dist/
+*.apk
+*.aab
+*.ipa
+
+# Signing material and secrets
+signing/
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+
+# Editor and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
