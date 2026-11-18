@@ -2,61 +2,51 @@
 
 ## Current source-sheet review
 
-The production project currently stores the starter warrior as a 5-column ×
-3-direction sheet: four walk poses and one attack pose per direction. The
-runtime loader currently builds four-frame walk, one-frame idle, and one-frame
-attack animations from this sheet.
+The tracked hero sheets use a 5-column × 3-direction layout: four walk poses
+and one attack pose per direction. The loader continues to support this
+legacy format for all unmodified characters.
 
-## Multi-frame attack support
+## Warrior starter multi-frame attack
 
-The character loader now reads the ordered \`cols\` array in
-\`data/art_manifest.json\`. The current format remains compatible:
+The starter warrior now uses a separate attack atlas:
+\`assets/art/Heroes/warrior_starter_attack.png\`.
 
-- \`walk0\` … \`walk3\`: four looping walk poses
-- \`attack\`: the existing single-frame, non-looping attack
+- The original \`warrior_starter.png\` remains the source for the four walk
+  frames and the idle pose in each direction.
+- The new attack atlas contains 4 columns × 3 direction rows (12 frames).
+- Rows are ordered \`down\`, \`up\`, \`side\`; columns are ordered from guard,
+  wind-up, slash, to follow-through.
+- The asset is packed into the existing 160 × 156 cell dimensions with a
+  shared bottom baseline and transparent cell margins.
+- Attack playback runs at 24 FPS and is one-shot. The movement/walk cycle and
+  combat hit timing remain unchanged.
 
-An extended sheet can append \`attack0\`, \`attack1\`, \`attack2\`, and
-\`attack3\` (or another number of sequential \`attackN\` columns). The loader
-collects every column whose name begins with \`attack\`, keeps their declared
-order, and plays the resulting attack animation once. Optional \`walkFps\` and
-\`attackFps\` metadata control playback speed. The regression test exercises an
-in-memory 8-column atlas so the extended format is tested without replacing
-any production artwork.
-
-This is runtime support, not a claim that new attack art has already been
-connected to the game. The tracked hero sheets still use one attack frame.
-
-## Animation editing tools
-
-- **Pixelorama 1.2.4** is installed and smoke-tested in the cloud creative-tools
-  job. It supports cels, frame timeline, tags, and onion-skin review.
-- **Krita** remains the painterly frame cleanup and layered-art workspace.
-- **Blender** is available for 3D/Grease Pencil studies, not yet used for
-  production character animation in this pass.
-- **Godot** imports the exported sprites through \`SpriteFrames\`.
+The loader accepts both the separate-attack-atlas format and an extended
+single-sheet format with sequential \`attackN\` columns. This makes later
+character upgrades possible without breaking existing art sheets.
 
 ## Reproducible review pipeline
 
-- Source sheet: \`assets/art/Heroes/warrior_starter.png\`
+- Source walk sheet: \`assets/art/Heroes/warrior_starter.png\`
+- Attack atlas: \`assets/art/Heroes/warrior_starter_attack.png\`
 - Direction/cell metadata: \`creative/animation/warrior_starter_attack.json\`
 - Builder/validator: \`tools/animation_pipeline.py\`
 - Unit tests: \`tools/test_animation_pipeline.py\`
 - Godot regression test: \`tests/animationtest.gd\`
 
-The pipeline validates the current 800 × 468 sheet, checks all 15 cells,
-exports a GIF preview for each direction, creates a review image and JSON
-report, and compares the copied review sheet byte-for-byte with the tracked
-production source. This provides a repeatable place to inspect and edit frames
-before a later, separately reviewed replacement is connected to gameplay.
+The review pipeline validates the current source sheet, checks every cell,
+exports per-direction previews, and records source hashes and a JSON report.
+The separate attack sheet is also checked for alpha bounds and frame
+dimensions before it is used by the runtime loader.
 
-## Current limitations
+## Limitations and provenance
 
-No new character art is connected to the game in this pass. Dedicated idle,
-run, dodge, hurt, death, enemy attack, and boss phase animations still need
-authored frames. The enemy currently named \`skeleton\` is visually a horned
-blue-armored creature, so a new animation must preserve that design.
+This adds a new warrior starter attack animation. It does not yet update
+warrior mid/endgame looks, mage/rogue/villager animations, enemy attacks, or
+boss phase animations. A matching set must be authored and reviewed for each
+of those designs separately.
 
-All existing artwork rights records remain \`UNVERIFIED\`; successful export
-and technical checks do not establish commercial-use rights. A new runtime
-animation must pass a human visual review and Godot/device testing before it is
-described as an in-game art upgrade.
+The attack frames are newly generated and then cleaned/packed for game use.
+Commercial-use rights must still be checked against the applicable tool and
+account terms; the game's artwork registry remains the authority for release
+approval. Successful technical checks do not establish commercial-use rights.
