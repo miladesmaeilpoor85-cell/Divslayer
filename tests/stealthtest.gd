@@ -140,9 +140,9 @@ func regional_attack_test(map_key: String, enemy_type: String, skill: String, st
 				pool_diagnostics.append({"life": puddle.get("life", -1.0), "tick": puddle.get("tick", -1.0),
 					"mult": puddle.get("mult", 0.0), "contains_hero": puddle["rect"].has_point(hero_now.pc()),
 					"owner_alive": is_instance_valid(foe) and not foe.dead})
-		check(label + "_poison_pool_hurts_if_ignored", Game.hp < hp_before_pool_tick and hero_now.statuses.has("poison"),
-			{"hp_before": hp_before_pool_tick, "hp_after": Game.hp, "poison_active": hero_now.statuses.has("poison"),
-				"pools": pool_diagnostics})
+			check(label + "_poison_pool_hurts_if_ignored", Game.hp < hp_before_pool_tick and hero_now.statuses.has("poison"),
+				{"hp_before": hp_before_pool_tick, "hp_after": Game.hp, "poison_active": hero_now.statuses.has("poison"),
+					"pools": pool_diagnostics})
 	clear_foes()
 	await frames(2)
 
