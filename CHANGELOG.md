@@ -1,5 +1,12 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## 0.43.0 — Ashkbus calls the Turanian arrowfall (باران تیرهای تورانیِ اشکبوس)
+- Ashkbus of Kushan marks three separated landing circles around the hero's last position, then calls down visible arrows.
+- The warning and falling-arrow travel time give the player a chance to move through the gaps or leave the marked circles.
+- The three impacts share one hit token, so the same volley can damage the hero at most once.
+- Staggering Ashkbus during the warning cancels the arrows; the new move is exclusive to Ashkbus.
+- Added regression coverage for the three warnings, dodge gap, interruption, arrow visuals, single-hit protection and miniboss isolation.
+
 ## 0.42.0 — The Anvil Warden's forge furrows (شیارهای آهنگریِ پولادِ غندی)
 - Pulad of Ghandi / the Anvil Warden now marks three parallel forge lanes across the hero's last position before they ignite.
 - The lanes have deliberate side gaps; moving or rolling sideways before impact avoids the strike.
