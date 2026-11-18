@@ -104,3 +104,11 @@ A device/build passes this QA pass only when:
 | Low-spec target | | | | | | | |
 | Mid-range | | | | | | | |
 | Higher-performance | | | | | | | |
+
+### Initial user-reported smoke test — 2026-11-18
+
+- **Build:** Divslayer QA `0.39.0-qa`, GitHub Actions run [`44277080841`](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44277080841), source commit [`9d3fc3184ff0b4dc812478834696448ab662a49d`](https://github.com/miladesmaeilpoor85-cell/Divslayer/commit/9d3fc3184ff0b4dc812478834696448ab662a49d).
+- **User-reported outcome:** the user installed and launched the game and reported that it ran without apparent problems or lag.
+- **Not yet recorded or verified:** device model, Android version, session duration, measured FPS/frame time, boss phase/death cleanup, multitouch behavior, pause/resume, save persistence, and thermal behavior.
+
+This is a positive initial smoke-test report, not a complete pass of the physical-device QA checklist above.
