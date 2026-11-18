@@ -308,9 +308,12 @@ Screenshots: `tests/uishots.gd`, `tests/fxshots.gd`, `tests/bossshots.gd`, `test
   ```
   (check out the Kenney packs one at a time: several at once ran out of memory.) The script writes `assets/audio/CREDITS.md`,
   `assets/audio/licenses/` and `data/audio_credits.json` (shown in Settings → Credits).
-- **Licences.** Only CC0 is used: every OpenGameArt page was checked by hand, every Kenney pack ships a CC0 License.txt. Avoid
-  CC-BY-SA music (the share-alike/sync question for a sold game) and anything non-commercial. To add a track: put it in `MUSIC` in
-  `tools/build_audio.py` with its page, rebuild; `audiotest` checks that every track has a credit.
+- **Licences and rights status.** The CC0 notices in this section apply only to the identified Kenney/OpenGameArt
+  ambience and sound-effect sources; do not infer that the soundtrack is CC0. The current 30-track Suno V6 / Hoosha API
+  soundtrack has a separate, unverified commercial-use claim documented in the Music (v0.31) section above and in
+  `data/audio_credits.json`. Keep those sources separate and verify each provider term, account entitlement, API route,
+  download authorization and production record before commercial distribution. Do not rerun the legacy
+  `tools/build_audio.py` over the current soundtrack metadata.
 - Encoding pitfalls: ffmpeg ignores a negative `-q:a` for libvorbis (it silently falls back to 128 kb/s); `-ac 1` mixes stereo to
   mono at -3 dB per side, so in-phase material comes out +3 dB hot — downmix with `pan` inside the filter chain instead; `alimiter`
   delays the signal by its attack unless `latency=true` (that broke the loops). Music is 32 kHz q0 (Vorbis cuts above ~15 kHz at q0
