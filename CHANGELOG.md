@@ -1,5 +1,10 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## 0.37.0 — Foes that outflank (دشمنانی که غافلگیر می‌کنند)
+- The Swamp Nahang (toad) now pauses and marks its approach before a short leap. The leap can be interrupted by a hit or a disabling status, and has a recovery window.
+- The Sorcerer of Mazandaran (wraith) now marks a safe flank before blinking around the hero. It checks map bounds and wall collisions before choosing a landing spot, then waits several seconds before trying again.
+- Added automated coverage for the telegraph, leap, flank selection, and teleport timing.
+
 ## 0.36.0 — Controls for every hand (کنترل برای هر دست)
 - Added an optional left-handed touch layout. The action buttons mirror to the left side and the movement joystick responds on the right half of the screen; the original right-handed layout remains the default.
 - The setting is available both before starting a game and from the in-game pause menu, is saved separately from the character save, and updates the control hints.
