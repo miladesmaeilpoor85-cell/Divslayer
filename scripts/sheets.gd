@@ -17,7 +17,63 @@ static func pivot_offset(meta: Dictionary) -> Vector2:
 	var p: Array = meta.get("pivot", [0.5, 0.0])
 	return Vector2(-float(meta["cellW"]) * float(p[0]), -float(meta["cellH"]) * (1.0 - float(p[1])))
 
-## heroes and villagers: rows down/up/side, columns walk0-3 + attack
+## Build the three directional hero/villager animations from named atlas columns.
+## Existing sheets use walk0-3 + attack; extended sheets may append attack0, attack1, …
+## Attack playback is always one-shot so it cannot loop while the combat timer is active.
+static func character_frames(tex: Texture2D, meta: Dictionary) -> SpriteFrames:
+	var sf := SpriteFrames.new()
+	if tex == null:
+		push_error("character sheet texture is missing")
+		return sf
+
+	var cw := int(meta.get("cellW", 0))
+	var ch := int(meta.get("cellH", 0))
+	var cols: Array = meta.get("cols", ["walk0", "walk1", "walk2", "walk3", "attack"])
+	if cw <= 0 or ch <= 0 or cols.is_empty():
+		push_error("character sheet metadata has invalid cell dimensions or no columns")
+		return sf
+
+	var walk_columns: Array[int] = []
+	var attack_columns: Array[int] = []
+	for index in range(cols.size()):
+		var label := str(cols[index])
+		if label.begins_with("walk"):
+			walk_columns.append(index)
+		elif label.begins_with("attack"):
+			attack_columns.append(index)
+		else:
+			push_error("unsupported character sheet column: " + label)
+			return sf
+	if walk_columns.is_empty() or attack_columns.is_empty():
+		push_error("character sheet needs at least one walk and one attack column")
+		return sf
+	if tex.get_width() < cw * cols.size() or tex.get_height() < ch * DIRS.size():
+		push_error("character sheet dimensions do not fit the declared column/cell layout")
+		return sf
+
+	var walk_fps := maxf(1.0, float(meta.get("walkFps", 9.0)))
+	var attack_fps := maxf(1.0, float(meta.get("attackFps", 24.0)))
+	for row in range(DIRS.size()):
+		var direction: String = DIRS[row]
+		var walk := "walk_" + direction
+		sf.add_animation(walk)
+		sf.set_animation_speed(walk, walk_fps)
+		for column in walk_columns:
+			sf.add_frame(walk, _atlas(tex, column * cw, row * ch, cw, ch))
+
+		var idle := "idle_" + direction
+		sf.add_animation(idle)
+		sf.add_frame(idle, _atlas(tex, walk_columns[0] * cw, row * ch, cw, ch))
+
+		var hit := "attack_" + direction
+		sf.add_animation(hit)
+		sf.set_animation_speed(hit, attack_fps)
+		sf.set_animation_loop(hit, false)
+		for column in attack_columns:
+			sf.add_frame(hit, _atlas(tex, column * cw, row * ch, cw, ch))
+	return sf
+
+## heroes and villagers: rows down/up/side, named columns from art_manifest.json
 static func character(group: String, sheet: String) -> Dictionary:
 	var key := group + "/" + sheet
 	if _cache.has(key):
@@ -25,23 +81,7 @@ static func character(group: String, sheet: String) -> Dictionary:
 	var meta: Dictionary = Game.manifest.get(group, {}).get(sheet, {})
 	var folder := group.capitalize()
 	var tex: Texture2D = load(Game.ART + folder + "/" + sheet + ".png")
-	var sf := SpriteFrames.new()
-	var cw := float(meta["cellW"])
-	var ch := float(meta["cellH"])
-	for r in DIRS.size():
-		var d: String = DIRS[r]
-		var walk := "walk_" + d
-		sf.add_animation(walk)
-		sf.set_animation_speed(walk, 9.0)
-		for c in 4:
-			sf.add_frame(walk, _atlas(tex, c * cw, r * ch, cw, ch))
-		var idle := "idle_" + d
-		sf.add_animation(idle)
-		sf.add_frame(idle, _atlas(tex, 0, r * ch, cw, ch))
-		var hit := "attack_" + d
-		sf.add_animation(hit)
-		sf.set_animation_loop(hit, false)
-		sf.add_frame(hit, _atlas(tex, 4 * cw, r * ch, cw, ch))
+	var sf := character_frames(tex, meta)
 	var out := {"frames": sf, "offset": pivot_offset(meta), "meta": meta}
 	_cache[key] = out
 	return out
