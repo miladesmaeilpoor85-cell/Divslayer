@@ -254,15 +254,9 @@ Screenshots: `tests/uishots.gd`, `tests/fxshots.gd`, `tests/bossshots.gd`, `test
 ## Android release
 - Preset "Android": arm64-v8a and armeabi-v7a (one APK, about 65 MB with both; arm64 alone about 45 MB), `version/code` must go up every release, `permissions/vibrate=true`. Its `exclude_filter` must never name a file the game loads (v0.27: the Wyrm's sheet was left out and the boss was invisible on phones only; `tests/v27fixtest.gd` checks it). Test hooks (`--test`, `--autotest`, `--shots`, `--menushot`) work only in debug builds (`OS.is_debug_build()`).
 - Saves, the profile and settings go through `Game.write_safe` / `read_safe`: a side `.tmp` file, then a rename; the last good file stays as `.bak`. Android Back opens the pause menu (`config/quit_on_go_back=false`, `main._notification`).
-- Export unsigned (`godot --headless --path . --export-release Android build/EmberIron_unsigned.apk`), then sign with the
-  **same private key every time** (or phones refuse the update). Never store signing passwords in source files, shell
-  history, or public documentation. With the Android build tools: `zipalign -p -f 4`, then use secure local environment
-  variables for the apksigner password sources:
-  `apksigner sign --ks signing/emberiron.p12 --ks-type PKCS12 --ks-key-alias "$ANDROID_KEY_ALIAS" --ks-pass env:ANDROID_KEYSTORE_PASSWORD --key-pass env:ANDROID_KEY_PASSWORD --v1-signing-enabled false --v2-signing-enabled true --v3-signing-enabled true`.
-  Set the variables only in a private local shell or secret manager, and clear them after signing. The alternate
-  `tools/apk_sign_v2.py` signer prompts for a passphrase and stores its PEM private key encrypted; keep the matching
-  key/certificate pair backed up privately and never replace a release key without a migration plan.
-  **Keep `signing/` private.**
+- **Retired test signing material:** The legacy `emberiron.p12`, `key.pem`, and `cert.pem` found in an older private project archive are exposed and must never be used again. The project owner confirmed on 18 November 2026 that no APK signed with this material was distributed to external testers or users. Do not copy these files into the repository or use them for QA or release builds.
+- Export unsigned (`godot --headless --path . --export-release Android build/Divslayer_unsigned.apk`). Before the first external distribution, generate a **new production release key locally** on the owner's computer. Keep its password out of source files, shell history, workflow logs, and public documentation; store two encrypted/offline backups separately. Use the official Android `zipalign` and `apksigner` tools with password sources supplied only through a private local shell or a trusted secret manager. Never add the private key, certificate, password, or private export preset to GitHub.
+- Once a build signed with the new production key is distributed, keep that same key for future updates. Do not use the retired test key or the custom `tools/apk_sign_v2.py` signer for production releases; use the official Godot/Android signing toolchain.
 
 - Keep the APK under 30 MB (most of it is the Godot engine library); identical pictures are stored once
   (`map_object_sprites.json` → `"file"`). New PNGs: run `python3 tools/optimize_png.py assets/art` (lossless, checked pixel by pixel).
