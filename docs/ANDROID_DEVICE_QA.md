@@ -112,3 +112,14 @@ A device/build passes this QA pass only when:
 - **Not yet recorded or verified:** device model, Android version, session duration, measured FPS/frame time, boss phase/death cleanup, multitouch behavior, pause/resume, save persistence, and thermal behavior.
 
 This is a positive initial smoke-test report, not a complete pass of the physical-device QA checklist above.
+
+### Device details supplied by user — 2026-11-18
+
+- **Device:** POCO X7 Pro.
+- **Android version:** Android 16 (`BP2A.250605.031.A3`).
+- **POCO system software version shown:** `3.0.304.0.WOJMIXM.C07`.
+- **Android security update date shown:** 2026-10-01.
+- **Initial test report:** user previously reported that the QA build launched and ran without apparent problems or lag.
+- **Not established by the screenshot:** SoC/GPU, actual RAM/storage configuration, measured FPS/frame time, test duration, thermal behavior, or results of the boss-phase, boss-death, multitouch, lifecycle, and save-persistence checks.
+
+The device identity and software versions above were read from the user's supplied About phone screenshot. Do not infer unshown hardware or test measurements.
