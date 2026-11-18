@@ -182,6 +182,11 @@ func run(m: Node) -> void:
 			if p.emitting:
 				sparks = true
 		check("swing_arc_and_sparks", not main.world.fx.swings.is_empty() and sparks)
+		main.world.fx.swing(main.player, Vector2.RIGHT, 48.0, true, 5)
+		var heavy_arc: Dictionary = main.world.fx.swings.back()
+		check("heavy_swing_uses_enhanced_trail",
+			bool(heavy_arc["heavy"]) and float(heavy_arc["dur"]) > 0.22 and float(heavy_arc["r"]) > 48.0,
+			heavy_arc)
 
 	# ---- day turns to night by itself
 	Game.state["day_t"] = 0.4999

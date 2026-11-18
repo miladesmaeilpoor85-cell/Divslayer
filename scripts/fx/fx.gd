@@ -247,7 +247,11 @@ func _draw_swing(s: Dictionary) -> void:
 	var wmax: float = (17.0 if s["heavy"] else 13.0) * (1.0 - p * 0.6) + 2.0
 	var col: Color = s["col"]
 	var a0: float = 0.95 * (1.0 - p * p)
-	var n := 14
+	var fade := 1.0 - p
+	# A soft outer bloom separates the blade trail from busy or dark backgrounds.
+	arcs.draw_arc(c, rad + wmax * 0.08, tail - 0.24, head + 0.08, 28,
+		Color(col, 0.16 * fade), max(2.0, wmax * (1.05 if s["heavy"] else 0.82)), true)
+	var n := 20
 	var outer := PackedVector2Array()
 	var inner := PackedVector2Array()
 	var co := PackedColorArray()
@@ -270,6 +274,23 @@ func _draw_swing(s: Dictionary) -> void:
 		pts.append(inner[i])
 		cols.append(ci[i])
 	arcs.draw_polygon(pts, cols)
-	# a white-hot edge along the leading part, and a faint second arc inside
-	arcs.draw_arc(c, rad + wmax * 0.3, head - 0.55, head, 10, Color(1, 1, 1, 0.85 * (1.0 - p)), 2.0, true)
-	arcs.draw_arc(c, rad * 0.68, tail - 0.2, head + 0.1, 16, Color(col, 0.3 * (1.0 - p)), 2.0, true)
+	# A bright inner filament makes the crescent read as a polished blade, not a flat wedge.
+	arcs.draw_arc(c, rad * 0.84, tail - 0.05, head - 0.08, 24,
+		Color(1.0, 0.94, 0.78, 0.34 * fade), 1.35, true)
+	# The leading glint travels with the arc; heavy swings leave two short hot streaks.
+	var tip_dir := Vector2.from_angle(head)
+	var tip := c + tip_dir * (rad + wmax * 0.24)
+	var tangent := Vector2(-tip_dir.y, tip_dir.x)
+	var glint := 0.88 * fade
+	arcs.draw_circle(tip, 2.8 if s["heavy"] else 2.0, Color(1.0, 0.98, 0.86, glint))
+	arcs.draw_line(tip - tangent * (6.0 if s["heavy"] else 4.0),
+		tip + tangent * (6.0 if s["heavy"] else 4.0), Color(1, 1, 1, 0.72 * glint), 1.5, true)
+	if s["heavy"]:
+		for i in 2:
+			var back := tip - tip_dir * (10.0 + float(i) * 5.0)
+			var half := 2.5 - float(i) * 0.5
+			arcs.draw_line(back - tangent * half, back + tangent * half,
+				Color(col, 0.62 * glint), 2.0, true)
+	# A white-hot edge along the leading part, and a faint second arc inside.
+	arcs.draw_arc(c, rad + wmax * 0.3, head - 0.55, head, 10, Color(1, 1, 1, 0.85 * fade), 2.0, true)
+	arcs.draw_arc(c, rad * 0.68, tail - 0.2, head + 0.1, 16, Color(col, 0.3 * fade), 2.0, true)
