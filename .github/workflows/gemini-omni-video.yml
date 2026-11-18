@@ -93,7 +93,7 @@ jobs:
 
   generate:
     name: Generate one Gemini Omni video
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     needs: validate
     runs-on: ubuntu-24.04
     timeout-minutes: 25
