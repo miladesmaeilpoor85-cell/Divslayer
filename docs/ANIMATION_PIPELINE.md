@@ -1,53 +1,45 @@
 # Divslayer animation pipeline
 
-## First implemented runtime animation
+## Current source-sheet review
 
-The starter warrior has a four-frame sword-attack animation for each of the
-three directions supported by the current character controller:
+The production project currently stores the starter warrior as a 5-column ×
+3-direction sheet: four walk poses and one attack pose per direction. The
+runtime loader creates four-frame walk, one-frame idle, and one-frame attack
+animations from this sheet. This document describes a review/editing pipeline
+for that existing art; it does not claim that new attack frames have already
+been added to the game.
 
-- `attack_down`: front-facing attack
-- `attack_up`: back-facing attack
-- `attack_side`: profile attack; the existing horizontal flip is retained
+## Animation editing tools
 
-Each row contains four frames (ready, wind-up, slash, recovery) at 25 FPS.
-Each cell is 160 × 156 pixels, matching the existing warrior sprite-sheet
-layout and the project's 1/3 runtime display scale. The sequence lasts 0.16
-seconds, matching the existing normal attack visual window. Combat damage,
-hitboxes, movement, and cooldowns are unchanged.
+- **Pixelorama 1.2.4** is installed and smoke-tested in the cloud creative-tools
+  job. It supports cels, frame timeline, tags, and onion-skin review.
+- **Krita** remains the painterly frame cleanup and layered-art workspace.
+- **Blender** is available for 3D/Grease Pencil studies, not yet used for
+  production character animation in this pass.
+- **Godot** imports the exported sprites through `SpriteFrames`.
 
-Only `warrior_starter` uses this new sheet. Mid- and end-game warrior sheets
-and other classes retain their existing attack visuals until matching art is
-available.
+## Reproducible review pipeline
 
-## Editable source and review
-
-- Editable transparent atlas: `assets/art/Heroes/warrior_starter_attack.png`
-- Frame/direction configuration: `creative/animation/warrior_starter_attack.json`
-- Deterministic validator and preview exporter: `tools/animation_pipeline.py`
+- Source sheet: `assets/art/Heroes/warrior_starter.png`
+- Direction/cell metadata: `creative/animation/warrior_starter_attack.json`
+- Builder/validator: `tools/animation_pipeline.py`
 - Unit tests: `tools/test_animation_pipeline.py`
 - Godot regression test: `tests/animationtest.gd`
 
-The PNG atlas can be opened in Pixelorama or Krita. The CI job validates its
-dimensions and every cell, exports directional GIF previews, produces a review
-image and JSON report, and checks that the exported PNG matches the in-game
-asset byte-for-byte. Pixelorama 1.2.4 is installed and smoke-tested in the
-cloud creative-tools job; Krita remains the painterly cleanup workspace.
+The pipeline validates the current 800 × 468 sheet, checks all 15 cells,
+exports a GIF preview for each direction, creates a review image and JSON
+report, and compares the copied review sheet byte-for-byte with the tracked
+production source. This provides a repeatable place to inspect and edit frames
+before a later, separately reviewed replacement is connected to gameplay.
 
-## Tests and scope
+## Current limitations
 
-- Python tests verify the 640 × 468 atlas, 12 occupied cells, three
-  four-frame GIFs, and deterministic output hash.
-- Godot tests verify four attack frames in all directions, 25 FPS, one-shot
-  playback, preservation of the original walk, and continued availability of
-  the existing creature animation.
-- The regular Godot CI and Android QA workflows validate the change before
-  an installable build is offered.
+No new character art is connected to the game in this pass. Dedicated idle,
+run, dodge, hurt, death, enemy attack, and boss phase animations still need
+authored frames. The enemy currently named `skeleton` is visually a horned
+blue-armored creature, so a new animation must preserve that design.
 
-This is the first animation pass, not a completed overhaul. Idle, walk, dodge,
-hurt, death, enemy attacks, and boss phase animations still need dedicated art.
-The current `skeleton.png` source depicts a horned blue-armored creature, so
-its visual identity must be preserved when its animation set is redesigned.
-
-The new animation was AI-assisted. The image rights register remains
-`UNVERIFIED`; technical validation does not establish commercial-use rights.
-Human review in the actual game and on the target phone is still required.
+All existing artwork rights records remain `UNVERIFIED`; successful export
+and technical checks do not establish commercial-use rights. A new runtime
+animation must pass a human visual review and Godot/device testing before it is
+described as an in-game upgrade.
