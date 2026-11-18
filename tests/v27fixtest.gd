@@ -44,7 +44,11 @@ func run(m: Node) -> void:
 	var expected_sheets := []
 	for g in groups:
 		for k in Game.manifest.get(g, {}):
-			expected_sheets.append("assets/art/%s/%s.png" % [groups[g], k])
+			# Some manifest entries are intentionally procedural (for example, the wisp glow)
+			# and have no sprite sheet. Only entries with sprite-cell metadata require a PNG.
+			var meta: Dictionary = Game.manifest.get(g, {}).get(k, {})
+			if meta.has("cellW") and meta.has("cellH"):
+				expected_sheets.append("assets/art/%s/%s.png" % [groups[g], k])
 	if FileAccess.file_exists("res://export_presets.cfg"):
 		var ex := excludes("Android")
 		var left_out := []
