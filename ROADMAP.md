@@ -24,3 +24,11 @@ Planning document, not a promise of delivery dates. این سند برنامه�
 - [ ] Keep Android signing procedure outside public repository
 - [ ] Document release ownership and approval process
 - [ ] Publish verified releases through owner-controlled channels
+
+
+## Phase 5 — Asset production and integrity / خط تولید و سلامت دارایی‌ها
+- [x] Add a dependency-free image/audio integrity audit to GitHub Actions.
+- [x] Enforce one-to-one coverage between artwork files and the rights register.
+- [ ] Review provenance and commercial-use evidence for existing artwork and audio.
+- [ ] Add visual consistency review and performance budgets for new asset batches.
+- [ ] Add audio loudness/format quality checks without silently altering source tracks.
