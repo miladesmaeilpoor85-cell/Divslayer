@@ -85,9 +85,12 @@ serpents). All twelve are now painted as the Shahnameh draws them.
   his later phase.
 
 ## 0.31.0 — A Persian score (موسیقیِ ایرانی)
-Every track in the game is now its own: 30 instrumental takes made with Suno V6 (through the Hoosha API, owned for
-commercial use), in Persian modes and instruments (ney, kamancheh, tar, setar, santur, daf, tombak, zarb, sorna, karnay).
-The borrowed CC0 tracks are gone; the ambience and the sound effects stay CC0.
+Every track in the game is now its own: 30 instrumental takes made with Suno V6 through the Hoosha API, in Persian
+modes and instruments (ney, kamancheh, tar, setar, santur, daf, tombak, zarb, sorna, karnay). Project production records
+claim commercial-use rights, but the repository does not independently verify the applicable account status, API
+authorization, or permitted-download route. Verify those records and the provider terms before commercial distribution;
+commercial-use permission does not itself guarantee copyright protection. The borrowed CC0 tracks are gone; ambience
+and sound effects remain identified as CC0 in the project metadata.
 - **A track for every place**: the title, Zabol, the Whispering Forest, the Sunken Crypt, the Ashen Peaks, the Shadowfen,
   the Thornwood camp, the Ember Forge, the Crystal Sanctum, the Hoarfrost Vale, the Wyrm's Hollow, Damavand, the Cave of
   Chains, the Trial of Embers and the shrines. Damavand, Zahhak's cave and Zahhak's fight had borrowed other tracks; not
