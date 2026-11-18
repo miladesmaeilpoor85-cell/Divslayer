@@ -40,14 +40,15 @@ This review did not execute the project locally, inspect the APK binary independ
 
 ## 3. Security review / بازبینی امنیتی
 
-### Current-tree checks
-- The reviewed `main` tree contains no obvious `signing/` directory, PEM/P12/JKS/keystore files, APK/AAB release binaries, or tracked `export_presets.cfg`.
+### Current-tree and branch checks
+- A read-only filename/tree scan of all 10 branches listed by GitHub on 18 November 2026 inspected 1,429–1,435 entries per branch. No tracked path matched a `signing/` directory, keystore folder, `*.p12`, `*.pfx`, `*.jks`, `*.keystore`, `*.pem`, `*.key`, `*.crt`, or `*.cer` file, and no tracked `export_presets.cfg` was found.
 - The current `.gitignore` already excludes `export_presets.cfg`, the `signing/` directory, common key/certificate formats, `.env*`, and build/export output directories. This is correct; no edit to `.gitignore` was necessary.
 - The visible workflows declare `contents: read`; the Android QA workflow creates a temporary debug keystore inside the ephemeral runner and uses the QA-only package `com.example.divslayer.qa`. It does not load the owner's production key or private export preset.
-- Limited GitHub code-search checks for several common token/private-key markers returned no matches. This is not a comprehensive scan of all Git objects, binary payloads, caches, or historical commits.
+- Limited GitHub code-search checks for several common token/private-key markers returned no matches. This is not a comprehensive scan of file contents, Git objects, binary payloads, caches, or historical commits.
+- **Signing material disposition:** The legacy test keystore/private key/certificate in an older private project archive are treated as exposed and retired. The owner confirmed on 18 November 2026 that no APK signed with that material was distributed to external testers or users. It must not be used again. Generate a fresh production key locally before the first external release.
 
 ### Historical credential follow-up — high priority
-The repository's current README and release-readiness notes disclose that a sample signing password appeared in an old public developer note. The history was rewritten, but the project notes say GitHub still served the old file when queried through an old commit SHA. Therefore cache removal is not confirmed. If that sample password was ever reused for a real keystore/key, treat it as compromised and rotate the affected password locally while preserving the valid key pair. A history rewrite does not rotate credentials and does not invalidate old clones or cached copies. Follow the private GitHub Support procedure already recorded in `docs/RELEASE_READINESS.md`.
+The repository's current README and release-readiness notes disclose that a sample signing password appeared in an old public developer note. The rewritten current history no longer contains that value, but GitHub previously served the old file when requested through an old commit SHA; cache removal is not confirmed. The private test signing material from the older archive is now retired, and the owner confirms it was never used for an APK distributed externally. Do not reuse the old password for any new production key or any other service. A history rewrite does not invalidate old clones or cached copies. Follow the private GitHub Support procedure already recorded in `docs/RELEASE_READINESS.md` if cached content still needs removal.
 
 ## 4. Asset rights / حقوق دارایی‌ها
 
