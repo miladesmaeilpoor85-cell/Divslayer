@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Build, validate, and preview Divslayer frame-by-frame sprite atlases.
 
 The source art stays in creative/animation. The script creates a Godot-ready
@@ -9,8 +8,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import sys
 import shutil
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -127,7 +126,7 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
             threshold = int(config.get("edge_cleanup_alpha_threshold", 200))
             if edge_radius < 0 or not 1 <= threshold <= 255:
                 raise ValueError("Invalid edge cleanup radius/alpha threshold")
-            core = pose.getchannel("A").point(lambda value: 255 if value >= threshold else 0)
+            core = pose.getchannel("A").point(lambda value, cutoff=threshold: 255 if value >= cutoff else 0)
             allowed = core.filter(ImageFilter.MaxFilter(edge_radius * 2 + 1))
             pose.putalpha(ImageChops.multiply(pose.getchannel("A"), allowed))
 
