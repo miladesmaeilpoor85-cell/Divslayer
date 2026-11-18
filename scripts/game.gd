@@ -20,7 +20,7 @@ signal achieved(id: String)                    # (v0.20) an achievement was earn
 
 const Skills = preload("res://scripts/skills.gd")
 
-const VERSION := "0.35.0"      # shown on the title screen; keep with export_presets.cfg version/name
+const VERSION := "0.36.0"      # shown on the title screen; keep with export_presets.cfg version/name
 const DATA := "res://data/"
 const ART := "res://assets/art/"
 const SAVE_PATH := "user://save.json"
@@ -36,7 +36,7 @@ var lang := "fa"
 ## player settings (saved apart from the hero): sound, music, screen shake, phone vibration, UI size 0/1/2,
 ## camera distance 0 far / 1 normal / 2 near, graphics 0 light / 1 full (lighting, weather, particles),
 ## brightness 0 normal / 1 bright / 2 brightest (how dark nights and caves get)
-var settings := {"sound": true, "music": true, "mvol": 1, "svol": 1, "shake": true, "haptics": true, "ui": 1, "cam": 1, "fx": 1, "bright": 0, "compass": 1}
+var settings := {"sound": true, "music": true, "mvol": 1, "svol": 1, "shake": true, "haptics": true, "ui": 1, "cam": 1, "fx": 1, "bright": 0, "compass": 1, "left_hand": false}
 const UI_SCALES := [0.88, 1.0, 1.15]
 const CAM_ZOOMS := [1.0, 1.15, 1.32]
 var cls := "warrior"
