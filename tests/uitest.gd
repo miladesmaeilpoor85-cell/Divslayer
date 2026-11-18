@@ -273,5 +273,29 @@ func run(m: Node) -> void:
 	await frames(30)
 	check("continue_restores", main.hud != null and int(Game.state["gold"]) == 4321 and main.world.key == "forest")
 
+	# A death must not debit the purse until the player chooses to respawn.
+	Game.state["gold"] = 14
+	Game.fight = {}
+	main.player.dead = true
+	main._on_died()
+	await frames(70)
+	check("death_panel_keeps_gold_before_choice",
+		main.hud.death.visible and int(Game.state["gold"]) == 14,
+		{"visible": main.hud.death.visible, "gold": Game.state["gold"]})
+	main.hud.death._on_respawn()
+	await frames(8)
+	check("respawn_applies_gold_penalty_once",
+		main.world.key == "village" and int(Game.state["gold"]) == 12,
+		{"map": main.world.key, "gold": Game.state["gold"]})
+
+	# A boss rematch waives the pending loss instead of refunding an amount never deducted.
+	Game.state["gold"] = 14
+	main._lost = 2
+	Game.fight = {"type": "boss", "map": "forest", "feet": Vector2(500, 500),
+		"potions": int(Game.state.get("potions", 0)), "retries": 0}
+	main._rematch()
+	await frames(8)
+	check("boss_rematch_does_not_change_gold", int(Game.state["gold"]) == 14, Game.state["gold"])
+
 	print("UITEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit()

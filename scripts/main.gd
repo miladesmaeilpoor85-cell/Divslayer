@@ -219,8 +219,9 @@ func _on_died() -> void:
 	var in_trial: bool = world != null and world.key == "trial"
 	if in_trial and world.trial:
 		world.trial.end_run()
+	# Keep the purse unchanged while the player chooses. The respawn option applies this loss;
+	# a rematch costs nothing and therefore never needs a temporary refund.
 	_lost = 0 if in_trial else int(floor(int(Game.state.get("gold", 0)) * 0.2))
-	Game.state["gold"] = int(Game.state.get("gold", 0)) - _lost
 	hud.pad.release_all()
 	Music.set_boss(false)
 	Sfx.play("defeat")
@@ -244,6 +245,10 @@ func _on_died() -> void:
 
 func _respawn() -> void:
 	Game.fight = {}
+	if _lost > 0:
+		Game.state["gold"] = max(0, int(Game.state.get("gold", 0)) - _lost)
+		_lost = 0
+		Game.stats_changed.emit()
 	player.revive()
 	goto_map("village", Vector2(433, 524))
 	_safe_arrival()
@@ -272,10 +277,10 @@ func _safe_arrival() -> void:
 					e.global_position = to
 					break
 
-## V18 retry: back at the arena where the fight began, gold refunded, potions restored
+## V18 retry: back at the arena where the fight began without a gold penalty; potions are restored
 func _rematch() -> void:
 	var f: Dictionary = Game.fight
-	Game.state["gold"] = int(Game.state.get("gold", 0)) + _lost
+	_lost = 0
 	player.revive()
 	Game.state["potions"] = max(int(Game.state.get("potions", 0)), int(f.get("potions", 0)))
 	quiet_until = clock + 4.0
