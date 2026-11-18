@@ -30,28 +30,27 @@ func run(_main: Node) -> void:
 		for direction in ["down", "up", "side"]:
 			check("warrior_" + direction + "_walk_has_four_frames", hero_frames.has_animation("walk_" + direction) and hero_frames.get_frame_count("walk_" + direction) == 4)
 			check("warrior_" + direction + "_idle_has_one_frame", hero_frames.has_animation("idle_" + direction) and hero_frames.get_frame_count("idle_" + direction) == 1)
-			check("warrior_" + direction + "_attack_has_four_frames", hero_frames.has_animation("attack_" + direction) and hero_frames.get_frame_count("attack_" + direction) == 4)
+			check("warrior_" + direction + "_attack_keeps_legacy_single_frame", hero_frames.has_animation("attack_" + direction) and hero_frames.get_frame_count("attack_" + direction) == 1)
 			check("warrior_" + direction + "_attack_is_one_shot", not hero_frames.get_animation_loop("attack_" + direction))
-		check("warrior_attack_uses_configured_speed", is_equal_approx(hero_frames.get_animation_speed("attack_down"), 24.0))
 
-	# The old extended-in-one-sheet format remains supported.
-	var extended_meta := {
+	# Future format: four walk columns followed by four attack columns in the same atlas.
+	var embedded_meta := {
 		"cellW": 16,
 		"cellH": 12,
 		"cols": ["walk0", "walk1", "walk2", "walk3", "attack0", "attack1", "attack2", "attack3"],
 		"walkFps": 9.0,
 		"attackFps": 24.0,
 	}
-	var extended_frames := Sheets.character_frames(make_test_sheet(8), extended_meta)
+	var embedded := Sheets.character_frames(make_test_sheet(8), embedded_meta)
 	for direction in ["down", "up", "side"]:
-		check("embedded_" + direction + "_attack_has_four_frames", extended_frames.get_frame_count("attack_" + direction) == 4)
-		check("embedded_" + direction + "_attack_is_one_shot", not extended_frames.get_animation_loop("attack_" + direction))
-		check("embedded_" + direction + "_walk_is_unchanged", extended_frames.get_frame_count("walk_" + direction) == 4)
-	var first_embedded := extended_frames.get_frame_texture("attack_up", 0) as AtlasTexture
-	var last_embedded := extended_frames.get_frame_texture("attack_up", 3) as AtlasTexture
+		check("embedded_" + direction + "_attack_has_four_frames", embedded.get_frame_count("attack_" + direction) == 4)
+		check("embedded_" + direction + "_attack_is_one_shot", not embedded.get_animation_loop("attack_" + direction))
+		check("embedded_" + direction + "_walk_is_unchanged", embedded.get_frame_count("walk_" + direction) == 4)
+	var first_embedded := embedded.get_frame_texture("attack_up", 0) as AtlasTexture
+	var last_embedded := embedded.get_frame_texture("attack_up", 3) as AtlasTexture
 	check("embedded_attack_columns_keep_atlas_order", first_embedded.region.position == Vector2(64, 12) and last_embedded.region.position == Vector2(112, 12))
 
-	# Separate attack atlas format: 4 walk columns in the base sheet + 4 attack frames in a second sheet.
+	# Optional separate attack atlas: the production walk sheet remains untouched.
 	var separate_meta := {
 		"cellW": 16,
 		"cellH": 12,
@@ -60,15 +59,15 @@ func run(_main: Node) -> void:
 		"walkFps": 9.0,
 		"attackFps": 24.0,
 	}
-	var separate_frames := Sheets.character_frames(make_test_sheet(5), separate_meta, make_test_sheet(4))
+	var separate := Sheets.character_frames(make_test_sheet(5), separate_meta, make_test_sheet(4))
 	for direction in ["down", "up", "side"]:
-		check("separate_" + direction + "_attack_has_four_frames", separate_frames.get_frame_count("attack_" + direction) == 4)
-		check("separate_" + direction + "_attack_is_one_shot", not separate_frames.get_animation_loop("attack_" + direction))
-		check("separate_" + direction + "_walk_is_unchanged", separate_frames.get_frame_count("walk_" + direction) == 4)
-	var first_separate := separate_frames.get_frame_texture("attack_side", 0) as AtlasTexture
-	var last_separate := separate_frames.get_frame_texture("attack_side", 3) as AtlasTexture
+		check("separate_" + direction + "_attack_has_four_frames", separate.get_frame_count("attack_" + direction) == 4)
+		check("separate_" + direction + "_attack_is_one_shot", not separate.get_animation_loop("attack_" + direction))
+		check("separate_" + direction + "_walk_is_unchanged", separate.get_frame_count("walk_" + direction) == 4)
+	var first_separate := separate.get_frame_texture("attack_side", 0) as AtlasTexture
+	var last_separate := separate.get_frame_texture("attack_side", 3) as AtlasTexture
 	check("separate_attack_atlas_row_and_order", first_separate.region.position == Vector2(0, 24) and last_separate.region.position == Vector2(48, 24))
-	check("separate_attack_uses_configured_speed", is_equal_approx(separate_frames.get_animation_speed("attack_down"), 24.0))
+	check("separate_attack_uses_configured_speed", is_equal_approx(separate.get_animation_speed("attack_down"), 24.0))
 
 	var creature: Dictionary = Sheets.enemy("skeleton")
 	var enemy_frames: SpriteFrames = creature.get("frames")
