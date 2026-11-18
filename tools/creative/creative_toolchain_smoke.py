@@ -269,7 +269,7 @@ def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]
         log_file.close()
 
 
-def native_source_inventory(root: Path) -> dict[str, int]:
+def native_source_inventory() -> dict[str, int]:
     tracked = subprocess.run(
         ["git", "ls-files", "-z"],
         check=True,
@@ -291,7 +291,7 @@ def main() -> int:
     args = parser.parse_args()
 
     root = Path.cwd()
-    source_inventory = native_source_inventory(root)
+    source_inventory = native_source_inventory()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=True)
 
