@@ -260,7 +260,8 @@ Screenshots: `tests/uishots.gd`, `tests/fxshots.gd`, `tests/bossshots.gd`, `test
   variables for the apksigner password sources:
   `apksigner sign --ks signing/emberiron.p12 --ks-type PKCS12 --ks-key-alias "$ANDROID_KEY_ALIAS" --ks-pass env:ANDROID_KEYSTORE_PASSWORD --key-pass env:ANDROID_KEY_PASSWORD --v1-signing-enabled false --v2-signing-enabled true --v3-signing-enabled true`.
   Set the variables only in a private local shell or secret manager, and clear them after signing. The alternate
-  `tools/apk_sign_v2.py` path must also be reviewed to ensure it obtains the password securely before use.
+  `tools/apk_sign_v2.py` signer prompts for a passphrase and stores its PEM private key encrypted; keep the matching
+  key/certificate pair backed up privately and never replace a release key without a migration plan.
   **Keep `signing/` private.**
 
 - Keep the APK under 30 MB (most of it is the Godot engine library); identical pictures are stored once
