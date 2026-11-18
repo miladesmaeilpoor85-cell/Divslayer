@@ -75,7 +75,7 @@ def inspect_png(path: Path) -> tuple[int, int]:
 
 
 def run_blender(blender: str, out: Path, root: Path) -> Path:
-    render_path = out / "blender-procedural-preview.png"
+    render_path = out / "flame-seal-relic-blender.png"
     scene_script = root / "tools/creative/blender_smoke_scene.py"
     run(
         [
