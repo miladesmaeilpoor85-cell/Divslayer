@@ -269,12 +269,29 @@ def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]
         log_file.close()
 
 
+def native_source_inventory(root: Path) -> dict[str, int]:
+    tracked = subprocess.run(
+        ["git", "ls-files", "-z"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.split("\\0")
+    suffixes = [Path(item).suffix.lower() for item in tracked if item]
+    return {
+        "krita": suffixes.count(".kra"),
+        "blender": suffixes.count(".blend"),
+        "lmms": suffixes.count(".mmp") + suffixes.count(".mmpz"),
+        "audacity": suffixes.count(".aup3"),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
     root = Path.cwd()
+    source_inventory = native_source_inventory(root)
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=True)
 
@@ -315,12 +332,7 @@ def main() -> int:
         },
         "lmms": lmms_result,
         "audacity": audacity_result,
-        "source_project_inventory": {
-            "krita": len(list(root.rglob("*.kra"))),
-            "blender": len(list(root.rglob("*.blend"))),
-            "lmms": len(list(root.rglob("*.mmp"))) + len(list(root.rglob("*.mmpz"))),
-            "audacity": len(list(root.rglob("*.aup3"))),
-        },
+        "source_project_inventory": source_inventory,
     }
     (out / "creative-tools-report.json").write_text(
         json.dumps(report, indent=2, ensure_ascii=False) + "\n",
