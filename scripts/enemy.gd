@@ -49,6 +49,19 @@ var _bar_shown := 0.0
 var _bar_trail := 1.0
 var shoots := {}               # (v0.19) foes that keep their distance and shoot: {every, speed, applies, col, range, keep, n}
 var shoot_t := 0.0
+var can_leap := false
+var can_teleport := false
+var leap_cooldown := 0.0
+var leap_windup := 0.0
+var leap_time := 0.0
+var leap_dir := Vector2.ZERO
+var special_velocity := Vector2.ZERO
+var teleport_cooldown := 0.0
+var teleport_windup := 0.0
+var teleport_target := Vector2.ZERO
+var teleport_target_valid := false
+const LEAP_WINDUP := 0.42
+const LEAP_DURATION := 0.34
 
 func setup(t: String, area: String, feet: Vector2, w: Node) -> void:
 	type = t
@@ -72,6 +85,11 @@ func setup(t: String, area: String, feet: Vector2, w: Node) -> void:
 	applies = ap if typeof(ap) == TYPE_DICTIONARY else {}
 	var shd = Game.enemy_def(t).get("shoots", {})
 	shoots = shd if typeof(shd) == TYPE_DICTIONARY else {}
+	var enemy_data: Dictionary = Game.enemy_def(t)
+	can_leap = bool(enemy_data.get("canLeap", false))
+	can_teleport = bool(enemy_data.get("canTeleport", false))
+	leap_cooldown = randf_range(1.0, 1.8)
+	teleport_cooldown = randf_range(2.2, 3.2)
 	shoot_t = randf_range(1.0, 2.2)
 	position = feet
 	home = feet
@@ -172,9 +190,18 @@ func _physics_process(dt: float) -> void:
 		return
 	hit_cd = max(0.0, hit_cd - dt)
 	calm = max(0.0, calm - dt)
+	leap_cooldown = maxf(0.0, leap_cooldown - dt)
+	teleport_cooldown = maxf(0.0, teleport_cooldown - dt)
 	_flash(dt)
 	_hover(dt)
 	if _estatus(dt):
+		# A hard interrupt cancels a committed movement attack cleanly.
+		leap_windup = 0.0
+		leap_time = 0.0
+		teleport_windup = 0.0
+		teleport_target_valid = false
+		if anim:
+			anim.position.y = 0.0
 		# frozen or stunned: no AI, knockback still slides it
 		velocity = knock * 0.3
 		knock = knock.move_toward(Vector2.ZERO, 900.0 * dt)
@@ -206,7 +233,43 @@ func _physics_process(dt: float) -> void:
 				world.float_text(global_position + Vector2(0, -box.y - 14), "!", Color(1, 0.4, 0.3))
 		elif not chasing:
 			alert = false
-		if chasing and not shoots.is_empty():
+
+		# The Mazandaran sorcerer winds up, then blinks to an open flank instead of
+		# walking straight into the player's blade.
+		var special_move := false
+		var teleported := false
+		if chasing and can_teleport:
+			if teleport_windup > 0.0:
+				teleport_windup = maxf(0.0, teleport_windup - dt)
+				if teleport_windup <= 0.0:
+					if teleport_target_valid and _teleport_position_valid(teleport_target):
+						var old_pos: Vector2 = global_position
+						global_position = world.to_global(teleport_target)
+						teleported = true
+						_blink_effect(old_pos, global_position)
+					teleport_target_valid = false
+					teleport_cooldown = randf_range(3.2, 4.4)
+				special_move = true
+			elif teleport_cooldown <= 0.0 and d >= 115.0 and d <= 270.0:
+				teleport_target = _choose_teleport_target(p)
+				if teleport_target != Vector2(-9999.0, -9999.0):
+					teleport_target_valid = true
+					teleport_windup = 0.28
+					special_move = true
+					if world.fx:
+						world.fx.ring(world.to_global(teleport_target) + Vector2(0, -box.y * 0.45), Color(0.72, 0.52, 1.0), 24.0, 0.34)
+				else:
+					teleport_cooldown = 0.75
+		if teleported:
+			to = (p.global_position + Vector2(0, -17)) - (global_position + Vector2(0, -box.y * 0.5))
+			d = to.length()
+
+		# Boars of the marsh (toads) pause to telegraph a short, avoidable leap.
+		if chasing and not special_move and can_leap:
+			special_move = _leap_step(dt, to, d)
+		if special_move:
+			v = special_velocity if leap_time > 0.0 else Vector2.ZERO
+		elif chasing and not shoots.is_empty():
 			v = _shooter(dt, to, d, p)
 		elif chasing and d > 4.0:
 			v = to / d * spd
@@ -224,6 +287,80 @@ func _physics_process(dt: float) -> void:
 	velocity = v
 	move_and_slide()
 	global_position = global_position.clamp(Vector2(box.x * 0.5, box.y), world.size - Vector2(box.x * 0.5, 0))
+
+# ---------------------------------------------------------------- creature movement archetypes
+func _leap_step(dt: float, to: Vector2, d: float) -> bool:
+	special_velocity = Vector2.ZERO
+	if leap_windup > 0.0:
+		leap_windup = maxf(0.0, leap_windup - dt)
+		if leap_windup <= 0.0:
+			if to.length() > 1.0:
+				leap_dir = to.normalized()
+				leap_time = LEAP_DURATION
+			else:
+				leap_cooldown = 0.55
+		return true
+	if leap_time > 0.0:
+		var progress: float = 1.0 - leap_time / LEAP_DURATION
+		special_velocity = leap_dir * maxf(spd * 2.8, 190.0)
+		if anim:
+			anim.position.y = -sin(progress * PI) * 22.0
+		leap_time = maxf(0.0, leap_time - dt)
+		if leap_time <= 0.0:
+			if anim:
+				anim.position.y = 0.0
+			leap_cooldown = randf_range(2.6, 3.6)
+		return true
+	if leap_cooldown <= 0.0 and d >= 82.0 and d <= 190.0:
+		leap_windup = LEAP_WINDUP
+		var mark: Vector2 = global_position + to.normalized() * minf(98.0, d - 36.0)
+		if world and world.fx:
+			world.fx.ring(mark + Vector2(0, -8), Color(1.0, 0.52, 0.24), 22.0, LEAP_WINDUP)
+		if world:
+			world.float_text(global_position + Vector2(0, -box.y - 14), "!", Color(1.0, 0.52, 0.24), true)
+		return true
+	return false
+
+
+func _choose_teleport_target(p: Node) -> Vector2:
+	if world == null or p == null:
+		return Vector2(-9999.0, -9999.0)
+	var hero_local: Vector2 = world.to_local(p.global_position)
+	var current_local: Vector2 = world.to_local(global_position)
+	var toward: Vector2 = hero_local - current_local
+	if toward.length() < 1.0:
+		toward = Vector2.RIGHT
+	var side: Vector2 = toward.normalized().orthogonal()
+	var candidates: Array[Vector2] = [
+		hero_local + side * 104.0,
+		hero_local - side * 104.0,
+		hero_local - toward.normalized() * 112.0,
+	]
+	for candidate in candidates:
+		if candidate.distance_to(current_local) > 82.0 and candidate.distance_to(hero_local) >= 76.0 and _teleport_position_valid(candidate):
+			return candidate
+	return Vector2(-9999.0, -9999.0)
+
+
+func _teleport_position_valid(pos: Vector2) -> bool:
+	if world == null or pos.x < box.x * 0.5 + 8.0 or pos.x > world.size.x - box.x * 0.5 - 8.0:
+		return false
+	if pos.y < box.y + 8.0 or pos.y > world.size.y - 8.0:
+		return false
+	var body_h: float = minf(box.y, 18.0)
+	var body_rect := Rect2(pos + Vector2(-box.x * 0.4, -body_h), Vector2(box.x * 0.8, body_h))
+	return not world.wall_hit(body_rect)
+
+
+func _blink_effect(old_pos: Vector2, new_pos: Vector2) -> void:
+	var col := Color(0.72, 0.52, 1.0)
+	if world and world.fx:
+		world.fx.ring(old_pos + Vector2(0, -box.y * 0.45), col, 28.0, 0.34)
+		world.fx.ring(new_pos + Vector2(0, -box.y * 0.45), col.lightened(0.18), 34.0, 0.4)
+		world.fx.flash_light(new_pos + Vector2(0, -box.y * 0.45), 74.0, 0.55, col, 0.25)
+	flash = 0.08
+	Sfx.play("dash", -5.0, 0.12)
+
 
 # ---------------------------------------------------------------- status effects (weapon procs: burn, stun; mage: freeze)
 func apply_status(kind: String, sec: float, potency := 1.0) -> void:
@@ -342,6 +479,11 @@ func hurt(amount: float, crit: bool, from_dir: Vector2, heavy := false) -> void:
 	calm = 0.0
 	if dead:
 		return
+	# Taking a hit interrupts a committed leap before the knockback is applied.
+	leap_windup = 0.0
+	leap_time = 0.0
+	if anim:
+		anim.position.y = 0.0
 	if parley and world and world.has_method("truce_broken"):
 		world.truce_broken()
 	hp -= amount
