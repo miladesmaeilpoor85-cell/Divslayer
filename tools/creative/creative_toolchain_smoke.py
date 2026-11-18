@@ -96,6 +96,90 @@ def run_blender(blender: str, out: Path, root: Path) -> Path:
     return render_path
 
 
+
+def create_krita_ora(source: Path, out: Path) -> Path:
+    """Build an editable two-layer OpenRaster document from the Blender render."""
+    import xml.etree.ElementTree as ET
+    import zipfile
+
+    base = Image.open(source).convert("RGBA")
+    width, height = base.size
+    finish = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    from PIL import ImageDraw
+
+    draw = ImageDraw.Draw(finish)
+    gold = (231, 181, 83, 150)
+    warm_white = (255, 225, 165, 210)
+    margin = int(min(width, height) * 0.105)
+    draw.ellipse(
+        (margin, margin, width - margin, height - margin),
+        outline=gold,
+        width=max(2, width // 220),
+    )
+    # Restrained highlights at the four compass points; the layer stays editable in Krita.
+    cx, cy = width // 2, height // 2
+    radius = int(min(width, height) * 0.44)
+    for dx, dy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
+        x, y = cx + dx * radius, cy + dy * radius
+        size = max(3, width // 80)
+        draw.ellipse((x - size, y - size, x + size, y + size), fill=warm_white)
+        draw.line(
+            (x - size * 2, y, x + size * 2, y),
+            fill=gold,
+            width=max(1, width // 280),
+        )
+        draw.line(
+            (x, y - size * 2, x, y + size * 2),
+            fill=gold,
+            width=max(1, width // 280),
+        )
+
+    merged = Image.alpha_composite(base, finish)
+    ora = out / "flame-seal-relic-layered.ora"
+    stack = ET.Element("image", {"version": "0.0.1", "w": str(width), "h": str(height), "name": "Flame Seal Relic"})
+    stack_el = ET.SubElement(stack, "stack")
+    ET.SubElement(
+        stack_el,
+        "layer",
+        {
+            "name": "Krita finishing — rim glints",
+            "src": "data/01-krita-finishing.png",
+            "opacity": "1.0",
+            "visibility": "visible",
+            "composite-op": "svg:src-over",
+            "x": "0",
+            "y": "0",
+        },
+    )
+    ET.SubElement(
+        stack_el,
+        "layer",
+        {
+            "name": "Blender render — bronze relic",
+            "src": "data/00-blender-render.png",
+            "opacity": "1.0",
+            "visibility": "visible",
+            "composite-op": "svg:src-over",
+            "x": "0",
+            "y": "0",
+        },
+    )
+    thumbnail = merged.copy()
+    thumbnail.thumbnail((128, 128))
+    with zipfile.ZipFile(ora, "w") as archive:
+        archive.writestr("mimetype", "image/openraster", compress_type=zipfile.ZIP_STORED)
+        archive.writestr("stack.xml", ET.tostring(stack, encoding="utf-8", xml_declaration=True))
+        for name, image in (
+            ("data/00-blender-render.png", base),
+            ("data/01-krita-finishing.png", finish),
+            ("mergedimage.png", merged),
+            ("Thumbnails/thumbnail.png", thumbnail),
+        ):
+            buffer = __import__("io").BytesIO()
+            image.save(buffer, format="PNG")
+            archive.writestr(name, buffer.getvalue(), compress_type=zipfile.ZIP_DEFLATED)
+    return ora
+
 def run_krita(krita: str, source: Path, out: Path) -> Path:
     destination = out / "krita-roundtrip.png"
     run(
@@ -196,12 +280,12 @@ def inspect_wav(path: Path) -> dict[str, Any]:
         }
 
 
-def run_lmms(lmms: str, out: Path) -> dict[str, Any]:
-    project, note = make_lmms_smoke_project(out)
-    if project is None:
-        return {"status": "installed_only", "note": note}
-
-    rendered = out / "lmms-smoke-render.wav"
+def run_lmms(lmms: str, out: Path, root: Path) -> dict[str, Any]:
+    """Render the tracked, editable Divslayer title-theme sketch."""
+    project = root / "creative/lmms/divslayer_title_theme_sketch_01.mmp"
+    if not project.is_file():
+        raise RuntimeError(f"Tracked LMMS source project is missing: {project}")
+    rendered = out / "divslayer-title-theme-sketch-01.wav"
     run(
         [
             lmms,
@@ -214,17 +298,16 @@ def run_lmms(lmms: str, out: Path) -> dict[str, Any]:
             "--samplerate",
             "44100",
         ],
-        timeout=180,
+        timeout=240,
         log_path=out / "lmms.log",
     )
     return {
         "status": "rendered",
-        "note": note,
-        "project": project.name,
+        "source_project": str(project.relative_to(root)),
         "render": rendered.name,
         "audio": inspect_wav(rendered),
+        "note": "Original eight-bar draft for review; not yet approved as the shipped game soundtrack.",
     }
-
 
 def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]:
     """Open an existing OGG in Audacity under Xvfb without enabling remote scripting."""
@@ -310,28 +393,30 @@ def main() -> int:
     }
 
     blender_preview = run_blender(binaries["Blender"], out, root)
-    krita_export = run_krita(binaries["Krita"], blender_preview, out)
-    lmms_result = run_lmms(binaries["LMMS"], out)
+    layered_ora = create_krita_ora(blender_preview, out)
+    krita_export = run_krita(binaries["Krita"], layered_ora, out)
+    lmms_result = run_lmms(binaries["LMMS"], out, root)
 
-    audio_source = root / "assets/audio/music/title.ogg"
-    if not audio_source.is_file():
-        raise RuntimeError(f"Expected existing game audio for Audacity smoke test: {audio_source}")
-    audacity_result = run_audacity(binaries["Audacity"], audio_source, out)
+    audacity_source = out / lmms_result["render"]
+    audacity_result = run_audacity(binaries["Audacity"], audacity_source, out)
 
     report = {
         "tool_versions": versions,
         "blender": {
             "status": "rendered",
+            "source_script": "tools/creative/blender_smoke_scene.py",
+            "native_scene": "flame-seal-relic.blend",
             "output": blender_preview.name,
             "dimensions": inspect_png(blender_preview),
-            "scene": "procedural QA scene only; not game artwork",
+            "note": "First-pass item concept for review; not yet imported into the game.",
         },
         "krita": {
             "status": "exported",
-            "input": blender_preview.name,
+            "editable_layered_source": layered_ora.name,
+            "layers": ["Blender render — bronze relic", "Krita finishing — rim glints"],
             "output": krita_export.name,
             "dimensions": inspect_png(krita_export),
-            "note": "Non-destructive round-trip smoke test; no game asset was rewritten.",
+            "note": "OpenRaster is an editable layered format supported by Krita.",
         },
         "lmms": lmms_result,
         "audacity": audacity_result,
