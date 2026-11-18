@@ -85,8 +85,47 @@ func buttons() -> Dictionary:
 		elif k == "ult":
 			col = Skills.ult()["col"]
 			label = Skills.ult_name()
+		label = _compact_button_label(k, label)
 		out[k] = {"pos": b[k], "r": BTN[k]["r"], "label": label, "col": col}
 	return out
+
+const COMPACT_SPELL_LABELS := {
+	"nova": ["Nova", "اخگر"],
+	"bolt": ["Bolt", "تیر"],
+	"chain": ["Chain", "زنجیر"],
+	"icelance": ["Ice", "یخ"],
+	"mend": ["Heal", "درمان"],
+	"blink": ["Blink", "جهش"],
+	"quake": ["Quake", "سنگ"],
+	"drain": ["Drain", "کشش"],
+	"roar": ["Roar", "نعره"],
+	"firewall": ["Wall", "دیوار"],
+}
+const COMPACT_ACTION_LABELS := {
+	"lasso": ["Lasso", "کمند"],
+	"ward": ["Feather", "پر"],
+	"arrow": ["Arrow", "تیر"],
+	"fire": ["Fire", "آتش"],
+	"whirlwind": ["Spin", "گردباد"],
+	"arcane_tempest": ["Tempest", "توفان"],
+	"shadow_dance": ["Shadow", "سایه"],
+	"holy_smite": ["Smite", "فرّه"],
+}
+
+func _compact_button_label(b_name: String, fallback: String) -> String:
+	var id := ""
+	if b_name == "skill1" or b_name == "skill2":
+		id = spell_of(b_name)
+	elif b_name == "shove":
+		id = str(Skills.sig().get("id", ""))
+	elif b_name == "ult":
+		id = str(Skills.ult().get("id", ""))
+	var pair: Array = COMPACT_SPELL_LABELS.get(id, COMPACT_ACTION_LABELS.get(id, []))
+	return Game.t(str(pair[0]), str(pair[1])) if pair.size() == 2 else fallback
+
+func _compact_spell_label(id: String) -> String:
+	var pair: Array = COMPACT_SPELL_LABELS.get(id, [])
+	return Game.t(str(pair[0]), str(pair[1])) if pair.size() == 2 else id
 
 func spell_of(b_name: String) -> String:
 	var sl: Array = Game.slots()
@@ -379,12 +418,12 @@ func _draw_button(b_name: String, c: Vector2, r: float, col: Color, pressed: boo
 	var ic := UI.icon(icon_name, 96, 2.2)
 	if ic:
 		var isz := r * (0.95 if lab == "" else 0.7)
-		var ic_c := c if lab == "" else c - Vector2(0, r * 0.17)
+		var ic_c := c if lab == "" else c - Vector2(0, r * 0.24)
 		draw_texture_rect(ic, Rect2(ic_c - Vector2(isz, isz) * 0.5, Vector2(isz, isz)), false, Color(UI.GOLD_HI if pressed else UI.CREAM, a))
 	if lab != "":
-		# the button's name inside it, under the icon, while it is being learned
-		# (v0.27, UX: 9 px labels, 7.9 at the Small interface) one size up; Persian one more, its dots need it
-		_label(c + Vector2(0, r * 0.66), lab, (11 if Game.lang == "fa" else 10) if r < 33.0 else 12, Color(UI.CREAM, a))
+		# Compact names keep the learning labels inside their rings, with larger type on small touch controls.
+		var label_size := (12 if Game.lang == "fa" else 11) if r < 33.0 else (13 if Game.lang == "fa" else 12)
+		_label(c + Vector2(0, r * 0.62), lab, label_size, Color(UI.CREAM, a))
 	match b_name:
 		"attack":
 			if player.charging and player.hold_attack:

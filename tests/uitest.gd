@@ -105,6 +105,17 @@ func run(m: Node) -> void:
 	check("touch_exact_target_wins", hud.pad._button_at(hit_test_buttons["ult"]["pos"], hit_test_buttons) == "ult")
 	check("touch_ambiguous_gap_ignores_mistap", hud.pad._button_at(hit_gap, hit_test_buttons) == "")
 	check("touch_single_near_edge_keeps_tolerance", hud.pad._button_at(Vector2(150, 172), hit_test_buttons) == "skill2")
+	check("touch_spell_labels_compact_persian",
+		hud.pad._compact_spell_label("icelance") == "یخ"
+		and hud.pad._compact_spell_label("firewall") == "دیوار")
+	Game.lang = "en"
+	check("touch_spell_labels_compact_english",
+		hud.pad._compact_spell_label("icelance") == "Ice"
+		and hud.pad._compact_spell_label("firewall") == "Wall")
+	Game.lang = "fa"
+	check("touch_special_labels_compact",
+		hud.pad._compact_button_label("shove", "Simorgh's Feather") == "پر"
+		and hud.pad._compact_button_label("ult", "Whirlwind Strike") == "گردباد")
 
 	# Interrupting a held attack must cancel the charge, not release it as a heavy strike.
 	var touch_player = main.player
