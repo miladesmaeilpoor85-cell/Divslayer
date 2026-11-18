@@ -1,5 +1,11 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## 0.38.0 — Enemies fight as a pack (دشمنان گروهی می‌جنگند)
+- When one foe spots the hero, nearby allies hear the alarm and join the hunt for a short, local window. Stealth still works against distant groups.
+- Nearby ranged foes take turns firing instead of stacking their projectiles at once.
+- Each coordinated volley gives nearby alerted melee foes a short, alternating diagonal pressure order, encouraging a pincer approach rather than a single clump.
+- Added automated tests for ally alerts, staggered ranged attacks, and melee flank orders.
+
 ## 0.37.0 — Foes that outflank (دشمنانی که غافلگیر می‌کنند)
 - The Swamp Nahang (toad) now pauses and marks its approach before a short leap. The leap can be interrupted by a hit or a disabling status, and has a recovery window.
 - The Sorcerer of Mazandaran (wraith) now marks a safe flank before blinking around the hero. It checks map bounds and wall collisions before choosing a landing spot, then waits several seconds before trying again.
