@@ -1,0 +1,138 @@
+name: Android QA APK
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/android-qa-apk.yml"
+      - "ci/android-qa-export-presets.cfg"
+      - "project.godot"
+      - "icon.png"
+      - "assets/**"
+      - "data/**"
+      - "scenes/**"
+      - "scripts/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-qa-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  export-android-qa:
+    name: Export Divslayer QA APK (Godot 4.7.2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GODOT_VERSION: "4.7.2"
+      GODOT_RELEASE: "https://github.com/godotengine/godot/releases/download/4.7.2-stable"
+      ANDROID_BUILD_TOOLS: "35.0.1"
+      ANDROID_PLATFORM: "35"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install \
+            "platform-tools" \
+            "platforms;android-${ANDROID_PLATFORM}" \
+            "build-tools;${ANDROID_BUILD_TOOLS}" \
+            "cmake;3.10.2.4988404" \
+            "ndk;28.1.13356709"
+
+      - name: Download and verify Godot 4.7.2 and export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          curl --fail --location --silent --show-error "$GODOT_RELEASE/Godot_v4.7.2-stable_linux.x86_64.zip" --output godot.zip
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  godot.zip" | sha256sum --check -
+          curl --fail --location --silent --show-error "$GODOT_RELEASE/Godot_v4.7.2-stable_export_templates.tpz" --output templates.tpz
+          echo "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011  templates.tpz" | sha256sum --check -
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q godot.zip -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64"
+          sudo install -m 755 "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64" /usr/local/bin/godot
+          template_dir="$HOME/.local/share/godot/export_templates/4.7.2.stable"
+          mkdir -p "$template_dir" "$RUNNER_TEMP/templates"
+          unzip -q templates.tpz 'templates/*' -d "$RUNNER_TEMP/templates"
+          cp "$RUNNER_TEMP/templates/templates/"* "$template_dir/"
+          echo "4.7.2.stable" > "$template_dir/version.txt"
+          test -s "$template_dir/android_debug.apk"
+          godot --version
+
+      - name: Create an isolated, temporary QA debug signing key
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.android"
+          keytool -genkeypair -v \
+            -keystore "$HOME/.android/divslayer-qa-debug.keystore" \
+            -storepass android \
+            -alias androiddebugkey \
+            -keypass android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Divslayer QA Debug,O=QA,C=US"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_PATH=$HOME/.android/divslayer-qa-debug.keystore" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=androiddebugkey" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=android" >> "$GITHUB_ENV"
+
+      - name: Prepare isolated Android QA export preset
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/android
+          cp ci/android-qa-export-presets.cfg export_presets.cfg
+          grep -F 'package/unique_name="com.example.divslayer.qa"' export_presets.cfg
+          test ! -e signing
+          test -s export_presets.cfg
+
+      - name: Import project and export debug APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ANDROID_HOME="$ANDROID_HOME"
+          export JAVA_HOME="$JAVA_HOME"
+          godot --headless --editor --path . --quit
+          godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
+          test -s build/android/Divslayer-QA.apk
+
+      - name: Verify APK package and signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          apksigner="$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS/apksigner"
+          aapt="$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS/aapt"
+          "$apksigner" verify --verbose build/android/Divslayer-QA.apk
+          "$aapt" dump badging build/android/Divslayer-QA.apk | tee build/android/apk-badging.txt
+          grep -F "package: name='com.example.divslayer.qa'" build/android/apk-badging.txt
+          sha256sum build/android/Divslayer-QA.apk | tee build/android/Divslayer-QA.apk.sha256
+
+      - name: Upload installable QA APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Android-QA-APK
+          path: |
+            build/android/Divslayer-QA.apk
+            build/android/Divslayer-QA.apk.sha256
+            build/android/apk-badging.txt
+          if-no-files-found: error
+          retention-days: 14

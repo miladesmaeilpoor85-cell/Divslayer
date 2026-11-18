@@ -2,6 +2,18 @@
 
 **Scope:** manual validation of the signed Android build on physical devices. This plan is not evidence that a device test has already passed.
 
+## 1A. Download an isolated QA APK from GitHub Actions
+
+The repository provides a non-release debug build workflow. It uses Godot 4.7.2, a QA-only Android package identifier (`com.example.divslayer.qa`), and a temporary debug signing key generated inside the runner. It does not read or use the owner's private export preset, release package identifier, or release keystore.
+
+- Open the repository's **Actions** tab and select **Android QA APK**.
+- Open the completed run and download the **Divslayer-Android-QA-APK** artifact.
+- Extract the ZIP and install `Divslayer-QA.apk` on the phone. Android may ask you to allow installation from the browser or file manager used to open it.
+- This QA app installs separately from any production app. It is not the production package and cannot be uploaded to Google Play.
+- The debug key is temporary and newly generated for each workflow run. To install a later QA artifact, uninstall the prior QA app first; its local save will be deleted. Keep the production app installed if present.
+
+This artifact is suitable for first-pass gameplay, boss phase/pool, touch, layout, and performance checks. It is **not** suitable for verifying production app updates, production save migration, or the release signing identity. Those require the private production package ID and the same private signing key across builds.
+
 ## 1. Preconditions and protected files
 
 - Use Godot 4.7.2 and matching Android export templates.
