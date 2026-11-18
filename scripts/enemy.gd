@@ -63,11 +63,33 @@ var teleport_target_valid := false
 var squad_alert_t := 0.0
 var squad_pressure_t := 0.0
 var squad_side := 1.0
+var region_key := ""
+var regional_skill := ""
+var regional_cooldown := 0.0
+var regional_windup := 0.0
+var regional_attack_pending := false
 const LEAP_WINDUP := 0.42
 const LEAP_DURATION := 0.34
 
+
+## Regional signature moves are restricted to the maps and creatures that teach them.
+static func regional_skill_for(area: String, enemy_type: String) -> String:
+	match area:
+		"shadowfen":
+			return "bog_spit" if enemy_type == "mosquito" else ""
+		"emberforge":
+			return "flame_charge" if enemy_type == "cinderhound" else ""
+		"frostvale":
+			return "rime_pounce" if enemy_type == "frostwolf" else ""
+		"damavand", "zahhakcave":
+			return "venom_lash" if enemy_type == "serpentguard" else ""
+	return ""
+
+
 func setup(t: String, area: String, feet: Vector2, w: Node) -> void:
 	type = t
+	region_key = area
+	regional_skill = regional_skill_for(area, t)
 	world = w
 	name = "Enemy_" + t
 	add_to_group("enemies")
@@ -93,6 +115,7 @@ func setup(t: String, area: String, feet: Vector2, w: Node) -> void:
 	can_teleport = bool(enemy_data.get("canTeleport", false))
 	leap_cooldown = randf_range(1.0, 1.8)
 	teleport_cooldown = randf_range(2.2, 3.2)
+	regional_cooldown = randf_range(2.0, 3.2) if regional_skill != "" else 0.0
 	shoot_t = randf_range(1.0, 2.2)
 	position = feet
 	home = feet
@@ -207,6 +230,8 @@ func _physics_process(dt: float) -> void:
 	teleport_cooldown = maxf(0.0, teleport_cooldown - dt)
 	squad_alert_t = maxf(0.0, squad_alert_t - dt)
 	squad_pressure_t = maxf(0.0, squad_pressure_t - dt)
+	regional_cooldown = maxf(0.0, regional_cooldown - dt)
+	regional_windup = maxf(0.0, regional_windup - dt)
 	_flash(dt)
 	_hover(dt)
 	if _estatus(dt):
@@ -215,6 +240,8 @@ func _physics_process(dt: float) -> void:
 		leap_time = 0.0
 		teleport_windup = 0.0
 		teleport_target_valid = false
+		regional_windup = 0.0
+		regional_attack_pending = false
 		if anim:
 			anim.position.y = 0.0
 		# frozen or stunned: no AI, knockback still slides it
@@ -283,6 +310,8 @@ func _physics_process(dt: float) -> void:
 		# Boars of the marsh (toads) pause to telegraph a short, avoidable leap.
 		if chasing and not special_move and can_leap:
 			special_move = _leap_step(dt, to, d)
+		if chasing and not special_move and regional_skill != "":
+			special_move = _regional_attack_step(p, d)
 		if special_move:
 			v = special_velocity if leap_time > 0.0 else Vector2.ZERO
 		elif chasing and not shoots.is_empty():
@@ -343,6 +372,80 @@ func _leap_step(dt: float, to: Vector2, d: float) -> bool:
 			world.float_text(global_position + Vector2(0, -box.y - 14), "!", Color(1.0, 0.52, 0.24), true)
 		return true
 	return false
+
+
+
+# ---------------------------------------------------------------- regional signature attacks
+func _regional_attack_step(p: Node, d: float) -> bool:
+	if regional_attack_pending:
+		return true
+	if regional_cooldown > 0.0 or d < 105.0 or d > 235.0:
+		return false
+	if world == null or world.bossfx == null or p == null:
+		return false
+	var target: Vector2 = p.pc() if p.has_method("pc") else p.global_position
+	var origin: Vector2 = center()
+	var delay := 0.62
+	regional_attack_pending = true
+	match regional_skill:
+		"bog_spit":
+			delay = 0.7
+			world.bossfx.circle(target, 54.0, delay, Color(0.45, 0.9, 0.38), _fire_regional_circle, self)
+		"flame_charge":
+			delay = 0.58
+			world.bossfx.lane(origin, target, 52.0, delay, Color(1.0, 0.42, 0.16), _fire_regional_lane, self)
+		"rime_pounce":
+			delay = 0.76
+			world.bossfx.circle(target, 58.0, delay, Color(0.62, 0.86, 1.0), _fire_regional_circle, self)
+		"venom_lash":
+			delay = 0.64
+			world.bossfx.lane(origin, target, 36.0, delay, Color(0.58, 0.9, 0.36), _fire_regional_lane, self)
+		_:
+			regional_attack_pending = false
+			return false
+	regional_windup = delay
+	regional_cooldown = randf_range(5.6, 7.0)
+	return true
+
+
+func _fire_regional_circle(t: Dictionary) -> void:
+	if not regional_attack_pending or dead or world == null or world.bossfx == null:
+		return
+	regional_attack_pending = false
+	var bfx: Node = world.bossfx
+	var pos: Vector2 = t["pos"]
+	if regional_skill == "bog_spit":
+		bfx.pool(pos, 82.0, 3.4, "poison")
+		world.burst(pos, Color(0.42, 0.88, 0.34), 12, 110.0)
+		if bfx.in_circle(t):
+			bfx.hit(self, 0.78, ["poison", 2.2, 1.0])
+	elif regional_skill == "rime_pounce":
+		world.burst(pos, Color(0.65, 0.88, 1.0), 16, 130.0)
+		if bfx.in_circle(t):
+			bfx.hit(self, 0.82, ["freeze", 0.9, 1.0])
+
+
+func _fire_regional_lane(t: Dictionary) -> void:
+	if not regional_attack_pending or dead or world == null or world.bossfx == null:
+		return
+	regional_attack_pending = false
+	var bfx: Node = world.bossfx
+	var end: Vector2 = t["b"]
+	var status: Array = []
+	var mult := 0.9
+	var col := Color(1.0, 0.42, 0.16)
+	match regional_skill:
+		"flame_charge":
+			status = ["burn", 2.2, 1.0]
+			mult = 0.92
+			col = Color(1.0, 0.42, 0.16)
+		"venom_lash":
+			status = ["poison", 2.4, 1.0]
+			mult = 0.84
+			col = Color(0.58, 0.9, 0.36)
+	world.burst(end, col, 10, 105.0)
+	if bfx.in_lane(t):
+		bfx.hit(self, mult, status)
 
 
 func _choose_teleport_target(p: Node) -> Vector2:
@@ -505,6 +608,8 @@ func hurt(amount: float, crit: bool, from_dir: Vector2, heavy := false) -> void:
 	# Taking a hit interrupts a committed leap before the knockback is applied.
 	leap_windup = 0.0
 	leap_time = 0.0
+	regional_windup = 0.0
+	regional_attack_pending = false
 	if anim:
 		anim.position.y = 0.0
 	if parley and world and world.has_method("truce_broken"):
