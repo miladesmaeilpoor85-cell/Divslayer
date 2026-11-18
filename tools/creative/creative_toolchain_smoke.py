@@ -187,6 +187,17 @@ def create_krita_ora(source: Path, out: Path) -> Path:
             archive.writestr(name, buffer.getvalue(), compress_type=zipfile.ZIP_DEFLATED)
     return ora
 
+def inspect_ora_dimensions(path: Path) -> tuple[int, int]:
+    """Read the merged preview dimensions inside an OpenRaster archive."""
+    import io
+    import zipfile
+
+    with zipfile.ZipFile(path) as archive:
+        merged = archive.read("mergedimage.png")
+    with Image.open(io.BytesIO(merged)) as image:
+        return image.size
+
+
 def run_krita(krita: str, source: Path, out: Path) -> Path:
     destination = out / "flame-seal-relic-final.png"
     run(
@@ -204,7 +215,7 @@ def run_krita(krita: str, source: Path, out: Path) -> Path:
     )
     if not destination.is_file() or destination.stat().st_size < 1024:
         raise RuntimeError("Krita did not create the expected exported image")
-    if inspect_png(destination) != inspect_png(source):
+    if inspect_png(destination) != inspect_ora_dimensions(source):
         raise RuntimeError("Krita round-trip changed the image dimensions")
     return destination
 
