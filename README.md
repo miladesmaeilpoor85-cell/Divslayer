@@ -6,9 +6,9 @@ A Persian-mythology-inspired action RPG made with Godot.
 
 [![Godot CI](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/workflows/godot-ci.yml/badge.svg?branch=main)](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/workflows/godot-ci.yml)
 
-**Status / وضعیت:** The project is under development. Current game version: **0.41.0**. The latest verified Godot 4.7.2 CI run ([#44294335874](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44294335874)) passed **1,154 checks across 30 test suites**. This is a test result, not an Android release or store approval.
+**Status / وضعیت:** The project is under development. Current game version: **0.42.0**. The latest verified Godot 4.7.2 CI run ([#44296005351](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44296005351)) passed **1,158 checks across 31 test suites**. The Android QA build **0.42.0-qa** was exported and its APK signature verified in [run #44295985491](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44295985491). These are test/QA results, not a production release or store approval.
 
-**وضعیت:** پروژه هنوز در حال توسعه است. نسخه فعلی بازی **0.41.0** است. آخرین اجرای تأییدشدهٔ CI با Godot 4.7.2 شامل **۱٬۱۵۴ بررسی در ۳۰ مجموعه تست** بود و همگی موفق شدند. این نتیجه به‌معنای آماده‌بودن APK یا تأیید انتشار در فروشگاه‌ها نیست.
+**وضعیت:** پروژه هنوز در حال توسعه است. نسخه فعلی بازی **0.42.0** است. آخرین اجرای تأییدشدهٔ CI با Godot 4.7.2 شامل **۱٬۱۵۸ بررسی در ۳۱ مجموعه تست** بود و همگی موفق شدند. نسخه آزمایشی اندروید **0.42.0-qa** نیز ساخته و امضای APK آن در اجرای شماره 44295985491 تأیید شد. این موارد نتیجه آزمون و خروجی QA هستند، نه انتشار نهایی یا تأیید فروشگاه.
 
 
 ## Repository history / تاریخچه مخزن

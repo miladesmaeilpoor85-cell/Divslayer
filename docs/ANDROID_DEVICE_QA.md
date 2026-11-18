@@ -176,3 +176,19 @@ As with earlier QA builds, this APK uses a temporary debug signing key generated
 - **Device details and test scope not specified in this confirmation:** device model, Android version, exact combat scenarios (including the Venom projectile and trap), test duration, measured FPS/frame time, thermal behavior, save persistence and app lifecycle behavior. These remain unverified by this report.
 
 As with the previous QA APK, this build is signed with a fresh temporary debug key generated for this workflow run. Uninstall the previous `Divslayer QA` app before installing this new artifact; uninstalling removes its local QA save data. The production app uses a different package ID and is not affected.
+
+
+### Divslayer 0.42.0 QA Android build — 2026-11-18
+- **Change:** Pulad of Ghandi / the Anvil Warden now marks three parallel forge lanes across the hero's last position. The lanes ignite after a 0.9-second warning, leave dodgeable side gaps, and share a single hit token; a successful hit applies burn. The move is exclusive to the Anvil Warden.
+- **Automated regression:** [Godot CI run #44296005351](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44296005351) — completed successfully. **1,158 checks across 31 test suites**, zero failures; the new `anvilwardtest` suite passed all 4 checks; `ALL_TESTS_PASSED`.
+- **Source commit:** `dba9ccc1680368eab386d66c01673de05fb69d78`.
+- **Android QA workflow:** [run #44295985491](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44295985491) — completed successfully.
+- **Artifact:** `Divslayer-Android-QA-APK`, [artifact ID 14424120858](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44295985491/artifacts/14424120858); retention expires `2026-12-02T11:36:44Z`.
+- **Build source commit:** `8367c0403200ed3a144d341a4bf94ff3e8f8ad18`.
+- **Package / version:** `com.example.divslayer.qa` / `0.42.0-qa` (version code 1).
+- **APK SHA-256:** `15361e9a83cbcc97f59f5d4117e22c9dfdac51484c6970c7bdd53484588fd40b`.
+- **Artifact ZIP SHA-256:** `d44d574b493b977172a258f2c1a5c000a01fed2fa3706b362752c0aecc60404e`.
+- **Signature verification:** APK Signature Scheme v2 and v3 verified successfully; v1 was not enabled in this export.
+- **Physical-device status:** this 0.42.0 APK has been exported and signature-verified, but no user-reported physical-device test has been recorded yet. Treat it as a QA build, not a production release.
+
+As with previous QA APKs, this build uses a fresh temporary debug signing key generated for this workflow run. Uninstall the previous `Divslayer QA` app before installing this APK; its local QA save will be removed. The production app uses a different package ID and is not affected.
