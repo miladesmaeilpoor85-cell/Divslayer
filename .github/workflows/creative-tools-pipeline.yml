@@ -28,7 +28,7 @@ jobs:
   creative-application-smoke-tests:
     name: Krita / Audacity / LMMS / Blender
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -48,7 +48,7 @@ jobs:
             update; then
             echo "::warning::apt index refresh did not finish; continuing with runner-cached indexes"
           fi
-          timeout 900s sudo apt-get --quiet install --yes --no-install-recommends \
+          timeout 1800s sudo apt-get --quiet install --yes --no-install-recommends \
             -o Dpkg::Use-Pty=0 \
             -o Acquire::ForceIPv4=true \
             -o Acquire::Retries=1 \
