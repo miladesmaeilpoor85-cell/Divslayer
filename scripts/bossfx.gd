@@ -255,17 +255,17 @@ func _physics_process(dt: float) -> void:
 				world.burst(s["pos"], s["col"], 5, 80.0)
 		shots = shots.filter(func(x): return float(x["life"]) > 0.0)
 	if not pools.is_empty():
-		var pl := player()
+		var pool_player := player()
 		for puddle in pools:
 			puddle["life"] = float(puddle["life"]) - dt
-			var source = puddle.get("en", null)
-			if source != null and float(puddle.get("mult", 0.0)) > 0.0:
+			var pool_owner = puddle.get("en", null)
+			if pool_owner != null and float(puddle.get("mult", 0.0)) > 0.0:
 				puddle["tick"] = float(puddle.get("tick", 0.0)) - dt
 				if float(puddle["tick"]) <= 0.0:
 					puddle["tick"] = 0.8
-					if pl != null and not pl.dead and pl.has_method("pc") and _alive(source) and puddle["rect"].has_point(pl.pc()):
+					if pool_player != null and not pool_player.dead and pool_player.has_method("pc") and _alive(pool_owner) and puddle["rect"].has_point(pool_player.pc()):
 						cur_src = "regional_poison_pool"
-						hit(source, float(puddle["mult"]), puddle.get("status", []))
+						hit(pool_owner, float(puddle["mult"]), puddle.get("status", []))
 						cur_src = ""
 		pools = pools.filter(func(x): return float(x["life"]) > 0.0)
 	queue_redraw()
