@@ -24,6 +24,7 @@ This file separates verified engineering status from items that still require th
 - **Signing key:** The Android keystore and certificates are intentionally excluded from the public repository. Keep the original release key and a private backup. Never upload `emberiron.p12`, PEM files, certificates, passwords, or signing aliases to GitHub or chat.
 - **Credential rotation:** A sample signing password appeared in an old public developer note. If that value was ever used for the real keystore or key, treat the affected password as exposed and rotate it locally while preserving the same key pair. A history rewrite does not rotate a password and cannot erase old clones or caches.
 - **Build and device tests:** No release APK/AAB or GitHub Release has been published from the current CI workflow. Configure the private Android export environment and run a signed export, install/update tests on real Android devices, and verify app identity, save migration, permissions, performance, and store requirements before release.
+  Follow the [Android device QA plan](ANDROID_DEVICE_QA.md) for the boss-phase/pool regression, touch interaction, lifecycle, performance, and test-report matrix.
 
 ## Asset rights audit | ممیزی حقوق دارایی‌ها
 

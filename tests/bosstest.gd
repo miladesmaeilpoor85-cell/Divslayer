@@ -157,12 +157,18 @@ func mechanics() -> void:
 	check("staggered_takes_150pct", is_equal_approx(during, 150.0) and is_equal_approx(normal, 100.0), [during, normal])
 	check("stagger_decays_6_per_s", abs(b.stag - 44.0) < 0.6, b.stag)
 
-	printerr("STEP: phase change at 66%: invulnerable roar, banner, shockwave")
+	printerr("STEP: phase change at 66%: invulnerable roar, banner, shockwave, and transient cleanup")
 	b = await arena("boss2")
 	hold(b)
+	bfx = main.world.bossfx
+	var phase2_pool_pos: Vector2 = b.center() + Vector2(360.0, 0.0)
+	bfx.shoot(b, 2, 2.6, 0.5, Color8(95, 191, 90), "poison")
+	bfx.pool(phase2_pool_pos, 96.0, 8.0, "poison", b, 0.5, ["poison", 3.0])
+	var phase2_effects_seeded: bool = bfx.shots.size() == 2 and bfx.pool_at(phase2_pool_pos) == "poison"
 	b.hp = b.max_hp * 0.655
 	await frames(2)
 	var ph_ok: bool = b.ph == 2 and b.inv > 1.0
+	var phase2_effects_cleared: bool = bfx.shots.is_empty() and bfx.pools.is_empty() and bfx.pool_at(phase2_pool_pos) == ""
 	h0 = b.hp
 	b.hurt(500.0, false, Vector2.ZERO)
 	var immune: bool = is_equal_approx(h0, b.hp)
@@ -173,10 +179,17 @@ func mechanics() -> void:
 	h0 = b.hp
 	b.hurt(100.0, false, Vector2.ZERO)
 	check("phase2_at_66", ph_ok and immune and ban == Game.t("Phase II", "مرحلهٔ دوم") and variant == "v1", {"ph": b.ph, "banner": ban, "variant": variant})
+	check("phase2_clears_previous_projectiles_and_pools", phase2_effects_seeded and phase2_effects_cleared, {"seeded": phase2_effects_seeded, "shots_left": bfx.shots.size(), "pools_left": bfx.pools.size()})
 	check("damage_after_phase_roar", h0 - b.hp > 99.0)
+	var phase3_pool_pos: Vector2 = b.center() + Vector2(360.0, 0.0)
+	bfx.shoot(b, 1, 2.6, 0.5, Color8(95, 191, 90), "poison")
+	bfx.pool(phase3_pool_pos, 96.0, 8.0, "poison", b, 0.5, ["poison", 3.0])
+	var phase3_effects_seeded: bool = bfx.shots.size() == 1 and bfx.pool_at(phase3_pool_pos) == "poison"
 	b.hp = b.max_hp * 0.3
 	await frames(2)
+	var phase3_effects_cleared: bool = bfx.shots.is_empty() and bfx.pools.is_empty() and bfx.pool_at(phase3_pool_pos) == ""
 	check("phase3_at_33", b.ph == 3 and main.hud.boss_ui.banner_a.text == Game.t("Final phase", "واپسین مرحله"))
+	check("phase3_clears_previous_projectiles_and_pools", phase3_effects_seeded and phase3_effects_cleared, {"seeded": phase3_effects_seeded, "shots_left": bfx.shots.size(), "pools_left": bfx.pools.size()})
 
 	printerr("STEP: telegraphs land; a roll through the strike is a perfect dodge")
 	b = await arena("boss")
@@ -389,12 +402,19 @@ func mechanics() -> void:
 	await frames(4)
 	check("respawn_in_village", main.world.key == "village" and int(Game.state["gold"]) == 400 and not get_tree().paused, {"map": main.world.key, "gold": Game.state["gold"]})
 
-	printerr("STEP: victory: banner, arena crumbles, kill recorded, quest advances")
+	printerr("STEP: boss death clears active projectiles and damaging pools")
 	b = await arena("boss")
 	await frames(3)
+	bfx = main.world.bossfx
+	var death_pool_pos: Vector2 = b.center() + Vector2(360.0, 0.0)
+	bfx.shoot(b, 2, 2.6, 0.5, Color8(95, 191, 90), "poison")
+	bfx.pool(death_pool_pos, 96.0, 8.0, "poison", b, 0.5, ["poison", 3.0])
+	var death_effects_seeded: bool = bfx.shots.size() == 2 and bfx.pool_at(death_pool_pos) == "poison"
 	Game.set_q(1, "active")
 	main.world.spawn_arena("gravepillar", main.player.global_position + Vector2(100, 0), {"hp": 60.0, "owner": b})
 	b.hurt(1e9, false, Vector2.ZERO)
+	var death_effects_cleared: bool = bfx.shots.is_empty() and bfx.pools.is_empty() and bfx.pool_at(death_pool_pos) == ""
+	check("boss_death_clears_projectiles_and_pools", death_effects_seeded and death_effects_cleared, {"seeded": death_effects_seeded, "shots_left": bfx.shots.size(), "pools_left": bfx.pools.size()})
 	await frames(30)
 	check("victory", main.hud.boss_ui.banner_a.text == Game.t("DUST AGAIN", "به خاک برگشت") and Game.fight.is_empty() and main.world.count_arena("gravepillar") == 0
 		and int(Game.v18()["kills"].get("boss", 0)) == 1 and Game.q(1) == "complete" and not main.hud.boss_ui.showing(), {"banner": main.hud.boss_ui.banner_a.text, "q1": Game.q(1)})
