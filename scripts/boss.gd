@@ -1367,6 +1367,23 @@ func _ai_generic(dt: float, d: float, to: Vector2) -> void:
 				"سه مسیرِ آتشین مشخص شده‌اند. پیش از شعله‌ور شدن، به شکاف میانشان جاخالی بده.")
 			Sfx.play("trap", -4.0)
 			return
+		# Ashkbus calls a Turanian arrowfall over the hero's last position. Three marks
+		# leave a clear step-through gap; a shared token caps the whole volley at one hit.
+		if type == "captain" and d > 145.0 and d < 370.0 and _ready_move("arrowfall"):
+			var axis: Vector2 = to / maxf(d, 1.0)
+			var side: Vector2 = axis.orthogonal()
+			var target: Vector2 = bfx.pc()
+			var vol: Dictionary = bfx.vol()
+			_use("arrowfall", 9.2)
+			busy = 1.3
+			for offset in [-112.0, 0.0, 112.0]:
+				var spot: Vector2 = target + side * float(offset)
+				bfx.circle(spot, 30.0, 0.85, Color8(226, 170, 104), _fire_ashkbus_arrowfall.bind(vol), self)
+			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("TURANIAN ARROWFALL!", "بارانِ تیرهای تورانی!"), Color8(235, 185, 118), true)
+			world.tip("ashkbus_arrowfall", "Three arrow strikes are marked. Step between the circles before they land.",
+				"سه نقطه برای فرود تیرها مشخص شده‌اند. پیش از اصابت، از میان دایره‌ها عبور کن.")
+			Sfx.play("trap", -5.0)
+			return
 		if d > 120.0 and d < 380.0 and _ready_move("charge"):
 			var a := to.angle()
 			var span: float = min(420.0, d + 100.0)
@@ -1388,6 +1405,16 @@ func _fire_anvil_furrow(t: Dictionary, vol: Dictionary) -> void:
 	world.burst(t["b"], Color8(255, 132, 42), 8, 105.0)
 	if bfx.in_lane(t):
 		bfx.hit_v(vol, self, 0.88, ["burn", 1.8, 1.0])
+
+
+## Each of Ashkbus's marked arrow strikes shares one volley token. The warning is
+## canceled by a stagger; once the arrows are in flight they finish their short fall.
+func _fire_ashkbus_arrowfall(t: Dictionary, vol: Dictionary) -> void:
+	if dead or staggered > 0.0 or world == null or bfx == null:
+		return
+	var spot: Vector2 = t["pos"]
+	world.burst(spot, Color8(220, 160, 92), 4, 70.0)
+	bfx.lob(spot + Vector2(0, -190.0), spot, 0.38, 30.0, self, 0.72, Color8(194, 128, 70), "arrow", vol)
 
 
 func _fire_slam(t: Dictionary) -> void:
