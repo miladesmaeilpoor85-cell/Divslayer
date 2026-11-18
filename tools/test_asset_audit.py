@@ -89,11 +89,19 @@ class AssetAuditTests(unittest.TestCase):
         self.assertTrue(any("invalid artwork file" in error for error in report["errors"]))
         self.assertTrue(any("invalid audio file" in error for error in report["errors"]))
 
+    def test_project_icon_outside_art_directory_is_included(self):
+        root = self.make_repo()
+        (root / "icon.png").write_bytes(png_bytes())
+        self.write_registry(root, [{"asset_path": "icon.png", "commercial_use_status": "UNVERIFIED"}])
+        report = audit_repository(root)
+        self.assertEqual(report["errors"], [])
+        self.assertEqual(report["artwork_files"], 1)
+
     def test_path_traversal_is_rejected(self):
         root = self.make_repo()
         self.write_registry(root, [{"asset_path": "assets/art/../../outside.png", "commercial_use_status": "UNVERIFIED"}])
         report = audit_repository(root)
-        self.assertTrue(any("unsafe or out-of-scope" in error for error in report["errors"]))
+        self.assertTrue(any("unsafe path" in error for error in report["errors"]))
 
 
 if __name__ == "__main__":
