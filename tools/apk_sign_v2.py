@@ -92,8 +92,21 @@ def load_or_create_key(key_dir: str):
                 file=sys.stderr,
             )
         cert = x509.load_pem_x509_certificate(open(cp, "rb").read())
+        key_public = key.public_key().public_bytes(
+            serialization.Encoding.DER,
+            serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+        cert_public = cert.public_key().public_bytes(
+            serialization.Encoding.DER,
+            serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+        if key_public != cert_public:
+            raise ValueError(
+                "The private key does not match the certificate. Restore the matching pair from a secure backup."
+            )
         try:
             os.chmod(key_dir, 0o700)
+            os.chmod(kp, 0o600)
             os.chmod(cp, 0o600)
         except OSError:
             pass
