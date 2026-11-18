@@ -1597,14 +1597,26 @@ static func _parse_quiet(text: String) -> Variant:
 	var j := JSON.new()
 	return j.data if j.parse(text) == OK else null
 
+## Return the newest structurally usable hero save. A parseable but malformed main file must not hide a good backup.
+static func read_game_save(path: String) -> Variant:
+	for p in [path, path + ".bak"]:
+		if not FileAccess.file_exists(p):
+			continue
+		var d = _parse_quiet(FileAccess.get_file_as_string(p))
+		if typeof(d) != TYPE_DICTIONARY or typeof(d.get("state")) != TYPE_DICTIONARY:
+			continue
+		var saved_class = d.get("cls", "warrior")
+		if typeof(saved_class) != TYPE_STRING or not HEROES.has(saved_class):
+			continue
+		return d
+	return null
+
 func has_save() -> bool:
-	return typeof(read_safe(SAVE_PATH)) == TYPE_DICTIONARY
+	return typeof(read_game_save(SAVE_PATH)) == TYPE_DICTIONARY
 
 func load_game() -> bool:
-	if not has_save():
-		return false
-	var d = read_safe(SAVE_PATH)
-	if typeof(d) != TYPE_DICTIONARY or not d.has("state"):
+	var d = read_game_save(SAVE_PATH)
+	if typeof(d) != TYPE_DICTIONARY:
 		return false
 	cls = d.get("cls", "warrior")
 	state = d["state"]
