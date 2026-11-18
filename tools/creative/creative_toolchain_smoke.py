@@ -56,8 +56,8 @@ def executable(name: str) -> str:
     return path
 
 
-def get_version(name: str, binary: str) -> str:
-    result = run([binary, "--version"], timeout=45)
+def get_version(name: str, binary: str, version_args: tuple[str, ...] = ("--version",)) -> str:
+    result = run([binary, *version_args], timeout=45)
     text = (result.stdout or result.stderr).strip()
     return "\n".join(text.splitlines()[:4]) or "version output unavailable"
 
@@ -232,7 +232,7 @@ def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]
 
     log_file = log_path.open("w", encoding="utf-8")
     process = subprocess.Popen(
-        ["xvfb-run", "-a", audacity, "--nosplash", str(source_audio)],
+        ["xvfb-run", "-a", audacity, str(source_audio)],
         stdout=log_file,
         stderr=subprocess.STDOUT,
         text=True,
@@ -302,7 +302,7 @@ def main() -> int:
         "Audacity": executable("audacity"),
     }
     versions = {
-        name: get_version(name, binary)
+        name: get_version(name, binary, ("-version",) if name == "Audacity" else ("--version",))
         for name, binary in binaries.items()
     }
 
