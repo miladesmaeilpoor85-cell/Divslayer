@@ -205,3 +205,8 @@ As with previous QA APKs, this build uses a fresh temporary debug signing key ge
 - **User-reported outcome:** during combat, the user verified that the three forge-fire lanes appeared correctly and that the player could dodge through the gaps between them. The user reported that both behaviors worked as intended.
 - **Scope:** this confirms the three-lane telegraph appearing and the intended gap-dodge behavior in a physical-device play session. The user did not explicitly report testing the burn application, exact damage amount, simultaneous-hit guard, performance measurements, or other QA checklist items; those remain unverified by this report.
 - **Status:** targeted manual combat check for the Forge Furrows move passed according to the user. This complements the earlier install/launch smoke test; it does not constitute a complete device QA pass or production-release validation.
+
+### User-confirmed Forge Furrows damage and burn test — Divslayer 0.42.0 QA — 2026-11-18
+- **Encounter:** Pulad of Ghandi / Anvil Warden.
+- **User-reported outcome:** the user additionally tested the damage behavior of the Forge Furrows attack and confirmed that it worked correctly: a hit applies the expected damage and burn effect, and the same three-lane volley does not apply multiple hits to the player.
+- **Status:** the user has now confirmed the attack's lane telegraphs, dodge gaps, damage/burn behavior, and one-hit-per-volley protection in manual gameplay testing. This is a targeted user-reported test of this move, not a full device QA pass or production-release validation.
