@@ -48,6 +48,13 @@ jobs:
           assert all(item.get("license", "").startswith("Suno") for item in data["music"])
           PY
 
+      - name: Test and audit artwork/audio assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tools -p "test_asset_audit.py" -v
+          python3 tools/asset_audit.py
+
       - name: Import project and parse Godot resources
         run: godot --headless --editor --path . --quit
 
