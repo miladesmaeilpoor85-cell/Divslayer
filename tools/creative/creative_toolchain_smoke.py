@@ -326,7 +326,7 @@ def run_lmms(lmms: str, out: Path, root: Path) -> dict[str, Any]:
     }
 
 def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]:
-    """Open an existing OGG in Audacity under Xvfb without enabling remote scripting."""
+    """Launch Audacity with the rendered WAV path under Xvfb; remote scripting stays disabled."""
     log_path = out / "audacity-gui.log"
     env = os.environ.copy()
     env["HOME"] = str(out / "audacity-home")
@@ -346,14 +346,14 @@ def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]
         return_code = process.poll()
         if return_code is not None:
             raise RuntimeError(
-                f"Audacity exited during file-open smoke test ({return_code}); "
+                f"Audacity exited during WAV-argument launch smoke test ({return_code}); "
                 f"see {log_path}"
             )
         return {
-            "status": "launched_with_input",
+            "status": "process_remained_active",
             "source": str(source_audio),
             "observation_seconds": 8,
-            "note": "Audacity process remained active during the observation window after receiving the OGG input argument; full audio decoding is verified separately by PyAV/FFmpeg.",
+            "note": "Audacity was launched with the generated WAV path and remained active for 8 seconds. This confirms process startup only; it does not verify waveform inspection, playback, or mastering. Full audio decoding is verified separately by PyAV/FFmpeg.",
         }
     finally:
         try:
