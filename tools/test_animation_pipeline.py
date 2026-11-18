@@ -5,7 +5,6 @@ import unittest
 from pathlib import Path
 
 from animation_pipeline import build_animation
-
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
