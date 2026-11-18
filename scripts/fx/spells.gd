@@ -133,9 +133,12 @@ func _step_shots(dt: float) -> void:
 
 func _pop(s: Dictionary) -> void:
 	if world.fx:
-		world.fx.ring(s["p"], s["col"], 10.0 * float(s["size"]), 0.22)
+		var size: float = float(s["size"])
+		var direction: Vector2 = (s["v"] as Vector2).normalized()
+		world.fx.ring(s["p"], s["col"], 10.0 * size, 0.22)
 		world.fx.emit("shine", s["p"], 5, s["col"], Vector2.ZERO, 180.0, 90.0)
-		world.fx.flash_light(s["p"], 70.0, 0.7, s["col"], 0.2)
+		world.fx.sparks(s["p"], 6, Color(s["col"], 0.9), direction)
+		world.fx.flash_light(s["p"], 70.0 * size, 0.7, s["col"], 0.2)
 
 func _step_meteors(dt: float) -> void:
 	if meteors.is_empty():
@@ -194,6 +197,13 @@ func _draw_ground() -> void:
 		ground.draw_arc(Vector2.ZERO, r * (1.0 - k) + 4.0, 0, TAU, 32, Color(1, 0.85, 0.6, 0.9), 2.5, true)
 	ground.draw_set_transform(Vector2.ZERO)
 
+## Width falls smoothly from the projectile head toward the oldest point in its ribbon.
+static func _trail_width_at(index: int, count: int, size: float) -> float:
+	if count <= 0:
+		return 0.0
+	var progress := clampf(float(index) / maxf(1.0, float(count - 1)), 0.0, 1.0)
+	return (1.6 + 5.8 * (1.0 - progress)) * size
+
 func _draw() -> void:
 	var glow := Tex.glow()
 	var dot := Tex.dot()
@@ -230,13 +240,31 @@ func _draw() -> void:
 			var r := (9.0 * f + 2.0) * sz
 			draw_texture_rect(dot, Rect2(tr[i] - Vector2(r, r), Vector2(r, r) * 2.0), false, Color(c, 0.55 * f))
 		var p: Vector2 = s["p"]
-		draw_texture_rect(glow, Rect2(p - Vector2(22, 22) * sz, Vector2(44, 44) * sz), false, Color(c, 0.7))
+		var v: Vector2 = (s["v"] as Vector2).normalized()
+		# Tapered, two-pass ribbons make fast spells read as moving energy rather than dotted beads.
+		for i in range(1, tr.size()):
+			var a: Vector2 = p if i == 1 else tr[i - 1]
+			var b: Vector2 = tr[i]
+			var fade := 1.0 - float(i) / float(tr.size() + 1)
+			var width := _trail_width_at(i, tr.size(), sz)
+			draw_line(a, b, Color(c, 0.22 * fade), width * 2.4, true)
+			if int(Game.settings.get("fx", 1)) > 0:
+				draw_line(a, b, Color(c, 0.72 * fade), width, true)
+		var head_size := (52.0 if int(Game.settings.get("fx", 1)) > 0 else 40.0) * sz
+		draw_texture_rect(glow, Rect2(p - Vector2.ONE * head_size * 0.5, Vector2.ONE * head_size),
+			false, Color(c, 0.62 if int(Game.settings.get("fx", 1)) > 0 else 0.4))
 		if s["id"] == "icelance":
-			var d: Vector2 = (s["v"] as Vector2).normalized()
-			var n := d.orthogonal()
-			draw_colored_polygon(PackedVector2Array([p + d * 14.0, p + n * 4.0 - d * 6.0, p - d * 12.0, p - n * 4.0 - d * 6.0]), Color(0.85, 0.97, 1.0, 0.95))
+			var n := v.orthogonal()
+			draw_colored_polygon(PackedVector2Array([p + v * 16.0, p + n * 4.5 - v * 6.0,
+				p - v * 13.0, p - n * 4.5 - v * 6.0]), Color(0.85, 0.97, 1.0, 0.95))
+			draw_line(p - v * 11.0, p + v * 13.0, Color(1.0, 1.0, 1.0, 0.9), 1.6, true)
 		else:
-			draw_circle(p, 4.5 * sz, Color(1, 1, 1, 0.95))
+			var normal := v.orthogonal()
+			var pulse := 0.85 + 0.15 * sin(Time.get_ticks_msec() / 70.0 + float(s["left"]) * 0.02)
+			draw_arc(p, 7.0 * sz, Time.get_ticks_msec() / 280.0,
+				Time.get_ticks_msec() / 280.0 + PI * 1.55, 14, Color(c, 0.72 * pulse), 1.5 * sz, true)
+			draw_line(p - normal * 5.0 * sz, p + normal * 5.0 * sz, Color(1, 1, 1, 0.8 * pulse), 1.2, true)
+			draw_circle(p, 3.4 * sz, Color(1, 1, 1, 0.98))
 	for a in arcs:
 		var k: float = float(a["t"]) / float(a["life"])
 		var c2: Color = a["col"]

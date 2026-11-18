@@ -199,6 +199,15 @@ func run(m: Node) -> void:
 			if p.emitting:
 				sparks = true
 		check("swing_arc_and_sparks", not main.world.fx.swings.is_empty() and sparks)
+		var spell_fx = main.world.spells
+		check("projectile_trail_tapers",
+			spell_fx._trail_width_at(0, 7, 1.0) > spell_fx._trail_width_at(6, 7, 1.0)
+			and spell_fx._trail_width_at(0, 7, 1.5) > spell_fx._trail_width_at(0, 7, 1.0))
+		spell_fx.shoot("arcane_bolt", main.player.global_position, Vector2.RIGHT,
+			{"col": Color(0.55, 0.78, 1.0), "speed": 500.0, "range": 300.0}, 1.0)
+		check("projectile_keeps_typed_trail_data",
+			not spell_fx.shots.is_empty() and spell_fx.shots.back()["trail"] is Array
+			and spell_fx.shots.back()["v"].length() > 0.0)
 		main.world.fx.swing(main.player, Vector2.RIGHT, 48.0, true, 5)
 		var heavy_arc: Dictionary = main.world.fx.swings.back()
 		check("heavy_swing_uses_enhanced_trail",
