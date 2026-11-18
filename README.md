@@ -4,9 +4,19 @@ A Persian-mythology-inspired action RPG made with Godot.
 
 یک بازی اکشن نقش‌آفرینی با الهام از شاهنامه و اسطوره‌های ایرانی، ساخته‌شده با Godot.
 
-**Status / وضعیت:** The sanitized game source and project assets are now present in this public repository. The project is still under development.
+[![Godot CI](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/workflows/godot-ci.yml/badge.svg?branch=main)](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/workflows/godot-ci.yml)
 
-**وضعیت:** کد منبع پاک‌سازی‌شده و دارایی‌های پروژه اکنون در این مخزن عمومی قرار دارند. توسعه بازی ادامه دارد.
+**Status / وضعیت:** The project is under development. Current game version: **0.39.0**. The latest verified Godot 4.7.2 CI run passed **1,115 checks across 28 test suites**. This is a test result, not an Android release or store approval.
+
+**وضعیت:** پروژه هنوز در حال توسعه است. نسخه فعلی بازی **0.39.0** است. آخرین اجرای تأییدشدهٔ CI با Godot 4.7.2 شامل **۱٬۱۱۵ بررسی در ۲۸ مجموعه تست** بود و همگی موفق شدند. این نتیجه به‌معنای آماده‌بودن APK یا تأیید انتشار در فروشگاه‌ها نیست.
+
+
+## Repository history / تاریخچه مخزن
+On 18 November 2026, the `main` branch history was rewritten to remove an old sample signing password from historical developer notes. Anyone with a clone created before that date should make a fresh clone before contributing; do not merge or push the old clone's history back into `main`. Back up any uncommitted personal work separately first.
+
+در ۱۸ نوامبر ۲۰۲۶ تاریخچه شاخهٔ `main` برای حذف یک گذرواژهٔ نمونه از یادداشت‌های قدیمی بازنویسی شد. اگر پیش از این تاریخ مخزن را clone کرده‌اید، پیش از هر مشارکت clone تازه بگیرید؛ تاریخچهٔ clone قدیمی را دوباره با `main` ادغام یا push نکنید. ابتدا از تغییرات شخصیِ commit‌نشده جداگانه پشتیبان تهیه کنید.
+
+See [release readiness](docs/RELEASE_READINESS.md) for the current blockers before Android or commercial release.
 
 ## Goals / اهداف
 - Share project progress and receive feedback from the community.
