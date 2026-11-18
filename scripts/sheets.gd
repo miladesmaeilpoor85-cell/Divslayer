@@ -41,24 +41,7 @@ static func character(group: String, sheet: String) -> Dictionary:
 		var hit := "attack_" + d
 		sf.add_animation(hit)
 		sf.set_animation_loop(hit, false)
-		var hit_tex := tex
-		var hit_frames := 1
-		var hit_fps := 0.0
-		if meta.has("attackSheet"):
-			hit_tex = load(Game.ART + folder + "/" + str(meta["attackSheet"]) + ".png")
-			if hit_tex == null:
-				push_error("attack sheet missing from the build: %s/%s.png" % [folder, meta["attackSheet"]])
-				hit_tex = tex
-			else:
-				hit_frames = int(meta.get("attackFrames", 1))
-				hit_fps = float(meta.get("attackFps", 0.0))
-		if hit_fps > 0.0:
-			sf.set_animation_speed(hit, hit_fps)
-		if hit_frames > 1:
-			for c in hit_frames:
-				sf.add_frame(hit, _atlas(hit_tex, c * cw, r * ch, cw, ch))
-		else:
-			sf.add_frame(hit, _atlas(tex, 4 * cw, r * ch, cw, ch))
+		sf.add_frame(hit, _atlas(tex, 4 * cw, r * ch, cw, ch))
 	var out := {"frames": sf, "offset": pivot_offset(meta), "meta": meta}
 	_cache[key] = out
 	return out
