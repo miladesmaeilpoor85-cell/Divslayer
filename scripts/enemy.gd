@@ -415,7 +415,7 @@ func _fire_regional_circle(t: Dictionary) -> void:
 	var bfx: Node = world.bossfx
 	var pos: Vector2 = t["pos"]
 	if regional_skill == "bog_spit":
-		bfx.pool(pos, 82.0, 3.4, "poison")
+		bfx.pool(pos, 82.0, 3.4, "poison", self, 0.34, ["poison", 1.2, 0.6])
 		world.burst(pos, Color(0.42, 0.88, 0.34), 12, 110.0)
 		if bfx.in_circle(t):
 			bfx.hit(self, 0.78, ["poison", 2.2, 1.0])
