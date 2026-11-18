@@ -192,3 +192,9 @@ As with the previous QA APK, this build is signed with a fresh temporary debug k
 - **Physical-device status:** this 0.42.0 APK has been exported and signature-verified, but no user-reported physical-device test has been recorded yet. Treat it as a QA build, not a production release.
 
 As with previous QA APKs, this build uses a fresh temporary debug signing key generated for this workflow run. Uninstall the previous `Divslayer QA` app before installing this APK; its local QA save will be removed. The production app uses a different package ID and is not affected.
+
+### User-reported physical-device smoke test — Divslayer 0.42.0 QA — 2026-11-18
+- **Build:** `0.42.0-qa`, package `com.example.divslayer.qa`, Android QA workflow [run #44295985491](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44295985491), artifact ID `14424120858`.
+- **User-reported outcome:** the user downloaded, installed and launched the 0.42.0 QA build and reported that everything worked well.
+- **Not specified in this confirmation:** device model, Android version, session duration, exact combat scenarios (including the Anvil Warden's forge-furrow attack), measured FPS/frame time, thermal behavior, save persistence, and pause/resume lifecycle. Do not treat these unreported checks as verified.
+- **Status:** initial physical-device installation/launch smoke test passed according to the user. This is not a complete device QA pass or a production-release validation.
