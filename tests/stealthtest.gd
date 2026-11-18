@@ -90,6 +90,36 @@ func walk(p: Node, frames_n: int) -> float:
 	p.joy = Vector2.ZERO
 	return p.global_position.x - x0
 
+func regional_attack_test(map_key: String, enemy_type: String, skill: String, status: String, label: String, interrupt := false) -> void:
+	clear_foes()
+	main.goto_map(map_key, Vector2(600, 520))
+	await frames(4)
+	var hero_now: Node = main.player
+	hero_now.global_position = Vector2(600, 520)
+	hero_now.joy = Vector2.ZERO
+	hero_now.invuln = 0.0
+	hero_now.dodge_iframes = 0.0
+	hero_now.statuses.clear()
+	hero_now.dead = false
+	Game.hp = Game.max_hp()
+	var foe: Node = main.world.spawn_enemy(enemy_type, Vector2(760, 520))
+	foe.alert = true
+	foe.regional_cooldown = 0.0
+	await frames(1)
+	check(label + "_region_move_selected", foe.regional_skill == skill)
+	check(label + "_ground_warning_shown", foe.regional_attack_pending and main.world.bossfx.tele.size() == 1,
+		{"skill": foe.regional_skill, "telegraphs": main.world.bossfx.tele.size()})
+	if interrupt:
+		foe.apply_status("stun", 1.0)
+		await frames(55)
+		check(label + "_stun_interrupts_special", not foe.regional_attack_pending and not hero_now.statuses.has(status), hero_now.statuses)
+	else:
+		await frames(55)
+		check(label + "_special_applies_element", hero_now.statuses.has(status), hero_now.statuses)
+	clear_foes()
+	await frames(2)
+
+
 func run(m: Node) -> void:
 	main = m
 	await get_tree().process_frame
@@ -183,6 +213,18 @@ func run(m: Node) -> void:
 	await frames(45)
 	check("second_archer_fires_after_the_first_volley", main.world.bossfx.shots.size() >= 2, main.world.bossfx.shots.size())
 	clear_foes()
+
+	# ---- the later regions teach distinct, telegraphed elemental attacks
+	await regional_attack_test("shadowfen", "mosquito", "bog_spit", "poison", "shadowfen_mosquito")
+	await regional_attack_test("emberforge", "cinderhound", "flame_charge", "burn", "emberforge_hound")
+	await regional_attack_test("frostvale", "frostwolf", "rime_pounce", "freeze", "frostvale_wolf")
+	await regional_attack_test("damavand", "serpentguard", "venom_lash", "poison", "damavand_serpent", true)
+	main.goto_map("trial", Vector2(450, 520))
+	await frames(4)
+	var out_of_region: Node = main.world.spawn_enemy("mosquito", Vector2(600, 520))
+	check("regional_signature_stays_in_its_own_biome", out_of_region.regional_skill == "")
+	clear_foes()
+	await frames(2)
 
 	# ---- foes see a sneaking hero only from close by
 	p.global_position = Vector2(450, 520)
