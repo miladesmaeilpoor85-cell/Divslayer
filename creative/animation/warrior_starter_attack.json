@@ -1,7 +1,8 @@
 {
   "name": "warrior_starter_attack",
-  "source": "creative/animation/warrior_starter_attack_source.webp",
-  "source_note": "AI-assisted 800x600 transparent source sheet, cropped and packed by the deterministic animation builder; visually review before commercial release.",
+  "source": "assets/art/Heroes/warrior_starter_attack.png",
+  "source_is_atlas": true,
+  "source_note": "Editable transparent directional sprite atlas. Open and adjust its frames in Pixelorama or Krita.",
   "commercial_rights_status": "UNVERIFIED",
   "cell_width": 160,
   "cell_height": 156,
@@ -13,88 +14,8 @@
   "frames_per_direction": 4,
   "fps": 25,
   "loop": false,
-  "max_sprite_width": 144,
-  "max_sprite_height": 132,
-  "bottom_padding": 3,
   "review_scale": 3,
-  "palette_colors": 256,
-  "edge_cleanup_radius": 2,
-  "edge_cleanup_alpha_threshold": 200,
-  "regions": [
-    [
-      15,
-      24,
-      167,
-      167
-    ],
-    [
-      228,
-      25,
-      368,
-      167
-    ],
-    [
-      413,
-      30,
-      565,
-      168
-    ],
-    [
-      618,
-      23,
-      762,
-      168
-    ],
-    [
-      38,
-      222,
-      186,
-      372
-    ],
-    [
-      239,
-      224,
-      357,
-      374
-    ],
-    [
-      430,
-      226,
-      590,
-      373
-    ],
-    [
-      640,
-      222,
-      788,
-      372
-    ],
-    [
-      18,
-      428,
-      162,
-      575
-    ],
-    [
-      237,
-      425,
-      370,
-      570
-    ],
-    [
-      422,
-      428,
-      603,
-      573
-    ],
-    [
-      624,
-      427,
-      767,
-      570
-    ]
-  ],
-  "region_order": "four frames per direction, in left-to-right order; rows are down/front, up/back, side/profile",
+  "palette_colors": 128,
   "frame_labels": [
     "ready",
     "windup",
