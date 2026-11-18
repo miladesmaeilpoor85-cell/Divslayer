@@ -1,10 +1,10 @@
 # Release readiness | آمادگی انتشار
 
-**Status checked: 18 November 2026 · Current game version: 0.40.0**
+**Status checked: 18 November 2026 · Current game version: 0.43.0**
 
 This file separates verified engineering status from items that still require the project owner's private files, evidence, device testing, or legal review. A passing CI run is not a release approval.
 
-**وضعیت در ۱۸ نوامبر ۲۰۲۶ · نسخهٔ فعلی بازی: 0.40.0**
+**وضعیت در ۱۸ نوامبر ۲۰۲۶ · نسخهٔ فعلی بازی: 0.43.0**
 
 این سند وضعیت فنیِ تأییدشده را از مواردی که به فایل‌های خصوصی مالک، مدارک، آزمایش روی دستگاه یا بررسی حقوقی نیاز دارند جدا می‌کند. موفقیت CI به‌معنای تأیید انتشار نیست.
 
@@ -12,10 +12,11 @@ This file separates verified engineering status from items that still require th
 
 - Public source repository: `miladesmaeilpoor85-cell/Divslayer`, default branch `main`.
 - Godot project main scene: `res://scenes/main.tscn`.
-- The latest verified `main`-branch Godot CI run for commit `3fab88963aa924bc472ec48394e8f886f63c85ce` completed successfully:
-  [GitHub Actions run 44285465485](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44285465485). The README records **1,145 checks across 30 test suites**. CI success confirms the configured headless checks, not full physical-device or store readiness.
-- The CI workflow downloads Godot 4.7.2 and verifies its SHA-256 before importing the project and running the headless suite.
-- Version 0.40.0 adds the Venom elite to poison-themed regions (Shadowfen, Damavand, and Zahhak's Cave), with regional selection, localization, scaling, aura, contact-poison, and poison-tick tests. The 0.40.0 pull request was merged after its CI check passed.
+- The latest recorded Godot 4.7.2 validation for the 0.43.0 work completed successfully in [GitHub Actions run 44301894793](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44301894793): **1,165 checks across 32 test suites**, plus the autotest, with zero failures. The dedicated Ashkbus Arrowfall suite passed all 7 checks. This is automated/headless evidence, not a complete physical-device or store-release pass.
+- The 0.43.0 Android QA APK was exported and signature-verified in [run 44301894537](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44301894537), artifact ID `14426177656`. Its QA package is `com.example.divslayer.qa`, version `0.43.0-qa`; the APK manifest was verified with min SDK 24 and target SDK 36. It is not a production-signed release.
+- The QA build added Ashkbus of Kushan's exclusive Turanian Arrowfall attack: three separated warning zones, falling arrows, dodgeable gaps, one-hit-per-volley protection, and cancellation when Ashkbus is staggered during the warning.
+- The CI workflow downloads Godot 4.7.2 and verifies its SHA-256 before importing the project and running the headless suite. The asset pipeline in [ASSET_PIPELINE.md](ASSET_PIPELINE.md) adds dependency-free artwork/audio integrity checks and exact coverage validation against the artwork rights register.
+- The production Android export preset, production package identity, and production signing configuration remain private and must be verified separately. QA manifest values must not be treated as proof of production release readiness.
 - The `main` branch history was rewritten on 18 November 2026. Anyone holding an older clone must create a fresh clone; do not merge or push old history back into `main`.
 
 ## Android release blockers | موارد لازم برای خروجی اندروید
@@ -23,9 +24,9 @@ This file separates verified engineering status from items that still require th
 - **Private export preset:** `export_presets.cfg` is present in `.gitignore` and is not tracked in the public tree. The public `project.godot` does not declare the production Android application ID/package identifier. Confirm the established package ID, version code, target/minimum SDK, architecture, permissions, and asset exclusions from the owner's private export settings. Do not invent a new package ID for an app that may already have been distributed.
 - **Signing key:** The legacy test keystore/private key/certificate in an older private project archive are exposed and retired. The owner confirmed on 18 November 2026 that no APK signed with them was distributed to external testers or users, so no external install base requires that test key for updates. Never use or upload that material. Before the first external release, generate a **new production signing key locally**, keep two secure offline backups, and keep its password out of GitHub and chat.
 - **Credential/cache follow-up:** A sample signing password appeared in an older public developer note. The current branches no longer contain that note's password, but GitHub's cached view from an old commit was previously observed and cache removal remains unconfirmed. The legacy test key is retired; never reuse its password for any production key or other service. A history rewrite does not invalidate old clones or caches.
-- **QA build versus release:** A separate QA-only APK for `0.40.0-qa` was successfully built and signature-verified in [Android QA run 44284989984](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44284989984). It uses the separate package ID `com.example.divslayer.qa` and a temporary debug key; it is not a production build, signed with the owner's release key, or suitable for Google Play. No production AAB/release artifact is recorded.
+- **QA build versus release:** The latest recorded QA-only APK is `0.43.0-qa`, built and signature-verified in [Android QA run 44301894537](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44301894537). It uses the isolated package ID `com.example.divslayer.qa` and a temporary debug key; it is not a production build, signed with the owner's release key, or suitable for Google Play. No production AAB/release artifact is recorded.
   Follow the [Android device QA plan](ANDROID_DEVICE_QA.md) for boss-phase/pool regression, touch interaction, lifecycle, performance, and test-report steps.
-- **Google Play target API:** As of 31 August 2026, new apps and app updates submitted to Google Play must target Android 16 / API level 36 or higher. The current QA workflow installs Android Platform 35 and Build Tools 35.0.1; verify and explicitly configure the *production target SDK* to API 36+ before Play submission. Do not infer target SDK compliance from a successful QA APK build. See [Google Play's official target API policy](https://support.google.com/googleplay/android-developer/answer/11926878?hl=en-en).
+- **Google Play target API:** As of 31 August 2026, new apps and app updates submitted to Google Play must target Android 16 / API level 36 or higher. The 0.43.0 QA APK manifest was verified at target SDK 36, but its export preset is QA-only. The *production* target SDK remains unverified until the owner's private production export configuration is reviewed. See [Google Play's official target API policy](https://support.google.com/googleplay/android-developer/answer/11926878?hl=en-en).
 - **Play signing:** Decide whether to use Play App Signing and distinguish the private upload key from the app-signing key. If the game has already been distributed, preserve the established application ID and valid update-signing continuity. See [Google Play App Signing](https://support.google.com/googleplay/android-developer/answer/9842756).
 
 ## Asset rights audit | ممیزی حقوق دارایی‌ها
@@ -37,7 +38,7 @@ This file separates verified engineering status from items that still require th
 
 ## Technical/security audit | ممیزی فنی و امنیتی
 
-See [TECHNICAL_SECURITY_AUDIT_0.40.0.md](TECHNICAL_SECURITY_AUDIT_0.40.0.md) for the detailed read-only review of the current `main` tree, CI workflows, QA build, source changes, and unresolved risks.
+See [TECHNICAL_SECURITY_AUDIT_0.40.0.md](TECHNICAL_SECURITY_AUDIT_0.40.0.md) for a historical read-only review of the 0.40.0 tree; it is not a fresh audit of the current 0.43.0 code.
 
 ## Legal and community status | وضعیت حقوقی و مشارکت
 

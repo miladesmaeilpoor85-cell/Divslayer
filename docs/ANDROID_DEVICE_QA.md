@@ -223,6 +223,6 @@ As with previous QA APKs, this build uses a fresh temporary debug signing key ge
 - **APK SHA-256:** `02bb4d610b17513523cee22bd368b6e76cafa282125a9644e225fc31c520dbca`.
 - **Signature verification:** APK Signature Scheme v2 and v3 verified successfully; v1, v3.1 and v4 were not enabled in this export.
 - **SDK levels:** minimum SDK 24; target SDK 36.
-- **Physical-device status:** APK export and signature verification are complete. User-reported device installation and gameplay verification are pending; do not treat CI success as a physical-device test.
+- **Physical-device status:** The user subsequently reported that the 0.43.0 QA build worked well. This is a general user-reported smoke-test confirmation; the exact Arrowfall attack scenarios, device model/software details, test duration, FPS/frame-time measurements, thermal behavior, save persistence, and lifecycle checks were not specified and remain unverified.
 
 This QA APK uses a fresh temporary debug signing key generated for this workflow run. Uninstall the previous `Divslayer QA` app before installing this new artifact; uninstalling removes its local QA save data. The production app uses a different package ID and is not affected.

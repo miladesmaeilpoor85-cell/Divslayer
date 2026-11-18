@@ -18,6 +18,8 @@ On 18 November 2026, the `main` branch history was rewritten to remove an old sa
 
 See [release readiness](docs/RELEASE_READINESS.md) for the current blockers before Android or commercial release.
 
+See the [asset pipeline](docs/ASSET_PIPELINE.md) for the automated image/audio integrity checks and artwork rights-register workflow.
+
 ## Goals / اهداف
 - Share project progress and receive feedback from the community.
 - Keep official publishing, distribution, branding, and release decisions under the project owner's control.
