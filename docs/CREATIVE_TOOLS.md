@@ -48,7 +48,7 @@ The first source project is kept in creative/lmms/. The Blender scene and Krita 
 
 ## In-game Flame Seal item icon review
 
-The first-pass Flame Seal asset is now represented by the 72 × 78 `assets/art/Items/relic.png` pickup icon. It is a reduced, palette-limited derivative of the Blender render with the editable Krita OpenRaster source retained under `creative/krita/` and the Blender scene retained under `creative/blender/`. The existing `relic` pickup identifier and import settings are unchanged, so map references continue to resolve.
+The first-pass Flame Seal asset is now represented by the 72 × 78 `assets/art/Items/relic.png` pickup icon. It is a reduced, palette-limited derivative of the Blender render. The editable Krita OpenRaster source and Blender `.blend` scene are generated and retained in the CI review artifact; their reproducible source scripts and automation are tracked in the repository. The existing `relic` pickup identifier and import settings are unchanged, so map references continue to resolve.
 
 The original 512 × 512 Blender/Krita render is retained in the review artifact, not shipped in the Android build. The small icon is designed for the existing 26-pixel pickup display scale. Device readability still requires a human visual check.
 
