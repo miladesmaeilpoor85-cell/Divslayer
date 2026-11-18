@@ -61,7 +61,7 @@ func run(m: Node) -> void:
 	await frames(5)
 	clear_foes()
 	await frames(1)
-	var p: Node = main.player
+	var p = main.player
 	p.global_position = Vector2(450, 520)
 	p.dead = false
 	p.invuln = 0.0
@@ -71,7 +71,7 @@ func run(m: Node) -> void:
 	p.statuses.clear()
 	Game.hp = Game.max_hp()
 
-	var foe: Node = main.world.spawn_enemy("skeleton", Vector2(560, 520))
+	var foe = main.world.spawn_enemy("skeleton", Vector2(560, 520))
 	foe.spd = 0.0
 	foe.calm = 99.0
 	var base_hp: float = foe.max_hp
