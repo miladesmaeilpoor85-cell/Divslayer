@@ -23,6 +23,9 @@ var home := Vector2.ZERO
 var dead := false
 var hit_cd := 0.0
 var flash := 0.0
+var hit_pulse_t := 0.0
+var hit_pulse_life := 0.0
+var hit_pulse_strength := 0.0
 var knock := Vector2.ZERO
 var wander := Vector2.ZERO
 var wander_t := 0.0
@@ -641,11 +644,34 @@ func make_elite(el: String, power := 1.0) -> void:
 	_aura.z_index = -1
 	_aura.draw.connect(func():
 		var col := Color(str(d["glow"]))
-		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 260.0)
+		var seconds := Time.get_ticks_msec() / 1000.0
+		var pulse := 0.5 + 0.5 * sin(seconds * 3.85)
 		var r := maxf(box.x, 18.0) * 0.8 + pulse * 3.0
-		_aura.draw_circle(Vector2(0, -box.y * 0.45), r, Color(col, 0.16 + 0.1 * pulse))
-		_aura.draw_arc(Vector2(0, -box.y * 0.45), r, 0.0, TAU, 28, Color(col, 0.75), 2.0))
+		var mid := Vector2(0, -box.y * 0.45)
+		_aura.draw_circle(mid, r, Color(col, 0.16 + 0.1 * pulse))
+		_aura.draw_arc(mid, r, 0.0, TAU, 36, Color(col, 0.72 + 0.18 * pulse), 2.0, true)
+		# Three orbiting elemental runes make elite types readable at a glance.
+		# The lightweight graphics preset keeps the soft ring but skips these extra marks.
+		if int(Game.settings.get("fx", 1)) > 0:
+			var orbit := _elite_orbit_points(seconds, r * 1.34)
+			for i in orbit.size():
+				var q: Vector2 = orbit[i]
+				var rune := PackedVector2Array([
+					q + Vector2(0, -3.2), q + Vector2(2.4, 0),
+					q + Vector2(0, 3.2), q + Vector2(-2.4, 0)])
+				_aura.draw_colored_polygon(rune, Color(col, 0.58 + 0.24 * pulse))
+				_aura.draw_circle(q, 1.0 + pulse * 0.6, Color(1.0, 0.97, 0.82, 0.85)))
 	add_child(_aura)
+
+## Return three orbit positions around the elite's upper body for the elemental rune animation.
+func _elite_orbit_points(seconds: float, radius: float) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	var spin := -1.0 if elite == "ice" or elite == "venom" else 1.0
+	var mid := Vector2(0, -box.y * 0.45)
+	for i in 3:
+		var angle := seconds * 1.15 * spin + float(i) * TAU / 3.0
+		points.append(mid + Vector2(cos(angle) * radius, sin(angle) * radius * 0.62))
+	return points
 
 ## breathing, a squash when hit, a lean when knocked back (VIS enemy animation); the bar's trail fades
 func _process(dt: float) -> void:
@@ -664,6 +690,12 @@ func _process(dt: float) -> void:
 	if flash > 0.0:
 		sx *= 1.07
 		sy *= 0.93
+	hit_pulse_t = maxf(0.0, hit_pulse_t - dt)
+	if hit_pulse_t > 0.0 and hit_pulse_life > 0.0:
+		var progress := 1.0 - hit_pulse_t / hit_pulse_life
+		var pop := sin(progress * PI) * hit_pulse_strength
+		sx *= 1.0 + pop
+		sy *= 1.0 - pop * 0.78
 	anim.scale = Vector2(sx, sy) * Sheets.SCALE
 	anim.rotation = clamp(-knock.x / Game.PXS * 0.035, -0.16, 0.16) if knock.length() > 1.0 else 0.0
 
@@ -683,6 +715,9 @@ func hurt(amount: float, crit: bool, from_dir: Vector2, heavy := false) -> void:
 		world.truce_broken()
 	hp -= amount
 	flash = 0.11
+	hit_pulse_life = 0.18 if heavy else (0.15 if crit else 0.11)
+	hit_pulse_t = hit_pulse_life
+	hit_pulse_strength = 0.13 if heavy else (0.09 if crit else 0.045)
 	knock = from_dir * 260.0 * knock_mult
 	bar_bg.visible = own_bar
 	bar_bg.queue_redraw()

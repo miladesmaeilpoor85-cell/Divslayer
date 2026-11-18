@@ -213,6 +213,16 @@ func run(m: Node) -> void:
 		check("heavy_swing_uses_enhanced_trail",
 			bool(heavy_arc["heavy"]) and float(heavy_arc["dur"]) > 0.22 and float(heavy_arc["r"]) > 48.0,
 			heavy_arc)
+		e2.make_elite("fire")
+		var orbit_a: PackedVector2Array = e2._elite_orbit_points(0.0, 24.0)
+		var orbit_b: PackedVector2Array = e2._elite_orbit_points(0.5, 24.0)
+		check("elite_aura_has_three_orbiting_runes",
+			e2._aura != null and orbit_a.size() == 3 and orbit_b.size() == 3
+			and orbit_a[0].distance_to(orbit_b[0]) > 2.0)
+		e2.hurt(1.0, false, Vector2.RIGHT, true)
+		check("heavy_enemy_hit_has_stronger_reaction",
+			e2.hit_pulse_t > 0.0 and e2.hit_pulse_strength >= 0.12,
+			[e2.hit_pulse_t, e2.hit_pulse_strength])
 
 	# ---- day turns to night by itself
 	Game.state["day_t"] = 0.4999
