@@ -1,5 +1,12 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## 0.42.0 — The Anvil Warden's forge furrows (شیارهای آهنگریِ پولادِ غندی)
+- Pulad of Ghandi / the Anvil Warden now marks three parallel forge lanes across the hero's last position before they ignite.
+- The lanes have deliberate side gaps; moving or rolling sideways before impact avoids the strike.
+- The three lanes share a single hit token, so the attack can damage and burn the hero at most once per volley.
+- The new move is exclusive to the Anvil Warden and reuses the existing lane telegraph and boss-hit systems.
+- Added automated regression coverage for the warning, safe gap, single-hit/burn behavior and miniboss isolation.
+
 ## 0.41.0 — Venom's ranged hunt (شکار دوربرد زهرآگین)
 - Venom elites now alternate a slow, dodgeable poison spit with a marked ground trap.
 - The trap displays a growing danger circle for 0.9 seconds; leaving the marked area avoids its burst, while the resulting poison pool remains dangerous for 2.8 seconds.
