@@ -23,7 +23,11 @@ SS = 2   # supersampling: frames are built at twice the cell size, then scaled d
 
 
 def load_rgba(path: str) -> Image.Image:
-    im = Image.open(path).convert("RGBA")
+    source = Image.open(path)
+    # RGB images cannot carry transparency. A checkerboard painted into the pixels is not an alpha channel.
+    if "A" not in source.getbands() and "transparency" not in source.info:
+        raise SystemExit("the image has no alpha channel; a checkerboard background is not transparency")
+    im = source.convert("RGBA")
     a = np.array(im.getchannel("A")).astype(np.float32)
     if a.max() < 10:
         raise SystemExit("the image has no transparency: ask for a transparent background")
