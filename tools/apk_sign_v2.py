@@ -79,8 +79,13 @@ def load_or_create_key(key_dir: str):
         except TypeError:
             # Upgrade an older unencrypted PEM in place without changing the key.
             key = serialization.load_pem_private_key(raw_key, password=None)
-            upgraded_password = _password(confirm=True)
-            _write_private_key(kp, key, upgraded_password)
+            if os.environ.get(PASSWORD_ENV) is None:
+                again = getpass.getpass("Confirm new signing key passphrase: ")
+                if supplied.decode("utf-8") != again:
+                    raise ValueError("Passphrases do not match")
+            if len(supplied) < 12:
+                raise ValueError("Use a passphrase of at least 12 characters")
+            _write_private_key(kp, key, supplied)
             print(
                 "Warning: the existing unencrypted private key was re-saved "
                 "with passphrase protection.",
