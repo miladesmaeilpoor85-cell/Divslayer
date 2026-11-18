@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import sys
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -28,8 +29,7 @@ def load_config(config_path: Path) -> tuple[dict[str, Any], Path]:
     config = json.loads(config_path.read_text(encoding="utf-8"))
     required = {
         "source", "cell_width", "cell_height", "directions",
-        "frames_per_direction", "fps", "regions", "max_sprite_width",
-        "max_sprite_height", "bottom_padding",
+        "frames_per_direction", "fps",
     }
     missing = sorted(required - config.keys())
     if missing:
@@ -39,8 +39,16 @@ def load_config(config_path: Path) -> tuple[dict[str, Any], Path]:
     if not source.is_file():
         raise FileNotFoundError(f"Animation source image not found: {source}")
     expected = len(config["directions"]) * int(config["frames_per_direction"])
-    if len(config["regions"]) != expected:
-        raise ValueError(f"Expected {expected} frame regions, found {len(config['regions'])}")
+    if config.get("source_is_atlas", False):
+        if expected < 1:
+            raise ValueError("An atlas needs at least one frame")
+    else:
+        extra_required = {"regions", "max_sprite_width", "max_sprite_height", "bottom_padding"}
+        missing = sorted(extra_required - config.keys())
+        if missing:
+            raise ValueError(f"Animation config missing keys: {', '.join(missing)}")
+        if len(config["regions"]) != expected:
+            raise ValueError(f"Expected {expected} frame regions, found {len(config['regions'])}")
     return config, source
 
 
@@ -55,10 +63,42 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
     if cell_w <= 0 or cell_h <= 0 or fps <= 0:
         raise ValueError("Cell dimensions and FPS must be positive")
 
-    with Image.open(source_path) as opened:
-        source = opened.convert("RGBA")
+    if config.get("source_is_atlas", False):
+        atlas_path = output_dir / (str(config.get("name", config_path.stem)) + ".png")
+        with Image.open(source_path) as opened:
+            if opened.size != (cell_w * frames_per_direction, cell_h * len(directions)):
+                raise ValueError(
+                    "Prepacked atlas dimensions do not match the declared cell/direction layout"
+                )
+            atlas = opened.convert("RGBA")
+        shutil.copyfile(source_path, atlas_path)
 
-    atlas = Image.new(
+        preview_frames: dict[str, list[Image.Image]] = {direction: [] for direction in directions}
+        frame_records: list[dict[str, Any]] = []
+        for row, direction in enumerate(directions):
+            for column in range(frames_per_direction):
+                cell = atlas.crop((
+                    column * cell_w, row * cell_h,
+                    (column + 1) * cell_w, (row + 1) * cell_h,
+                ))
+                if cell.getchannel("A").getbbox() is None:
+                    raise ValueError(f"Empty frame cell: {direction}/{column}")
+                preview_frames[direction].append(cell)
+                frame_records.append({
+                    "direction": direction,
+                    "frame": column,
+                    "label": config.get("frame_labels", [])[column]
+                    if column < len(config.get("frame_labels", []))
+                    else f"frame_{column}",
+                    "source_region": None,
+                    "packed_size": [cell_w, cell_h],
+                })
+        palette_colors = int(config.get("palette_colors", 0))
+    else:
+        with Image.open(source_path) as opened:
+            source = opened.convert("RGBA")
+
+        atlas = Image.new(
         "RGBA", (cell_w * frames_per_direction, cell_h * len(directions)), (0, 0, 0, 0)
     )
     preview_frames: dict[str, list[Image.Image]] = {direction: [] for direction in directions}
