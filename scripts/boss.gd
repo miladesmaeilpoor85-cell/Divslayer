@@ -8,7 +8,8 @@ extends "res://scripts/enemy.gd"
 ##   Colossus  — magma armour (half damage) until an eruption vents his core; fist + fissures, stomp, boulders
 ##   Sorceress — dives under the mud and bursts out beneath you, eggs that hatch, tongue pull, poison pool, spit
 ##   White Div   — ice-lance lines, leap, bolt storm, ice echoes (break both fast = big stagger), hail
-## Other minibosses (Bid the Div, Anvil Warden, Ashkbus) and Puladvand keep a generic telegraphed kit.
+## Anvil Warden — three parallel forge furrows with dodgeable gaps, alongside its slam and charge.
+## Other minibosses (Bid the Div, Ashkbus) and Puladvand keep a generic telegraphed kit.
 ## (v0.19, chapter 2 — mine):
 ##   Akvan the Div — ground slam, a frost wave you must roll through, icicles from above, a charge you bait into the
 ##                   spires; at half health it calls icelings from the snow and hurls ice boulders
@@ -1347,6 +1348,25 @@ func _ai_generic(dt: float, d: float, to: Vector2) -> void:
 			busy = 0.8 + 0.4
 			bfx.circle(c + Vector2(0, box.y * 0.3), r, 0.8, rgb, _fire_slam, self)
 			return
+		# The Anvil Warden heats three parallel tracks across the hero's last position.
+		# Their 104 px spacing leaves a readable side-step/roll gap; the shared volley caps damage at one hit.
+		if type == "anvilward" and d > 130.0 and d < 360.0 and _ready_move("furrows"):
+			var axis: Vector2 = to / maxf(d, 1.0)
+			var side: Vector2 = axis.orthogonal()
+			var target: Vector2 = bfx.pc()
+			var vol: Dictionary = bfx.vol()
+			_use("furrows", 8.8)
+			busy = 1.15
+			for offset in [-104.0, 0.0, 104.0]:
+				var shift: Vector2 = side * float(offset)
+				var lane_a: Vector2 = target - axis * 210.0 + shift
+				var lane_b: Vector2 = target + axis * 210.0 + shift
+				bfx.lane(lane_a, lane_b, 48.0, 0.9, Color8(255, 145, 54), _fire_anvil_furrow.bind(vol), self)
+			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("FORGE FURROWS!", "شیارهای آهنگری!"), Color(1.0, 0.62, 0.28), true)
+			world.tip("anvil_furrows", "Three forge lanes are marked. Roll sideways into a gap before they ignite.",
+				"سه مسیرِ آتشین مشخص شده‌اند. پیش از شعله‌ور شدن، به شکاف میانشان جاخالی بده.")
+			Sfx.play("trap", -4.0)
+			return
 		if d > 120.0 and d < 380.0 and _ready_move("charge"):
 			var a := to.angle()
 			var span: float = min(420.0, d + 100.0)
@@ -1360,6 +1380,15 @@ func _ai_generic(dt: float, d: float, to: Vector2) -> void:
 			bfx.circle(c, 46.0, 0.55, rgb, _fire_volley, self)
 			return
 	_chase(to, d, 1.0, big * 0.6)
+
+## Each of the Warden's three tracks shares one volley token: at most one lane can damage the hero.
+func _fire_anvil_furrow(t: Dictionary, vol: Dictionary) -> void:
+	if dead or staggered > 0.0 or world == null or bfx == null:
+		return
+	world.burst(t["b"], Color8(255, 132, 42), 8, 105.0)
+	if bfx.in_lane(t):
+		bfx.hit_v(vol, self, 0.88, ["burn", 1.8, 1.0])
+
 
 func _fire_slam(t: Dictionary) -> void:
 	Sfx.play("trap")
