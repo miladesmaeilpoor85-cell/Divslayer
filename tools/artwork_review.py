@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Fully decode game images and create visual review contact sheets with Pillow."""
 from __future__ import annotations
 
