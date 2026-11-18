@@ -83,7 +83,7 @@ func run(m: Node) -> void:
 	check("venom_elite_health_scaling", is_equal_approx(foe.max_hp, base_hp * 2.4), [base_hp, foe.max_hp])
 	check("venom_elite_damage_scaling", is_equal_approx(foe.dmg, base_dmg * 1.3), [base_dmg, foe.dmg])
 	check("venom_elite_reward_scaling", foe.xp == int(base_xp * 3) and foe.gold == int(base_gold * 3), [base_xp, foe.xp, base_gold, foe.gold])
-	check("venom_elite_has_green_aura", foe._aura != null and foe.is_instance_valid(foe._aura) if false else foe._aura != null)
+	check("venom_elite_has_green_aura", foe._aura != null and is_instance_valid(foe._aura))
 
 	# ---- contact applies poison only after the attack actually damages the hero
 	var hp_before_contact: float = Game.hp
