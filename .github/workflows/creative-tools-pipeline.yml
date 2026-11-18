@@ -6,6 +6,8 @@ on:
     paths:
       - ".github/workflows/creative-tools-pipeline.yml"
       - "tools/creative/**"
+      - "tools/animation_pipeline.py"
+      - "tools/test_animation_pipeline.py"
       - "creative/**"
       - "assets/art/**"
       - "assets/audio/**"
@@ -70,6 +72,22 @@ jobs:
               ffmpeg
           fi
           command -v ffmpeg
+
+
+      - name: Install and smoke-test Pixelorama 1.2.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/Orama-Interactive/Pixelorama/releases/download/v1.2.4/Pixelorama-Linux-64bit.tar.gz"
+          expected="692473e44fe90ea02de49048343d6b3cb86749b7beb166286dbc3a308c568e0b"
+          curl --fail --location --silent --show-error "$url" --output "$RUNNER_TEMP/pixelorama.tar.gz"
+          echo "$expected  $RUNNER_TEMP/pixelorama.tar.gz" | sha256sum --check -
+          mkdir -p "$RUNNER_TEMP/pixelorama"
+          tar -xzf "$RUNNER_TEMP/pixelorama.tar.gz" -C "$RUNNER_TEMP/pixelorama"
+          binary="$(find "$RUNNER_TEMP/pixelorama" -type f -name 'Pixelorama.x86_64' -print -quit)"
+          test -n "$binary"
+          chmod +x "$binary"
+          timeout 25s "$binary" --headless --quit-after 3
 
       - name: Install image inspection dependency
         uses: actions/setup-python@v5
