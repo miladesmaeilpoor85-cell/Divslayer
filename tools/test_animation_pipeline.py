@@ -10,7 +10,7 @@ from PIL import Image
 from animation_pipeline import build_animation
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT.parent / "creative/animation/warrior_starter_attack.json"
+CONFIG = ROOT / "creative/animation/warrior_starter_attack.json"
 
 
 class AnimationPipelineTests(unittest.TestCase):
