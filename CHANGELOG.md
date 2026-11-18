@@ -1,5 +1,10 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## 0.36.0 — Controls for every hand (کنترل برای هر دست)
+- Added an optional left-handed touch layout. The action buttons mirror to the left side and the movement joystick responds on the right half of the screen; the original right-handed layout remains the default.
+- The setting is available both before starting a game and from the in-game pause menu, is saved separately from the character save, and updates the control hints.
+- Automated touch tests cover both movement zones and a mirrored action button.
+
 ## 0.35.0 — Painted ground (زمینِ نقاشی‌شده): Zabol, the forest, the camp
 The maps were one baked, blurry picture each (2 px a map unit; a phone shows about 3) and cartoon vector props, with
 European timber houses in Zabol. The green region is repainted; the other regions follow the same way.
