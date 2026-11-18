@@ -60,6 +60,9 @@ var teleport_cooldown := 0.0
 var teleport_windup := 0.0
 var teleport_target := Vector2.ZERO
 var teleport_target_valid := false
+var squad_alert_t := 0.0
+var squad_pressure_t := 0.0
+var squad_side := 1.0
 const LEAP_WINDUP := 0.42
 const LEAP_DURATION := 0.34
 
@@ -132,6 +135,16 @@ func _after_setup() -> void:
 func targetable() -> bool:
 	return not dead
 
+
+## Called when a nearby ally spots the hero. The short shared alert lets a pack react
+## to a stealthy approach without granting the whole map permanent aggro.
+func hear_alarm(_where: Vector2) -> void:
+	if dead or parley:
+		return
+	alert = true
+	squad_alert_t = maxf(squad_alert_t, 2.4)
+
+
 func center() -> Vector2:
 	return global_position - Vector2(0, box.y * 0.5)
 
@@ -192,6 +205,8 @@ func _physics_process(dt: float) -> void:
 	calm = max(0.0, calm - dt)
 	leap_cooldown = maxf(0.0, leap_cooldown - dt)
 	teleport_cooldown = maxf(0.0, teleport_cooldown - dt)
+	squad_alert_t = maxf(0.0, squad_alert_t - dt)
+	squad_pressure_t = maxf(0.0, squad_pressure_t - dt)
 	_flash(dt)
 	_hover(dt)
 	if _estatus(dt):
@@ -223,7 +238,8 @@ func _physics_process(dt: float) -> void:
 		var sm: float = p.stealth_mul() if p.has_method("stealth_mul") else 1.0
 		var see: float = aggro * sm
 		var chase_r: float = aggro if sm >= 1.0 else see * 1.8
-		var chasing: bool = rally or (calm <= 0.0 and d < (chase_r if alert else see))
+		var heard_call := squad_alert_t > 0.0 and d < aggro * 1.65
+		var chasing: bool = rally or heard_call or (calm <= 0.0 and d < (chase_r if alert else see))
 		if chasing and not alert:
 			alert = true
 			_voice(false)
@@ -272,7 +288,14 @@ func _physics_process(dt: float) -> void:
 		elif chasing and not shoots.is_empty():
 			v = _shooter(dt, to, d, p)
 		elif chasing and d > 4.0:
-			v = to / d * spd
+			var toward_hero: Vector2 = to / d
+			if squad_pressure_t > 0.0 and d > 58.0 and d < 205.0:
+				# During an ally's volley, close in on a diagonal rather than stacking
+				# directly behind the front line.
+				var flank: Vector2 = toward_hero.orthogonal() * squad_side
+				v = (toward_hero * 0.9 + flank * 0.55).normalized() * spd * 1.12
+			else:
+				v = toward_hero * spd
 		elif not chasing:
 			v = _wander(dt)
 		# contact damage (+ the enemy's status: poison, freeze, burn …)
@@ -520,6 +543,10 @@ func _shooter(dt: float, to: Vector2, d: float, p: Node) -> Vector2:
 		v = Vector2(-to.y, to.x).normalized() * spd * 0.35 * sin(Time.get_ticks_msec() / 900.0 + _wob)
 	shoot_t -= dt
 	if shoot_t <= 0.0 and d < rng and world.bossfx:
+		if world.has_method("request_enemy_volley") and not world.request_enemy_volley(self):
+			# Keep checking shortly; a nearby archer has the next clear firing window.
+			shoot_t = 0.14
+			return v
 		shoot_t = float(shoots.get("every", 2.6)) * randf_range(0.85, 1.2)
 		var n := int(shoots.get("n", 1))
 		var c := center()
