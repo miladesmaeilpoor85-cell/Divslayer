@@ -21,17 +21,25 @@ func clear_enemies() -> void:
 			e.remove_from_group("enemies")
 			e.queue_free()
 
+func _watchdog() -> void:
+	printerr("ASHKBUSTEST_WATCHDOG: test exceeded 40 seconds")
+	get_tree().quit(1)
+
 func run(m: Node) -> void:
+	get_tree().create_timer(40.0).timeout.connect(_watchdog)
+	print("ASHKBUSTEST_STEP start")
 	main = m
 	await get_tree().process_frame
 	Game.testing = true
 	Game.new_game("warrior")
 	main.start_world()
 	await frames(5)
+	print("ASHKBUSTEST_STEP world_started")
 	main.goto_map("trial", Vector2(420, 500))
 	await frames(5)
 	clear_enemies()
 	await frames(2)
+	print("ASHKBUSTEST_STEP trial_ready")
 
 	var p: Node = main.player
 	p.global_position = Vector2(420, 500)
@@ -66,6 +74,7 @@ func run(m: Node) -> void:
 			marks_ok = marks_ok and is_equal_approx(float(mark.get("total", 0.0)), 0.85)
 		marks_ok = marks_ok and is_equal_approx(marks[0]["pos"].distance_to(marks[1]["pos"]), 112.0)
 		marks_ok = marks_ok and is_equal_approx(marks[1]["pos"].distance_to(marks[2]["pos"]), 112.0)
+	print("ASHKBUSTEST_STEP marks_collected " + str(marks.size()))
 	check("ashkbus_marks_three_spaced_arrowfall_targets", marks_ok, {"marks": marks.size(), "moves": boss.moves})
 
 	# The space between neighboring impact circles is wide enough to stand in safely.
@@ -88,6 +97,7 @@ func run(m: Node) -> void:
 	for mark in marks:
 		var fire: Callable = mark["fire"]
 		fire.call(mark)
+	print("ASHKBUSTEST_STEP cancellation_checked")
 	var new_lobs: Array = bfx.lobs.slice(lobs_before_cancel)
 	var arrows_ok: bool = new_lobs.size() == 3
 	if new_lobs.size() == 3:
@@ -96,6 +106,7 @@ func run(m: Node) -> void:
 			arrows_ok = arrows_ok and is_equal_approx(float(lob.get("total", 0.0)), 0.38)
 		arrows_ok = arrows_ok and is_same(new_lobs[0]["vol"], new_lobs[1]["vol"])
 		arrows_ok = arrows_ok and is_same(new_lobs[1]["vol"], new_lobs[2]["vol"])
+	print("ASHKBUSTEST_STEP lobs_collected " + str(new_lobs.size()))
 	check("ashkbus_spawns_three_arrow_lobs_with_shared_hit_token", arrows_ok, {"lobs": new_lobs.size()})
 
 	# The player can stay in the lane between the warnings while the arrows land.
@@ -103,6 +114,7 @@ func run(m: Node) -> void:
 		lob["t"] = 0.01
 	var hp_before_gap: float = Game.hp
 	bfx._physics_process(0.02)
+	print("ASHKBUSTEST_STEP gap_resolved")
 	check("ashkbus_arrowfall_gap_avoids_all_damage", is_equal_approx(Game.hp, hp_before_gap), {"before": hp_before_gap, "after": Game.hp})
 
 	# If multiple arrow impacts overlap the hero, the volley token still permits one hit only.
@@ -130,6 +142,7 @@ func run(m: Node) -> void:
 	var hp_before_hit: float = Game.hp
 	var hits_before: int = int(bfx.counts["hits"])
 	bfx._physics_process(0.02)
+	print("ASHKBUSTEST_STEP damage_volley_resolved")
 	check("ashkbus_arrowfall_shared_volley_deals_at_most_one_hit",
 		Game.hp < hp_before_hit and int(bfx.counts["hits"]) == hits_before + 1,
 		{"hp_lost": hp_before_hit - Game.hp, "hit_count": int(bfx.counts["hits"]) - hits_before})
@@ -145,6 +158,7 @@ func run(m: Node) -> void:
 	var other_direction: Vector2 = p.pc() - other.center()
 	other._ai_generic(1.0 / 60.0, other_direction.length(), other_direction)
 	check("ashkbus_arrowfall_is_exclusive_to_ashkbus", other.moves.get("arrowfall", 0) == 0)
+	print("ASHKBUSTEST_STEP isolation_checked")
 
 	bfx.clear()
 	clear_enemies()
