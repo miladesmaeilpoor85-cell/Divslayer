@@ -25,12 +25,12 @@ disable:
   - class-variable-name
   - unused-argument
   - expression-not-assigned
-- class-definitions-order
-- unnecessary-pass
-- max-returns
-- function-arguments-number
-- max-file-lines
-- max-public-methods
+  - class-definitions-order
+  - unnecessary-pass
+  - max-returns
+  - function-arguments-number
+  - max-file-lines
+  - max-public-methods
 duplicated-load: null
 enum-element-name: '[A-Z][A-Z0-9]*(_[A-Z0-9]+)*'
 enum-name: ([A-Z][a-z0-9]*)+
