@@ -262,11 +262,14 @@ func _physics_process(dt: float) -> void:
 			if pool_owner != null and float(puddle.get("mult", 0.0)) > 0.0:
 				puddle["tick"] = float(puddle.get("tick", 0.0)) - dt
 				if float(puddle["tick"]) <= 0.0:
-					puddle["tick"] = 0.8
+					var pool_landed := false
 					if pool_player != null and not pool_player.dead and pool_player.has_method("pc") and _alive(pool_owner) and puddle["rect"].has_point(pool_player.pc()):
 						cur_src = "regional_poison_pool"
-						hit(pool_owner, float(puddle["mult"]), puddle.get("status", []))
+						pool_landed = hit(pool_owner, float(puddle["mult"]), puddle.get("status", []))
 						cur_src = ""
+					# If the hero is still protected or rolling, retry soon instead of
+					# burning a full poison tick while the hit is ignored by i-frames.
+					puddle["tick"] = 0.8 if pool_landed else 0.12
 		pools = pools.filter(func(x): return float(x["life"]) > 0.0)
 	queue_redraw()
 	air.queue_redraw()
