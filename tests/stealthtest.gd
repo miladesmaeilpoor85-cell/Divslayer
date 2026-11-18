@@ -159,6 +159,31 @@ func run(m: Node) -> void:
 	check("sorcerer_does_not_blink_into_a_wall", not main.world.wall_hit(blink_body))
 	clear_foes()
 
+	# ---- a spotted hero alerts a nearby ally, even when the ally has not seen him yet
+	var scout: Node = main.world.spawn_enemy("rimewraith", p.global_position + Vector2(165, 0))
+	var answering_ally: Node = main.world.spawn_enemy("skeleton", p.global_position + Vector2(0, 120))
+	scout.alert = true
+	main.world.on_notice(scout)
+	check("nearby_ally_hears_the_alarm", answering_ally.alert and answering_ally.squad_alert_t > 0.0)
+
+	# ---- archers take turns, while the front line uses the opening to flank
+	clear_foes()
+	main.world.enemy_volley_ready_at = 0.0
+	var archer_one: Node = main.world.spawn_enemy("rimewraith", p.global_position + Vector2(205, 0))
+	var archer_two: Node = main.world.spawn_enemy("rimewraith", p.global_position + Vector2(-205, 0))
+	var front_one: Node = main.world.spawn_enemy("skeleton", p.global_position + Vector2(0, 120))
+	var front_two: Node = main.world.spawn_enemy("bandit", p.global_position + Vector2(0, -120))
+	for foe in [archer_one, archer_two, front_one, front_two]:
+		foe.alert = true
+	archer_one.shoot_t = 0.001
+	archer_two.shoot_t = 0.001
+	await frames(1)
+	check("nearby_archers_do_not_fire_together", main.world.bossfx.shots.size() == 1, main.world.bossfx.shots.size())
+	check("volley_sends_front_line_to_flank", front_one.squad_pressure_t > 0.0 and front_two.squad_pressure_t > 0.0, [front_one.squad_pressure_t, front_two.squad_pressure_t])
+	await frames(45)
+	check("second_archer_fires_after_the_first_volley", main.world.bossfx.shots.size() >= 2, main.world.bossfx.shots.size())
+	clear_foes()
+
 	# ---- foes see a sneaking hero only from close by
 	p.global_position = Vector2(450, 520)
 	var far = main.world.spawn_enemy("skeleton", Vector2(650, 520))
