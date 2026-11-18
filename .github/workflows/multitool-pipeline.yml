@@ -122,7 +122,7 @@ jobs:
       - name: Build directional animation sheets and GIF previews
         run: |
           python tools/animation_pipeline.py --output artifacts/animation
-          cmp assets/art/Heroes/warrior_starter_attack.png artifacts/animation/warrior_starter_attack.png
+          cmp assets/art/Heroes/warrior_starter.png artifacts/animation/warrior_starter_sheet_review.png
       - name: Upload animation review outputs
         if: always()
         uses: actions/upload-artifact@v4
