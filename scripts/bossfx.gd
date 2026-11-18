@@ -171,10 +171,14 @@ func pool_at(feet: Vector2) -> String:
 func later(en: Node, sec: float, fn: Callable) -> void:
 	laters.append({"t": sec, "en": en, "fn": fn})
 
+## remove every transient effect owned by this boss encounter.
+## Phase changes and boss death must not leave bolts or damaging pools behind.
 func clear() -> void:
 	tele.clear()
 	waves.clear()
 	lobs.clear()
+	shots.clear()
+	pools.clear()
 	laters.clear()
 
 ## a freed object compares equal to null in Godot 4, so test the type, not "== null"
