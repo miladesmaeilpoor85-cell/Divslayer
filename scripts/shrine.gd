@@ -239,7 +239,10 @@ func _piece(src: Dictionary) -> void:
 			if t == "door":
 				n2.draw.connect(func(): Art.door(n2, base, door_k, _door_lit()))
 			else:
-				n2.draw.connect(func(): if not door_open: Art.cracked(n2, base))
+				n2.draw.connect(func():
+					if not door_open:
+						Art.cracked(n2, base)
+				)
 			o["node"] = n2
 		"brazier":
 			var n3 := _tall(feet)

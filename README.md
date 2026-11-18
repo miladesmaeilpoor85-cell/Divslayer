@@ -20,6 +20,8 @@ See [release readiness](docs/RELEASE_READINESS.md) for the current blockers befo
 
 See the [asset pipeline](docs/ASSET_PIPELINE.md) for the automated image/audio integrity checks and artwork rights-register workflow.
 
+See the [multi-tool production pipeline](docs/MULTITOOL_PIPELINE.md) for cloud-based GDScript/Python analysis, FFmpeg audio decoding, full image inspection, and automated map-layout previews.
+
 ## Goals / اهداف
 - Share project progress and receive feedback from the community.
 - Keep official publishing, distribution, branding, and release decisions under the project owner's control.
