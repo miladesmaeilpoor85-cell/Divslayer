@@ -1,8 +1,8 @@
 {
-  "name": "warrior_starter_attack",
-  "source": "assets/art/Heroes/warrior_starter_attack.png",
+  "name": "warrior_starter_sheet_review",
+  "source": "assets/art/Heroes/warrior_starter.png",
   "source_is_atlas": true,
-  "source_note": "Editable transparent directional sprite atlas. Open and adjust its frames in Pixelorama or Krita.",
+  "source_note": "Existing tracked 5-column x 3-direction source sheet. This review pipeline previews the current art; it does not claim to add new in-game animation frames.",
   "commercial_rights_status": "UNVERIFIED",
   "cell_width": 160,
   "cell_height": 156,
@@ -11,15 +11,16 @@
     "up",
     "side"
   ],
-  "frames_per_direction": 4,
-  "fps": 25,
-  "loop": false,
+  "frames_per_direction": 5,
+  "fps": 9,
+  "loop": true,
   "review_scale": 3,
-  "palette_colors": 128,
+  "palette_colors": 0,
   "frame_labels": [
-    "ready",
-    "windup",
-    "slash",
-    "recover"
+    "walk_0",
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "attack"
   ]
 }
