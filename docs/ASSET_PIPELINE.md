@@ -6,7 +6,7 @@ This document describes the repository-side asset checks. It requires no desktop
 
 `tools/asset_audit.py` uses only the Python standard library and:
 
-- inventories PNG, JPEG, and WebP artwork under `assets/art/`;
+- inventories PNG, JPEG, and WebP images across the repository, including the app icons;
 - checks basic file/container headers and extracts image dimensions;
 - confirms that each artwork file has exactly one row in `docs/ASSET_RIGHTS_REGISTER.csv`;
 - rejects duplicate registry paths, paths outside the artwork directory, missing files, and unregistered images;
@@ -35,6 +35,6 @@ No dependency installation is required. The game owner only needs to download an
 
 ## Adding or replacing an asset
 
-Before submitting a new image, add exactly one row to `docs/ASSET_RIGHTS_REGISTER.csv`. Record the actual creator/source, generation or editing tool, date, applicable terms, commercial-use status, and a private evidence reference where available. Do not change a status to verified unless the supporting evidence has actually been checked.
+Before submitting a new image (including app icons), add exactly one row to `docs/ASSET_RIGHTS_REGISTER.csv`. Record the actual creator/source, generation or editing tool, date, applicable terms, commercial-use status, and a private evidence reference where available. Do not change a status to verified unless the supporting evidence has actually been checked.
 
 The audit checks that the register and files match; it does **not** determine authorship, inspect prompts or source files, provide legal advice, or guarantee that an image/audio file is creatively suitable. Audio metadata and legal evidence require separate human review.
