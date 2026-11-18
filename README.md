@@ -50,3 +50,5 @@ See [release readiness](docs/RELEASE_READINESS.md) and the [per-file image right
 Signing keys, certificates, passwords, API tokens, and private data must never be committed. The published source was prepared to exclude signing material and generated build files, but contributors should still review changes carefully. See [SECURITY.md](SECURITY.md).
 
 هرگز کلیدهای امضا، گواهی‌ها، رمزهای عبور، توکن‌های API یا اطلاعات خصوصی را در مخزن قرار ندهید. سورس منتشرشده برای کنارگذاشتن فایل‌های امضا و خروجی‌های تولیدی آماده شده است؛ بااین‌حال همه تغییرات باید با دقت بررسی شوند. فایل [SECURITY.md](SECURITY.md) را ببینید.
+
+See the [animation production pipeline](docs/ANIMATION_PIPELINE.md) for the first multi-frame warrior attack, its source sheet, builder, and QA workflow.
