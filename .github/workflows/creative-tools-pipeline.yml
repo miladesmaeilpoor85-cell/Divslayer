@@ -32,9 +32,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install creative applications
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends \
+          sudo apt-get update --quiet
+          sudo apt-get install --quiet --yes --no-install-recommends \
+            -o Dpkg::Use-Pty=0 \
             audacity blender krita lmms xvfb xauth
 
       - name: Install image inspection dependency
