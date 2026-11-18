@@ -172,6 +172,7 @@ As with earlier QA builds, this APK uses a temporary debug signing key generated
 - **APK SHA-256:** `03a5bd3b329502583a4976fbe4cc943a99014475dc22b68d55318dde22146038`.
 - **Artifact ZIP SHA-256:** `5e474a4b19f14e8e146223751b8e22502a5406882c9eb0409adb03bd9d945272`.
 - **Signature verification:** APK Signature Scheme v2 and v3 verified successfully; v1 was not enabled in this export.
-- **Device test status:** pending user installation and physical-device playtest. Automated CI and APK export success do not replace this test.
+- **User-confirmed device smoke test:** passed. The user downloaded and installed the 0.41.0 QA APK on a physical Android device and reported that everything worked well.
+- **Device details and test scope not specified in this confirmation:** device model, Android version, exact combat scenarios (including the Venom projectile and trap), test duration, measured FPS/frame time, thermal behavior, save persistence and app lifecycle behavior. These remain unverified by this report.
 
 As with the previous QA APK, this build is signed with a fresh temporary debug key generated for this workflow run. Uninstall the previous `Divslayer QA` app before installing this new artifact; uninstalling removes its local QA save data. The production app uses a different package ID and is not affected.
