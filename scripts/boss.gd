@@ -218,7 +218,18 @@ func _check_phase() -> void:
 	world.shake(12.0)
 	Sfx.play("phase")
 	Sfx.play("roar", -3.0)
-	world.burst(center(), rgb, 30, 190.0)
+	var phase_center := center()
+	world.burst(phase_center, rgb, 30, 190.0)
+	# A clear two-beat seal marks the transformation; low graphics keeps the outer ring only.
+	if world.fx:
+		var rich_fx: bool = world.fx.quality > 0
+		world.fx.ring(phase_center, Color(rgb, 0.9), maxf(box.x, box.y) * 0.9, 0.62)
+		if rich_fx:
+			world.fx.ring(phase_center, Color(1.0, 0.94, 0.76, 0.82), maxf(box.x, box.y) * 0.56, 0.44)
+		world.fx.emit("shine", phase_center, 16 if rich_fx else 8, Color(rgb, 0.95),
+			Vector2.UP, 180.0, 150.0, 1.2 if rich_fx else 0.85)
+		if rich_fx:
+			world.fx.flash_light(phase_center, maxf(box.x, box.y) * 2.2, 0.85, rgb, 0.48)
 	var p := player()
 	if p:
 		var off: Vector2 = p.pc() - center()
