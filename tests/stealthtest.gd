@@ -124,6 +124,10 @@ func regional_attack_test(map_key: String, enemy_type: String, skill: String, st
 				if puddle.get("en", null) == foe and float(puddle.get("mult", 0.0)) > 0.0:
 					damaging_pool = true
 			check(label + "_leaves_a_real_poison_pool", damaging_pool)
+			# The direct splash also applies poison-over-time. Clear that status and
+			# restore HP so this assertion measures only the lingering pool itself.
+			hero_now.statuses.clear()
+			Game.hp = Game.max_hp()
 			var hits_before_pool_tick: int = int(main.world.bossfx.counts["hits"])
 			var hp_before_pool_tick: int = Game.hp
 			# Isolate the lingering-pool test from the direct splash's brief i-frames.
