@@ -35,7 +35,7 @@ This file separates verified engineering status from items that still require th
 ## Legal and community status | وضعیت حقوقی و مشارکت
 
 - The project is **source-available, not open source** under its current provisional proprietary notice.
-- `LICENSE.md` is not present; the current license file is `LICENSE` and is provisional, not a reviewed final agreement.
+- The current `LICENSE` is provisional and has not been reviewed as a final agreement.
 - `CLA.md` is a draft only. Obtain qualified legal review in Germany and other relevant markets before accepting code, art, audio, translation, or other contributions under commercial-use terms.
 - Until the contributor process is reviewed and explicitly published, accept bug reports and feature discussions through Issues only; do not treat a pull request as accepted or promise payment/rights terms.
 
