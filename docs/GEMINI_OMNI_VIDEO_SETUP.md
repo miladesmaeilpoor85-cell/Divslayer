@@ -101,7 +101,7 @@ Approximate video-output costs (before small prompt/reference-image input charge
 |---:|---:|---:|
 | 6 seconds | $0.14 | $0.42 |
 | 10 seconds | $0.23 | $0.70 |
-| 15 seconds | $0.35 | $1.05 |
+| 15 seconds | $0.35 | $1.04 |
 
 نرخ فعلی استاندارد Gemini Omni 1.2 Flash تقریباً چنین است:
 
