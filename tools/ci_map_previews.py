@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Generate map layout previews and an overview sheet using the existing Pillow renderer."""
 from __future__ import annotations
 
@@ -41,6 +40,7 @@ def main() -> int:
             capture_output=True,
             text=True,
             timeout=120,
+            check=False,
         )
         if result.returncode != 0 or not destination.is_file():
             errors.append(f"{key}: {(result.stderr or result.stdout)[-1000:]}")
