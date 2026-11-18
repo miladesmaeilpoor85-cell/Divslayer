@@ -24,7 +24,7 @@ def collect_images(root: Path) -> list[Path]:
         if path.is_file()
         and path.suffix.lower() in IMAGE_EXTENSIONS
         and not EXCLUDED_PARTS.intersection(path.relative_to(root).parts)
-        and ("assets/art" in path.relative_to(root).as_posix() or path.name == "icon.png")
+        and ("assets/art" in path.relative_to(root).as_posix() or "assets/icon" in path.relative_to(root).as_posix() or path.name == "icon.png")
     )
 
 
