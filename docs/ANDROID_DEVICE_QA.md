@@ -145,3 +145,15 @@ For the Divslayer QA `0.39.0-qa` build on the POCO X7 Pro / Android 16, the user
 - The requested movement + attack control check worked as expected.
 
 These are user-reported physical-device results. No screen recording, device logs, or independent instrumentation were supplied. The broader checklist items not explicitly reported as tested—such as save persistence/update installation, pause/resume and lock/unlock lifecycle, left-handed layout, extended 20–30 minute thermal testing, and testing on lower-spec devices—remain open.
+
+### Divslayer 0.40.0 QA Android build — 2026-11-18
+
+- **GitHub Actions run:** [Android QA APK #44284989984](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44284989984) — completed successfully.
+- **Source commit:** `322f5fbb5ce1cc5ba59a714bf39436cdf9509499`.
+- **Artifact:** `Divslayer-Android-QA-APK`, artifact ID `14418707513`; retention expires `2026-12-02T10:25:32Z`.
+- **Package / version:** `com.example.divslayer.qa` / `0.40.0-qa`.
+- **APK SHA-256:** `8d263c58f9ee06c80afae53680271f3c7486bb423f22cad04f5b17d2873b7294`.
+- **Signature verification:** APK Signature Scheme v2 and v3 verified successfully.
+- **Device test status:** this new 0.40.0 build has not yet been reported as installed or tested by the user.
+
+As with earlier QA builds, this APK uses a temporary debug signing key generated for this workflow run. Uninstall the previous `Divslayer QA` test app before installing this artifact; its local QA save will be removed. The production app uses a different package ID and is not affected.
