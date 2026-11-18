@@ -2,62 +2,52 @@
 
 ## First implemented runtime animation
 
-The starter warrior now has a dedicated four-frame sword-attack animation for
-each of the three directions supported by the current character controller:
+The starter warrior has a four-frame sword-attack animation for each of the
+three directions supported by the current character controller:
 
 - `attack_down`: front-facing attack
 - `attack_up`: back-facing attack
-- `attack_side`: profile attack; the controller's existing horizontal flip is retained
+- `attack_side`: profile attack; the existing horizontal flip is retained
 
 Each row contains four frames (ready, wind-up, slash, recovery) at 25 FPS.
 Each cell is 160 × 156 pixels, matching the existing warrior sprite-sheet
-layout and the project's 1/3 runtime display scale. The normal attack's
-0.16-second visual window is matched by the four-frame sequence.
+layout and the project's 1/3 runtime display scale. The sequence lasts 0.16
+seconds, matching the existing normal attack visual window. Combat damage,
+hitboxes, movement, and cooldowns are unchanged.
 
-Only `warrior_starter` is connected to this new sheet. The mid- and end-game
-warrior sheets and the mage, rogue, and paladin sheets continue using their
-existing attack frame until matching art is produced. No combat damage,
-hitbox, movement, or cooldown values are changed.
+Only `warrior_starter` uses this new sheet. Mid- and end-game warrior sheets
+and other classes retain their existing attack visuals until matching art is
+available.
 
-## Editable source and outputs
+## Editable source and review
 
-- Source concept sheet: `creative/animation/warrior_starter_attack_source.webp`
-- Frame map and timings: `creative/animation/warrior_starter_attack.json`
-- Runtime atlas: `assets/art/Heroes/warrior_starter_attack.png`
-- Deterministic builder: `tools/animation_pipeline.py`
+- Editable transparent atlas: `assets/art/Heroes/warrior_starter_attack.png`
+- Frame/direction configuration: `creative/animation/warrior_starter_attack.json`
+- Deterministic validator and preview exporter: `tools/animation_pipeline.py`
 - Unit tests: `tools/test_animation_pipeline.py`
 - Godot regression test: `tests/animationtest.gd`
 
-The builder crops only the twelve explicitly mapped frame regions, trims
-transparent margins, preserves alpha, packs the poses into the exact Godot
-atlas layout, and generates one review GIF per direction. It records file
-hashes and frame geometry in a JSON report. CI rebuilds the atlas and compares
-it byte-for-byte with the runtime asset so that a changed source cannot silently
-leave a stale in-game export.
+The PNG atlas can be opened in Pixelorama or Krita. The CI job validates its
+dimensions and every cell, exports directional GIF previews, produces a review
+image and JSON report, and checks that the exported PNG matches the in-game
+asset byte-for-byte. Pixelorama 1.2.4 is installed and smoke-tested in the
+cloud creative-tools job; Krita remains the painterly cleanup workspace.
 
-Krita is the painterly cleanup and layer-editing workspace. Pixelorama 1.2.4
-is installed and smoke-tested in the cloud creative-tools job for cel timing,
-onion-skin review, and sprite-sheet editing. Blender remains available for
-3D/Grease Pencil studies. Godot consumes the result through `SpriteFrames`.
+## Tests and scope
 
-## Test coverage
-
-- Python tests verify the 640 × 468 output, 12 occupied frame cells, three
+- Python tests verify the 640 × 468 atlas, 12 occupied cells, three
   four-frame GIFs, and deterministic output hash.
-- Godot tests verify four attack frames in all three directions, 25 FPS,
-  one-shot playback, preservation of the original four-frame walk, and
-  continued availability of the existing skeleton animation.
-- The regular Android export workflow builds a QA APK after source changes.
+- Godot tests verify four attack frames in all directions, 25 FPS, one-shot
+  playback, preservation of the original walk, and continued availability of
+  the existing creature animation.
+- The regular Godot CI and Android QA workflows validate the change before
+  an installable build is offered.
 
-## Scope and limitations
+This is the first animation pass, not a completed overhaul. Idle, walk, dodge,
+hurt, death, enemy attacks, and boss phase animations still need dedicated art.
+The current `skeleton.png` source depicts a horned blue-armored creature, so
+its visual identity must be preserved when its animation set is redesigned.
 
-This is the first real animation upgrade, not a finished animation overhaul.
-Idle, walk, dodge, hurt, and death still need dedicated art. The skeleton
-sprite is not changed because its current source image is a horned blue-armored
-creature rather than a conventional skeleton; a matching attack/death sequence
-must preserve that creature's existing visual identity.
-
-The animation concept is AI-assisted. Its visual quality still requires
-human review in the game and on the target phone. The two related image records
-remain `UNVERIFIED` in the rights register; successful technical tests do not
-clear commercial-use rights.
+The new animation was AI-assisted. The image rights register remains
+`UNVERIFIED`; technical validation does not establish commercial-use rights.
+Human review in the actual game and on the target phone is still required.
