@@ -147,6 +147,8 @@ For the Divslayer QA `0.39.0-qa` build on the POCO X7 Pro / Android 16, the user
 These are user-reported physical-device results. No screen recording, device logs, or independent instrumentation were supplied. The broader checklist items not explicitly reported as tested—such as save persistence/update installation, pause/resume and lock/unlock lifecycle, left-handed layout, extended 20–30 minute thermal testing, and testing on lower-spec devices—remain open.
 
 ### Divslayer 0.40.0 QA Android build — 2026-11-18
+- **User-confirmed device smoke test:** passed. The user downloaded, installed and tested the 0.40.0 QA APK on a physical Android device and reported that everything worked well. The device model, Android version, tested gameplay scenarios and measured performance were not specified in this confirmation.
+
 
 - **GitHub Actions run:** [Android QA APK #44284989984](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44284989984) — completed successfully.
 - **Source commit:** `322f5fbb5ce1cc5ba59a714bf39436cdf9509499`.
