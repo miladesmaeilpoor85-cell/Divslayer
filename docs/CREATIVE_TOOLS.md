@@ -43,3 +43,16 @@ Keep native editable source files in the repository alongside exported game asse
 - creative/audacity/ for .aup3 sessions and mastering notes
 
 The first source project is kept in creative/lmms/. The Blender scene and Krita OpenRaster document are published as reproducible workflow outputs until an artwork concept is approved for promotion into the game's asset tree.
+
+
+## In-game Flame Seal item icon review
+
+The first-pass Flame Seal asset is now represented by the 72 × 78 `assets/art/Items/relic.png` pickup icon. It is a reduced, palette-limited derivative of the Blender render with the editable Krita OpenRaster source retained under `creative/krita/` and the Blender scene retained under `creative/blender/`. The existing `relic` pickup identifier and import settings are unchanged, so map references continue to resolve.
+
+The original 512 × 512 Blender/Krita render is retained in the review artifact, not shipped in the Android build. The small icon is designed for the existing 26-pixel pickup display scale. Device readability still requires a human visual check.
+
+## LMMS title-theme sketch — technical review
+
+The editable LMMS project is an eight-bar, 108 BPM D-Hijaz-flavoured motif with a low drone. The CI render is 44.1 kHz, stereo, 16-bit PCM. The first render measured approximately -9.8 LUFS integrated and -4.0 dBFS true peak, with no clipped samples. That is substantially louder than the project's existing soundtrack notes (typically around -18 to -17.5 LUFS), so a separate -18.5 LUFS listening preview is provided for review.
+
+The sketch is only about 18 seconds of musical material. Technical file checks do not establish musical quality. It has not been auditioned and approved as the game's title theme, and it is not connected to production audio. The project uses an LMMS built-in oscillator waveform; commercial redistribution still requires checking the applicable LMMS content/licensing terms.
