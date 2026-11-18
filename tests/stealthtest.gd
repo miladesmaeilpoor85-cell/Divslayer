@@ -127,6 +127,28 @@ func run(m: Node) -> void:
 	Game.state["day_t"] = 0.3
 	p.toggle_sneak()
 
+	# ---- enemy movement archetypes: a leaping nahang and a flanking sorcerer
+	clear_foes()
+	var leaper: Node = main.world.spawn_enemy("toad", p.global_position + Vector2(140, 0))
+	leaper.alert = true
+	leaper.leap_cooldown = 0.0
+	await frames(1)
+	check("toad_warns_before_leaping", leaper.can_leap and leaper.leap_windup > 0.0)
+	await frames(28)
+	check("toad_commits_to_leap", leaper.leap_time > 0.0 and leaper.global_position.distance_to(p.global_position) < 140.0)
+
+	clear_foes()
+	var sorcerer: Node = main.world.spawn_enemy("wraith", p.global_position + Vector2(210, 0))
+	sorcerer.alert = true
+	sorcerer.teleport_cooldown = 0.0
+	var sorcerer_start: Vector2 = sorcerer.global_position
+	await frames(1)
+	check("sorcerer_marks_a_flank_before_blinking", sorcerer.can_teleport and sorcerer.teleport_windup > 0.0)
+	await frames(20)
+	var sorcerer_range: float = sorcerer.global_position.distance_to(p.global_position)
+	check("sorcerer_blinks_to_an_open_flank", sorcerer.global_position.distance_to(sorcerer_start) > 80.0 and sorcerer_range >= 65.0 and sorcerer_range <= 145.0, [sorcerer_start, sorcerer.global_position, sorcerer_range])
+	clear_foes()
+
 	# ---- foes see a sneaking hero only from close by
 	p.global_position = Vector2(450, 520)
 	var far = main.world.spawn_enemy("skeleton", Vector2(650, 520))
