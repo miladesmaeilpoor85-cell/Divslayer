@@ -57,11 +57,11 @@ out.mkdir(parents=True, exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
 
-bronze = material("Antique Persian bronze", (0.30, 0.115, 0.035, 1.0), metallic=0.86, roughness=0.28)
-gold = material("Hammered old gold", (0.78, 0.48, 0.15, 1.0), metallic=0.82, roughness=0.24)
-dark = material("Charcoal patinated metal", (0.035, 0.045, 0.052, 1.0), metallic=0.72, roughness=0.36)
-ember = material("Molten ember enamel", (0.8, 0.11, 0.018, 1.0), metallic=0.2, roughness=0.3, emission=0.35)
-flame_gold = material("Inner flame gold", (1.0, 0.49, 0.055, 1.0), metallic=0.25, roughness=0.26, emission=0.65)
+bronze = material("Antique Persian bronze", (0.235, 0.083, 0.018, 1.0), metallic=0.78, roughness=0.34)
+gold = material("Hammered old gold", (0.62, 0.34, 0.075, 1.0), metallic=0.78, roughness=0.30)
+dark = material("Charcoal patinated metal", (0.018, 0.028, 0.038, 1.0), metallic=0.62, roughness=0.42)
+ember = material("Molten ember enamel", (0.72, 0.055, 0.006, 1.0), metallic=0.05, roughness=0.42, emission=0.08)
+flame_gold = material("Inner flame gold", (0.95, 0.29, 0.012, 1.0), metallic=0.05, roughness=0.38, emission=0.12)
 
 # Main medallion: forged bronze disk with a dark inset and two concentric rims.
 bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=0.92, depth=0.24, location=(0.0, 0.0, 0.0))
@@ -101,14 +101,16 @@ for radius, minor, z, material_slot, name in (
 
 # A stylized, unmistakable flame silhouette rather than a generic sphere.
 outer_flame = [
-    (-0.35, -0.36), (-0.43, -0.12), (-0.34, 0.13), (-0.18, 0.38),
-    (-0.10, 0.17), (0.04, 0.48), (0.13, 0.23), (0.32, 0.39),
-    (0.40, 0.08), (0.34, -0.19), (0.20, -0.38), (0.0, -0.45),
+    (0.00, -0.45), (-0.16, -0.42), (-0.29, -0.33), (-0.38, -0.17),
+    (-0.39, -0.02), (-0.34, 0.13), (-0.25, 0.25), (-0.23, 0.35),
+    (-0.13, 0.25), (-0.07, 0.14), (-0.05, 0.27), (0.00, 0.49),
+    (0.09, 0.32), (0.14, 0.20), (0.25, 0.34), (0.34, 0.20),
+    (0.40, 0.04), (0.39, -0.12), (0.31, -0.29), (0.17, -0.41),
 ]
 inner_flame = [
-    (-0.19, -0.27), (-0.24, -0.06), (-0.12, 0.15),
-    (-0.03, 0.02), (0.08, 0.27), (0.13, 0.02),
-    (0.21, -0.14), (0.11, -0.30), (0.0, -0.34),
+    (0.00, -0.33), (-0.11, -0.29), (-0.19, -0.16), (-0.19, -0.02),
+    (-0.12, 0.09), (-0.07, 0.19), (-0.02, 0.11), (0.02, 0.30),
+    (0.10, 0.12), (0.19, -0.03), (0.17, -0.17), (0.09, -0.29),
 ]
 make_flame("Ember-red flame", outer_flame, 0.19, 0.30, ember)
 make_flame("Golden inner flame", inner_flame, 0.31, 0.37, flame_gold)
@@ -147,9 +149,9 @@ camera.rotation_euler = (0.0, 0.0, 0.0)
 scene.camera = camera
 
 for name, location, energy, size, color in (
-    ("Warm key", (1.8, -1.8, 3.2), 520, 3.0, (1.0, 0.72, 0.43)),
-    ("Cool fill", (-2.1, 0.9, 2.6), 380, 2.5, (0.28, 0.45, 1.0)),
-    ("Top softbox", (0.0, 2.3, 3.5), 300, 2.0, (1.0, 0.84, 0.62)),
+    ("Warm key", (1.8, -1.8, 3.2), 250, 3.0, (1.0, 0.72, 0.43)),
+    ("Cool fill", (-2.1, 0.9, 2.6), 170, 2.5, (0.28, 0.45, 1.0)),
+    ("Top softbox", (0.0, 2.3, 3.5), 150, 2.0, (1.0, 0.84, 0.62)),
 ):
     bpy.ops.object.light_add(type="AREA", location=location)
     light = bpy.context.object
@@ -169,6 +171,9 @@ scene.render.film_transparent = True
 scene.render.filepath = str(out / "flame-seal-relic-blender.png")
 scene.camera.data.dof.use_dof = False
 scene.render.image_settings.color_depth = "8"
+scene.view_settings.view_transform = "Standard"
+scene.view_settings.look = "Medium High Contrast"
+scene.view_settings.exposure = -0.15
 
 if scene.world:
     scene.world.use_nodes = True
