@@ -136,6 +136,13 @@ func run(m: Node) -> void:
 	check("toad_warns_before_leaping", leaper.can_leap and leaper.leap_windup > 0.0)
 	await frames(28)
 	check("toad_commits_to_leap", leaper.leap_time > 0.0 and leaper.global_position.distance_to(p.global_position) < 140.0)
+	var interrupted_leaper: Node = main.world.spawn_enemy("toad", p.global_position + Vector2(-140, 0))
+	interrupted_leaper.alert = true
+	interrupted_leaper.leap_cooldown = 0.0
+	await frames(1)
+	interrupted_leaper.apply_status("stun", 0.5)
+	await frames(1)
+	check("stun_interrupts_a_leap_windup", interrupted_leaper.leap_windup == 0.0 and interrupted_leaper.leap_time == 0.0)
 
 	clear_foes()
 	var sorcerer: Node = main.world.spawn_enemy("wraith", p.global_position + Vector2(210, 0))
@@ -147,6 +154,9 @@ func run(m: Node) -> void:
 	await frames(20)
 	var sorcerer_range: float = sorcerer.global_position.distance_to(p.global_position)
 	check("sorcerer_blinks_to_an_open_flank", sorcerer.global_position.distance_to(sorcerer_start) > 80.0 and sorcerer_range >= 65.0 and sorcerer_range <= 145.0, [sorcerer_start, sorcerer.global_position, sorcerer_range])
+	var body_h: float = minf(sorcerer.box.y, 18.0)
+	var blink_body := Rect2(sorcerer.global_position + Vector2(-sorcerer.box.x * 0.4, -body_h), Vector2(sorcerer.box.x * 0.8, body_h))
+	check("sorcerer_does_not_blink_into_a_wall", not main.world.wall_hit(blink_body))
 	clear_foes()
 
 	# ---- foes see a sneaking hero only from close by
