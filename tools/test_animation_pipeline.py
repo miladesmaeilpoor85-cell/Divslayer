@@ -4,9 +4,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from PIL import Image
-
 from animation_pipeline import build_animation
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "creative/animation/warrior_starter_attack.json"
