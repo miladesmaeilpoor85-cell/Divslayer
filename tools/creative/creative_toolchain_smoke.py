@@ -92,6 +92,9 @@ def run_blender(blender: str, out: Path, root: Path) -> Path:
     )
     if not render_path.is_file() or render_path.stat().st_size < 1024:
         raise RuntimeError("Blender did not create the expected render")
+    scene_file = out / "flame-seal-relic.blend"
+    if not scene_file.is_file() or scene_file.stat().st_size < 1024:
+        raise RuntimeError("Blender did not save the editable source scene")
     inspect_png(render_path)
     return render_path
 
@@ -181,7 +184,7 @@ def create_krita_ora(source: Path, out: Path) -> Path:
     return ora
 
 def run_krita(krita: str, source: Path, out: Path) -> Path:
-    destination = out / "krita-roundtrip.png"
+    destination = out / "flame-seal-relic-final.png"
     run(
         [
             "xvfb-run",
