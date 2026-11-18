@@ -115,30 +115,28 @@ def create_krita_ora(source: Path, out: Path) -> Path:
     from PIL import ImageDraw
 
     draw = ImageDraw.Draw(finish)
-    gold = (231, 181, 83, 150)
-    warm_white = (255, 225, 165, 210)
-    margin = int(min(width, height) * 0.105)
-    draw.ellipse(
-        (margin, margin, width - margin, height - margin),
-        outline=gold,
-        width=max(2, width // 220),
-    )
-    # Restrained highlights at the four compass points; the layer stays editable in Krita.
+    gold = (221, 165, 70, 105)
+    warm_white = (255, 218, 151, 175)
     cx, cy = width // 2, height // 2
-    radius = int(min(width, height) * 0.44)
-    for dx, dy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
-        x, y = cx + dx * radius, cy + dy * radius
-        size = max(3, width // 80)
-        draw.ellipse((x - size, y - size, x + size, y + size), fill=warm_white)
-        draw.line(
-            (x - size * 2, y, x + size * 2, y),
-            fill=gold,
-            width=max(1, width // 280),
-        )
-        draw.line(
-            (x, y - size * 2, x, y + size * 2),
-            fill=gold,
-            width=max(1, width // 280),
+    # Fine engraved inner-rim highlights, kept on the editable Krita finish layer.
+    ring_box = (
+        int(width * 0.17),
+        int(height * 0.17),
+        int(width * 0.83),
+        int(height * 0.83),
+    )
+    draw.ellipse(ring_box, outline=gold, width=max(1, width // 320))
+    draw.arc(ring_box, start=205, end=252, fill=warm_white, width=max(2, width // 170))
+    draw.arc(ring_box, start=28, end=75, fill=warm_white, width=max(2, width // 170))
+
+    # Small diamond glints sit inside the medallion rather than outside its silhouette.
+    radius = int(min(width, height) * 0.34)
+    for dx, dy in ((-1, -1), (1, -1), (-1, 1), (1, 1)):
+        x, y = cx + dx * radius * 0.72, cy + dy * radius * 0.72
+        size = max(3, width // 95)
+        draw.polygon(
+            ((x, y - size), (x + size * 0.55, y), (x, y + size), (x - size * 0.55, y)),
+            fill=warm_white,
         )
 
     merged = Image.alpha_composite(base, finish)
