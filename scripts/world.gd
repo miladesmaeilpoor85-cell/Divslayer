@@ -74,6 +74,8 @@ var hazard_layer: Node2D
 var exits_armed := false
 var rush := false                # (v0.21) this map is a memory of the Boss Rush: only its boss, no way out, a cold tint
 var stats := {"walls": 0, "objects": 0, "exits": 0, "npcs": 0, "enemies": 0, "hazards": 0}
+var enemy_tactics_clock := 0.0
+var enemy_volley_ready_at := 0.0
 
 func build(map_key: String) -> void:
 	key = map_key
@@ -667,7 +669,8 @@ func punch(dir: Vector2, amount := 6.0) -> void:
 	if c:
 		c.punch(dir, amount)
 
-func _process(_dt: float) -> void:
+func _process(dt: float) -> void:
+	enemy_tactics_clock += dt
 	_camp_tick()
 	_items_tick()
 	var bob := sin(Time.get_ticks_msec() / 260.0) * 3.0
@@ -781,13 +784,56 @@ func _set_truce(on: bool) -> void:
 	for e in camp_foes():
 		e.parley = on
 
-## a camp watcher noticed the hero: while Sindokht's quest is open and nothing is settled yet, they call a parley
-func on_notice(_e: Node) -> void:
+## A spotted hero alerts nearby allies; the Thornwood camp then applies its special parley rules.
+func on_notice(source: Node) -> void:
+	var p = get_tree().get_first_node_in_group("player")
+	if p != null and p.world == self and not p.dead:
+		var origin: Vector2 = source.global_position if is_instance_valid(source) else p.global_position
+		for ally in camp_foes():
+			if ally == source or ally.dead or ally.parley:
+				continue
+			if ally.global_position.distance_to(origin) <= 230.0 and ally.has_method("hear_alarm"):
+				ally.hear_alarm(p.global_position)
 	if key != "camp":
 		return
 	camp_noticed = true
 	if Game.toll_st() == "active" and not truce and not parleying and varga() != null and str(Game.toll().get("how", "")) == "":
 		_start_parley()
+
+
+## Only one nearby ranged foe may launch in a short volley window. Its shot gives
+## alerted melee allies a brief, alternating flank order.
+func request_enemy_volley(shooter: Node) -> bool:
+	if shooter == null or not is_instance_valid(shooter) or shooter.dead:
+		return false
+	if enemy_tactics_clock < enemy_volley_ready_at:
+		return false
+	enemy_volley_ready_at = enemy_tactics_clock + 0.72
+	_order_flankers(shooter)
+	return true
+
+
+func _order_flankers(shooter: Node) -> void:
+	var p = get_tree().get_first_node_in_group("player")
+	if p == null or p.dead or p.world != self:
+		return
+	var allies: Array = []
+	for ally in camp_foes():
+		if ally == shooter or ally.dead or ally.boss or ally.parley or not ally.alert:
+			continue
+		if not ally.shoots.is_empty():
+			continue
+		if ally.global_position.distance_to(p.global_position) > 250.0:
+			continue
+		allies.append(ally)
+	allies.sort_custom(func(a, b):
+		return a.global_position.distance_squared_to(p.global_position) < b.global_position.distance_squared_to(p.global_position)
+	)
+	var side := -1.0
+	for ally in allies:
+		ally.squad_pressure_t = 1.15
+		ally.squad_side = side
+		side *= -1.0
 
 func _camp_tick() -> void:
 	if key != "camp" or parleying or truce or Game.toll_st() != "active" or str(Game.toll().get("how", "")) != "":
