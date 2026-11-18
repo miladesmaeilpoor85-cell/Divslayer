@@ -1,5 +1,11 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## 0.40.0 — Venom in the poison lands (زهر در سرزمین‌های زهرآلود)
+- Added the Venom elite variant to Shadowfen, Damavand and Zahhak's Cave. It remains out of the ordinary elite pool in other regions.
+- Venom elites are visibly marked with a green aura and apply poison when their contact attack damages the hero.
+- Existing fire, frost and storm elite variants retain their previous regional availability and effects.
+- Added automated coverage for regional elite selection, Venom's stats/aura, contact poison and poison damage ticks.
+
 ## 0.39.0 — Each region fights differently (هر منطقه شیوهٔ نبرد خودش را دارد)
 - Shadowfen mosquitoes mark a poison-splash zone that leaves a brief, damaging pool if the hero stays inside.
 - Emberforge cinderhounds warn along a fiery charge lane before applying burn.

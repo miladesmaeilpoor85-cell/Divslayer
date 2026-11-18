@@ -557,7 +557,7 @@ func _wander(dt: float) -> Vector2:
 		anim.flip_h = wander.x < 0
 	return wander
 
-## an elite: tougher, harder-hitting, worth more, wreathed in its element (V16_EL: fire burns, frost freezes, storm stuns)
+## an elite: tougher, harder-hitting, worth more, wreathed in its element (fire burns, frost freezes, storm stuns, venom poisons)
 func make_elite(el: String, power := 1.0) -> void:
 	var d: Dictionary = Game.elite_def(el)
 	if d.is_empty() or boss:

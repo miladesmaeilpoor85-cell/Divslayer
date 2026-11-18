@@ -20,7 +20,7 @@ signal achieved(id: String)                    # (v0.20) an achievement was earn
 
 const Skills = preload("res://scripts/skills.gd")
 
-const VERSION := "0.39.0"      # shown on the title screen; keep with export_presets.cfg version/name
+const VERSION := "0.40.0"      # shown on the title screen; keep with export_presets.cfg version/name
 const DATA := "res://data/"
 const ART := "res://assets/art/"
 const SAVE_PATH := "user://save.json"
@@ -931,6 +931,13 @@ func elites_slain() -> int:
 
 func elite_def(id: String) -> Dictionary:
 	return table("V16_EL").get(id, {})
+
+## Regional elite variants: venom joins the common pool only in poison-themed lands.
+func elite_pool(area: String) -> Array[String]:
+	var pool: Array[String] = ["fire", "ice", "storm"]
+	if area in ["shadowfen", "damavand", "zahhakcave"]:
+		pool.append("venom")
+	return pool
 
 func elite_name(id: String) -> String:
 	var d := elite_def(id)

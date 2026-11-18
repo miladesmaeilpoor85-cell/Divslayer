@@ -6,9 +6,9 @@ A Persian-mythology-inspired action RPG made with Godot.
 
 [![Godot CI](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/workflows/godot-ci.yml/badge.svg?branch=main)](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/workflows/godot-ci.yml)
 
-**Status / وضعیت:** The project is under development. Current game version: **0.39.0**. The latest verified Godot 4.7.2 CI run passed **1,115 checks across 28 test suites**. This is a test result, not an Android release or store approval.
+**Status / وضعیت:** The project is under development. Current game version: **0.40.0**. The latest verified Godot 4.7.2 CI run passed **1,115 checks across 28 test suites**. This is a test result, not an Android release or store approval.
 
-**وضعیت:** پروژه هنوز در حال توسعه است. نسخه فعلی بازی **0.39.0** است. آخرین اجرای تأییدشدهٔ CI با Godot 4.7.2 شامل **۱٬۱۱۵ بررسی در ۲۸ مجموعه تست** بود و همگی موفق شدند. این نتیجه به‌معنای آماده‌بودن APK یا تأیید انتشار در فروشگاه‌ها نیست.
+**وضعیت:** پروژه هنوز در حال توسعه است. نسخه فعلی بازی **0.40.0** است. آخرین اجرای تأییدشدهٔ CI با Godot 4.7.2 شامل **۱٬۱۱۵ بررسی در ۲۸ مجموعه تست** بود و همگی موفق شدند. این نتیجه به‌معنای آماده‌بودن APK یا تأیید انتشار در فروشگاه‌ها نیست.
 
 
 ## Repository history / تاریخچه مخزن
