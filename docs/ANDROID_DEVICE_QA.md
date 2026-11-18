@@ -210,3 +210,19 @@ As with previous QA APKs, this build uses a fresh temporary debug signing key ge
 - **Encounter:** Pulad of Ghandi / Anvil Warden.
 - **User-reported outcome:** the user additionally tested the damage behavior of the Forge Furrows attack and confirmed that it worked correctly: a hit applies the expected damage and burn effect, and the same three-lane volley does not apply multiple hits to the player.
 - **Status:** the user has now confirmed the attack's lane telegraphs, dodge gaps, damage/burn behavior, and one-hit-per-volley protection in manual gameplay testing. This is a targeted user-reported test of this move, not a full device QA pass or production-release validation.
+
+### Divslayer 0.43.0 QA Android build — 2026-11-18
+- **Change:** Ashkbus of Kushan now marks three separated arrow impact circles around the hero's last position, then calls down visible falling arrows. The gaps are walkable; all three impacts share one hit token so the volley can damage the hero at most once. Staggering Ashkbus during the warning cancels the attack. The move is exclusive to Ashkbus.
+- **Merged PR:** [#15](https://github.com/miladesmaeilpoor85-cell/Divslayer/pull/15).
+- **Main merge commit:** `1cee0ece5871a8fbdf1ab516f556e8d1c3f1f57d`.
+- **Godot CI:** [run #44301894793](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44301894793) — completed successfully. **1,165 checks across 32 test suites**, plus the autotest, zero failures; the new `ashkbustest` suite passed all 7 checks; `ALL_TESTS_PASSED`.
+- **Android QA workflow:** [run #44301894537](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44301894537) — completed successfully.
+- **Artifact:** `Divslayer-Android-QA-APK`, [artifact ID 14426177656](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44301894537/artifacts/14426177656); retention expires `2026-12-02T12:15:26Z`.
+- **Artifact ZIP SHA-256:** `ae03f71ec9b34b35eb2c19ebd73224d2104b4c33e3e9e99f4fff510f83b84598`.
+- **Package / version:** `com.example.divslayer.qa` / `0.43.0-qa` (version code 1).
+- **APK SHA-256:** `02bb4d610b17513523cee22bd368b6e76cafa282125a9644e225fc31c520dbca`.
+- **Signature verification:** APK Signature Scheme v2 and v3 verified successfully; v1, v3.1 and v4 were not enabled in this export.
+- **SDK levels:** minimum SDK 24; target SDK 36.
+- **Physical-device status:** APK export and signature verification are complete. User-reported device installation and gameplay verification are pending; do not treat CI success as a physical-device test.
+
+This QA APK uses a fresh temporary debug signing key generated for this workflow run. Uninstall the previous `Divslayer QA` app before installing this new artifact; uninstalling removes its local QA save data. The production app uses a different package ID and is not affected.
