@@ -105,6 +105,7 @@ func regional_attack_test(map_key: String, enemy_type: String, skill: String, st
 	hero_now.dead = false
 	Game.hp = Game.max_hp()
 	var foe: Node = main.world.spawn_enemy(enemy_type, Vector2(760, 520))
+	foe.spd = 0.0
 	foe.alert = true
 	foe.regional_cooldown = 0.0
 	await frames(1)
@@ -118,6 +119,16 @@ func regional_attack_test(map_key: String, enemy_type: String, skill: String, st
 	else:
 		await frames(55)
 		check(label + "_special_applies_element", hero_now.statuses.has(status), hero_now.statuses)
+		if skill == "bog_spit":
+			var damaging_pool := false
+			for puddle in main.world.bossfx.pools:
+				if puddle.get("en", null) == foe and float(puddle.get("mult", 0.0)) > 0.0:
+					damaging_pool = true
+			check(label + "_leaves_a_real_poison_pool", damaging_pool)
+			var hits_before_pool_tick: int = int(main.world.bossfx.counts["hits"])
+			await frames(50)
+			check(label + "_poison_pool_hurts_if_ignored", int(main.world.bossfx.counts["hits"]) > hits_before_pool_tick,
+				main.world.bossfx.counts["hits"])
 	clear_foes()
 	await frames(2)
 
