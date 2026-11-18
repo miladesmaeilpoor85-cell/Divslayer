@@ -143,10 +143,6 @@
               </pattern>
             </track>
     </trackcontainer>
-        </bbtrack>
-        <bbtco usestyle="1" muted="0" name="Beat/Baseline 0" pos="0" len="1536" color="4282417407"/>
-      </track>
-    </trackcontainer>
     <mixer visible="1" width="647" height="332" x="9" y="441" maximized="0" minimized="0">
       <mixerchannel num="0" muted="0" volume="1" name="Master" soloed="0">
         <fxchain numofeffects="0" enabled="0"/>
