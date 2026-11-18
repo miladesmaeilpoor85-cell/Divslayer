@@ -192,8 +192,11 @@ profile is used). The fighting bot in it (`fight`) approaches, attacks, rolls fr
   `cellH`, `logicalW/H` and `pivot` in the manifest together. `tests/v34foeshots.gd --only <map>` shows them in play.
 
 ## Music (v0.31)
-- Every track is a Suno V6 take made by Milad through the Hoosha API (he owns them for commercial use). The masters (mp3)
-  are kept outside the project (work/music). `data/audio_credits.json` names each with licence "Suno (commercial, owned)";
+- The project records identify every soundtrack take as generated with Suno V6 through the Hoosha API. The masters (mp3)
+  are kept outside the project (work/music). The repository metadata records a commercial-use claim, but this note alone
+  does not prove that the API route/downloads were authorized under the terms in force on each generation date. Verify the
+  Hoosha provider terms and the applicable Suno terms, retain account receipts, task IDs and source records, and do not
+  rely on the commercial-use claim until that review is complete. `data/audio_credits.json` labels this status accordingly;
   `tools/build_audio.py` predates this and must not be re-run over it.
 - Prompts: instrumental, Persian mode and instruments named, a BPM, and for anything that loops: "keep the same energy all
   the way through, no long silence, no fade-out ending". Battles: "no quiet intro". Suno makes two takes per prompt; both
