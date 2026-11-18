@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Dependency-free integrity/provenance coverage audit for Divslayer assets.
 
-Checks basic image/audio container headers and verifies that every artwork file
+Checks basic image/audio container headers and verifies that every tracked image
 has exactly one record in docs/ASSET_RIGHTS_REGISTER.csv. It never approves
 ownership, copyright, or commercial-use rights.
 """
@@ -19,7 +19,6 @@ from typing import Any
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
 AUDIO_EXTENSIONS = {".ogg", ".wav", ".mp3", ".flac"}
-ART_ROOT = Path("assets/art")
 AUDIO_ROOT = Path("assets/audio")
 REGISTER = Path("docs/ASSET_RIGHTS_REGISTER.csv")
 LARGE_FILE_BYTES = 8 * 1024 * 1024
@@ -149,10 +148,13 @@ def audit_repository(root: Path) -> dict[str, Any]:
     root = root.resolve()
     errors: list[str] = []
     warnings: list[str] = []
-    art_dir = root / ART_ROOT
-    images = sorted(p for p in art_dir.rglob("*") if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS) if art_dir.is_dir() else []
-    if not art_dir.is_dir():
-        errors.append(f"missing artwork directory: {ART_ROOT.as_posix()}")
+    excluded_dirs = {".git", ".godot", ".venv", "build", "dist", "__pycache__"}
+    images = sorted(
+        p for p in root.rglob("*")
+        if p.is_file()
+        and p.suffix.lower() in IMAGE_EXTENSIONS
+        and not excluded_dirs.intersection(p.relative_to(root).parts)
+    )
 
     registry_path = root / REGISTER
     rows: dict[str, str] = {}
@@ -173,8 +175,8 @@ def audit_repository(root: Path) -> dict[str, Any]:
                         candidate = PurePosixPath(rel)
                         if not rel:
                             errors.append(f"rights register line {line}: empty asset_path")
-                        elif not rel.startswith("assets/art/") or candidate.is_absolute() or ".." in candidate.parts:
-                            errors.append(f"rights register line {line}: unsafe or out-of-scope path: {rel}")
+                        elif candidate.is_absolute() or ".." in candidate.parts:
+                            errors.append(f"rights register line {line}: unsafe path: {rel}")
                         elif rel in rows:
                             errors.append(f"duplicate rights register entry: {rel}")
                         else:
