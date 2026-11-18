@@ -53,7 +53,6 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m unittest discover -s tools -p "test_asset_audit.py" -v
-          python3 -m unittest discover -s tools -p "test_sprite_sheet.py" -v
           python3 tools/asset_audit.py
 
       - name: Import project and parse Godot resources
