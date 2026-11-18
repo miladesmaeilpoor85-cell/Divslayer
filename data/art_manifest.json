@@ -959,10 +959,7 @@
       ],
       "flipSideForLeft": true,
       "weaponTier": 1,
-      "armorTier": 0,
-      "attackSheet": "warrior_starter_attack.png",
-      "attackFrames": 4,
-      "attackFps": 24
+      "armorTier": 0
     },
     "warrior_mid": {
       "cellW": 160,
