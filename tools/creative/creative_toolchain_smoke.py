@@ -57,7 +57,10 @@ def executable(name: str) -> str:
 
 
 def get_version(name: str, binary: str, version_args: tuple[str, ...] = ("--version",)) -> str:
-    result = run([binary, *version_args], timeout=45)
+    command = [binary, *version_args]
+    if name == "Krita":
+        command = ["xvfb-run", "-a", *command]
+    result = run(command, timeout=45)
     text = (result.stdout or result.stderr).strip()
     return "\n".join(text.splitlines()[:4]) or "version output unavailable"
 
@@ -248,10 +251,10 @@ def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]
                 f"see {log_path}"
             )
         return {
-            "status": "opened",
+            "status": "launched_with_input",
             "source": str(source_audio),
             "observation_seconds": 8,
-            "note": "Audacity GUI stayed running with the OGG argument loaded; no remote control pipe enabled.",
+            "note": "Audacity process remained active during the observation window after receiving the OGG input argument; full audio decoding is verified separately by PyAV/FFmpeg.",
         }
     finally:
         try:
