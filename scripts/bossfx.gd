@@ -254,22 +254,12 @@ func _physics_process(dt: float) -> void:
 					pl.apply_status(str(s["applies"]), float(s.get("sec", 3.0)), 1.0)
 				world.burst(s["pos"], s["col"], 5, 80.0)
 		shots = shots.filter(func(x): return float(x["life"]) > 0.0)
+	# Temporary pools share the world's hazard timer in World.hazard_hits().
+	# Do not decrement their tick here as well: doing so creates two competing
+	# damage paths and can double-hit the hero or desynchronise the hazard cadence.
 	if not pools.is_empty():
-		var pool_player := player()
 		for puddle in pools:
 			puddle["life"] = float(puddle["life"]) - dt
-			var pool_owner = puddle.get("en", null)
-			if pool_owner != null and float(puddle.get("mult", 0.0)) > 0.0:
-				puddle["tick"] = float(puddle.get("tick", 0.0)) - dt
-				if float(puddle["tick"]) <= 0.0:
-					var pool_landed := false
-					if pool_player != null and not pool_player.dead and pool_player.has_method("pc") and _alive(pool_owner) and puddle["rect"].has_point(pool_player.pc()):
-						cur_src = "regional_poison_pool"
-						pool_landed = hit(pool_owner, float(puddle["mult"]), puddle.get("status", []))
-						cur_src = ""
-					# If the hero is still protected or rolling, retry soon instead of
-					# burning a full poison tick while the hit is ignored by i-frames.
-					puddle["tick"] = 0.8 if pool_landed else 0.12
 		pools = pools.filter(func(x): return float(x["life"]) > 0.0)
 	queue_redraw()
 	air.queue_redraw()
