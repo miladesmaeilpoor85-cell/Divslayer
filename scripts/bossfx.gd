@@ -363,6 +363,13 @@ func _draw_air() -> void:
 		var pos: Vector2 = b["from"].lerp(b["to"], k) - Vector2(0, sin(k * PI) * 140.0)
 		if b["img"] == "ice":
 			air.draw_colored_polygon(PackedVector2Array([pos + Vector2(0, -9), pos + Vector2(6, 0), pos + Vector2(0, 9), pos + Vector2(-6, 0)]), Color(0.81, 0.94, 1.0))
+		elif b["img"] == "arrow":
+			air.draw_set_transform(pos, PI * 0.5)
+			air.draw_line(Vector2(-14, 0), Vector2(8, 0), Color8(112, 73, 43), 2.6, true)
+			air.draw_colored_polygon(PackedVector2Array([Vector2(7, -4), Vector2(16, 0), Vector2(7, 4)]), Color8(215, 211, 192))
+			air.draw_line(Vector2(-12, -3), Vector2(-8, 0), Color8(174, 104, 52), 1.4, true)
+			air.draw_line(Vector2(-12, 3), Vector2(-8, 0), Color8(174, 104, 52), 1.4, true)
+			air.draw_set_transform(Vector2.ZERO)
 		else:
 			air.draw_circle(pos, 11.0, Color(0.36, 0.28, 0.23))
 			air.draw_circle(pos + Vector2(-3, -3), 7.0, Color(0.6, 0.54, 0.48))
