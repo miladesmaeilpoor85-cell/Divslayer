@@ -95,6 +95,7 @@ func run(m: Node) -> void:
 	await get_tree().process_frame
 	Game.lang = "fa"
 	Game.set_setting("sound", true)
+	Game.set_setting("left_hand", false)
 	Game.table("CLASSES")["warrior"]["critChance"] = 0.0
 	var p = await hero("warrior")
 	seen(p)
@@ -301,6 +302,34 @@ func run(m: Node) -> void:
 	await frames(2)
 	touch(6, pos, false)
 	check("touch_shove", p.sig_uses == n + 1)
+
+	# ---- left-handed layout mirrors the action cluster and moves the joystick to the right half
+	var move_left := pad.get_global_transform_with_canvas() * Vector2(100, pad.size.y - 100)
+	touch(7, move_left, true)
+	await frames(2)
+	check("right_hand_movement_starts_on_left", pad.joy_id == 7)
+	touch(7, move_left, false)
+	await frames(2)
+	Game.set_setting("left_hand", true)
+	var left_bs: Dictionary = pad.buttons()
+	check("left_hand_action_cluster_mirrors", left_bs["attack"]["pos"].x < pad.size.x * 0.5 and left_bs["ult"]["pos"].x < pad.size.x * 0.5)
+	p.shove_cd = 0.0
+	p.stamina = 100.0
+	p.attacking = 0.0
+	n = p.sig_uses
+	var left_shove := pad.get_global_transform_with_canvas() * left_bs["shove"]["pos"]
+	touch(8, left_shove, true)
+	await frames(2)
+	touch(8, left_shove, false)
+	check("left_hand_action_button_works", p.sig_uses == n + 1)
+	var move_right := pad.get_global_transform_with_canvas() * Vector2(pad.size.x - 100, pad.size.y - 100)
+	touch(9, move_right, true)
+	await frames(2)
+	check("left_hand_movement_starts_on_right", pad.joy_id == 9)
+	touch(9, move_right, false)
+	await frames(2)
+	check("left_hand_cluster_stays_on_screen", left_bs.values().all(func(b): return b["pos"].x >= 0.0 and b["pos"].x <= pad.size.x))
+	Game.set_setting("left_hand", false)
 
 	print("STEALTHTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit()
