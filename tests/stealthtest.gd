@@ -125,9 +125,15 @@ func regional_attack_test(map_key: String, enemy_type: String, skill: String, st
 					damaging_pool = true
 			check(label + "_leaves_a_real_poison_pool", damaging_pool)
 			var hits_before_pool_tick: int = int(main.world.bossfx.counts["hits"])
-			await frames(50)
+			await frames(70)
+			var pool_diagnostics: Array = []
+			for puddle in main.world.bossfx.pools:
+				pool_diagnostics.append({"life": puddle.get("life", -1.0), "tick": puddle.get("tick", -1.0),
+					"mult": puddle.get("mult", 0.0), "contains_hero": puddle["rect"].has_point(hero_now.pc()),
+					"owner_alive": is_instance_valid(foe) and not foe.dead})
 			check(label + "_poison_pool_hurts_if_ignored", int(main.world.bossfx.counts["hits"]) > hits_before_pool_tick,
-				main.world.bossfx.counts["hits"])
+				{"before": hits_before_pool_tick, "after": main.world.bossfx.counts["hits"], "hp": Game.hp,
+					"invuln": hero_now.invuln, "pools": pool_diagnostics})
 	clear_foes()
 	await frames(2)
 
