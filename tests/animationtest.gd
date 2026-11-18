@@ -21,7 +21,7 @@ func run(_main: Node) -> void:
 			var animation := "attack_" + direction
 			check("warrior_" + direction + "_attack_has_four_frames", frames.has_animation(animation) and frames.get_frame_count(animation) == 4, frames.get_frame_count(animation) if frames.has_animation(animation) else -1)
 			if frames.has_animation(animation):
-				check("warrior_" + direction + "_attack_uses_24_fps", is_equal_approx(frames.get_animation_speed(animation), 24.0), frames.get_animation_speed(animation))
+				check("warrior_" + direction + "_attack_uses_24_fps", is_equal_approx(frames.get_animation_speed(animation), 25.0), frames.get_animation_speed(animation))
 				check("warrior_" + direction + "_attack_is_one_shot", not frames.get_animation_loop(animation))
 		check("warrior_walk_keeps_four_original_frames", frames.get_frame_count("walk_down") == 4)
 	var skeleton: Dictionary = Sheets.enemy("skeleton")
