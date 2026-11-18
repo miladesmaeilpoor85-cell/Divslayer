@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: creative-tools-\${{ github.ref }}
+  group: creative-tools-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
