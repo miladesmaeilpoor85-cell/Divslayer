@@ -3,7 +3,16 @@ name: Android QA APK
 on:
   push:
     branches:
-      - "qa/android-apk"
+      - "main"
+    paths:
+      - ".github/workflows/android-qa-apk.yml"
+      - "ci/android-qa-export-presets.cfg"
+      - "project.godot"
+      - "icon.png"
+      - "assets/**"
+      - "data/**"
+      - "scenes/**"
+      - "scripts/**"
   workflow_dispatch:
 
 permissions:
