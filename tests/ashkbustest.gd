@@ -58,7 +58,7 @@ func run(m: Node) -> void:
 	var marks: Array = []
 	for i in range(tele_before, bfx.tele.size()):
 		marks.append(bfx.tele[i])
-	var marks_ok := marks.size() == 3 and boss.moves.get("arrowfall", 0) == 1
+	var marks_ok: bool = marks.size() == 3 and boss.moves.get("arrowfall", 0) == 1
 	if marks.size() == 3:
 		for mark in marks:
 			marks_ok = marks_ok and str(mark.get("kind", "")) == "circle"
@@ -71,7 +71,7 @@ func run(m: Node) -> void:
 	# The space between neighboring impact circles is wide enough to stand in safely.
 	var side: Vector2 = direction.normalized().orthogonal()
 	p.global_position = feet + side * 56.0
-	var gap_safe := true
+	var gap_safe: bool = true
 	for mark in marks:
 		gap_safe = gap_safe and not bfx.in_circle(mark)
 	check("ashkbus_arrowfall_leaves_a_walkable_gap", gap_safe)
@@ -89,7 +89,7 @@ func run(m: Node) -> void:
 		var fire: Callable = mark["fire"]
 		fire.call(mark)
 	var new_lobs: Array = bfx.lobs.slice(lobs_before_cancel)
-	var arrows_ok := new_lobs.size() == 3
+	var arrows_ok: bool = new_lobs.size() == 3
 	if new_lobs.size() == 3:
 		for lob in new_lobs:
 			arrows_ok = arrows_ok and str(lob.get("img", "")) == "arrow"
