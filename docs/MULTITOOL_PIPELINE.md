@@ -14,7 +14,7 @@ The game owner does not need to install or operate desktop tools. These pinned t
 | Engine validation | Godot 4.7.2 headless | Imports resources and runs the project's full automated gameplay test suite |
 | Android packaging | Android SDK / Godot export / `apksigner` | Exports the isolated QA APK and verifies its Android package/signature |
 
-Tool versions for gdtoolkit, Ruff, and Pillow are explicitly pinned so CI does not silently upgrade its linters or image-decoding library. FFmpeg is installed from the Ubuntu 24.04 runner's package repository; its version is printed in each run.
+Tool versions for gdtoolkit, Ruff, and Pillow are explicitly pinned so CI does not silently upgrade its linters or image-decoding library. PyAV 19.0.2 is installed as a pinned binary wheel with bundled FFmpeg libraries; the PyAV and linked FFmpeg library versions are written into each report.
 
 ## Reports
 
@@ -27,7 +27,7 @@ The map previews are design-review evidence, not proof of good playability. The 
 ## Safety and scope
 
 - Image processing in CI is read-only: it does not rewrite source images or Godot imports.
-- FFmpeg checks are read-only: they do not normalize, trim, or replace the game's audio.
+- PyAV/FFmpeg checks are read-only: they do not normalize, trim, or replace the game's audio.
 - The existing `tools/optimize_png.py` can perform pixel-preserving PNG compression, but it is deliberately not run automatically. A future optimization batch must be measured, pixel-compared, reviewed, and submitted separately.
 - No new music is generated or imported by this workflow. Existing soundtrack commercial-use evidence remains an open legal/provenance review; a successful decode is not proof of usage rights.
 - Godot gameplay, Android QA export, and physical-device testing remain separate gates. A green toolchain run is not a production release approval.
