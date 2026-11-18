@@ -1,5 +1,12 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## 0.41.0 — Venom's ranged hunt (شکار دوربرد زهرآگین)
+- Venom elites now alternate a slow, dodgeable poison spit with a marked ground trap.
+- The trap displays a growing danger circle for 0.9 seconds; leaving the marked area avoids its burst, while the resulting poison pool remains dangerous for 2.8 seconds.
+- Hitting or interrupting the elite during the trap warning cancels the pending pool.
+- The new attacks are limited to Venom elite variants and reuse the existing projectile, telegraph and poison-hazard systems.
+- Expanded elite tests cover the warning, dodge, pool, interruption and poison projectile.
+
 ## 0.40.0 — Venom in the poison lands (زهر در سرزمین‌های زهرآلود)
 - Added the Venom elite variant to Shadowfen, Damavand and Zahhak's Cave. It remains out of the ordinary elite pool in other regions.
 - Venom elites are visibly marked with a green aura and apply poison when their contact attack damages the hero.
