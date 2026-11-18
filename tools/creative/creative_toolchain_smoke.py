@@ -275,7 +275,7 @@ def native_source_inventory() -> dict[str, int]:
         check=True,
         capture_output=True,
         text=True,
-    ).stdout.split("\\0")
+    ).stdout.split("\0")
     suffixes = [Path(item).suffix.lower() for item in tracked if item]
     return {
         "krita": suffixes.count(".kra"),
