@@ -1,0 +1,55 @@
+name: Godot CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  headless-tests:
+    name: Godot 4.7.2 headless tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download and verify Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          expected="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --silent --show-error "$url" --output "$RUNNER_TEMP/godot.zip"
+          echo "$expected  $RUNNER_TEMP/godot.zip" | sha256sum --check -
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64"
+          ln -s "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64" "$RUNNER_TEMP/godot/godot"
+          echo "$RUNNER_TEMP/godot" >> "$GITHUB_PATH"
+
+      - name: Check Python tool syntax and audio metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/*.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("data/audio_credits.json").read_text(encoding="utf-8"))
+          assert len(data.get("music", [])) == 30, "Expected 30 soundtrack entries"
+          assert len(data.get("ambience", [])) == 6, "Expected 6 ambience entries"
+          assert len(data.get("sfx", [])) == 8, "Expected 8 sound-effect entries"
+          assert all(item.get("license", "").startswith("Suno") for item in data["music"])
+          PY
+
+      - name: Import project and parse Godot resources
+        run: godot --headless --editor --path . --quit
+
+      - name: Run complete headless test suite
+        run: bash tools/run_all_tests.sh ci
