@@ -1,5 +1,13 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## 0.39.0 — Each region fights differently (هر منطقه شیوهٔ نبرد خودش را دارد)
+- Shadowfen mosquitoes mark a poison-splash zone that leaves a brief hazardous pool.
+- Emberforge cinderhounds warn along a fiery charge lane before applying burn.
+- Frostvale frostwolves mark a rime-pounce circle that can briefly freeze the hero.
+- Serpent guards in Damavand and Zahhak's Cave telegraph a narrow venom lash.
+- Regional attacks have clear ground warnings, cooldowns, and are canceled if the attacker is stunned or interrupted. A moving or dodging hero can avoid the impact.
+- Added automated tests for all four regional moves, status effects, and interruption safety.
+
 ## 0.38.0 — Enemies fight as a pack (دشمنان گروهی می‌جنگند)
 - When one foe spots the hero, nearby allies hear the alarm and join the hunt for a short, local window. Stealth still works against distant groups.
 - Nearby ranged foes take turns firing instead of stacking their projectiles at once.
