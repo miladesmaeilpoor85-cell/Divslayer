@@ -46,7 +46,7 @@ jobs:
             update; then
             echo "::warning::apt index refresh did not finish; continuing with runner-cached indexes"
           fi
-          timeout 300s sudo apt-get --quiet install --yes --no-install-recommends \
+          timeout 900s sudo apt-get --quiet install --yes --no-install-recommends \
             -o Dpkg::Use-Pty=0 \
             -o Acquire::ForceIPv4=true \
             -o Acquire::Retries=1 \
