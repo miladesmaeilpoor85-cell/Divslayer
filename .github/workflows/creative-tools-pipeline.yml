@@ -36,14 +36,18 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           # Bound network stalls and retry transient package mirror failures.
-          timeout 600s sudo apt-get --quiet \
-            -o Acquire::Retries=3 \
-            -o Acquire::http::Timeout=45 \
-            -o Acquire::https::Timeout=45 \
-            update
-          timeout 900s sudo apt-get --quiet install --yes --no-install-recommends \
+          # Refresh indexes, but don't let a slow mirror block the creative smoke tests.
+          if ! timeout 120s sudo apt-get --quiet \
+            -o Acquire::Retries=1 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 \
+            -o Acquire::Languages=none \
+            update; then
+            echo "::warning::apt index refresh did not finish; continuing with runner-cached indexes"
+          fi
+          timeout 600s sudo apt-get --quiet install --yes --no-install-recommends \
             -o Dpkg::Use-Pty=0 \
-            -o Acquire::Retries=3 \
+            -o Acquire::Retries=2 \
             -o Acquire::http::Timeout=45 \
             -o Acquire::https::Timeout=45 \
             audacity blender krita lmms xvfb xauth
