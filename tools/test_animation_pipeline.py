@@ -38,6 +38,20 @@ class AnimationPipelineTests(unittest.TestCase):
                 with Image.open(output / preview) as gif:
                     self.assertEqual(gif.n_frames, 4)
 
+
+    def test_validates_and_previews_the_tracked_editable_atlas(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            report = build_animation(CONFIG, output)
+            self.assertEqual(report["status"], "passed")
+            self.assertEqual(report["total_frames"], 12)
+            self.assertEqual(report["asset_dimensions"], [640, 468])
+            self.assertEqual(report["fps"], 25)
+            self.assertEqual(report["directions"], ["down", "up", "side"])
+            for preview in report["previews"]:
+                with Image.open(output / preview) as gif:
+                    self.assertEqual(gif.n_frames, 4)
+
     def test_build_is_deterministic(self) -> None:
         with tempfile.TemporaryDirectory() as first, tempfile.TemporaryDirectory() as second:
             one = build_animation(CONFIG, Path(first))
