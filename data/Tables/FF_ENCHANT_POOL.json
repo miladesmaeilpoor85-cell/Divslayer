@@ -1,0 +1,62 @@
+[
+ {
+  "key": "atk",
+  "val": 4,
+  "en": "+4 ATK",
+  "fa": "+۴ حمله"
+ },
+ {
+  "key": "def",
+  "val": 3,
+  "en": "+3 DEF",
+  "fa": "+۳ دفاع"
+ },
+ {
+  "key": "hpMax",
+  "val": 18,
+  "en": "+18 Max HP",
+  "fa": "+۱۸ بیشترین جان"
+ },
+ {
+  "key": "mpMax",
+  "val": 8,
+  "en": "+8 Max MP",
+  "fa": "+۸ بیشترین مانا"
+ },
+ {
+  "key": "crit",
+  "val": 0.07,
+  "en": "+7% Crit",
+  "fa": "+۷٪ ضربهٔ کاری"
+ },
+ {
+  "key": "speed",
+  "val": 0.2,
+  "en": "+7% Speed",
+  "fa": "+۷٪ سرعت"
+ },
+ {
+  "key": "lifesteal",
+  "val": 0.06,
+  "en": "+6% Lifesteal",
+  "fa": "+۶٪ مکش جان"
+ },
+ {
+  "key": "stamMax",
+  "val": 15,
+  "en": "+15 Stamina",
+  "fa": "+۱۵ توان"
+ },
+ {
+  "key": "hpRegen",
+  "val": 0.4,
+  "en": "+0.4 HP/s",
+  "fa": "+۰٫۴ جان در ثانیه"
+ },
+ {
+  "key": "dashCd",
+  "val": 0.15,
+  "en": "-15% Dash CD",
+  "fa": "−۱۵٪ زمان خیز"
+ }
+]

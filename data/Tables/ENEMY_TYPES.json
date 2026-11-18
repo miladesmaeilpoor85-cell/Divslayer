@@ -1,0 +1,592 @@
+{
+ "slime": {
+  "w": 24,
+  "h": 20,
+  "hp": 14,
+  "dmg": 3,
+  "speed": 1,
+  "xp": 8,
+  "gold": 3,
+  "color": "#5b4030",
+  "name": "Boar of Arman"
+ },
+ "skeleton": {
+  "w": 26,
+  "h": 36,
+  "hp": 26,
+  "dmg": 6,
+  "speed": 1.35,
+  "xp": 16,
+  "gold": 6,
+  "color": "#7c88a8",
+  "name": "Div of Mazandaran"
+ },
+ "archer": {
+  "w": 24,
+  "h": 34,
+  "hp": 20,
+  "dmg": 5,
+  "speed": 0.95,
+  "xp": 18,
+  "gold": 8,
+  "color": "#5e4a6e",
+  "name": "Archer of Mazandaran"
+ },
+ "wraith": {
+  "w": 28,
+  "h": 38,
+  "hp": 34,
+  "dmg": 8,
+  "speed": 1.1,
+  "xp": 24,
+  "gold": 12,
+  "color": "#5a3a78",
+  "name": "Sorcerer of Mazandaran",
+  "canTeleport": true
+ },
+ "bat": {
+  "w": 22,
+  "h": 16,
+  "hp": 10,
+  "dmg": 4,
+  "speed": 2.15,
+  "xp": 10,
+  "gold": 4,
+  "color": "#8a6a40",
+  "name": "Eagle of Kavus"
+ },
+ "imp": {
+  "w": 20,
+  "h": 24,
+  "hp": 18,
+  "dmg": 6,
+  "speed": 1.05,
+  "xp": 22,
+  "gold": 10,
+  "color": "#e0602a",
+  "name": "Ember Imp"
+ },
+ "golem": {
+  "w": 36,
+  "h": 40,
+  "hp": 70,
+  "dmg": 14,
+  "speed": 0.55,
+  "xp": 45,
+  "gold": 26,
+  "color": "#e6e1d8",
+  "name": "Raging White Elephant",
+  "knockMult": 0.15
+ },
+ "boss": {
+  "w": 48,
+  "h": 58,
+  "hp": 120,
+  "dmg": 12,
+  "speed": 0.9,
+  "xp": 150,
+  "gold": 80,
+  "color": "#8a2e2e",
+  "name": "Arzhang the Div",
+  "knockMult": 0.25,
+  "boss": true
+ },
+ "boss2": {
+  "w": 56,
+  "h": 66,
+  "hp": 280,
+  "dmg": 16,
+  "speed": 0.75,
+  "xp": 400,
+  "gold": 220,
+  "color": "#3a2c28",
+  "name": "King of Mazandaran",
+  "knockMult": 0.2,
+  "boss": true
+ },
+ "mosquito": {
+  "w": 18,
+  "h": 14,
+  "hp": 8,
+  "dmg": 3,
+  "speed": 1.7,
+  "xp": 8,
+  "gold": 2,
+  "color": "#9ad060",
+  "name": "Sorcerous Pari",
+  "applies": {
+   "poison": 2
+  }
+ },
+ "toad": {
+  "w": 30,
+  "h": 24,
+  "hp": 22,
+  "dmg": 5,
+  "speed": 0.85,
+  "xp": 14,
+  "gold": 5,
+  "color": "#6a7a3a",
+  "name": "Swamp Nahang",
+  "canLeap": true
+ },
+ "lurker": {
+  "w": 32,
+  "h": 32,
+  "hp": 42,
+  "dmg": 9,
+  "speed": 0.7,
+  "xp": 32,
+  "gold": 14,
+  "color": "#56702e",
+  "name": "Swamp Div",
+  "knockMult": 0.4,
+  "ranged": true,
+  "applies": {
+   "poison": 3
+  }
+ },
+ "wisp": {
+  "w": 20,
+  "h": 20,
+  "hp": 18,
+  "dmg": 7,
+  "speed": 1.3,
+  "xp": 18,
+  "gold": 8,
+  "color": "#a8e8c0",
+  "name": "Spark of Ahriman",
+  "isWisp": true,
+  "applies": {
+   "stun": 1
+  }
+ },
+ "toadking": {
+  "w": 44,
+  "h": 38,
+  "hp": 90,
+  "dmg": 11,
+  "speed": 0.9,
+  "xp": 90,
+  "gold": 50,
+  "color": "#3a6a2a",
+  "name": "Bid the Div",
+  "knockMult": 0.5,
+  "canLeap": true,
+  "miniboss": true,
+  "applies": {
+   "poison": 3
+  }
+ },
+ "matriarch": {
+  "w": 64,
+  "h": 80,
+  "hp": 340,
+  "dmg": 18,
+  "speed": 0.7,
+  "xp": 500,
+  "gold": 300,
+  "color": "#2a4a2a",
+  "name": "The Sorceress",
+  "knockMult": 0.15,
+  "boss": true,
+  "applies": {
+   "poison": 4
+  }
+ },
+ "iceling": {
+  "w": 22,
+  "h": 20,
+  "hp": 16,
+  "dmg": 4,
+  "speed": 1.1,
+  "xp": 14,
+  "gold": 5,
+  "color": "#a8d8f4",
+  "name": "Bazur's Hail",
+  "applies": {
+   "freeze": 2
+  }
+ },
+ "frostknight": {
+  "w": 28,
+  "h": 38,
+  "hp": 46,
+  "dmg": 8,
+  "speed": 0.95,
+  "xp": 30,
+  "gold": 14,
+  "color": "#b8c8dc",
+  "name": "Frozen Soldier",
+  "knockMult": 0.6,
+  "applies": {
+   "freeze": 2
+  }
+ },
+ "crystalSpider": {
+  "w": 26,
+  "h": 22,
+  "hp": 24,
+  "dmg": 6,
+  "speed": 1.8,
+  "xp": 22,
+  "gold": 9,
+  "color": "#d8a440",
+  "name": "Lion of the Seven Labours",
+  "isWisp": true
+ },
+ "icegolem": {
+  "w": 36,
+  "h": 40,
+  "hp": 80,
+  "dmg": 12,
+  "speed": 0.5,
+  "xp": 50,
+  "gold": 30,
+  "color": "#a8c8ec",
+  "name": "Ice Div",
+  "knockMult": 0.15,
+  "ranged": true,
+  "applies": {
+   "freeze": 3
+  }
+ },
+ "arbiter": {
+  "w": 54,
+  "h": 64,
+  "hp": 300,
+  "dmg": 15,
+  "speed": 0.85,
+  "xp": 450,
+  "gold": 280,
+  "color": "#3a5a8a",
+  "name": "The White Div",
+  "knockMult": 0.2,
+  "boss": true,
+  "applies": {
+   "freeze": 3
+  }
+ },
+ "ancientwyrm": {
+  "w": 70,
+  "h": 80,
+  "hp": 520,
+  "dmg": 22,
+  "speed": 1,
+  "xp": 2000,
+  "gold": 900,
+  "color": "#1a3a4a",
+  "name": "The Dragon of Kashaf",
+  "knockMult": 0.1,
+  "boss": true,
+  "applies": {
+   "burn": 4
+  }
+ },
+ "cinderhound": {
+  "w": 30,
+  "h": 22,
+  "hp": 26,
+  "dmg": 7,
+  "speed": 2,
+  "xp": 26,
+  "gold": 11,
+  "color": "#e0702a",
+  "name": "Ember Leopard",
+  "applies": {
+   "burn": 2
+  }
+ },
+ "slagbrute": {
+  "w": 34,
+  "h": 40,
+  "hp": 64,
+  "dmg": 12,
+  "speed": 0.62,
+  "xp": 46,
+  "gold": 24,
+  "color": "#b0503a",
+  "name": "Brick-Hurling Div",
+  "knockMult": 0.25,
+  "ranged": true
+ },
+ "bellowdrone": {
+  "w": 24,
+  "h": 24,
+  "hp": 30,
+  "dmg": 5,
+  "speed": 1.25,
+  "xp": 30,
+  "gold": 16,
+  "color": "#d8602a",
+  "name": "Bellows Div",
+  "isWisp": true
+ },
+ "moltencore": {
+  "w": 26,
+  "h": 26,
+  "hp": 34,
+  "dmg": 8,
+  "speed": 0.95,
+  "xp": 34,
+  "gold": 15,
+  "color": "#ff8a30",
+  "name": "Stone of Hushang",
+  "applies": {
+   "burn": 3
+  }
+ },
+ "anvilward": {
+  "w": 46,
+  "h": 50,
+  "hp": 190,
+  "dmg": 15,
+  "speed": 0.8,
+  "xp": 180,
+  "gold": 110,
+  "color": "#8a6a4a",
+  "name": "Pulad of Ghandi",
+  "knockMult": 0.2,
+  "miniboss": true
+ },
+ "ignarok": {
+  "w": 72,
+  "h": 84,
+  "hp": 640,
+  "dmg": 24,
+  "speed": 0.95,
+  "xp": 1100,
+  "gold": 800,
+  "color": "#a82f1e",
+  "name": "Puladvand, the First Flame",
+  "knockMult": 0.08,
+  "boss": true,
+  "applies": {
+   "burn": 5
+  }
+ },
+ "bandit": {
+  "w": 24,
+  "h": 34,
+  "hp": 34,
+  "dmg": 7,
+  "speed": 1.3,
+  "xp": 24,
+  "gold": 14,
+  "color": "#a0482e",
+  "name": "Turanian Raider"
+ },
+ "banditArcher": {
+  "w": 24,
+  "h": 34,
+  "hp": 26,
+  "dmg": 6,
+  "speed": 1.05,
+  "xp": 26,
+  "gold": 14,
+  "color": "#4a6a3a",
+  "name": "Turanian Archer"
+ },
+ "captain": {
+  "w": 28,
+  "h": 38,
+  "hp": 160,
+  "dmg": 12,
+  "speed": 1.15,
+  "xp": 150,
+  "gold": 90,
+  "color": "#9a2a1e",
+  "name": "Ashkbus of Kushan",
+  "knockMult": 0.4
+ },
+ "gravepillar": {
+  "w": 30,
+  "h": 40,
+  "hp": 60,
+  "dmg": 0,
+  "speed": 0,
+  "xp": 0,
+  "gold": 0,
+  "color": "#5a4a7a",
+  "name": "Grave Pillar",
+  "knockMult": 0
+ },
+ "bogegg": {
+  "w": 22,
+  "h": 20,
+  "hp": 30,
+  "dmg": 0,
+  "speed": 0,
+  "xp": 0,
+  "gold": 0,
+  "color": "#8aa860",
+  "name": "Bog Egg",
+  "knockMult": 0
+ },
+ "arbiterclone": {
+  "w": 54,
+  "h": 64,
+  "hp": 1,
+  "dmg": 8,
+  "speed": 0.7,
+  "xp": 0,
+  "gold": 0,
+  "color": "#a8d4ff",
+  "name": "Ice Echo",
+  "knockMult": 0
+ },
+ "frostwolf": {
+  "w": 30,
+  "h": 22,
+  "hp": 30,
+  "dmg": 8,
+  "speed": 2.15,
+  "xp": 40,
+  "gold": 14,
+  "color": "#e4ecf2",
+  "name": "Wolf of the Seven Labours",
+  "applies": {
+   "freeze": 1
+  }
+ },
+ "rimewraith": {
+  "w": 28,
+  "h": 38,
+  "hp": 38,
+  "dmg": 9,
+  "speed": 1.0,
+  "xp": 46,
+  "gold": 18,
+  "color": "#c8dcf0",
+  "name": "Turanian Sorcerer",
+  "shoots": {
+   "every": 2.6,
+   "speed": 3.0,
+   "applies": "freeze",
+   "col": "#bfe6ff",
+   "range": 270,
+   "keep": 150,
+   "n": 1
+  }
+ },
+ "wyrmling": {
+  "w": 38,
+  "h": 44,
+  "hp": 46,
+  "dmg": 10,
+  "speed": 1.2,
+  "xp": 70,
+  "gold": 26,
+  "color": "#6a4ad0",
+  "knockMult": 0.6,
+  "name": "Wyrmling",
+  "applies": {
+   "freeze": 1
+  },
+  "shoots": {
+   "every": 3.8,
+   "speed": 3.2,
+   "applies": "freeze",
+   "col": "#9fd8ff",
+   "range": 240,
+   "keep": 110,
+   "n": 2
+  }
+ },
+ "glaciertitan": {
+  "w": 64,
+  "h": 70,
+  "hp": 260,
+  "dmg": 24,
+  "speed": 0.6,
+  "xp": 900,
+  "gold": 450,
+  "color": "#1d3f8a",
+  "name": "Akvan the Div",
+  "knockMult": 0.12,
+  "boss": true,
+  "applies": {
+   "freeze": 2
+  }
+ },
+ "serpentguard": {
+  "w": 24,
+  "h": 34,
+  "hp": 42,
+  "dmg": 9,
+  "speed": 1.35,
+  "xp": 70,
+  "gold": 26,
+  "color": "#3a5a32",
+  "name": "Serpent Guard",
+  "applies": {
+   "poison": 1
+  }
+ },
+ "serpentarcher": {
+  "w": 24,
+  "h": 34,
+  "hp": 32,
+  "dmg": 8,
+  "speed": 1.0,
+  "xp": 72,
+  "gold": 26,
+  "color": "#2f5a3e",
+  "name": "Serpent Archer",
+  "shoots": {
+   "every": 2.4,
+   "speed": 3.4,
+   "applies": "poison",
+   "col": "#9fe07a",
+   "range": 290,
+   "keep": 170,
+   "n": 1
+  }
+ },
+ "serpent": {
+  "w": 30,
+  "h": 20,
+  "hp": 36,
+  "dmg": 8,
+  "speed": 2.0,
+  "xp": 48,
+  "gold": 12,
+  "color": "#2a3a26",
+  "name": "Serpent",
+  "applies": {
+   "poison": 1
+  }
+ },
+ "kondrow": {
+  "w": 34,
+  "h": 46,
+  "hp": 240,
+  "dmg": 20,
+  "speed": 1.05,
+  "xp": 700,
+  "gold": 380,
+  "color": "#7a4aa0",
+  "name": "Kondrow",
+  "knockMult": 0.3,
+  "boss": true,
+  "applies": {
+   "poison": 1
+  }
+ },
+ "zahhak": {
+  "w": 60,
+  "h": 72,
+  "hp": 600,
+  "dmg": 26,
+  "speed": 0.7,
+  "xp": 2600,
+  "gold": 1200,
+  "color": "#5a3a7a",
+  "name": "Zahhak",
+  "knockMult": 0.1,
+  "boss": true,
+  "applies": {
+   "poison": 2
+  }
+ }
+}

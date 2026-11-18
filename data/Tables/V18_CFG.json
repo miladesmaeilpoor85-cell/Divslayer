@@ -1,0 +1,143 @@
+{
+ "boss": {
+  "name": [
+   "Arzhang the Div",
+   "ارژنگ دیو"
+  ],
+  "title": [
+   "Echo of the Sixth Labour",
+   "پژواکِ خوانِ ششم"
+  ],
+  "phases": [
+   0.66,
+   0.33
+  ],
+  "rework": true,
+  "rgb": "170,110,255"
+ },
+ "boss2": {
+  "name": [
+   "The King of Mazandaran",
+   "شاه مازندران"
+  ],
+  "title": [
+   "Heart of the Ashen Peaks",
+   "قلبِ قله‌های خاکستر"
+  ],
+  "phases": [
+   0.66,
+   0.33
+  ],
+  "rework": true,
+  "rgb": "255,120,40",
+  "weak": {
+   "freeze": 1.6
+  }
+ },
+ "matriarch": {
+  "name": [
+   "The Sorceress",
+   "زنِ جادو"
+  ],
+  "title": [
+   "Echo of the Fourth Labour",
+   "پژواکِ خوانِ چهارم"
+  ],
+  "phases": [
+   0.66,
+   0.33
+  ],
+  "rework": true,
+  "rgb": "120,220,90",
+  "weak": {
+   "burn": 1.4,
+   "stun": 1.4
+  }
+ },
+ "arbiter": {
+  "name": [
+   "The White Div",
+   "دیو سپید"
+  ],
+  "title": [
+   "Usurper of the Crystal Sanctum",
+   "غاصبِ معبدِ بلورین"
+  ],
+  "phases": [
+   0.66,
+   0.33
+  ],
+  "rework": true,
+  "rgb": "150,210,255",
+  "weak": {
+   "burn": 1.8
+  }
+ },
+ "ignarok": {
+  "name": [
+   "Puladvand, the First Flame",
+   "پولادوند، نخستین شعله"
+  ],
+  "title": [
+   "Lord of the Emberforge",
+   "سالارِ آهنگرخانهٔ اخگر"
+  ],
+  "rgb": "255,110,40",
+  "weak": {
+   "freeze": 1.6
+  }
+ },
+ "ancientwyrm": {
+  "name": [
+   "The Dragon of Kashaf",
+   "اژدهای کشف‌رود"
+  ],
+  "title": [
+   "Sleeper beneath the Sanctum",
+   "خفتهٔ زیر معبد"
+  ],
+  "rgb": "90,200,230"
+ },
+ "toadking": {
+  "name": [
+   "Bid the Div",
+   "دیو بید"
+  ],
+  "title": [
+   "Bully of the Bog",
+   "دیوِ مرداب"
+  ],
+  "mini": true,
+  "rgb": "140,210,90",
+  "weak": {
+   "stun": 1.4
+  }
+ },
+ "anvilward": {
+  "name": [
+   "Pulad of Ghandi",
+   "پولادِ غندی"
+  ],
+  "title": [
+   "Keeper of the Forge Gate",
+   "دربانِ دروازهٔ آهنگرخانه"
+  ],
+  "mini": true,
+  "rgb": "255,150,60",
+  "weak": {
+   "freeze": 1.4
+  }
+ },
+ "captain": {
+  "name": [
+   "Ashkbus of Kushan",
+   "اشکبوسِ کشانی"
+  ],
+  "title": [
+   "Chief of the Turanian Raiders",
+   "سردستهٔ راهزنانِ تورانی"
+  ],
+  "mini": true,
+  "rgb": "230,80,60"
+ }
+}

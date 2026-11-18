@@ -1,0 +1,594 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Trial Grounds",
+  "w": 1100,
+  "h": 760,
+  "bg": "#3d2922",
+  "walls": [
+   {
+    "x": 150,
+    "y": 150,
+    "w": 60,
+    "h": 60,
+    "color": "#3a2a20"
+   },
+   {
+    "x": 880,
+    "y": 150,
+    "w": 60,
+    "h": 60,
+    "color": "#3a2a20"
+   },
+   {
+    "x": 150,
+    "y": 540,
+    "w": 60,
+    "h": 60,
+    "color": "#3a2a20"
+   },
+   {
+    "x": 880,
+    "y": 540,
+    "w": 60,
+    "h": 60,
+    "color": "#3a2a20"
+   },
+   {
+    "x": 520,
+    "y": 110,
+    "w": 60,
+    "h": 50,
+    "color": "#3a2a20"
+   },
+   {
+    "x": 340,
+    "y": 350,
+    "w": 50,
+    "h": 50,
+    "color": "#3a2a20"
+   },
+   {
+    "x": 710,
+    "y": 350,
+    "w": 50,
+    "h": 50,
+    "color": "#3a2a20"
+   }
+  ],
+  "exits": [
+   {
+    "x": 500,
+    "y": 740,
+    "w": 100,
+    "h": 20,
+    "to": "village",
+    "spawnX": 420,
+    "spawnY": 500,
+    "dir": "down"
+   }
+  ],
+  "hazards": [],
+  "traps": [],
+  "npcs": [],
+  "enemySpawns": [],
+  "items": [],
+  "playerStart": null
+ },
+ "objects": [
+  {
+   "sprite": "column_128",
+   "x": 180,
+   "y": 210,
+   "sort": 210,
+   "kind": "column",
+   "isWall": true,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "column_129",
+   "x": 910,
+   "y": 210,
+   "sort": 210,
+   "kind": "column",
+   "isWall": true,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "column_130",
+   "x": 180,
+   "y": 600,
+   "sort": 600,
+   "kind": "column",
+   "isWall": true,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "column_131",
+   "x": 910,
+   "y": 600,
+   "sort": 600,
+   "kind": "column",
+   "isWall": true,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "column_132",
+   "x": 550,
+   "y": 160,
+   "sort": 160,
+   "kind": "column",
+   "isWall": true,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "column_133",
+   "x": 365,
+   "y": 400,
+   "sort": 400,
+   "kind": "column",
+   "isWall": true,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "column_134",
+   "x": 735,
+   "y": 400,
+   "sort": 400,
+   "kind": "column",
+   "isWall": true,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "banner_135",
+   "x": 300,
+   "y": 40,
+   "sort": 40,
+   "kind": "banner",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "banner_135",
+   "x": 800,
+   "y": 40,
+   "sort": 40,
+   "kind": "banner",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_136",
+   "x": 100,
+   "y": 380,
+   "sort": 380,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_136",
+   "x": 1000,
+   "y": 380,
+   "sort": 380,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_136",
+   "x": 550,
+   "y": 720,
+   "sort": 720,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 6.297180339694023,
+   "y": 10.311163405887783,
+   "sort": 10.311163405887783,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 7.075624842196703,
+   "y": 764.1130731939338,
+   "sort": 764.1130731939338,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 128.73774793208577,
+   "y": 8.163435405120254,
+   "sort": 8.163435405120254,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 132.6937975755427,
+   "y": 760.1106631774455,
+   "sort": 760.1106631774455,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 273.47310190438293,
+   "y": 6.784551277756691,
+   "sort": 6.784551277756691,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 277.50896975188516,
+   "y": 760.0405288357288,
+   "sort": 760.0405288357288,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 362.34648053417914,
+   "y": 7.876882449258119,
+   "sort": 7.876882449258119,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 362.68171732942574,
+   "y": 760.7285716426559,
+   "sort": 760.7285716426559,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 480.0112460292876,
+   "y": 5.754575314000249,
+   "sort": 5.754575314000249,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 574.1350918463431,
+   "y": 12.6946971276775,
+   "sort": 12.6946971276775,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 685.8058690836187,
+   "y": 11.331049378961325,
+   "sort": 11.331049378961325,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 693.422649819171,
+   "y": 764.0111996461637,
+   "sort": 764.0111996461637,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 797.9204634875059,
+   "y": 10.84783582855016,
+   "sort": 10.84783582855016,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 786.9580645561218,
+   "y": 761.6958515211008,
+   "sort": 761.6958515211008,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 888.1340066958219,
+   "y": 5.243674963247031,
+   "sort": 5.243674963247031,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 895.4768773149699,
+   "y": 757.4428046471439,
+   "sort": 757.4428046471439,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 1011.5304990401492,
+   "y": 6.549986196681857,
+   "sort": 6.549986196681857,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 1007.2467926023528,
+   "y": 760.3992406595498,
+   "sort": 760.3992406595498,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": -1.6477567730471492,
+   "y": 51.79349516052753,
+   "sort": 51.79349516052753,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 1099.0564943845384,
+   "y": 52.91338725015521,
+   "sort": 52.91338725015521,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 7.138897783588618,
+   "y": 162.61781374062411,
+   "sort": 162.61781374062411,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 1088.5461460682563,
+   "y": 164.16072711418383,
+   "sort": 164.16072711418383,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 5.379895142279565,
+   "y": 275.99736691243015,
+   "sort": 275.99736691243015,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 1085.5954511580057,
+   "y": 283.22298069973476,
+   "sort": 283.22298069973476,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 14.04223591182381,
+   "y": 372.8114122732077,
+   "sort": 372.8114122732077,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 1086.9920136607252,
+   "y": 374.83104829885997,
+   "sort": 374.83104829885997,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 15.937665553763509,
+   "y": 485.37170945014805,
+   "sort": 485.37170945014805,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 1099.5015412745997,
+   "y": 488.3190413825214,
+   "sort": 488.3190413825214,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 9.427496385294944,
+   "y": 610.0675140717067,
+   "sort": 610.0675140717067,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 1093.0332392957062,
+   "y": 604.2585506360047,
+   "sort": 604.2585506360047,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 11.317354870028794,
+   "y": 700.5554102740716,
+   "sort": 700.5554102740716,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 1088.1289545102045,
+   "y": 705.3056740208995,
+   "sort": 705.3056740208995,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [
+  {
+   "x": 180,
+   "y": 106,
+   "r": 170,
+   "i": 0.85,
+   "c": "#ffa050"
+  },
+  {
+   "x": 910,
+   "y": 106,
+   "r": 170,
+   "i": 0.85,
+   "c": "#ffa050"
+  },
+  {
+   "x": 180,
+   "y": 496,
+   "r": 170,
+   "i": 0.85,
+   "c": "#ffa050"
+  },
+  {
+   "x": 910,
+   "y": 496,
+   "r": 170,
+   "i": 0.85,
+   "c": "#ffa050"
+  },
+  {
+   "x": 550,
+   "y": 66,
+   "r": 170,
+   "i": 0.85,
+   "c": "#ffa050"
+  },
+  {
+   "x": 365,
+   "y": 306,
+   "r": 170,
+   "i": 0.85,
+   "c": "#ffa050"
+  },
+  {
+   "x": 735,
+   "y": 306,
+   "r": 170,
+   "i": 0.85,
+   "c": "#ffa050"
+  },
+  {
+   "x": 100,
+   "y": 356,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  },
+  {
+   "x": 1000,
+   "y": 356,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  },
+  {
+   "x": 550,
+   "y": 696,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  }
+ ],
+ "grass": null,
+ "v16objs": []
+}

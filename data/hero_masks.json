@@ -1,0 +1,38 @@
+{
+ "mage_endgame": {
+  "key": 0.1388
+ },
+ "mage_mid": {
+  "key": 0.2322
+ },
+ "mage_starter": {
+  "key": 0.266
+ },
+ "paladin_endgame": {
+  "key": 0.574
+ },
+ "paladin_mid": {
+  "key": 0.6132
+ },
+ "paladin_starter": {
+  "key": 0.5286
+ },
+ "rogue_endgame": {
+  "key": 0.1997
+ },
+ "rogue_mid": {
+  "key": 0.2625
+ },
+ "rogue_starter": {
+  "key": 0.3317
+ },
+ "warrior_endgame": {
+  "key": 0.243
+ },
+ "warrior_mid": {
+  "key": 0.2918
+ },
+ "warrior_starter": {
+  "key": 0.292
+ }
+}

@@ -1,0 +1,587 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Shrine of Embers",
+  "w": 680,
+  "h": 520,
+  "bg": "#4c5644",
+  "walls": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 680,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 400,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 160,
+    "w": 40,
+    "h": 240,
+    "color": "#3a3640"
+   },
+   {
+    "x": 640,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 160,
+    "y": 240,
+    "w": 40,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 400,
+    "y": 240,
+    "w": 40,
+    "h": 120,
+    "color": "#3a3640"
+   },
+   {
+    "x": 120,
+    "y": 320,
+    "w": 80,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 120,
+    "y": 360,
+    "w": 40,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 400,
+    "w": 160,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 440,
+    "w": 40,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   }
+  ],
+  "exits": [
+   {
+    "x": 320,
+    "y": 506,
+    "w": 40,
+    "h": 14,
+    "to": "forest",
+    "spawnX": 317,
+    "spawnY": 462,
+    "dir": "down"
+   }
+  ],
+  "hazards": [],
+  "traps": [],
+  "npcs": [],
+  "enemySpawns": [],
+  "items": [],
+  "playerStart": {
+   "x": 327,
+   "y": 443
+  },
+  "v16shrine": true
+ },
+ "objects": [
+  {
+   "sprite": "shrinewall_161",
+   "x": 340,
+   "y": 40,
+   "sort": 40,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_162",
+   "x": 140,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_163",
+   "x": 540,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_164",
+   "x": 160,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_165",
+   "x": 520,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_166",
+   "x": 20,
+   "y": 400,
+   "sort": 400,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_167",
+   "x": 660,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_168",
+   "x": 180,
+   "y": 320,
+   "sort": 320,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_169",
+   "x": 420,
+   "y": 360,
+   "sort": 360,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_170",
+   "x": 160,
+   "y": 360,
+   "sort": 360,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_171",
+   "x": 140,
+   "y": 400,
+   "sort": 400,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_172",
+   "x": 80,
+   "y": 440,
+   "sort": 440,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_173",
+   "x": 20,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_174",
+   "x": 160,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_175",
+   "x": 520,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "altar",
+   "id": "altar",
+   "cx": 8,
+   "cy": 1,
+   "x": 322,
+   "y": 46,
+   "w": 36,
+   "h": 30,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 322,
+    "y": 46
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "door",
+   "id": "door",
+   "cx": 8,
+   "cy": 3,
+   "needs": [
+    "f0",
+    "f1",
+    "f2"
+   ],
+   "x": 320,
+   "y": 120,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 320,
+    "y": 120
+   },
+   "mapKey": "shrine_embers",
+   "open": false,
+   "openK": 0
+  },
+  {
+   "t": "brazier",
+   "id": "f0",
+   "cx": 4,
+   "cy": 4,
+   "x": 166,
+   "y": 170,
+   "w": 28,
+   "h": 26,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 166,
+    "y": 170
+   },
+   "mapKey": "shrine_embers",
+   "lit": false
+  },
+  {
+   "t": "water",
+   "cx": 13,
+   "cy": 4,
+   "x": 520,
+   "y": 160,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 520,
+    "y": 160
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "water",
+   "cx": 14,
+   "cy": 4,
+   "x": 560,
+   "y": 160,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 560,
+    "y": 160
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "brazier",
+   "id": "f1",
+   "cx": 15,
+   "cy": 4,
+   "x": 606,
+   "y": 170,
+   "w": 28,
+   "h": 26,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 606,
+    "y": 170
+   },
+   "mapKey": "shrine_embers",
+   "lit": false
+  },
+  {
+   "t": "water",
+   "cx": 13,
+   "cy": 5,
+   "x": 520,
+   "y": 200,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 520,
+    "y": 200
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "water",
+   "cx": 14,
+   "cy": 5,
+   "x": 560,
+   "y": 200,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 560,
+    "y": 200
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "water",
+   "cx": 15,
+   "cy": 5,
+   "x": 600,
+   "y": 200,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 600,
+    "y": 200
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "water",
+   "cx": 13,
+   "cy": 6,
+   "x": 520,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 520,
+    "y": 240
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "water",
+   "cx": 14,
+   "cy": 6,
+   "x": 560,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 560,
+    "y": 240
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "water",
+   "cx": 15,
+   "cy": 6,
+   "x": 600,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 600,
+    "y": 240
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "bramble",
+   "id": "br0",
+   "cx": 1,
+   "cy": 7,
+   "x": 40,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 40,
+    "y": 280
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "bramble",
+   "id": "br1",
+   "cx": 2,
+   "cy": 7,
+   "x": 80,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 80,
+    "y": 280
+   },
+   "mapKey": "shrine_embers"
+  },
+  {
+   "t": "brazier",
+   "id": "f2",
+   "cx": 1,
+   "cy": 9,
+   "x": 46,
+   "y": 370,
+   "w": 28,
+   "h": 26,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 46,
+    "y": 370
+   },
+   "mapKey": "shrine_embers",
+   "lit": false
+  },
+  {
+   "t": "tablet",
+   "en": "Strike the eternal flame — your blade carries its fire for a while. Light every brazier. Oil carries fire far.",
+   "fa": "به شعلهٔ جاودان ضربه بزن — تیغت تا مدتی آتشش را با خود دارد. همهٔ آتشدان‌ها را روشن کن. روغن آتش را دور می‌برد.",
+   "cx": 12,
+   "cy": 9,
+   "x": 485,
+   "y": 378,
+   "w": 30,
+   "h": 18,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 485,
+    "y": 378
+   },
+   "mapKey": "shrine_embers",
+   "shown": false
+  },
+  {
+   "t": "source",
+   "cx": 8,
+   "cy": 10,
+   "x": 325,
+   "y": 409,
+   "w": 30,
+   "h": 28,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 325,
+    "y": 409
+   },
+   "mapKey": "shrine_embers",
+   "lit": true
+  }
+ ]
+}

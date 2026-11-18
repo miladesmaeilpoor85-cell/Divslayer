@@ -1,0 +1,41 @@
+{
+ "poison": {
+  "color": "#5fbf5a",
+  "icon": "poison",
+  "tickEvery": 600,
+  "damage": 1,
+  "name": "Poison"
+ },
+ "burn": {
+  "color": "#e05a3a",
+  "icon": "burn",
+  "tickEvery": 400,
+  "damage": 2,
+  "name": "Burn"
+ },
+ "freeze": {
+  "color": "#74d1d5",
+  "icon": "freeze",
+  "slows": 0.5,
+  "name": "Freeze"
+ },
+ "haste": {
+  "color": "#f0b45b",
+  "icon": "haste",
+  "speedMul": 1.45,
+  "name": "Haste"
+ },
+ "regen": {
+  "color": "#7fb15f",
+  "icon": "regen",
+  "healEvery": 500,
+  "heal": 2,
+  "name": "Regen"
+ },
+ "stun": {
+  "color": "#c98ad0",
+  "icon": "stun",
+  "stun": true,
+  "name": "Stun"
+ }
+}

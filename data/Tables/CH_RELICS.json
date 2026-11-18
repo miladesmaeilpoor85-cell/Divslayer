@@ -1,0 +1,104 @@
+{
+ "boss": {
+  "uniq": "voidward",
+  "slot": "belt",
+  "name": [
+   "Arzhang's Bulwark",
+   "سپرِ ارژنگ"
+  ],
+  "stat": {
+   "key": "def",
+   "val": 5,
+   "label": "+5 DEF"
+  },
+  "desc": [
+   "Take 10% less damage",
+   "۱۰٪ آسیب کمتر می‌بینی"
+  ]
+ },
+ "boss2": {
+  "uniq": "thorns",
+  "slot": "amulet",
+  "name": [
+   "Emberheart of Mazandaran",
+   "قلب‌اخگرِ مازندران"
+  ],
+  "stat": {
+   "key": "hpMax",
+   "val": 35,
+   "label": "+35 Max HP"
+  },
+  "desc": [
+   "Reflect 30% of damage taken",
+   "۳۰٪ آسیب دریافتی را بازتاب می‌دهی"
+  ]
+ },
+ "matriarch": {
+  "uniq": "venom",
+  "slot": "ring",
+  "name": [
+   "Sorceress's Fang",
+   "نیشِ زنِ جادو"
+  ],
+  "stat": {
+   "key": "lifesteal",
+   "val": 0.12,
+   "label": "+12% Lifesteal"
+  },
+  "desc": [
+   "25% chance to poison on hit",
+   "۲۵٪ شانس مسموم‌کردن با هر ضربه"
+  ]
+ },
+ "arbiter": {
+  "uniq": "frostbite",
+  "slot": "boots",
+  "name": [
+   "White Div's Rime",
+   "برفکِ دیو سپید"
+  ],
+  "stat": {
+   "key": "speed",
+   "val": 0.35,
+   "label": "+13% Speed"
+  },
+  "desc": [
+   "18% chance to freeze on hit",
+   "۱۸٪ شانس یخ‌زدن دشمن"
+  ]
+ },
+ "ancientwyrm": {
+  "uniq": "vengeance",
+  "slot": "amulet",
+  "name": [
+   "Wyrmking Crown",
+   "تاج اژدهاشاه"
+  ],
+  "stat": {
+   "key": "atk",
+   "val": 15,
+   "label": "+15 ATK"
+  },
+  "desc": [
+   "+40% ATK below 40% HP",
+   "زیر ۴۰٪ جان، ۴۰٪ حمله بیشتر"
+  ]
+ },
+ "ignarok": {
+  "uniq": "emberfall",
+  "slot": "ring",
+  "name": [
+   "Emberfall Brand",
+   "داغ اخگرفرود"
+  ],
+  "stat": {
+   "key": "atk",
+   "val": 18,
+   "label": "+18 ATK"
+  },
+  "desc": [
+   "Every 5th hit erupts in flame",
+   "هر ضربهٔ پنجم شعله می‌شود"
+  ]
+ }
+}

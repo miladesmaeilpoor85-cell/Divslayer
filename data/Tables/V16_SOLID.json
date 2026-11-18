@@ -1,0 +1,21 @@
+{
+ "block": 1,
+ "barrel": 1,
+ "brazier": 1,
+ "source": 1,
+ "frost": 1,
+ "storm": 1,
+ "bramble": 1,
+ "icewall": 1,
+ "cracked": 1,
+ "water": 1,
+ "door": 1,
+ "mirror": 1,
+ "emitter": 1,
+ "target": 1,
+ "lever": 1,
+ "altar": 1,
+ "chest": 1,
+ "tablet": 1,
+ "archwall": 1
+}

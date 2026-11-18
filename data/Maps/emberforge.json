@@ -1,0 +1,1343 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Forge of the First Flame",
+  "w": 1250,
+  "h": 1000,
+  "bg": "#322219",
+  "walls": [
+   {
+    "x": 60,
+    "y": 60,
+    "w": 70,
+    "h": 70,
+    "color": "#3a2418"
+   },
+   {
+    "x": 330,
+    "y": 60,
+    "w": 70,
+    "h": 70,
+    "color": "#3a2418"
+   },
+   {
+    "x": 600,
+    "y": 60,
+    "w": 70,
+    "h": 70,
+    "color": "#3a2418"
+   },
+   {
+    "x": 870,
+    "y": 60,
+    "w": 70,
+    "h": 70,
+    "color": "#3a2418"
+   },
+   {
+    "x": 1120,
+    "y": 60,
+    "w": 70,
+    "h": 70,
+    "color": "#3a2418"
+   },
+   {
+    "x": 190,
+    "y": 330,
+    "w": 90,
+    "h": 60,
+    "color": "#43291a"
+   },
+   {
+    "x": 520,
+    "y": 300,
+    "w": 90,
+    "h": 60,
+    "color": "#43291a"
+   },
+   {
+    "x": 840,
+    "y": 340,
+    "w": 90,
+    "h": 60,
+    "color": "#43291a"
+   },
+   {
+    "x": 120,
+    "y": 620,
+    "w": 70,
+    "h": 80,
+    "color": "#3a2418"
+   },
+   {
+    "x": 420,
+    "y": 660,
+    "w": 70,
+    "h": 80,
+    "color": "#3a2418"
+   },
+   {
+    "x": 740,
+    "y": 620,
+    "w": 70,
+    "h": 80,
+    "color": "#3a2418"
+   },
+   {
+    "x": 1040,
+    "y": 660,
+    "w": 70,
+    "h": 80,
+    "color": "#3a2418"
+   },
+   {
+    "x": 300,
+    "y": 880,
+    "w": 120,
+    "h": 50,
+    "color": "#43291a"
+   },
+   {
+    "x": 820,
+    "y": 880,
+    "w": 120,
+    "h": 50,
+    "color": "#43291a"
+   }
+  ],
+  "exits": [
+   {
+    "x": 0,
+    "y": 460,
+    "w": 20,
+    "h": 120,
+    "to": "peaks",
+    "spawnX": 560,
+    "spawnY": 820,
+    "dir": "left"
+   },
+   {
+    "x": 978,
+    "y": 420,
+    "w": 44,
+    "h": 16,
+    "to": "shrine_echoes",
+    "spawnX": 327,
+    "spawnY": 443,
+    "dir": "up"
+   }
+  ],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "cinderhound",
+    "x": 200,
+    "y": 180
+   },
+   {
+    "type": "cinderhound",
+    "x": 280,
+    "y": 230
+   },
+   {
+    "type": "cinderhound",
+    "x": 900,
+    "y": 200
+   },
+   {
+    "type": "cinderhound",
+    "x": 980,
+    "y": 250
+   },
+   {
+    "type": "moltencore",
+    "x": 520,
+    "y": 200
+   },
+   {
+    "type": "moltencore",
+    "x": 700,
+    "y": 460
+   },
+   {
+    "type": "moltencore",
+    "x": 260,
+    "y": 520
+   },
+   {
+    "type": "bellowdrone",
+    "x": 420,
+    "y": 420
+   },
+   {
+    "type": "bellowdrone",
+    "x": 880,
+    "y": 520
+   },
+   {
+    "type": "bellowdrone",
+    "x": 620,
+    "y": 760
+   },
+   {
+    "type": "slagbrute",
+    "x": 180,
+    "y": 760
+   },
+   {
+    "type": "slagbrute",
+    "x": 1000,
+    "y": 760
+   },
+   {
+    "type": "slagbrute",
+    "x": 600,
+    "y": 560
+   },
+   {
+    "type": "anvilward",
+    "x": 620,
+    "y": 900
+   },
+   {
+    "type": "ignarok",
+    "x": 620,
+    "y": 150
+   }
+  ],
+  "items": [
+   {
+    "x": 80,
+    "y": 480,
+    "w": 20,
+    "h": 26,
+    "type": "greater_potion"
+   },
+   {
+    "x": 1150,
+    "y": 480,
+    "w": 20,
+    "h": 26,
+    "type": "mana_potion"
+   },
+   {
+    "x": 620,
+    "y": 640,
+    "w": 22,
+    "h": 22,
+    "type": "obsidian"
+   },
+   {
+    "x": 140,
+    "y": 940,
+    "w": 22,
+    "h": 22,
+    "type": "obsidian"
+   },
+   {
+    "x": 1100,
+    "y": 940,
+    "w": 22,
+    "h": 22,
+    "type": "obsidian"
+   }
+  ],
+  "chLava": [
+   {
+    "x": 150,
+    "y": 240,
+    "w": 150,
+    "h": 60,
+    "period": 3200,
+    "offset": 0,
+    "hot": false,
+    "warn": false
+   },
+   {
+    "x": 480,
+    "y": 400,
+    "w": 180,
+    "h": 60,
+    "period": 3600,
+    "offset": 900,
+    "hot": false,
+    "warn": false
+   },
+   {
+    "x": 860,
+    "y": 240,
+    "w": 150,
+    "h": 60,
+    "period": 3000,
+    "offset": 1500,
+    "hot": false,
+    "warn": false
+   },
+   {
+    "x": 230,
+    "y": 700,
+    "w": 160,
+    "h": 60,
+    "period": 3400,
+    "offset": 600,
+    "hot": false,
+    "warn": false
+   },
+   {
+    "x": 800,
+    "y": 700,
+    "w": 160,
+    "h": 60,
+    "period": 3800,
+    "offset": 2100,
+    "hot": false,
+    "warn": true
+   },
+   {
+    "x": 520,
+    "y": 860,
+    "w": 200,
+    "h": 56,
+    "period": 2800,
+    "offset": 1200,
+    "hot": false,
+    "warn": false
+   }
+  ]
+ },
+ "objects": [
+  {
+   "sprite": "furnace_141",
+   "x": 95,
+   "y": 130,
+   "sort": 130,
+   "kind": "furnace",
+   "isWall": true,
+   "animated": false,
+   "smoke": {
+    "x": 116.30000000000001,
+    "y": 16
+   }
+  },
+  {
+   "sprite": "furnace_142",
+   "x": 365,
+   "y": 130,
+   "sort": 130,
+   "kind": "furnace",
+   "isWall": true,
+   "animated": false,
+   "smoke": {
+    "x": 386.3,
+    "y": 16
+   }
+  },
+  {
+   "sprite": "furnace_143",
+   "x": 635,
+   "y": 130,
+   "sort": 130,
+   "kind": "furnace",
+   "isWall": true,
+   "animated": false,
+   "smoke": {
+    "x": 656.3,
+    "y": 16
+   }
+  },
+  {
+   "sprite": "furnace_144",
+   "x": 905,
+   "y": 130,
+   "sort": 130,
+   "kind": "furnace",
+   "isWall": true,
+   "animated": false,
+   "smoke": {
+    "x": 926.3,
+    "y": 16
+   }
+  },
+  {
+   "sprite": "furnace_145",
+   "x": 1155,
+   "y": 130,
+   "sort": 130,
+   "kind": "furnace",
+   "isWall": true,
+   "animated": false,
+   "smoke": {
+    "x": 1176.3,
+    "y": 16
+   }
+  },
+  {
+   "sprite": "anvilblock_146",
+   "x": 235,
+   "y": 390,
+   "sort": 390,
+   "kind": "anvilblock",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvilblock_147",
+   "x": 565,
+   "y": 360,
+   "sort": 360,
+   "kind": "anvilblock",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvilblock_148",
+   "x": 885,
+   "y": 400,
+   "sort": 400,
+   "kind": "anvilblock",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crates_149",
+   "x": 155,
+   "y": 700,
+   "sort": 700,
+   "kind": "crates",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crates_150",
+   "x": 455,
+   "y": 740,
+   "sort": 740,
+   "kind": "crates",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crates_151",
+   "x": 775,
+   "y": 700,
+   "sort": 700,
+   "kind": "crates",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crates_152",
+   "x": 1075,
+   "y": 740,
+   "sort": 740,
+   "kind": "crates",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bench_153",
+   "x": 360,
+   "y": 930,
+   "sort": 930,
+   "kind": "bench",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bench_154",
+   "x": 880,
+   "y": 930,
+   "sort": 930,
+   "kind": "bench",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 4.619267798960209,
+   "y": 3.642622461542487,
+   "sort": 3.642622461542487,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 16.38310632109642,
+   "y": 999.1997942919843,
+   "sort": 999.1997942919843,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 116.3014585596975,
+   "y": 5.639416420366615,
+   "sort": 5.639416420366615,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 117.2661013675388,
+   "y": 1004.8313985196874,
+   "sort": 1004.8313985196874,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 201.25310750841163,
+   "y": 10.474265567492694,
+   "sort": 10.474265567492694,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 196.23451073258184,
+   "y": 1002.5361689543352,
+   "sort": 1002.5361689543352,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 275.2795592013281,
+   "y": 3.2808807413093746,
+   "sort": 3.2808807413093746,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 278.85492947581224,
+   "y": 1005.9258649917319,
+   "sort": 1005.9258649917319,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 350.01379768480547,
+   "y": 7.760225825943053,
+   "sort": 7.760225825943053,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 350.2903645739425,
+   "y": 1002.6695604496635,
+   "sort": 1002.6695604496635,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 439.87852231948636,
+   "y": 10.51087998971343,
+   "sort": 10.51087998971343,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 444.0687733197119,
+   "y": 996.2979826787487,
+   "sort": 996.2979826787487,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 549.1458462066948,
+   "y": 7.409160458482802,
+   "sort": 7.409160458482802,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 547.6241629458964,
+   "y": 1004.3501235046424,
+   "sort": 1004.3501235046424,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 629.181470818352,
+   "y": 10.779041941743344,
+   "sort": 10.779041941743344,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 631.0164349633269,
+   "y": 1002.5539986696094,
+   "sort": 1002.5539986696094,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 736.9614592813887,
+   "y": 6.260919068474323,
+   "sort": 6.260919068474323,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 735.6001771860756,
+   "y": 998.8511351337656,
+   "sort": 998.8511351337656,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 806.6858471934684,
+   "y": 7.191637591924518,
+   "sort": 7.191637591924518,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 811.5757179562934,
+   "y": 998.7479687896557,
+   "sort": 998.7479687896557,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 894.8312070893589,
+   "y": 6.519812230486423,
+   "sort": 6.519812230486423,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 901.8603323216084,
+   "y": 1001.2695137462579,
+   "sort": 1001.2695137462579,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 1007.2877866665367,
+   "y": 11.912890017032623,
+   "sort": 11.912890017032623,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 1012.4362567889038,
+   "y": 1004.1662329961546,
+   "sort": 1004.1662329961546,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 1091.00203625625,
+   "y": 11.22093503549695,
+   "sort": 11.22093503549695,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 1086.5115072480403,
+   "y": 1007.8475745413452,
+   "sort": 1007.8475745413452,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 1182.1795214947779,
+   "y": 14.358707898296416,
+   "sort": 14.358707898296416,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 1184.8556650702376,
+   "y": 1003.8834647238255,
+   "sort": 1003.8834647238255,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 16.166301540099084,
+   "y": 48.316760312300175,
+   "sort": 48.316760312300175,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 1247.4016130710952,
+   "y": 45.53226426942274,
+   "sort": 45.53226426942274,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 13.59589519770816,
+   "y": 132.94365574070252,
+   "sort": 132.94365574070252,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 1238.339475110639,
+   "y": 137.62032112036832,
+   "sort": 137.62032112036832,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": -1.113350426312536,
+   "y": 251.17334549757652,
+   "sort": 251.17334549757652,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 1244.7121899281628,
+   "y": 243.2332825169433,
+   "sort": 243.2332825169433,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": -1.0794050553813577,
+   "y": 351.2593124844134,
+   "sort": 351.2593124844134,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 1248.3761195898987,
+   "y": 352.70120583148673,
+   "sort": 352.70120583148673,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 1246.4919008570723,
+   "y": 423.24514302494936,
+   "sort": 423.24514302494936,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 1243.2135652867146,
+   "y": 505.7864860340487,
+   "sort": 505.7864860340487,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 1243.7764686304145,
+   "y": 600.4799307235517,
+   "sort": 600.4799307235517,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 0.8487527999095619,
+   "y": 707.3515573781915,
+   "sort": 707.3515573781915,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 1237.513952314388,
+   "y": 715.3032832881436,
+   "sort": 715.3032832881436,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 10.393987125717103,
+   "y": 827.285510007292,
+   "sort": 827.285510007292,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_155",
+   "x": 1233.7854543668218,
+   "y": 823.2846627095714,
+   "sort": 823.2846627095714,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 4.624483920633793,
+   "y": 938.5142304953188,
+   "sort": 938.5142304953188,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_158",
+   "x": 1239.8287491546944,
+   "y": 939.9840938784182,
+   "sort": 939.9840938784182,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 730.2512710657902,
+   "y": 181.31119295023382,
+   "sort": 181.31119295023382,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvil_159",
+   "x": 1201.6019184980541,
+   "y": 231.04331033304334,
+   "sort": 231.04331033304334,
+   "kind": "anvil",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_160",
+   "x": 468.6618380411528,
+   "y": 346.0079501476139,
+   "sort": 346.0079501476139,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_160",
+   "x": 976.237770926673,
+   "y": 847.0790699589998,
+   "sort": 847.0790699589998,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 163.87210341636091,
+   "y": 448.07751794345677,
+   "sort": 448.07751794345677,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvil_159",
+   "x": 971.9429635163397,
+   "y": 661.7139681056142,
+   "sort": 661.7139681056142,
+   "kind": "anvil",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvil_159",
+   "x": 515.3285761130974,
+   "y": 507.1977034024894,
+   "sort": 507.1977034024894,
+   "kind": "anvil",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 70.15288173686713,
+   "y": 678.2039526104927,
+   "sort": 678.2039526104927,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_160",
+   "x": 74.83311432646587,
+   "y": 747.7490885276347,
+   "sort": 747.7490885276347,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_160",
+   "x": 1039.3966156989336,
+   "y": 48.763804230839014,
+   "sort": 48.763804230839014,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 1090.6800969643518,
+   "y": 530.9981773141772,
+   "sort": 530.9981773141772,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 78.48076106980443,
+   "y": 377.45737643912435,
+   "sort": 377.45737643912435,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_160",
+   "x": 1017.5917671411298,
+   "y": 900.4714743047953,
+   "sort": 900.4714743047953,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 808.1983901862986,
+   "y": 778.830693019554,
+   "sort": 778.830693019554,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvil_159",
+   "x": 548.1590187433176,
+   "y": 91.37342423200607,
+   "sort": 91.37342423200607,
+   "kind": "anvil",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 891.1398989590816,
+   "y": 451.68074540793896,
+   "sort": 451.68074540793896,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coal_157",
+   "x": 994.8584090475924,
+   "y": 51.529341004788876,
+   "sort": 51.529341004788876,
+   "kind": "coal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvil_159",
+   "x": 385.4186345031485,
+   "y": 585.6703418213874,
+   "sort": 585.6703418213874,
+   "kind": "anvil",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvil_159",
+   "x": 306.6224517673254,
+   "y": 482.5049981288612,
+   "sort": 482.5049981288612,
+   "kind": "anvil",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "anvil_159",
+   "x": 743.2172090024687,
+   "y": 128.43544783070683,
+   "sort": 128.43544783070683,
+   "kind": "anvil",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "ingots_156",
+   "x": 977.7676489693113,
+   "y": 619.4204404484481,
+   "sort": 619.4204404484481,
+   "kind": "ingots",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_160",
+   "x": 742.0390103035606,
+   "y": 476.2168624904007,
+   "sort": 476.2168624904007,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  }
+ ],
+ "lights": [
+  {
+   "x": 95,
+   "y": 110,
+   "r": 130,
+   "i": 0.85,
+   "c": "#ff8a3a"
+  },
+  {
+   "x": 365,
+   "y": 110,
+   "r": 130,
+   "i": 0.85,
+   "c": "#ff8a3a"
+  },
+  {
+   "x": 635,
+   "y": 110,
+   "r": 130,
+   "i": 0.85,
+   "c": "#ff8a3a"
+  },
+  {
+   "x": 905,
+   "y": 110,
+   "r": 130,
+   "i": 0.85,
+   "c": "#ff8a3a"
+  },
+  {
+   "x": 1155,
+   "y": 110,
+   "r": 130,
+   "i": 0.85,
+   "c": "#ff8a3a"
+  },
+  {
+   "x": 235,
+   "y": 335,
+   "r": 90,
+   "i": 0.6,
+   "c": "#ffa050"
+  },
+  {
+   "x": 565,
+   "y": 305,
+   "r": 90,
+   "i": 0.6,
+   "c": "#ffa050"
+  },
+  {
+   "x": 885,
+   "y": 345,
+   "r": 90,
+   "i": 0.6,
+   "c": "#ffa050"
+  },
+  {
+   "x": 360,
+   "y": 890,
+   "r": 110,
+   "i": 0.6,
+   "c": "#ff8a3a"
+  },
+  {
+   "x": 880,
+   "y": 890,
+   "r": 110,
+   "i": 0.6,
+   "c": "#ff8a3a"
+  },
+  {
+   "x": 468.6618380411528,
+   "y": 322.0079501476139,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  },
+  {
+   "x": 976.237770926673,
+   "y": 823.0790699589998,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  },
+  {
+   "x": 74.83311432646587,
+   "y": 723.7490885276347,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  },
+  {
+   "x": 1039.3966156989336,
+   "y": 24.763804230839014,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  },
+  {
+   "x": 1017.5917671411298,
+   "y": 876.4714743047953,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  },
+  {
+   "x": 742.0390103035606,
+   "y": 452.2168624904007,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  }
+ ],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "arch",
+   "x": 1000,
+   "y": 470,
+   "w": 1,
+   "h": 1,
+   "shrine": "shrine_echoes",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 1000,
+    "y": 470
+   },
+   "mapKey": "emberforge"
+  },
+  {
+   "t": "archwall",
+   "x": 954,
+   "y": 422,
+   "w": 18,
+   "h": 46,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 954,
+    "y": 422
+   },
+   "mapKey": "emberforge"
+  },
+  {
+   "t": "archwall",
+   "x": 1028,
+   "y": 422,
+   "w": 18,
+   "h": 46,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 1028,
+    "y": 422
+   },
+   "mapKey": "emberforge"
+  },
+  {
+   "t": "archwall",
+   "x": 954,
+   "y": 406,
+   "w": 92,
+   "h": 16,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 954,
+    "y": 406
+   },
+   "mapKey": "emberforge"
+  },
+  {
+   "t": "barrel",
+   "x": 235,
+   "y": 790,
+   "w": 30,
+   "h": 30,
+   "push": true,
+   "id": "b1",
+   "respawnMs": 60000,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 235,
+    "y": 790
+   },
+   "mapKey": "emberforge"
+  },
+  {
+   "t": "barrel",
+   "x": 955,
+   "y": 720,
+   "w": 30,
+   "h": 30,
+   "push": true,
+   "id": "b2",
+   "respawnMs": 60000,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 955,
+    "y": 720
+   },
+   "mapKey": "emberforge"
+  }
+ ]
+}

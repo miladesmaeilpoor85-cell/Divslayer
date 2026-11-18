@@ -1,0 +1,134 @@
+{
+ "merchant": {
+  "title": "Sindokht of Kabul",
+  "greet": "Blades and provisions for the road!",
+  "items": [
+   {
+    "id": "hp_potion",
+    "name": "Health Potion",
+    "desc": "+20 HP",
+    "price": 8,
+    "icon": "heart"
+   },
+   {
+    "id": "mp_potion",
+    "name": "Mana Potion",
+    "desc": "+10 MP",
+    "price": 6,
+    "icon": "drop"
+   },
+   {
+    "id": "weapon_1",
+    "name": "Iron Sword",
+    "desc": "+4 ATK",
+    "price": 60,
+    "icon": "sword",
+    "tier": 1
+   },
+   {
+    "id": "weapon_2",
+    "name": "Steel Sword",
+    "desc": "+9 ATK",
+    "price": 180,
+    "icon": "sword",
+    "tier": 2,
+    "requires": 1
+   },
+   {
+    "id": "weapon_3",
+    "name": "Mythril Blade",
+    "desc": "+16 ATK",
+    "price": 450,
+    "icon": "sword",
+    "tier": 3,
+    "requires": 2
+   },
+   {
+    "id": "weapon_4",
+    "name": "Dragonslayer",
+    "desc": "+24 ATK",
+    "price": 900,
+    "icon": "sword",
+    "tier": 4,
+    "requires": 3
+   },
+   {
+    "id": "weapon_5",
+    "name": "Emberfang Cleaver",
+    "desc": "+34 ATK",
+    "price": 1800,
+    "icon": "sword",
+    "tier": 5,
+    "requires": 4
+   }
+  ]
+ },
+ "smith": {
+  "title": "Kavian the Smith",
+  "greet": "Iron tempered in Kaveh's forge does not break.",
+  "items": [
+   {
+    "id": "armor_1",
+    "name": "Leather Vest",
+    "desc": "+2 DEF",
+    "price": 45,
+    "icon": "shield",
+    "tier": 1
+   },
+   {
+    "id": "armor_2",
+    "name": "Chainmail",
+    "desc": "+5 DEF",
+    "price": 160,
+    "icon": "shield",
+    "tier": 2,
+    "requires": 1
+   },
+   {
+    "id": "armor_3",
+    "name": "Ember Plate",
+    "desc": "+9 DEF",
+    "price": 380,
+    "icon": "shield",
+    "tier": 3,
+    "requires": 2
+   },
+   {
+    "id": "armor_4",
+    "name": "Dragonscale",
+    "desc": "+14 DEF",
+    "price": 850,
+    "icon": "shield",
+    "tier": 4,
+    "requires": 3
+   }
+  ]
+ },
+ "hesk": {
+  "title": "Hom's Stores",
+  "greet": "Fair prices, cold hands.",
+  "items": [
+   {
+    "id": "hp_potion",
+    "name": "Health Potion",
+    "desc": "+20 HP",
+    "price": 10,
+    "icon": "heart"
+   },
+   {
+    "id": "mp_potion",
+    "name": "Mana Potion",
+    "desc": "+10 MP",
+    "price": 8,
+    "icon": "drop"
+   },
+   {
+    "id": "greater_potion",
+    "name": "Greater Potion",
+    "desc": "+50 HP, +30% max HP",
+    "price": 40,
+    "icon": "heart"
+   }
+  ]
+ }
+}

@@ -1,0 +1,22 @@
+[
+ {
+  "id": "fire",
+  "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3s4.5 4.4 4.5 8.7a4.5 4.5 0 0 1-9 0C7.5 9.6 9 8 9.8 6.4c.3 1.6 1.1 2.6 2.2 2.9C12 7 12 5 12 3z\"/></svg>"
+ },
+ {
+  "id": "ice",
+  "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2v20M3 12h18M5 5l14 14M5 19l14-14\"/></svg>"
+ },
+ {
+  "id": "regen",
+  "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 20.5S4 15.8 4 10.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 8 3.2c0 5.6-8 10.3-8 10.3z\"/></svg>"
+ },
+ {
+  "id": "frost",
+  "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3v18M5 7l14 10M5 17l14-10M9 5l3 3 3-3M9 19l3-3 3 3\"/></svg>"
+ },
+ {
+  "id": "haste",
+  "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 8h9.5a2.5 2.5 0 1 0-2.5-2.5\"/><path d=\"M3 12.5h13.5a2.5 2.5 0 1 1-2.5 2.5\"/><path d=\"M3 17h6\"/></svg>"
+ }
+]

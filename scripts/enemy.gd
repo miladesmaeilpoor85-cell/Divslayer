@@ -1,0 +1,483 @@
+extends CharacterBody2D
+
+const Gear = preload("res://scripts/gear.gd")
+## A basic enemy: stats from ENEMY_TYPES with region/boss scaling, chases the hero when close,
+## contact damage (+ its poison/freeze/burn), knockback, hit flash, health bar, XP and gold on death.
+## Bosses and minibosses extend this in boss.gd; arena objects (pillars, eggs, echoes) in arena_obj.gd.
+
+const Sheets = preload("res://scripts/sheets.gd")
+const Fx = preload("res://scripts/fx/fx.gd")
+const Loot = preload("res://scripts/fx/loot.gd")
+
+var type := ""
+var world: Node = null
+var hp := 10.0
+var max_hp := 10.0
+var dmg := 5.0
+var spd := 60.0
+var xp := 5
+var gold := 1
+var boss := false
+var box := Vector2(24, 24)
+var home := Vector2.ZERO
+var dead := false
+var hit_cd := 0.0
+var flash := 0.0
+var knock := Vector2.ZERO
+var wander := Vector2.ZERO
+var wander_t := 0.0
+var knock_mult := 1.0
+var applies := {}
+var hover := []
+var hover_t := 0.0
+var anim: AnimatedSprite2D
+var bar_bg: ColorRect
+var bar: ColorRect
+var own_bar := true
+var parley := false            # (v0.9) holds its blade during a parley or a deal: no chase, no contact damage
+var calm := 0.0                # (v0.24) seconds it has not yet noticed a hero who just arrived (a load, a retry) — a hit wakes it
+var elite := ""                 # (v0.16) "", "fire", "ice" or "storm": a stronger foe that sets its element on you
+var _aura: Node2D
+var rally := false              # (v0.9) "To me, lads!": chases from anywhere in the map
+var alert := false             # (v0.7) has noticed the hero: a sneaking hero is seen from much closer, and unseen foes take backstabs
+var est := {}                 # status effects on this enemy: burn | freeze | stun | poison -> {t, p, tick}
+var drop_shadow: Sprite2D
+var feel := true              # breathing / squash / lean (arena objects that animate themselves turn it off)
+var tint := Color(1, 1, 1)    # the enemy's colour (sparks, debris)
+var _wob := 0.0
+var _bar_shown := 0.0
+var _bar_trail := 1.0
+var shoots := {}               # (v0.19) foes that keep their distance and shoot: {every, speed, applies, col, range, keep, n}
+var shoot_t := 0.0
+
+func setup(t: String, area: String, feet: Vector2, w: Node) -> void:
+	type = t
+	world = w
+	name = "Enemy_" + t
+	add_to_group("enemies")
+	var s: Dictionary = Game.enemy_stats(t, area)
+	max_hp = float(s["hp"])
+	hp = max_hp
+	dmg = float(s["dmg"])
+	spd = float(s["speed"])
+	xp = int(s["xp"])
+	gold = int(s["gold"])
+	boss = bool(s["boss"])
+	box = Vector2(float(s["w"]), float(s["h"]))
+	knock_mult = float(s.get("knock", 1.0))
+	var cs_hex = Game.enemy_def(t).get("color", "#c8c0b0")
+	tint = Color(str(cs_hex)) if typeof(cs_hex) == TYPE_STRING else Color(0.8, 0.75, 0.7)
+	_wob = randf() * TAU
+	var ap = Game.enemy_def(t).get("applies", {})
+	applies = ap if typeof(ap) == TYPE_DICTIONARY else {}
+	var shd = Game.enemy_def(t).get("shoots", {})
+	shoots = shd if typeof(shd) == TYPE_DICTIONARY else {}
+	shoot_t = randf_range(1.0, 2.2)
+	position = feet
+	home = feet
+	collision_layer = 4
+	collision_mask = 1
+	var cs := CollisionShape2D.new()
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(box.x * 0.8, min(box.y, 18.0))
+	cs.shape = shape
+	cs.position = Vector2(0, -shape.size.y * 0.5)
+	add_child(cs)
+	var sh: Dictionary = Sheets.enemy(t)
+	if sh.is_empty():
+		_placeholder()
+	else:
+		anim = AnimatedSprite2D.new()
+		anim.sprite_frames = sh["frames"]
+		anim.centered = false
+		anim.offset = sh["offset"]
+		anim.scale = Vector2.ONE * Sheets.SCALE
+		var meta: Dictionary = sh["meta"]
+		anim.modulate.a = float(meta.get("alpha", 1.0))
+		add_child(anim)
+		anim.play("v0")
+		anim.frame = randi() % max(1, int(meta.get("frames", 1)))
+		var hv = meta.get("hover", null)
+		if typeof(hv) == TYPE_ARRAY and hv.size() >= 3:
+			hover = hv
+			hover_t = randf() * 10.0
+	drop_shadow = Fx.shadow_for(self, box.x, box.y, 0.42 if boss else 0.34)
+	if not hover.is_empty():
+		Fx.lift_shadow(drop_shadow, float(hover[0]))
+	_health_bar()
+	_after_setup()
+
+## hooks for boss.gd / arena_obj.gd
+func _after_setup() -> void:
+	pass
+
+func targetable() -> bool:
+	return not dead
+
+func center() -> Vector2:
+	return global_position - Vector2(0, box.y * 0.5)
+
+func set_variant(v: int) -> void:
+	if anim and anim.sprite_frames and anim.sprite_frames.has_animation("v%d" % v) and anim.animation != "v%d" % v:
+		var f := anim.frame
+		anim.play("v%d" % v)
+		anim.frame = f
+
+func _hover(dt: float) -> void:
+	if hover.is_empty() or anim == null:
+		return
+	hover_t += dt
+	anim.position.y = -(float(hover[0]) + sin(hover_t * 1000.0 / float(hover[1])) * float(hover[2]))
+
+func _placeholder() -> void:
+	## the wisp (and anything without a painted sheet) is a glowing orb
+	var orb := Polygon2D.new()
+	var pts := PackedVector2Array()
+	for i in 16:
+		pts.append(Vector2(cos(i * TAU / 16.0), sin(i * TAU / 16.0)) * 8.0)
+	orb.polygon = pts
+	orb.color = Color(0.6, 1.0, 0.75, 0.85)
+	orb.position = Vector2(0, -16)
+	add_child(orb)
+
+## a small framed health bar over the head with a fading damage trail; shown once the enemy is hurt
+func _health_bar() -> void:
+	var wdt: float = clamp(box.x, 24.0, 64.0)
+	bar_bg = ColorRect.new()          # kept as the bar's holder (older code toggles its visibility)
+	bar_bg.color = Color(0, 0, 0, 0)
+	bar_bg.size = Vector2(wdt, 5)
+	bar_bg.position = Vector2(-wdt * 0.5, -box.y - 13.0 - (float(hover[0]) if not hover.is_empty() else 0.0))
+	bar_bg.visible = false
+	bar_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar_bg.draw.connect(_draw_bar)
+	add_child(bar_bg)
+	bar = bar_bg
+
+func _draw_bar() -> void:
+	var w: float = bar_bg.size.x
+	var k: float = clamp(hp / max_hp, 0.0, 1.0)
+	bar_bg.draw_rect(Rect2(-1, -1, w + 2, 6), Color(0, 0, 0, 0.7))
+	bar_bg.draw_rect(Rect2(0, 0, w, 4), Color(0.18, 0.06, 0.05, 0.9))
+	if _bar_trail > k:
+		bar_bg.draw_rect(Rect2(0, 0, w * _bar_trail, 4), Color(1, 0.86, 0.6, 0.85))
+	var c := Color(0.9, 0.3, 0.25) if not boss else Color(0.95, 0.6, 0.2)
+	bar_bg.draw_rect(Rect2(0, 0, w * k, 4), c)
+	bar_bg.draw_rect(Rect2(0, 0, w * k, 1.5), c.lightened(0.35))
+
+func hit_rect() -> Rect2:
+	return Rect2(global_position - Vector2(box.x * 0.5, box.y), box)
+
+func _physics_process(dt: float) -> void:
+	if dead:
+		return
+	hit_cd = max(0.0, hit_cd - dt)
+	calm = max(0.0, calm - dt)
+	_flash(dt)
+	_hover(dt)
+	if _estatus(dt):
+		# frozen or stunned: no AI, knockback still slides it
+		velocity = knock * 0.3
+		knock = knock.move_toward(Vector2.ZERO, 900.0 * dt)
+		move_and_slide()
+		return
+	if dead:
+		return
+	if parley:
+		velocity = knock * 0.3
+		knock = knock.move_toward(Vector2.ZERO, 900.0 * dt)
+		move_and_slide()
+		return
+	var p = get_tree().get_first_node_in_group("player")
+	var v := Vector2.ZERO
+	if p and not p.dead:
+		var to: Vector2 = (p.global_position + Vector2(0, -17)) - (global_position + Vector2(0, -box.y * 0.5))
+		var d := to.length()
+		var aggro := 420.0 if boss else 270.0
+		var sm: float = p.stealth_mul() if p.has_method("stealth_mul") else 1.0
+		var see: float = aggro * sm
+		var chase_r: float = aggro if sm >= 1.0 else see * 1.8
+		var chasing: bool = rally or (calm <= 0.0 and d < (chase_r if alert else see))
+		if chasing and not alert:
+			alert = true
+			_voice(false)
+			if world and world.has_method("on_notice"):
+				world.on_notice(self)
+			if sm < 1.0 and world and world.has_method("float_text"):
+				world.float_text(global_position + Vector2(0, -box.y - 14), "!", Color(1, 0.4, 0.3))
+		elif not chasing:
+			alert = false
+		if chasing and not shoots.is_empty():
+			v = _shooter(dt, to, d, p)
+		elif chasing and d > 4.0:
+			v = to / d * spd
+		elif not chasing:
+			v = _wander(dt)
+		# contact damage (+ the enemy's status: poison, freeze, burn …)
+		if hit_cd <= 0.0 and hit_rect().intersects(p.body_rect()):
+			_contact(p)
+			hit_cd = 0.9
+		if anim and abs(to.x) > 2.0 and chasing:
+			anim.flip_h = to.x < 0
+	if knock.length() > 1.0:
+		v += knock
+		knock = knock.move_toward(Vector2.ZERO, 900.0 * dt)
+	velocity = v
+	move_and_slide()
+	global_position = global_position.clamp(Vector2(box.x * 0.5, box.y), world.size - Vector2(box.x * 0.5, 0))
+
+# ---------------------------------------------------------------- status effects (weapon procs: burn, stun; mage: freeze)
+func apply_status(kind: String, sec: float, potency := 1.0) -> void:
+	if dead:
+		return
+	if est.has(kind):
+		est[kind]["t"] = max(float(est[kind]["t"]), sec)
+		est[kind]["p"] = max(float(est[kind]["p"]), potency)
+	else:
+		est[kind] = {"t": sec, "p": potency, "tick": 0.0}
+
+func has_status(kind: String) -> bool:
+	return est.has(kind)
+
+## ticks burn/poison damage; returns true while frozen or stunned
+func _estatus(dt: float) -> bool:
+	if est.is_empty():
+		return false
+	var stop := false
+	for k in est.keys():
+		var s: Dictionary = est[k]
+		s["t"] = float(s["t"]) - dt
+		s["tick"] = float(s["tick"]) - dt
+		if (k == "burn" or k == "poison") and float(s["tick"]) <= 0.0:
+			s["tick"] = 0.4 if k == "burn" else 0.6
+			var dd: float = (2.0 if k == "burn" else 1.0) * float(s["p"])
+			hp -= dd
+			flash = 0.08
+			world.float_text(global_position + Vector2(0, -box.y), "-%d" % int(dd), Color(1, 0.5, 0.25) if k == "burn" else Color(0.45, 0.85, 0.4))
+			if hp <= 0.0:
+				est.clear()
+				die()
+				return true
+		if k == "freeze" or k == "stun":
+			stop = true
+		if float(s["t"]) <= 0.0:
+			est.erase(k)
+	if anim and flash <= 0.0:
+		var a := anim.modulate.a
+		anim.modulate = Color(0.65, 0.9, 1.0, a) if est.has("freeze") else (Color(1.0, 0.75, 0.6, a) if est.has("burn") else Color(1, 1, 1, a))
+	return stop
+
+func _flash(dt: float) -> void:
+	if flash > 0.0:
+		flash -= dt
+		if anim:
+			anim.modulate = Color(3, 3, 3, anim.modulate.a) if flash > 0.0 else Color(1, 1, 1, anim.modulate.a)
+
+func _contact(p: Node) -> void:
+	var h0: float = Game.hp
+	p.take_hit(dmg)
+	if Game.hp < h0:
+		for k in applies:
+			p.apply_status(str(k), 2.6, float(applies[k]))
+
+func _wander(dt: float) -> Vector2:
+	wander_t -= dt
+	if wander_t <= 0.0:
+		wander_t = randf_range(1.2, 2.8)
+		var back := home - global_position
+		if back.length() > 90.0:
+			wander = back.normalized() * spd * 0.4
+		elif randf() < 0.5:
+			wander = Vector2.ZERO
+		else:
+			wander = Vector2.from_angle(randf() * TAU) * spd * 0.35
+	if anim and abs(wander.x) > 1.0:
+		anim.flip_h = wander.x < 0
+	return wander
+
+## an elite: tougher, harder-hitting, worth more, wreathed in its element (V16_EL: fire burns, frost freezes, storm stuns)
+func make_elite(el: String, power := 1.0) -> void:
+	var d: Dictionary = Game.elite_def(el)
+	if d.is_empty() or boss:
+		return
+	elite = el
+	max_hp *= 2.4 * power
+	hp = max_hp
+	dmg *= 1.3
+	xp = int(xp * 3 * power)
+	gold = int(gold * 3 * power)
+	applies[str(d["status"])] = 1.0
+	if anim:
+		anim.modulate = Color(str(d["col"])).lerp(Color.WHITE, 0.35)
+	_aura = Node2D.new()
+	_aura.z_index = -1
+	_aura.draw.connect(func():
+		var col := Color(str(d["glow"]))
+		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 260.0)
+		var r := maxf(box.x, 18.0) * 0.8 + pulse * 3.0
+		_aura.draw_circle(Vector2(0, -box.y * 0.45), r, Color(col, 0.16 + 0.1 * pulse))
+		_aura.draw_arc(Vector2(0, -box.y * 0.45), r, 0.0, TAU, 28, Color(col, 0.75), 2.0))
+	add_child(_aura)
+
+## breathing, a squash when hit, a lean when knocked back (VIS enemy animation); the bar's trail fades
+func _process(dt: float) -> void:
+	if _aura and not dead:
+		_aura.queue_redraw()
+	if bar_bg and bar_bg.visible:
+		var k: float = clamp(hp / max_hp, 0.0, 1.0)
+		if _bar_trail > k:
+			_bar_trail = max(k, _bar_trail - dt * 0.8)
+			bar_bg.queue_redraw()
+	if dead or anim == null or not feel:
+		return
+	var b := sin(Time.get_ticks_msec() / (520.0 if boss else 340.0) + _wob)
+	var sy := 1.0 + b * 0.028
+	var sx := 1.0 - b * 0.028
+	if flash > 0.0:
+		sx *= 1.07
+		sy *= 0.93
+	anim.scale = Vector2(sx, sy) * Sheets.SCALE
+	anim.rotation = clamp(-knock.x / Game.PXS * 0.035, -0.16, 0.16) if knock.length() > 1.0 else 0.0
+
+func hurt(amount: float, crit: bool, from_dir: Vector2, heavy := false) -> void:
+	calm = 0.0
+	if dead:
+		return
+	if parley and world and world.has_method("truce_broken"):
+		world.truce_broken()
+	hp -= amount
+	flash = 0.11
+	knock = from_dir * 260.0 * knock_mult
+	bar_bg.visible = own_bar
+	bar_bg.queue_redraw()
+	world.float_text(global_position + Vector2(0, -box.y - 6), str(int(round(amount))) + ("!" if crit else ""), Color(1, 0.72, 0.3) if crit else Color(1, 1, 1), crit)
+	# impact: sparks fly away from the blow, a ring and a flash of light on crits (VIS damageEnemy)
+	var c := center()
+	var fx = world.fx
+	if fx:
+		fx.sparks(c, 14 if crit else 8, Color(1, 0.94, 0.69) if crit else Color(1, 0.85, 0.54), from_dir)
+		fx.burst(c, tint, 3 if not crit else 5, 90.0)
+		if crit or heavy:
+			fx.ring(c, Color(1, 0.94, 0.69), 16.0, 0.3)
+			fx.flash_light(c, 90.0, 0.8, Color(1, 0.85, 0.55), 0.25)
+	if ARMORED.has(type):
+		Sfx.play("clank", -7.0, 0.1)
+	if hp <= 0.0:
+		die()
+
+## (v0.19) a shooter (rime wraiths, wyrmlings): closes in to its range, backs off when the hero is too near, and every few
+## seconds looses frost bolts at him (one, or a spread of three) — slow enough to dodge, they freeze for a moment
+func _shooter(dt: float, to: Vector2, d: float, p: Node) -> Vector2:
+	var rng := float(shoots.get("range", 250.0))
+	var keep := float(shoots.get("keep", 130.0))
+	var v := Vector2.ZERO
+	if d > rng * 0.85:
+		v = to / max(1.0, d) * spd
+	elif d < keep:
+		v = -to / max(1.0, d) * spd * 0.7
+	else:
+		v = Vector2(-to.y, to.x).normalized() * spd * 0.35 * sin(Time.get_ticks_msec() / 900.0 + _wob)
+	shoot_t -= dt
+	if shoot_t <= 0.0 and d < rng and world.bossfx:
+		shoot_t = float(shoots.get("every", 2.6)) * randf_range(0.85, 1.2)
+		var n := int(shoots.get("n", 1))
+		var c := center()
+		var a: float = (p.global_position + Vector2(0, -17) - c).angle()
+		var col := Color(str(shoots.get("col", "#bfe6ff")))
+		for i in n:
+			var off := 0.0 if n == 1 else (float(i) - (n - 1) * 0.5) * 0.26
+			world.bossfx.shots.append({"pos": c, "v": Vector2.from_angle(a + off) * float(shoots.get("speed", 3.0)) * Game.PXS,
+				"life": 1.6, "dmg": dmg, "col": col, "applies": str(shoots.get("applies", "")), "sec": 1.2, "src": type + ":bolt"})
+		Sfx.play("ice", -10.0, 0.15)
+		flash = 0.08
+	return v
+
+## (v0.17) creatures with a voice: a growl, a chitter or a gurgle when they notice the hero and when they fall
+## (bandits, knights, golems and spirits stay silent: their blades and stone speak for them)
+## (v0.34) the foes come from the Shahnameh now: the boar, the nahang and the lion growl like the leopard and the wolf;
+## the eagle of Kavus is not a bat and the serpent of Zahhak is not a beetle, so neither chitters any more
+const VOICE := {"cinderhound": "growl", "imp": "growl", "lurker": "growl", "toad": "growl", "slime": "growl",
+	"bogegg": "slime", "mosquito": "bug", "crystalSpider": "growl", "iceling": "bug", "frostwolf": "growl", "wyrmling": "growl",
+	"golem": "growl"}
+
+func _voice(dying: bool) -> void:
+	if boss or not VOICE.has(type):
+		return
+	var v: String = VOICE[type]
+	if v == "growl":
+		Sfx.play("die" if dying else "growl", -2.0 if dying else -4.0, 0.1)
+	elif v == "bug":
+		Sfx.play("bug", 0.0 if dying else -3.0, 0.15)
+	else:
+		Sfx.play("slime", 0.0 if dying else -4.0, 0.12)
+
+## foes in plate or stone ring like metal when struck (V17.ARMORED); (v0.34) the elephant and the divs of flesh no longer do
+const ARMORED := {"frostknight": 1, "moltencore": 1, "captain": 1, "anvilward": 1, "boss2": 1, "kondrow": 1, "zahhak": 1}
+
+func die() -> void:
+	dead = true
+	remove_from_group("enemies")
+	collision_layer = 0
+	Game.Ach.add("kills")
+	var g := int(round(gold * Game.gold_mul()))
+	var x := int(round(xp * Game.xp_mul()))
+	Game.state["gold"] = int(Game.state.get("gold", 0)) + g
+	var hero = get_tree().get_first_node_in_group("player")
+	if hero and hero.caster and not hero.caster.ult_active():
+		Game.add_ult(10.0 if boss else 5.0)
+	var up: bool = Game.add_xp(x)
+	world.float_text(global_position + Vector2(0, -box.y - 16), Game.t("+%d XP" % x, "+%s تجربه" % Game.num(x)), Color(0.6, 0.9, 1))
+	if up:
+		Sfx.play("levelup")
+		world.level_up.emit(Game.lvl())
+	Sfx.play("kill", -3.0)
+	Sfx.play("poof", -8.0)
+	_voice(true)
+	var c := center()
+	var fx = world.fx
+	if fx:
+		fx.smoke(c, 8 if not boss else 16, Color(0.82, 0.78, 0.74, 0.7), 1.2 if not boss else 2.2)
+		fx.burst(c, tint, 10 if not boss else 26, 150.0)
+		fx.emit("shine", c, 6, Color(0.85, 0.95, 1.0), Vector2.UP, 40.0, 70.0)
+		fx.flash_light(c, 110.0 if not boss else 260.0, 0.8, Color(1, 0.9, 0.7), 0.35 if not boss else 0.8)
+	Loot.spawn(world, c, g, x, boss)
+	if elite != "":
+		Game.state["elites"] = Game.elites_slain() + 1
+		Gear.grant(Gear.roll("rare"))
+		world.float_text(global_position + Vector2(0, -66), Game.t("Elite slain!", "نخبه کشته شد!"), Color(1, 0.85, 0.45), true)
+	Gear.drop_from(type, boss)
+	var c2k: String = Game.Ch2.on_kill(type)
+	if c2k != "":
+		world.float_text(global_position + Vector2(0, -40), c2k, Color(0.75, 0.9, 1.0), true)
+	var c3k: String = Game.Ch3.on_kill(type)        # (v0.23) Qaren's count of serpent guards
+	if c3k != "":
+		world.float_text(global_position + Vector2(0, -40), c3k, Color(0.7, 1.0, 0.6), true)
+		if c3k == Game.Ch3.line("t_guards_done"):
+			world.notice.emit(c3k, "check")
+			Sfx.play("quest", -2.0)
+	var ct := Game.contract_progress(type)
+	if ct != "":
+		world.float_text(global_position + Vector2(0, -52), ct, Color(1, 0.9, 0.5), true)
+		Sfx.play("quest", -4.0)
+	if not boss and Game.herb_drop(world.key):
+		world.float_text(global_position + Vector2(0, -34), Game.t("+1 Bogbloom", "+۱ گلِ مرداب"), Color(0.6, 0.95, 0.55))
+	if type == "captain" or type == "anvilward":     # the mini bosses: Ashkbus (his men scatter) and Pulad of Ghandi
+		world.boss_down.emit(Game.boss_defeated(type))
+		if type == "captain":
+			world.scatter()
+	if bar_bg:
+		bar_bg.visible = false
+	if drop_shadow:
+		drop_shadow.visible = false
+	if boss:
+		Sfx.play("roar")
+		world.shake(10.0)
+		Game.vibrate(120, 1.0)
+		world.boss_down.emit(Game.boss_defeated(type))
+	# a white pop, then gone
+	if anim:
+		anim.modulate = Color(3, 3, 3, anim.modulate.a)
+	var tw := create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(self, "scale", Vector2(1.18, 0.86), 0.08)
+	tw.tween_property(self, "modulate:a", 0.0, 0.3).set_delay(0.06)
+	tw.chain().tween_callback(queue_free)

@@ -1,0 +1,107 @@
+[
+ {
+  "id": "first_blood",
+  "name": "First Blood",
+  "desc": "Defeat your first enemy"
+ },
+ {
+  "id": "slayer",
+  "name": "Slayer",
+  "desc": "Defeat 50 enemies"
+ },
+ {
+  "id": "exterminator",
+  "name": "Exterminator",
+  "desc": "Defeat 200 enemies"
+ },
+ {
+  "id": "boss_slayer",
+  "name": "Boss Slayer",
+  "desc": "Defeat your first boss"
+ },
+ {
+  "id": "boss_master",
+  "name": "Boss Master",
+  "desc": "Defeat 5 bosses"
+ },
+ {
+  "id": "untouched",
+  "name": "Untouched",
+  "desc": "Defeat a boss without taking damage"
+ },
+ {
+  "id": "rich",
+  "name": "Rich",
+  "desc": "Accumulate 1000 gold"
+ },
+ {
+  "id": "apprentice",
+  "name": "Apprentice",
+  "desc": "Reach level 10"
+ },
+ {
+  "id": "veteran",
+  "name": "Veteran",
+  "desc": "Reach level 20"
+ },
+ {
+  "id": "master",
+  "name": "Master",
+  "desc": "Reach level 35"
+ },
+ {
+  "id": "crit_master",
+  "name": "Critical Master",
+  "desc": "Land 50 critical hits"
+ },
+ {
+  "id": "first_ult",
+  "name": "Ultimate Power",
+  "desc": "Use your first Ultimate"
+ },
+ {
+  "id": "frost_heart",
+  "name": "Frost Heart",
+  "desc": "Absorb the Frost Heart"
+ },
+ {
+  "id": "parry_master",
+  "name": "Parry Master",
+  "desc": "Land 20 successful parries"
+ },
+ {
+  "id": "dodge_master",
+  "name": "Shadow Step",
+  "desc": "Dodge 30 times"
+ },
+ {
+  "id": "alchemist",
+  "name": "Alchemist",
+  "desc": "Craft 10 items"
+ },
+ {
+  "id": "champion",
+  "name": "Champion",
+  "desc": "Defeat the King of Mazandaran"
+ },
+ {
+  "id": "legend",
+  "name": "Legend",
+  "desc": "Defeat the Sorceress"
+ },
+ {
+  "id": "frost_slayer",
+  "name": "Winter Born",
+  "desc": "Defeat the White Div"
+ },
+ {
+  "id": "wyrm_slayer",
+  "name": "Wyrmslayer",
+  "desc": "Defeat the Dragon of Kashaf (secret)"
+ },
+ {
+  "id": "trial10",
+  "name": "Ashen Veteran",
+  "desc": "Clear 10 waves in the Trial of Embers"
+ }
+]

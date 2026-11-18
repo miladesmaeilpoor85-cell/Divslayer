@@ -1,0 +1,700 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Sunken Crypt",
+  "w": 1000,
+  "h": 800,
+  "bg": "#302e35",
+  "walls": [
+   {
+    "x": 200,
+    "y": 200,
+    "w": 40,
+    "h": 40,
+    "color": "#1c1b20"
+   },
+   {
+    "x": 400,
+    "y": 120,
+    "w": 40,
+    "h": 220,
+    "color": "#1c1b20"
+   },
+   {
+    "x": 600,
+    "y": 380,
+    "w": 220,
+    "h": 40,
+    "color": "#1c1b20"
+   },
+   {
+    "x": 300,
+    "y": 480,
+    "w": 40,
+    "h": 180,
+    "color": "#1c1b20"
+   }
+  ],
+  "exits": [
+   {
+    "x": 400,
+    "y": 780,
+    "w": 120,
+    "h": 20,
+    "to": "forest",
+    "spawnX": 540,
+    "spawnY": 60,
+    "dir": "down"
+   },
+   {
+    "x": 70,
+    "y": 600,
+    "w": 44,
+    "h": 16,
+    "to": "shrine_weight",
+    "spawnX": 327,
+    "spawnY": 443,
+    "dir": "up"
+   }
+  ],
+  "traps": [
+   {
+    "x": 350,
+    "y": 300,
+    "w": 60,
+    "h": 60,
+    "dmg": 8,
+    "cooldown": 0,
+    "name": "Spike Trap"
+   },
+   {
+    "x": 550,
+    "y": 500,
+    "w": 60,
+    "h": 60,
+    "dmg": 8,
+    "cooldown": 0,
+    "name": "Spike Trap"
+   },
+   {
+    "x": 700,
+    "y": 300,
+    "w": 60,
+    "h": 60,
+    "dmg": 10,
+    "cooldown": 0,
+    "name": "Spike Trap"
+   },
+   {
+    "x": 450,
+    "y": 600,
+    "w": 60,
+    "h": 60,
+    "dmg": 8,
+    "cooldown": 0,
+    "name": "Spike Trap"
+   }
+  ],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "skeleton",
+    "x": 250,
+    "y": 350
+   },
+   {
+    "type": "archer",
+    "x": 550,
+    "y": 250
+   },
+   {
+    "type": "wraith",
+    "x": 180,
+    "y": 480
+   },
+   {
+    "type": "skeleton",
+    "x": 640,
+    "y": 440
+   },
+   {
+    "type": "boss",
+    "x": 850,
+    "y": 650
+   }
+  ],
+  "items": [
+   {
+    "x": 150,
+    "y": 600,
+    "w": 24,
+    "h": 24,
+    "type": "chest"
+   }
+  ],
+  "playerStart": null
+ },
+ "objects": [
+  {
+   "sprite": "pillar_51",
+   "x": 220,
+   "y": 240,
+   "sort": 240,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stonewall_52",
+   "x": 420,
+   "y": 340,
+   "sort": 340,
+   "kind": "stonewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stonewall_53",
+   "x": 710,
+   "y": 420,
+   "sort": 420,
+   "kind": "stonewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stonewall_54",
+   "x": 320,
+   "y": 660,
+   "sort": 660,
+   "kind": "stonewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "torch_55",
+   "x": 710,
+   "y": 422,
+   "sort": 422,
+   "kind": "torch",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "torch_55",
+   "x": 420,
+   "y": 342,
+   "sort": 342,
+   "kind": "torch",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "torch_55",
+   "x": 320,
+   "y": 662,
+   "sort": 662,
+   "kind": "torch",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "torch_55",
+   "x": 220,
+   "y": 242,
+   "sort": 242,
+   "kind": "torch",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "coffin_56",
+   "x": 470,
+   "y": 160,
+   "sort": 160,
+   "kind": "coffin",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coffin_56",
+   "x": 520,
+   "y": 160,
+   "sort": 160,
+   "kind": "coffin",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "coffin_56",
+   "x": 860,
+   "y": 300,
+   "sort": 300,
+   "kind": "coffin",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 150,
+   "y": 380,
+   "sort": 380,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 700,
+   "y": 560,
+   "sort": 560,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 880,
+   "y": 700,
+   "sort": 700,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_58",
+   "x": 60,
+   "y": 80,
+   "sort": 80,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_58",
+   "x": 76,
+   "y": 86,
+   "sort": 86,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_59",
+   "x": 940,
+   "y": 90,
+   "sort": 90,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "banner_60",
+   "x": 300,
+   "y": 24,
+   "sort": 24,
+   "kind": "banner",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "banner_60",
+   "x": 640,
+   "y": 24,
+   "sort": 24,
+   "kind": "banner",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_61",
+   "x": 140,
+   "y": 700,
+   "sort": 700,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_61",
+   "x": 860,
+   "y": 700,
+   "sort": 700,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_58",
+   "x": 99.9079811386764,
+   "y": 734.6962488628924,
+   "sort": 734.6962488628924,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 186.67679611593485,
+   "y": 689.2957174405456,
+   "sort": 689.2957174405456,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 76.07942548580468,
+   "y": 405.38331704214215,
+   "sort": 405.38331704214215,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 558.3495034091175,
+   "y": 564.9340980127454,
+   "sort": 564.9340980127454,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_58",
+   "x": 708.2970617339015,
+   "y": 52.87646237760782,
+   "sort": 52.87646237760782,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 337.0908733922988,
+   "y": 74.17894054204226,
+   "sort": 74.17894054204226,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_58",
+   "x": 772.8668989427388,
+   "y": 114.81711430475116,
+   "sort": 114.81711430475116,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 816.3789003714919,
+   "y": 690.5986640043557,
+   "sort": 690.5986640043557,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 180.8210956864059,
+   "y": 339.66404382139444,
+   "sort": 339.66404382139444,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 63.379986584186554,
+   "y": 221.55243072658777,
+   "sort": 221.55243072658777,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [
+  {
+   "x": 710,
+   "y": 398,
+   "r": 140,
+   "i": 0.85,
+   "c": "#ffb060"
+  },
+  {
+   "x": 420,
+   "y": 318,
+   "r": 140,
+   "i": 0.85,
+   "c": "#ffb060"
+  },
+  {
+   "x": 320,
+   "y": 638,
+   "r": 140,
+   "i": 0.85,
+   "c": "#ffb060"
+  },
+  {
+   "x": 220,
+   "y": 218,
+   "r": 140,
+   "i": 0.85,
+   "c": "#ffb060"
+  },
+  {
+   "x": 140,
+   "y": 676,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  },
+  {
+   "x": 860,
+   "y": 676,
+   "r": 170,
+   "i": 0.9,
+   "c": "#ffa050"
+  }
+ ],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "arch",
+   "x": 92,
+   "y": 650,
+   "w": 1,
+   "h": 1,
+   "shrine": "shrine_weight",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 92,
+    "y": 650
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "archwall",
+   "x": 46,
+   "y": 602,
+   "w": 18,
+   "h": 46,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 46,
+    "y": 602
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "archwall",
+   "x": 120,
+   "y": 602,
+   "w": 18,
+   "h": 46,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 120,
+    "y": 602
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "archwall",
+   "x": 46,
+   "y": 586,
+   "w": 92,
+   "h": 16,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 46,
+    "y": 586
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "cracked",
+   "x": 80,
+   "y": 0,
+   "w": 40,
+   "h": 40,
+   "id": "closet0",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 80,
+    "y": 0
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "cracked",
+   "x": 80,
+   "y": 40,
+   "w": 40,
+   "h": 40,
+   "id": "closet1",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 80,
+    "y": 40
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "cracked",
+   "x": 80,
+   "y": 80,
+   "w": 40,
+   "h": 40,
+   "id": "closet2",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 80,
+    "y": 80
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "cracked",
+   "x": 0,
+   "y": 80,
+   "w": 40,
+   "h": 40,
+   "id": "closet3",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 0,
+    "y": 80
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "cracked",
+   "x": 40,
+   "y": 80,
+   "w": 40,
+   "h": 40,
+   "id": "closet4",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 40,
+    "y": 80
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "chest",
+   "x": 30,
+   "y": 36,
+   "w": 30,
+   "h": 24,
+   "id": "closet",
+   "gold": 110,
+   "drops": [
+    "greater_potion",
+    "mana_potion"
+   ],
+   "acc": "rare",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 30,
+    "y": 36
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "barrel",
+   "x": 175,
+   "y": 95,
+   "w": 30,
+   "h": 30,
+   "push": true,
+   "id": "b1",
+   "respawnMs": 60000,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 175,
+    "y": 95
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "barrel",
+   "x": 505,
+   "y": 300,
+   "w": 30,
+   "h": 30,
+   "push": true,
+   "id": "b2",
+   "respawnMs": 60000,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 505,
+    "y": 300
+   },
+   "mapKey": "dungeon"
+  },
+  {
+   "t": "barrel",
+   "x": 615,
+   "y": 560,
+   "w": 30,
+   "h": 30,
+   "push": true,
+   "id": "b3",
+   "respawnMs": 60000,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 615,
+    "y": 560
+   },
+   "mapKey": "dungeon"
+  }
+ ]
+}

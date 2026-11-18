@@ -1,0 +1,102 @@
+{
+ "nova": {
+  "nameEn": "Ember Nova",
+  "nameFa": "انفجارِ اخگر",
+  "icon": "flame",
+  "mp": 4,
+  "cd": 1800,
+  "lvl": 1,
+  "dEn": "Burst of fire around you, applies burn.",
+  "dFa": "انفجارِ آتش پیرامونِ تو؛ می‌سوزاند."
+ },
+ "bolt": {
+  "nameEn": "Ember Bolt",
+  "nameFa": "تیرِ اخگر",
+  "icon": "spark",
+  "mp": 2,
+  "cd": 450,
+  "lvl": 1,
+  "dEn": "Fast projectile in the direction you face.",
+  "dFa": "تیر سریع در جهتی که نگاه می‌کنی."
+ },
+ "chain": {
+  "nameEn": "Chain Lightning",
+  "nameFa": "آذرخشِ زنجیری",
+  "icon": "spark",
+  "mp": 7,
+  "cd": 2800,
+  "lvl": 4,
+  "dEn": "Arcs through up to 4 enemies, weaker each jump.",
+  "dFa": "تا ۴ دشمن کمانه می‌کند، هر بار ضعیف‌تر."
+ },
+ "icelance": {
+  "nameEn": "Ice Lance",
+  "nameFa": "نیزهٔ یخ",
+  "icon": "freeze",
+  "mp": 6,
+  "cd": 2400,
+  "lvl": 6,
+  "dEn": "Piercing shard that freezes what it touches.",
+  "dFa": "تراشه‌ای نافذ که هرچه بخورد یخ می‌زند."
+ },
+ "mend": {
+  "nameEn": "Mending Light",
+  "nameFa": "نورِ التیام",
+  "icon": "regen",
+  "mp": 9,
+  "cd": 7000,
+  "lvl": 8,
+  "dEn": "Restores 30% of your maximum health.",
+  "dFa": "۳۰٪ از بیشترین جانت را بازمی‌گرداند."
+ },
+ "blink": {
+  "nameEn": "Blink",
+  "nameFa": "جهشِ آنی",
+  "icon": "wind",
+  "mp": 5,
+  "cd": 3200,
+  "lvl": 10,
+  "dEn": "Step a few paces forward, passing through nothing solid.",
+  "dFa": "چند گام به جلو می‌پری."
+ },
+ "quake": {
+  "nameEn": "Stoneshatter",
+  "nameFa": "سنگ‌شکن",
+  "icon": "bomb",
+  "mp": 8,
+  "cd": 4200,
+  "lvl": 12,
+  "dEn": "Shockwave around you — damage and a short stun.",
+  "dFa": "موج ضربه‌ای پیرامون تو — آسیب و گیجی کوتاه."
+ },
+ "drain": {
+  "nameEn": "Soul Drain",
+  "nameFa": "کششِ روح",
+  "icon": "poison",
+  "mp": 6,
+  "cd": 3000,
+  "lvl": 14,
+  "dEn": "Drains a nearby enemy and heals you for half.",
+  "dFa": "از دشمن نزدیک می‌مکد و نیمش را به تو می‌دهد."
+ },
+ "roar": {
+  "nameEn": "Battle Roar",
+  "nameFa": "نعرهٔ نبرد",
+  "icon": "crown",
+  "mp": 7,
+  "cd": 10000,
+  "lvl": 16,
+  "dEn": "+40% attack for 8 seconds.",
+  "dFa": "۴۰٪ حملهٔ بیشتر برای ۸ ثانیه."
+ },
+ "firewall": {
+  "nameEn": "Emberwall",
+  "nameFa": "دیوارِ اخگر",
+  "icon": "flame",
+  "mp": 10,
+  "cd": 5200,
+  "lvl": 99,
+  "dEn": "A fan of seven burning bolts. Jamshid's parting gift.",
+  "dFa": "بادبزنی از هفت تیر سوزان. هدیهٔ بدرقهٔ جمشید."
+ }
+}

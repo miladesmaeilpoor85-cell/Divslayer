@@ -1,0 +1,126 @@
+[
+ {
+  "type": "bandit",
+  "x": 500,
+  "y": 158,
+  "post": {
+   "dir": "up"
+  },
+  "skin": 0,
+  "camp": true,
+  "ci": 0
+ },
+ {
+  "type": "bandit",
+  "x": 676,
+  "y": 158,
+  "post": {
+   "dir": "up"
+  },
+  "skin": 1,
+  "camp": true,
+  "ci": 1
+ },
+ {
+  "type": "bandit",
+  "x": 308,
+  "y": 383,
+  "patrol": [
+   [
+    320,
+    400
+   ],
+   [
+    500,
+    400
+   ],
+   [
+    500,
+    590
+   ],
+   [
+    320,
+    590
+   ]
+  ],
+  "skin": 2,
+  "camp": true,
+  "ci": 2
+ },
+ {
+  "type": "bandit",
+  "x": 688,
+  "y": 343,
+  "patrol": [
+   [
+    700,
+    360
+   ],
+   [
+    940,
+    360
+   ],
+   [
+    940,
+    580
+   ],
+   [
+    700,
+    580
+   ]
+  ],
+  "skin": 0,
+  "camp": true,
+  "ci": 3
+ },
+ {
+  "type": "banditArcher",
+  "x": 440,
+  "y": 283,
+  "post": {
+   "dir": "left"
+  },
+  "skin": 1,
+  "camp": true,
+  "ci": 4
+ },
+ {
+  "type": "banditArcher",
+  "x": 720,
+  "y": 236,
+  "post": {
+   "dir": "right"
+  },
+  "skin": 2,
+  "camp": true,
+  "ci": 5
+ },
+ {
+  "type": "captain",
+  "x": 586,
+  "y": 392,
+  "post": {
+   "dir": "down"
+  },
+  "camp": true,
+  "ci": 6
+ },
+ {
+  "type": "bandit",
+  "x": 300,
+  "y": 262,
+  "post": {
+   "dir": "left",
+   "scan": [
+    "left",
+    "down",
+    "right",
+    "down"
+   ],
+   "scanMs": 2400
+  },
+  "skin": 1,
+  "camp": true,
+  "ci": 7
+ }
+]

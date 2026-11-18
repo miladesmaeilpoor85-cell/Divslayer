@@ -1,0 +1,125 @@
+{
+ "might": {
+  "name": "Might",
+  "nodes": [
+   {
+    "id": "str1",
+    "name": "Strength I",
+    "max": 3,
+    "desc": "+1 ATK per rank"
+   },
+   {
+    "id": "crit",
+    "name": "Critical Eye",
+    "max": 3,
+    "desc": "+5% crit per rank"
+   },
+   {
+    "id": "str2",
+    "name": "Strength II",
+    "max": 2,
+    "desc": "+2 ATK per rank",
+    "requires": "str1",
+    "reqRank": 3
+   },
+   {
+    "id": "power_atk",
+    "name": "Power Attacks",
+    "max": 1,
+    "desc": "Charge attacks +25% dmg",
+    "requires": "str2",
+    "reqRank": 2
+   },
+   {
+    "id": "ult_pwr",
+    "name": "Ultimate Power",
+    "max": 1,
+    "desc": "Ultimates +30% dmg",
+    "requires": "power_atk",
+    "reqRank": 1
+   }
+  ]
+ },
+ "fortitude": {
+  "name": "Fortitude",
+  "nodes": [
+   {
+    "id": "vit1",
+    "name": "Vitality I",
+    "max": 3,
+    "desc": "+10 Max HP per rank"
+   },
+   {
+    "id": "def1",
+    "name": "Iron Skin",
+    "max": 3,
+    "desc": "+1 DEF per rank"
+   },
+   {
+    "id": "vit2",
+    "name": "Vitality II",
+    "max": 2,
+    "desc": "+20 Max HP per rank",
+    "requires": "vit1",
+    "reqRank": 3
+   },
+   {
+    "id": "block_mastery",
+    "name": "Block Mastery",
+    "max": 1,
+    "desc": "+30% block effectiveness",
+    "requires": "def1",
+    "reqRank": 3
+   },
+   {
+    "id": "second_wind",
+    "name": "Second Wind",
+    "max": 1,
+    "desc": "Below 25% HP, +50% damage",
+    "requires": "vit2",
+    "reqRank": 2
+   }
+  ]
+ },
+ "cunning": {
+  "name": "Cunning",
+  "nodes": [
+   {
+    "id": "swift",
+    "name": "Swift",
+    "max": 3,
+    "desc": "+5% speed per rank"
+   },
+   {
+    "id": "dodge_master",
+    "name": "Dodge Master",
+    "max": 2,
+    "desc": "+100ms dodge i-frames"
+   },
+   {
+    "id": "haste",
+    "name": "Haste Aura",
+    "max": 1,
+    "desc": "+10% attack speed",
+    "requires": "swift",
+    "reqRank": 3
+   },
+   {
+    "id": "scholar",
+    "name": "Scholar",
+    "max": 2,
+    "desc": "+20% XP per rank",
+    "requires": "dodge_master",
+    "reqRank": 2
+   },
+   {
+    "id": "treasure",
+    "name": "Treasure Hunter",
+    "max": 1,
+    "desc": "+25% drop rate",
+    "requires": "scholar",
+    "reqRank": 2
+   }
+  ]
+ }
+}

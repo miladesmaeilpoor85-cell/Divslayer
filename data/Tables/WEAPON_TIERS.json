@@ -1,0 +1,30 @@
+{
+ "0": {
+  "name": "Fists",
+  "atkBonus": 0
+ },
+ "1": {
+  "name": "Iron Sword",
+  "atkBonus": 4
+ },
+ "2": {
+  "name": "Steel Sword",
+  "atkBonus": 9
+ },
+ "3": {
+  "name": "Mythril Blade",
+  "atkBonus": 16
+ },
+ "4": {
+  "name": "Dragonslayer",
+  "atkBonus": 24
+ },
+ "5": {
+  "name": "Emberfang Cleaver",
+  "atkBonus": 34
+ },
+ "6": {
+  "name": "Frostreaver",
+  "atkBonus": 46
+ }
+}

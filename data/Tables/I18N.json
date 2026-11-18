@@ -1,0 +1,40 @@
+{
+ "en": {
+  "save": "Save",
+  "class_title": "Choose Your Path",
+  "begin": "Begin Adventure",
+  "respawn": "Respawn",
+  "cont": "Continue Playing",
+  "load": "Load Save",
+  "keys_move": "Move",
+  "keys_atk": "Attack",
+  "keys_bolt": "Bolt",
+  "keys_dash": "Dash",
+  "keys_nova": "Nova",
+  "keys_inter": "Interact",
+  "keys_pots": "Potions",
+  "keys_close": "Close",
+  "keys_dodge": "Dodge",
+  "keys_lock": "Lock-On",
+  "keys_scroll": "Scrolls"
+ },
+ "fa": {
+  "save": "ذخیره",
+  "class_title": "راه خود را برگزین",
+  "begin": "آغاز ماجراجویی",
+  "respawn": "بازگشت",
+  "cont": "ادامه",
+  "load": "بارگذاری",
+  "keys_move": "حرکت",
+  "keys_atk": "حمله",
+  "keys_bolt": "رعد",
+  "keys_dash": "جهش",
+  "keys_nova": "نوای آتشین",
+  "keys_inter": "تعامل",
+  "keys_pots": "معجون",
+  "keys_close": "بستن",
+  "keys_dodge": "جاخالی",
+  "keys_lock": "نشانه‌گیری",
+  "keys_scroll": "طومار"
+ }
+}

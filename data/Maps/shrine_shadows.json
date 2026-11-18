@@ -1,0 +1,329 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Shrine of Shadows",
+  "w": 680,
+  "h": 520,
+  "bg": "#363244",
+  "walls": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 680,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 400,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 640,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 327,
+    "y": 214,
+    "w": 26,
+    "h": 20,
+    "color": "#4a4652",
+    "invisible": true,
+    "sentinel": true
+   },
+   {
+    "x": 207,
+    "y": 294,
+    "w": 26,
+    "h": 20,
+    "color": "#4a4652",
+    "invisible": true,
+    "sentinel": true
+   },
+   {
+    "x": 527,
+    "y": 294,
+    "w": 26,
+    "h": 20,
+    "color": "#4a4652",
+    "invisible": true,
+    "sentinel": true
+   },
+   {
+    "x": 487,
+    "y": 414,
+    "w": 26,
+    "h": 20,
+    "color": "#4a4652",
+    "invisible": true,
+    "sentinel": true
+   }
+  ],
+  "exits": [
+   {
+    "x": 320,
+    "y": 506,
+    "w": 40,
+    "h": 14,
+    "to": "village",
+    "spawnX": 439,
+    "spawnY": 124,
+    "dir": "down"
+   }
+  ],
+  "hazards": [],
+  "traps": [],
+  "npcs": [],
+  "enemySpawns": [],
+  "items": [],
+  "playerStart": {
+   "x": 327,
+   "y": 443
+  },
+  "v16shrine": true
+ },
+ "objects": [
+  {
+   "sprite": "shrinewall_265",
+   "x": 340,
+   "y": 40,
+   "sort": 40,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_266",
+   "x": 140,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_267",
+   "x": 540,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_268",
+   "x": 160,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_269",
+   "x": 520,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_270",
+   "x": 20,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_271",
+   "x": 660,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_272",
+   "x": 160,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_273",
+   "x": 520,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [],
+ "grass": [
+  {
+   "x": 44,
+   "y": 206,
+   "w": 72,
+   "h": 70
+  },
+  {
+   "x": 524,
+   "y": 206,
+   "w": 72,
+   "h": 30
+  },
+  {
+   "x": 44,
+   "y": 326,
+   "w": 72,
+   "h": 70
+  },
+  {
+   "x": 324,
+   "y": 366,
+   "w": 72,
+   "h": 70
+  }
+ ],
+ "v16objs": [
+  {
+   "t": "altar",
+   "id": "altar",
+   "cx": 8,
+   "cy": 1,
+   "x": 322,
+   "y": 46,
+   "w": 36,
+   "h": 30,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 322,
+    "y": 46
+   },
+   "mapKey": "shrine_shadows"
+  },
+  {
+   "t": "door",
+   "id": "door",
+   "cx": 8,
+   "cy": 3,
+   "needs": [
+    "p0"
+   ],
+   "x": 320,
+   "y": 120,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 320,
+    "y": 120
+   },
+   "mapKey": "shrine_shadows",
+   "open": false,
+   "openK": 0
+  },
+  {
+   "t": "plate",
+   "heavy": false,
+   "id": "p0",
+   "cx": 1,
+   "cy": 4,
+   "x": 43,
+   "y": 163,
+   "w": 34,
+   "h": 34,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 43,
+    "y": 163
+   },
+   "mapKey": "shrine_shadows"
+  },
+  {
+   "t": "tablet",
+   "en": "The Watchers see whatever walks in their light, and hear whoever walks loudly. Sneak, keep to the tall grass, and step on the far plate.",
+   "fa": "نگهبان‌ها هر چه در نورشان راه برود را می‌بینند و صدای هر که بلند قدم بردارد را می‌شنوند. مخفیانه برو، در علف بلند بمان و روی صفحهٔ آن سر قدم بگذار.",
+   "cx": 7,
+   "cy": 11,
+   "x": 285,
+   "y": 458,
+   "w": 30,
+   "h": 18,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 285,
+    "y": 458
+   },
+   "mapKey": "shrine_shadows",
+   "shown": true
+  }
+ ]
+}

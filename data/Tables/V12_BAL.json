@@ -1,0 +1,113 @@
+{
+ "AREA": {
+  "village": {
+   "hp": 1,
+   "dmg": 1
+  },
+  "forest": {
+   "hp": 1.5,
+   "dmg": 1
+  },
+  "dungeon": {
+   "hp": 2.4,
+   "dmg": 0.85
+  },
+  "peaks": {
+   "hp": 4,
+   "dmg": 0.95
+  },
+  "shadowfen": {
+   "hp": 4.6,
+   "dmg": 1
+  },
+  "sanctum": {
+   "hp": 5.2,
+   "dmg": 1.8
+  },
+  "emberforge": {
+   "hp": 5.8,
+   "dmg": 1.05
+  },
+  "trial": {
+   "hp": 1,
+   "dmg": 1
+  },
+  "rush": {
+   "hp": 1,
+   "dmg": 1.6
+  },
+  "camp": {
+   "hp": 1.6,
+   "dmg": 1
+  },
+  "frostvale": {
+   "hp": 6.4,
+   "dmg": 1.9
+  },
+  "wyrmhollow": {
+   "hp": 7.0,
+   "dmg": 2.0
+  },
+  "damavand": {
+   "hp": 7.4,
+   "dmg": 2.1
+  },
+  "zahhakcave": {
+   "hp": 7.8,
+   "dmg": 1.9
+  }
+ },
+ "BOSS": {
+  "boss": {
+   "hp": 10.579999999999998,
+   "dmg": 0.85
+  },
+  "toadking": {
+   "hp": 4.5,
+   "dmg": 1
+  },
+  "boss2": {
+   "hp": 4.3,
+   "dmg": 1
+  },
+  "matriarch": {
+   "hp": 6.3,
+   "dmg": 1
+  },
+  "arbiter": {
+   "hp": 10.579999999999998,
+   "dmg": 1
+  },
+  "anvilward": {
+   "hp": 4,
+   "dmg": 1
+  },
+  "ignarok": {
+   "hp": 3.4,
+   "dmg": 1
+  },
+  "ancientwyrm": {
+   "hp": 6.3,
+   "dmg": 1
+  },
+  "glaciertitan": {
+   "hp": 8.0,
+   "dmg": 1
+  },
+  "kondrow": {
+   "hp": 4.0,
+   "dmg": 1
+  },
+  "zahhak": {
+   "hp": 6.5,
+   "dmg": 1
+  }
+ },
+ "DEF_K": 60,
+ "DEF_CAP": 0.6,
+ "STATUS_MULT": 0.5,
+ "RUSH_HP": 14,
+ "_inHurt": false,
+ "MAGE_BOLT": 2.2,
+ "MAGE_REGEN_EXTRA": 1
+}

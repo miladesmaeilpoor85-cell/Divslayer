@@ -1,0 +1,50 @@
+{
+ "village": [
+  "Zabol",
+  "دهکدهٔ زابل"
+ ],
+ "forest": [
+  "Whispering Forest",
+  "جنگل نجواگر"
+ ],
+ "dungeon": [
+  "Sunken Crypt",
+  "سردابِ فرورفته"
+ ],
+ "peaks": [
+  "Ashen Peaks",
+  "قله‌های خاکستر"
+ ],
+ "shadowfen": [
+  "Shadowfen Bog",
+  "مردابِ سایه"
+ ],
+ "sanctum": [
+  "Crystal Sanctum",
+  "معبد بلورین"
+ ],
+ "emberforge": [
+  "Forge of the First Flame",
+  "کورهٔ نخستین شعله"
+ ],
+ "camp": [
+  "Thornwood Camp",
+  "اردوگاه خارزار"
+ ],
+ "frostvale": [
+  "Hoarfrost Vale",
+  "درهٔ یخ‌بندان"
+ ],
+ "wyrmhollow": [
+  "The Wyrm's Hollow",
+  "مغاکِ اژدها"
+ ],
+ "damavand": [
+  "The Slopes of Damavand",
+  "دامنهٔ دماوند"
+ ],
+ "zahhakcave": [
+  "The Cave of Chains",
+  "غارِ زنجیرها"
+ ]
+}

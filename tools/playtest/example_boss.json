@@ -1,0 +1,8 @@
+[
+ {"do":"preset","name":"act1","class":"warrior"},
+ {"do":"goto","map":"dungeon","x":663,"y":764},
+ {"do":"wait","sec":0.5},
+ {"do":"shot","name":"arrive"},
+ {"do":"fight","sec":90,"shots_every":30},
+ {"do":"state"}
+]

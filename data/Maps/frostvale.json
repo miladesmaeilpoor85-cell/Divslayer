@@ -1,0 +1,2453 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Hoarfrost Vale",
+  "w": 1400,
+  "h": 1100,
+  "bg": "#000000",
+  "walls": [
+   {
+    "x": 175,
+    "y": 740,
+    "w": 120,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 370,
+    "y": 725,
+    "w": 120,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1322,
+    "y": 490,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1302,
+    "y": 542,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1267,
+    "y": 588,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1211,
+    "y": 618,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1145,
+    "y": 625,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1080,
+    "y": 615,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1022,
+    "y": 587,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1021,
+    "y": 390,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1081,
+    "y": 366,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1145,
+    "y": 357,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1208,
+    "y": 367,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1270,
+    "y": 389,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1303,
+    "y": 437,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 855,
+    "y": 100,
+    "w": 220,
+    "h": 45,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 835,
+    "y": 165,
+    "w": 50,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1060,
+    "y": 170,
+    "w": 50,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1010,
+    "y": 50,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1100,
+    "y": 95,
+    "w": 70,
+    "h": 80,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1035,
+    "y": 775,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1195,
+    "y": 750,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1255,
+    "y": 855,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 995,
+    "y": 885,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1155,
+    "y": 930,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 104,
+    "y": 242,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 545,
+    "y": 220,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 26,
+    "y": 149,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 468,
+    "y": 193,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1204,
+    "y": 213,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 513,
+    "y": 12,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 126,
+    "y": 41,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 225,
+    "y": 177,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 656,
+    "y": 157,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 704,
+    "y": 91,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1279,
+    "y": 107,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 358,
+    "y": 111,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 438,
+    "y": 52,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 803,
+    "y": 52,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 210,
+    "y": 8,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 120,
+    "y": 142,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 552,
+    "y": 100,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 367,
+    "y": 223,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1233,
+    "y": 20,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1100,
+    "y": 239,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 770,
+    "y": 223,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1120,
+    "y": 0,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1190,
+    "y": 98,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 285,
+    "y": 248,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 620,
+    "y": 0,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1318,
+    "y": 2,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1327,
+    "y": 220,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 687,
+    "y": 238,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 206,
+    "y": 94,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 324,
+    "y": 5,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 214,
+    "y": 356,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 90,
+    "y": 763,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 100,
+    "y": 891,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 132,
+    "y": 372,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 177,
+    "y": 639,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 123,
+    "y": 978,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 61,
+    "y": 685,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 196,
+    "y": 942,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 20,
+    "y": 351,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 27,
+    "y": 823,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 21,
+    "y": 941,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 115,
+    "y": 561,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 557,
+    "y": 933,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 946,
+    "y": 948,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 777,
+    "y": 941,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 650,
+    "y": 960,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 430,
+    "y": 938,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 909,
+    "y": 1022,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 557,
+    "y": 1026,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 744,
+    "y": 1017,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 444,
+    "y": 1029,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1280,
+    "y": 741,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1318,
+    "y": 994,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1235,
+    "y": 995,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1332,
+    "y": 833,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 392,
+    "y": 527,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 417,
+    "y": 634,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 345,
+    "y": 976,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 464,
+    "y": 287,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 345,
+    "y": 590,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 972,
+    "y": 291,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 892,
+    "y": 733,
+    "w": 40,
+    "h": 60,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1016,
+    "y": 974,
+    "w": 60,
+    "h": 60,
+    "color": "#2a3a4a"
+   }
+  ],
+  "exits": [
+   {
+    "x": 0,
+    "y": 480,
+    "w": 20,
+    "h": 120,
+    "to": "sanctum",
+    "spawnX": 1135,
+    "spawnY": 486,
+    "dir": "left"
+   }
+  ],
+  "hazards": [
+   {
+    "x": 560,
+    "y": 561,
+    "w": 279,
+    "h": 156,
+    "type": "ice"
+   },
+   {
+    "x": 508,
+    "y": 595,
+    "w": 146,
+    "h": 89,
+    "type": "ice"
+   },
+   {
+    "x": 744,
+    "y": 595,
+    "w": 146,
+    "h": 89,
+    "type": "ice"
+   },
+   {
+    "x": 626,
+    "y": 529,
+    "w": 146,
+    "h": 89,
+    "type": "ice"
+   },
+   {
+    "x": 626,
+    "y": 661,
+    "w": 146,
+    "h": 89,
+    "type": "ice"
+   }
+  ],
+  "npcs": [
+   {
+    "id": "hesk",
+    "x": 283,
+    "y": 828,
+    "w": 26,
+    "h": 34,
+    "color": "#c8b090",
+    "name": "Hom the Trapper",
+    "_en": "Hom the Trapper"
+   }
+  ],
+  "enemySpawns": [
+   {
+    "type": "glaciertitan",
+    "x": 1138,
+    "y": 488
+   },
+   {
+    "type": "frostknight",
+    "x": 901,
+    "y": 217
+   },
+   {
+    "type": "frostknight",
+    "x": 1001,
+    "y": 232
+   },
+   {
+    "type": "frostknight",
+    "x": 1061,
+    "y": 157
+   },
+   {
+    "type": "crystalSpider",
+    "x": 1097,
+    "y": 863
+   },
+   {
+    "type": "crystalSpider",
+    "x": 1177,
+    "y": 893
+   },
+   {
+    "type": "crystalSpider",
+    "x": 1137,
+    "y": 933
+   },
+   {
+    "type": "iceling",
+    "x": 1069,
+    "y": 925
+   },
+   {
+    "type": "iceling",
+    "x": 1199,
+    "y": 845
+   },
+   {
+    "type": "frostwolf",
+    "x": 497,
+    "y": 205
+   },
+   {
+    "type": "frostwolf",
+    "x": 451,
+    "y": 202
+   },
+   {
+    "type": "frostwolf",
+    "x": 468,
+    "y": 188
+   },
+   {
+    "type": "frostwolf",
+    "x": 802,
+    "y": 747
+   },
+   {
+    "type": "frostwolf",
+    "x": 811,
+    "y": 737
+   },
+   {
+    "type": "frostwolf",
+    "x": 806,
+    "y": 761
+   },
+   {
+    "type": "frostwolf",
+    "x": 731,
+    "y": 909
+   },
+   {
+    "type": "frostwolf",
+    "x": 661,
+    "y": 935
+   },
+   {
+    "type": "frostwolf",
+    "x": 660,
+    "y": 959
+   },
+   {
+    "type": "rimewraith",
+    "x": 626,
+    "y": 132
+   },
+   {
+    "type": "rimewraith",
+    "x": 236,
+    "y": 292
+   },
+   {
+    "type": "iceling",
+    "x": 629,
+    "y": 590
+   },
+   {
+    "type": "iceling",
+    "x": 759,
+    "y": 640
+   },
+   {
+    "type": "iceling",
+    "x": 694,
+    "y": 540
+   }
+  ],
+  "items": [
+   {
+    "x": 1005,
+    "y": 175,
+    "w": 20,
+    "h": 26,
+    "type": "chest"
+   },
+   {
+    "x": 140,
+    "y": 300,
+    "w": 20,
+    "h": 26,
+    "type": "potion"
+   },
+   {
+    "x": 1310,
+    "y": 1010,
+    "w": 20,
+    "h": 26,
+    "type": "potion"
+   },
+   {
+    "x": 590,
+    "y": 250,
+    "w": 20,
+    "h": 26,
+    "type": "mana_potion"
+   },
+   {
+    "x": 1320,
+    "y": 200,
+    "w": 20,
+    "h": 26,
+    "type": "frost_scroll"
+   },
+   {
+    "x": 1040,
+    "y": 610,
+    "w": 20,
+    "h": 26,
+    "type": "greater_potion"
+   },
+   {
+    "x": 380,
+    "y": 135,
+    "w": 20,
+    "h": 26,
+    "type": "page1"
+   },
+   {
+    "x": 925,
+    "y": 160,
+    "w": 20,
+    "h": 26,
+    "type": "page2"
+   },
+   {
+    "x": 1230,
+    "y": 965,
+    "w": 20,
+    "h": 26,
+    "type": "page3"
+   }
+  ],
+  "playerStart": {
+   "x": 40,
+   "y": 506
+  }
+ },
+ "objects": [
+  {
+   "sprite": "pine_246",
+   "x": 1140,
+   "y": 60,
+   "sort": 60,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_246",
+   "x": 640,
+   "y": 60,
+   "sort": 60,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_244",
+   "x": 1338,
+   "y": 62,
+   "sort": 62,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_38",
+   "x": 344,
+   "y": 65,
+   "sort": 65,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_40",
+   "x": 230,
+   "y": 68,
+   "sort": 68,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_245",
+   "x": 533,
+   "y": 72,
+   "sort": 72,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 1197,
+   "y": 73,
+   "sort": 73,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 82,
+   "y": 74,
+   "sort": 74,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_253",
+   "x": 1040,
+   "y": 75,
+   "sort": 75,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_75",
+   "x": 943,
+   "y": 76,
+   "sort": 76,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_8",
+   "x": 1253,
+   "y": 80,
+   "sort": 80,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_246",
+   "x": 146,
+   "y": 101,
+   "sort": 101,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_246",
+   "x": 458,
+   "y": 112,
+   "sort": 112,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_243",
+   "x": 823,
+   "y": 112,
+   "sort": 112,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_51",
+   "x": 1035,
+   "y": 120,
+   "sort": 120,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_99",
+   "x": 640,
+   "y": 140,
+   "sort": 140,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stonewall_53",
+   "x": 965,
+   "y": 145,
+   "sort": 145,
+   "kind": "stonewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_31",
+   "x": 724,
+   "y": 151,
+   "sort": 151,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_6",
+   "x": 226,
+   "y": 154,
+   "sort": 154,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "banner_60",
+   "x": 915,
+   "y": 155,
+   "sort": 155,
+   "kind": "banner",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "torch_55",
+   "x": 945,
+   "y": 157,
+   "sort": 157,
+   "kind": "torch",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_10",
+   "x": 1210,
+   "y": 158,
+   "sort": 158,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_41",
+   "x": 572,
+   "y": 160,
+   "sort": 160,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_31",
+   "x": 1299,
+   "y": 167,
+   "sort": 167,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_28",
+   "x": 378,
+   "y": 171,
+   "sort": 171,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 300,
+   "y": 172,
+   "sort": 172,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_50",
+   "x": 438,
+   "y": 174,
+   "sort": 174,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crates_149",
+   "x": 1135,
+   "y": 175,
+   "sort": 175,
+   "kind": "crates",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_253",
+   "x": 784,
+   "y": 177,
+   "sort": 177,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 488,
+   "y": 186,
+   "sort": 186,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_31",
+   "x": 140,
+   "y": 202,
+   "sort": 202,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_40",
+   "x": 46,
+   "y": 209,
+   "sort": 209,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_38",
+   "x": 676,
+   "y": 217,
+   "sort": 217,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_47",
+   "x": 1193,
+   "y": 221,
+   "sort": 221,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_122",
+   "x": 305,
+   "y": 224,
+   "sort": 224,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "column_134",
+   "x": 860,
+   "y": 225,
+   "sort": 225,
+   "kind": "column",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "column_132",
+   "x": 1085,
+   "y": 230,
+   "sort": 230,
+   "kind": "column",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_106",
+   "x": 356,
+   "y": 230,
+   "sort": 230,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_243",
+   "x": 245,
+   "y": 237,
+   "sort": 237,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_106",
+   "x": 106,
+   "y": 244,
+   "sort": 244,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_106",
+   "x": 323,
+   "y": 250,
+   "sort": 250,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_40",
+   "x": 488,
+   "y": 253,
+   "sort": 253,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_244",
+   "x": 1224,
+   "y": 273,
+   "sort": 273,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_38",
+   "x": 565,
+   "y": 280,
+   "sort": 280,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_10",
+   "x": 1347,
+   "y": 280,
+   "sort": 280,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_8",
+   "x": 387,
+   "y": 283,
+   "sort": 283,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_28",
+   "x": 790,
+   "y": 283,
+   "sort": 283,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_6",
+   "x": 707,
+   "y": 298,
+   "sort": 298,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_137",
+   "x": 55,
+   "y": 298,
+   "sort": 298,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_41",
+   "x": 1120,
+   "y": 299,
+   "sort": 299,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_34",
+   "x": 124,
+   "y": 302,
+   "sort": 302,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_40",
+   "x": 305,
+   "y": 308,
+   "sort": 308,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_252",
+   "x": 446,
+   "y": 308,
+   "sort": 308,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_94",
+   "x": 634,
+   "y": 319,
+   "sort": 319,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 1254,
+   "y": 335,
+   "sort": 335,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_34",
+   "x": 484,
+   "y": 347,
+   "sort": 347,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 226,
+   "y": 350,
+   "sort": 350,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_42",
+   "x": 992,
+   "y": 351,
+   "sort": 351,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_26",
+   "x": 99,
+   "y": 355,
+   "sort": 355,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_99",
+   "x": 1352,
+   "y": 357,
+   "sort": 357,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_106",
+   "x": 275,
+   "y": 377,
+   "sort": 377,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_99",
+   "x": 364,
+   "y": 381,
+   "sort": 381,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_246",
+   "x": 40,
+   "y": 411,
+   "sort": 411,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_40",
+   "x": 234,
+   "y": 416,
+   "sort": 416,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_69",
+   "x": 1170,
+   "y": 427,
+   "sort": 427,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_244",
+   "x": 152,
+   "y": 432,
+   "sort": 432,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_109",
+   "x": 1106,
+   "y": 436,
+   "sort": 436,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_113",
+   "x": 1233,
+   "y": 437,
+   "sort": 437,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_70",
+   "x": 1295,
+   "y": 459,
+   "sort": 459,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_63",
+   "x": 1046,
+   "y": 460,
+   "sort": 460,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1060,
+   "y": 475,
+   "sort": 475,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1280,
+   "y": 475,
+   "sort": 475,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_78",
+   "x": 922,
+   "y": 505,
+   "sort": 505,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_119",
+   "x": 1328,
+   "y": 507,
+   "sort": 507,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 1230,
+   "y": 530,
+   "sort": 530,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 481,
+   "y": 541,
+   "sort": 541,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 1092,
+   "y": 545,
+   "sort": 545,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 1203,
+   "y": 553,
+   "sort": 553,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_68",
+   "x": 1347,
+   "y": 560,
+   "sort": 560,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_8",
+   "x": 412,
+   "y": 587,
+   "sort": 587,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 1123,
+   "y": 594,
+   "sort": 594,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_111",
+   "x": 1327,
+   "y": 612,
+   "sort": 612,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_42",
+   "x": 135,
+   "y": 621,
+   "sort": 621,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 1194,
+   "y": 640,
+   "sort": 640,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_34",
+   "x": 365,
+   "y": 650,
+   "sort": 650,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1060,
+   "y": 655,
+   "sort": 655,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1280,
+   "y": 655,
+   "sort": 655,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 51,
+   "y": 656,
+   "sort": 656,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_63",
+   "x": 1047,
+   "y": 657,
+   "sort": 657,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_64",
+   "x": 1292,
+   "y": 658,
+   "sort": 658,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 1105,
+   "y": 685,
+   "sort": 685,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_113",
+   "x": 1236,
+   "y": 688,
+   "sort": 688,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_38",
+   "x": 437,
+   "y": 694,
+   "sort": 694,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_66",
+   "x": 1170,
+   "y": 695,
+   "sort": 695,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_245",
+   "x": 197,
+   "y": 699,
+   "sort": 699,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "sign_20",
+   "x": 300,
+   "y": 720,
+   "sort": 720,
+   "kind": "sign",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_125",
+   "x": 1002,
+   "y": 724,
+   "sort": 724,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_10",
+   "x": 81,
+   "y": 745,
+   "sort": 745,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_124",
+   "x": 165,
+   "y": 773,
+   "sort": 773,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_246",
+   "x": 912,
+   "y": 793,
+   "sort": 793,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "v17tent_234",
+   "x": 430,
+   "y": 795,
+   "sort": 795,
+   "kind": "v17tent",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_34",
+   "x": 1300,
+   "y": 801,
+   "sort": 801,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_138",
+   "x": 1043,
+   "y": 801,
+   "sort": 801,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_78",
+   "x": 987,
+   "y": 808,
+   "sort": 808,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_252",
+   "x": 524,
+   "y": 809,
+   "sort": 809,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "v17tent_236",
+   "x": 235,
+   "y": 810,
+   "sort": 810,
+   "kind": "v17tent",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 1220,
+   "y": 820,
+   "sort": 820,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_10",
+   "x": 110,
+   "y": 823,
+   "sort": 823,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 1060,
+   "y": 845,
+   "sort": 845,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "campfire_19",
+   "x": 330,
+   "y": 872,
+   "sort": 872,
+   "kind": "campfire",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_34",
+   "x": 47,
+   "y": 883,
+   "sort": 883,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_59",
+   "x": 450,
+   "y": 890,
+   "sort": 890,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_244",
+   "x": 1352,
+   "y": 893,
+   "sort": 893,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rack_259",
+   "x": 205,
+   "y": 895,
+   "sort": 895,
+   "kind": "rack",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_106",
+   "x": 282,
+   "y": 898,
+   "sort": 898,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_106",
+   "x": 376,
+   "y": 902,
+   "sort": 902,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_26",
+   "x": 162,
+   "y": 903,
+   "sort": 903,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crate_257",
+   "x": 475,
+   "y": 905,
+   "sort": 905,
+   "kind": "crate",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "barrel_12",
+   "x": 418,
+   "y": 912,
+   "sort": 912,
+   "kind": "barrel",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_115",
+   "x": 1280,
+   "y": 925,
+   "sort": 925,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 961,
+   "y": 933,
+   "sort": 933,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 185,
+   "y": 940,
+   "sort": 940,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_40",
+   "x": 120,
+   "y": 951,
+   "sort": 951,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_253",
+   "x": 490,
+   "y": 952,
+   "sort": 952,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 1020,
+   "y": 955,
+   "sort": 955,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 687,
+   "y": 960,
+   "sort": 960,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_255",
+   "x": 1350,
+   "y": 960,
+   "sort": 960,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_99",
+   "x": 1286,
+   "y": 988,
+   "sort": 988,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_34",
+   "x": 577,
+   "y": 993,
+   "sort": 993,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_41",
+   "x": 450,
+   "y": 998,
+   "sort": 998,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_109",
+   "x": 1180,
+   "y": 1000,
+   "sort": 1000,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_42",
+   "x": 41,
+   "y": 1001,
+   "sort": 1001,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_38",
+   "x": 797,
+   "y": 1001,
+   "sort": 1001,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_246",
+   "x": 216,
+   "y": 1002,
+   "sort": 1002,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 272,
+   "y": 1004,
+   "sort": 1004,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_34",
+   "x": 966,
+   "y": 1008,
+   "sort": 1008,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_40",
+   "x": 670,
+   "y": 1020,
+   "sort": 1020,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "boulders_86",
+   "x": 1046,
+   "y": 1034,
+   "sort": 1034,
+   "kind": "boulders",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_244",
+   "x": 365,
+   "y": 1036,
+   "sort": 1036,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_28",
+   "x": 143,
+   "y": 1038,
+   "sort": 1038,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_139",
+   "x": 858,
+   "y": 1045,
+   "sort": 1045,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_244",
+   "x": 1338,
+   "y": 1054,
+   "sort": 1054,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 1117,
+   "y": 1054,
+   "sort": 1054,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_243",
+   "x": 1255,
+   "y": 1055,
+   "sort": 1055,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "stump_47",
+   "x": 228,
+   "y": 1065,
+   "sort": 1065,
+   "kind": "stump",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_49",
+   "x": 45,
+   "y": 1067,
+   "sort": 1067,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_244",
+   "x": 764,
+   "y": 1077,
+   "sort": 1077,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_48",
+   "x": 649,
+   "y": 1078,
+   "sort": 1078,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_245",
+   "x": 929,
+   "y": 1082,
+   "sort": 1082,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_41",
+   "x": 577,
+   "y": 1086,
+   "sort": 1086,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pine_38",
+   "x": 464,
+   "y": 1089,
+   "sort": 1089,
+   "kind": "pine",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [
+  {
+   "x": 330,
+   "y": 865,
+   "r": 150,
+   "i": 0.85,
+   "c": "#ffb070"
+  },
+  {
+   "x": 1060,
+   "y": 455,
+   "r": 120,
+   "i": 0.7,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1280,
+   "y": 455,
+   "r": 120,
+   "i": 0.7,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1060,
+   "y": 635,
+   "r": 120,
+   "i": 0.7,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1280,
+   "y": 635,
+   "r": 120,
+   "i": 0.7,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 945,
+   "y": 135,
+   "r": 120,
+   "i": 0.7,
+   "c": "#ffb070"
+  },
+  {
+   "x": 1060,
+   "y": 805,
+   "r": 90,
+   "i": 0.55,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1220,
+   "y": 780,
+   "r": 90,
+   "i": 0.55,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1280,
+   "y": 885,
+   "r": 90,
+   "i": 0.55,
+   "c": "#9fdcff"
+  }
+ ],
+ "grass": null,
+ "v16objs": []
+}

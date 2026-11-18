@@ -1,0 +1,1070 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Ashen Peaks",
+  "w": 1150,
+  "h": 920,
+  "bg": "#32201c",
+  "walls": [
+   {
+    "x": 180,
+    "y": 200,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   },
+   {
+    "x": 420,
+    "y": 140,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   },
+   {
+    "x": 700,
+    "y": 260,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   },
+   {
+    "x": 900,
+    "y": 140,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   },
+   {
+    "x": 250,
+    "y": 500,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   },
+   {
+    "x": 520,
+    "y": 420,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   },
+   {
+    "x": 780,
+    "y": 560,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   },
+   {
+    "x": 400,
+    "y": 700,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   },
+   {
+    "x": 640,
+    "y": 760,
+    "w": 50,
+    "h": 70,
+    "color": "#33221c"
+   }
+  ],
+  "exits": [
+   {
+    "x": 520,
+    "y": 900,
+    "w": 110,
+    "h": 20,
+    "to": "forest",
+    "spawnX": 1040,
+    "spawnY": 440,
+    "dir": "down"
+   },
+   {
+    "x": 0,
+    "y": 600,
+    "w": 20,
+    "h": 120,
+    "to": "shadowfen",
+    "spawnX": 1080,
+    "spawnY": 520,
+    "dir": "left"
+   },
+   {
+    "x": 500,
+    "y": 0,
+    "w": 120,
+    "h": 20,
+    "to": "sanctum",
+    "spawnX": 560,
+    "spawnY": 940,
+    "dir": "up"
+   },
+   {
+    "x": 88,
+    "y": 280,
+    "w": 44,
+    "h": 16,
+    "to": "shrine_fuse",
+    "spawnX": 327,
+    "spawnY": 443,
+    "dir": "up"
+   },
+   {
+    "x": 1130,
+    "y": 566,
+    "w": 20,
+    "h": 120,
+    "to": "damavand",
+    "spawnX": 34,
+    "spawnY": 626,
+    "dir": "right"
+   }
+  ],
+  "hazards": [
+   {
+    "x": 560,
+    "y": 250,
+    "w": 110,
+    "h": 70,
+    "tick": -66.59999999999945
+   },
+   {
+    "x": 150,
+    "y": 650,
+    "w": 130,
+    "h": 80,
+    "tick": -66.59999999999945
+   },
+   {
+    "x": 820,
+    "y": 380,
+    "w": 100,
+    "h": 70,
+    "tick": -66.59999999999945
+   },
+   {
+    "x": 300,
+    "y": 330,
+    "w": 80,
+    "h": 60,
+    "tick": -66.59999999999945
+   }
+  ],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "bat",
+    "x": 250,
+    "y": 150
+   },
+   {
+    "type": "bat",
+    "x": 450,
+    "y": 350
+   },
+   {
+    "type": "bat",
+    "x": 700,
+    "y": 150
+   },
+   {
+    "type": "imp",
+    "x": 350,
+    "y": 600
+   },
+   {
+    "type": "imp",
+    "x": 850,
+    "y": 650
+   },
+   {
+    "type": "golem",
+    "x": 200,
+    "y": 400
+   },
+   {
+    "type": "golem",
+    "x": 900,
+    "y": 500
+   },
+   {
+    "type": "boss2",
+    "x": 560,
+    "y": 120
+   }
+  ],
+  "items": [
+   {
+    "x": 1000,
+    "y": 800,
+    "w": 24,
+    "h": 24,
+    "type": "relic"
+   },
+   {
+    "x": 120,
+    "y": 120,
+    "w": 20,
+    "h": 26,
+    "type": "potion"
+   }
+  ],
+  "playerStart": null
+ },
+ "objects": [
+  {
+   "sprite": "spire_62",
+   "x": 205,
+   "y": 270,
+   "sort": 270,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_63",
+   "x": 445,
+   "y": 210,
+   "sort": 210,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_64",
+   "x": 725,
+   "y": 330,
+   "sort": 330,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_65",
+   "x": 925,
+   "y": 210,
+   "sort": 210,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_66",
+   "x": 275,
+   "y": 570,
+   "sort": 570,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_67",
+   "x": 545,
+   "y": 490,
+   "sort": 490,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_68",
+   "x": 805,
+   "y": 630,
+   "sort": 630,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_69",
+   "x": 425,
+   "y": 770,
+   "sort": 770,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_70",
+   "x": 665,
+   "y": 830,
+   "sort": 830,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 16.398079354315996,
+   "y": 4.697699232492596,
+   "sort": 4.697699232492596,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 2.515503268688917,
+   "y": 925.9010392855853,
+   "sort": 925.9010392855853,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_73",
+   "x": 95.54301084764302,
+   "y": 7.785861080512404,
+   "sort": 7.785861080512404,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 95.67094157077372,
+   "y": 920.4909011088312,
+   "sort": 920.4909011088312,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 186.89969241060317,
+   "y": 3.5177318612113595,
+   "sort": 3.5177318612113595,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_75",
+   "x": 195.82707370258868,
+   "y": 916.5911833792925,
+   "sort": 916.5911833792925,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 269.50845772586763,
+   "y": 8.508007086347789,
+   "sort": 8.508007086347789,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 262.88436899520457,
+   "y": 914.3155981511809,
+   "sort": 914.3155981511809,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 351.73889154195786,
+   "y": 10.954654037952423,
+   "sort": 10.954654037952423,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 351.455818656832,
+   "y": 919.1227676323615,
+   "sort": 919.1227676323615,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 438.0594354327768,
+   "y": 924.5730010224506,
+   "sort": 924.5730010224506,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 700.6861392483115,
+   "y": 12.916908043436706,
+   "sort": 12.916908043436706,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 707.5786164477468,
+   "y": 925.930053894408,
+   "sort": 925.930053894408,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_75",
+   "x": 761.9510444942862,
+   "y": 13.823686882387847,
+   "sort": 13.823686882387847,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 761.9925146456808,
+   "y": 916.4471157710068,
+   "sort": 916.4471157710068,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 877.7323471289128,
+   "y": 9.798573336098343,
+   "sort": 9.798573336098343,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 867.2881141658872,
+   "y": 921.3401037617587,
+   "sort": 921.3401037617587,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_75",
+   "x": 959.6845406126231,
+   "y": 7.340661740861833,
+   "sort": 7.340661740861833,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_73",
+   "x": 960.2737222332507,
+   "y": 926.3379662865773,
+   "sort": 926.3379662865773,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 1024.9361711256206,
+   "y": 2.9478036570362747,
+   "sort": 2.9478036570362747,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 1028.5134113244712,
+   "y": 916.9227124694735,
+   "sort": 916.9227124694735,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 1121.7720131147653,
+   "y": 8.375165335368365,
+   "sort": 8.375165335368365,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 1113.6485502589494,
+   "y": 925.9984978940338,
+   "sort": 925.9984978940338,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 12.353363455738872,
+   "y": 50.43928284198046,
+   "sort": 50.43928284198046,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_78",
+   "x": 1141.432499691844,
+   "y": 50.41354189394042,
+   "sort": 50.41354189394042,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 10.505217557307333,
+   "y": 131.0809645880945,
+   "sort": 131.0809645880945,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 1139.9225535006262,
+   "y": 126.47049361234531,
+   "sort": 126.47049361234531,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 7.589993298519403,
+   "y": 202.88976582186297,
+   "sort": 202.88976582186297,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 1137.355595111847,
+   "y": 199.46961722755805,
+   "sort": 199.46961722755805,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 14.216611975803971,
+   "y": 272.27913111262023,
+   "sort": 272.27913111262023,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 1138.9884260608815,
+   "y": 271.26482698647305,
+   "sort": 271.26482698647305,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 18.120242990087718,
+   "y": 353.6181619009003,
+   "sort": 353.6181619009003,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 1137.3706279890612,
+   "y": 353.12600452825427,
+   "sort": 353.12600452825427,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": -1.308145389892161,
+   "y": 441.72928070183843,
+   "sort": 441.72928070183843,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 1139.6136888451874,
+   "y": 437.0337261329405,
+   "sort": 437.0337261329405,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 4.772265063133091,
+   "y": 520.1078910063952,
+   "sort": 520.1078910063952,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_78",
+   "x": 1134.635887293145,
+   "y": 522.898388624657,
+   "sort": 522.898388624657,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_75",
+   "x": 1148.7108110566624,
+   "y": 623.1401304942556,
+   "sort": 623.1401304942556,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 1148.0658538527787,
+   "y": 703.6531124780886,
+   "sort": 703.6531124780886,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 16.97596089914441,
+   "y": 797.9878511200659,
+   "sort": 797.9878511200659,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_78",
+   "x": 1140.356808221899,
+   "y": 801.1519455155358,
+   "sort": 801.1519455155358,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_75",
+   "x": -0.13228393299505115,
+   "y": 864.0101210586727,
+   "sort": 864.0101210586727,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_73",
+   "x": 1136.194416461978,
+   "y": 863.2510693580844,
+   "sort": 863.2510693580844,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 674.6117859194055,
+   "y": 650.9391766507179,
+   "sort": 650.9391766507179,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 699.4579874631017,
+   "y": 561.3784062024206,
+   "sort": 561.3784062024206,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "vent_80",
+   "x": 1059.71344019752,
+   "y": 822.5267760641873,
+   "sort": 822.5267760641873,
+   "kind": "vent",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 238.80730105098337,
+   "y": 601.5592653118074,
+   "sort": 601.5592653118074,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 759.4634028687142,
+   "y": 837.4263149034232,
+   "sort": 837.4263149034232,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "vent_80",
+   "x": 126.26477384474128,
+   "y": 791.0653345286846,
+   "sort": 791.0653345286846,
+   "kind": "vent",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 998.902639998123,
+   "y": 220.66706113517284,
+   "sort": 220.66706113517284,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_73",
+   "x": 568.3325026999228,
+   "y": 116.52412445284426,
+   "sort": 116.52412445284426,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 823.8146116468124,
+   "y": 142.39456810057163,
+   "sort": 142.39456810057163,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "vent_80",
+   "x": 494.89922520471737,
+   "y": 743.6825713515282,
+   "sort": 743.6825713515282,
+   "kind": "vent",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 199.34233379550278,
+   "y": 419.99909803271294,
+   "sort": 419.99909803271294,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "vent_80",
+   "x": 1045.8343827025965,
+   "y": 254.97613941319287,
+   "sort": 254.97613941319287,
+   "kind": "vent",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_77",
+   "x": 1106.5979318902828,
+   "y": 51.20130516588688,
+   "sort": 51.20130516588688,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "vent_80",
+   "x": 1055.7596604409628,
+   "y": 793.5554567258805,
+   "sort": 793.5554567258805,
+   "kind": "vent",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 889.1342988749966,
+   "y": 514.5034138858318,
+   "sort": 514.5034138858318,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_73",
+   "x": 397.1690572076477,
+   "y": 443.69613396935165,
+   "sort": 443.69613396935165,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "vent_80",
+   "x": 343.7994952616282,
+   "y": 175.5108144134283,
+   "sort": 175.5108144134283,
+   "kind": "vent",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "vent_80",
+   "x": 969.0905580460094,
+   "y": 849.7614695038646,
+   "sort": 849.7614695038646,
+   "kind": "vent",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 871.5198484179564,
+   "y": 551.6101762000471,
+   "sort": 551.6101762000471,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 283.8041586102918,
+   "y": 218.2722676359117,
+   "sort": 218.2722676359117,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "vent_80",
+   "x": 1049.0467594191432,
+   "y": 819.232746232301,
+   "sort": 819.232746232301,
+   "kind": "vent",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "deadtree_78",
+   "x": 739.8073733784258,
+   "y": 609.1356264334172,
+   "sort": 609.1356264334172,
+   "kind": "deadtree",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "arch",
+   "x": 110,
+   "y": 330,
+   "w": 1,
+   "h": 1,
+   "shrine": "shrine_fuse",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 110,
+    "y": 330
+   },
+   "mapKey": "peaks"
+  },
+  {
+   "t": "archwall",
+   "x": 64,
+   "y": 282,
+   "w": 18,
+   "h": 46,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 64,
+    "y": 282
+   },
+   "mapKey": "peaks"
+  },
+  {
+   "t": "archwall",
+   "x": 138,
+   "y": 282,
+   "w": 18,
+   "h": 46,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 138,
+    "y": 282
+   },
+   "mapKey": "peaks"
+  },
+  {
+   "t": "archwall",
+   "x": 64,
+   "y": 266,
+   "w": 92,
+   "h": 16,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 64,
+    "y": 266
+   },
+   "mapKey": "peaks"
+  },
+  {
+   "t": "barrel",
+   "x": 325,
+   "y": 540,
+   "w": 30,
+   "h": 30,
+   "push": true,
+   "id": "b1",
+   "respawnMs": 60000,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 325,
+    "y": 540
+   },
+   "mapKey": "peaks"
+  },
+  {
+   "t": "barrel",
+   "x": 885,
+   "y": 600,
+   "w": 30,
+   "h": 30,
+   "push": true,
+   "id": "b2",
+   "respawnMs": 60000,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 885,
+    "y": 600
+   },
+   "mapKey": "peaks"
+  },
+  {
+   "t": "barrel",
+   "x": 215,
+   "y": 470,
+   "w": 30,
+   "h": 30,
+   "push": true,
+   "id": "b3",
+   "respawnMs": 60000,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 215,
+    "y": 470
+   },
+   "mapKey": "peaks"
+  }
+ ]
+}

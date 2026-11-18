@@ -1,0 +1,418 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Shrine of Weight",
+  "w": 680,
+  "h": 520,
+  "bg": "#4a4652",
+  "walls": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 680,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 400,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 640,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 120,
+    "y": 240,
+    "w": 40,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 520,
+    "y": 240,
+    "w": 40,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 120,
+    "y": 320,
+    "w": 160,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 400,
+    "y": 320,
+    "w": 160,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   }
+  ],
+  "exits": [
+   {
+    "x": 320,
+    "y": 506,
+    "w": 40,
+    "h": 14,
+    "to": "dungeon",
+    "spawnX": 79,
+    "spawnY": 662,
+    "dir": "down"
+   }
+  ],
+  "hazards": [],
+  "traps": [],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "skeleton",
+    "x": 86,
+    "y": 204
+   },
+   {
+    "type": "skeleton",
+    "x": 566,
+    "y": 204
+   }
+  ],
+  "items": [],
+  "playerStart": {
+   "x": 327,
+   "y": 443
+  },
+  "v16shrine": true
+ },
+ "objects": [
+  {
+   "sprite": "shrinewall_176",
+   "x": 340,
+   "y": 40,
+   "sort": 40,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_177",
+   "x": 140,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_178",
+   "x": 540,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_179",
+   "x": 160,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_180",
+   "x": 520,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_181",
+   "x": 20,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_182",
+   "x": 660,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_183",
+   "x": 140,
+   "y": 320,
+   "sort": 320,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_184",
+   "x": 540,
+   "y": 320,
+   "sort": 320,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_185",
+   "x": 200,
+   "y": 360,
+   "sort": 360,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_186",
+   "x": 480,
+   "y": 360,
+   "sort": 360,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_187",
+   "x": 160,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_188",
+   "x": 520,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "altar",
+   "id": "altar",
+   "cx": 8,
+   "cy": 1,
+   "x": 322,
+   "y": 46,
+   "w": 36,
+   "h": 30,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 322,
+    "y": 46
+   },
+   "mapKey": "shrine_weight"
+  },
+  {
+   "t": "door",
+   "id": "door",
+   "cx": 8,
+   "cy": 3,
+   "needs": [
+    "p0",
+    "p1"
+   ],
+   "x": 320,
+   "y": 120,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 320,
+    "y": 120
+   },
+   "mapKey": "shrine_weight",
+   "open": false,
+   "openK": 0
+  },
+  {
+   "t": "plate",
+   "heavy": true,
+   "id": "p0",
+   "cx": 7,
+   "cy": 4,
+   "x": 283,
+   "y": 163,
+   "w": 34,
+   "h": 34,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 283,
+    "y": 163
+   },
+   "mapKey": "shrine_weight"
+  },
+  {
+   "t": "plate",
+   "heavy": true,
+   "id": "p1",
+   "cx": 9,
+   "cy": 4,
+   "x": 363,
+   "y": 163,
+   "w": 34,
+   "h": 34,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 363,
+    "y": 163
+   },
+   "mapKey": "shrine_weight"
+  },
+  {
+   "t": "block",
+   "push": true,
+   "id": "b0",
+   "cx": 6,
+   "cy": 7,
+   "x": 240,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 240,
+    "y": 280
+   },
+   "mapKey": "shrine_weight"
+  },
+  {
+   "t": "block",
+   "push": true,
+   "id": "b1",
+   "cx": 10,
+   "cy": 7,
+   "x": 400,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 400,
+    "y": 280
+   },
+   "mapKey": "shrine_weight"
+  },
+  {
+   "t": "lever",
+   "cx": 2,
+   "cy": 10,
+   "x": 89,
+   "y": 414,
+   "w": 22,
+   "h": 20,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 89,
+    "y": 414
+   },
+   "mapKey": "shrine_weight"
+  },
+  {
+   "t": "tablet",
+   "en": "Only stone weighs these plates down — walk into a block to push it. If a block gets stuck, strike the lever.",
+   "fa": "فقط سنگ این صفحه‌ها را پایین می‌برد — برای هل دادن سنگ به سمتش راه برو. اگر سنگی گیر کرد، به اهرم ضربه بزن.",
+   "cx": 13,
+   "cy": 10,
+   "x": 525,
+   "y": 418,
+   "w": 30,
+   "h": 18,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 525,
+    "y": 418
+   },
+   "mapKey": "shrine_weight",
+   "shown": false
+  }
+ ]
+}

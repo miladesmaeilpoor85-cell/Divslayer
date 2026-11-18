@@ -1,0 +1,19 @@
+{
+ "golem": 230,
+ "bat": 230,
+ "imp": 300,
+ "archer": 250,
+ "frostknight": 200,
+ "icegolem": 220,
+ "slagbrute": 200,
+ "cinderhound": 220,
+ "bandit": 210,
+ "banditArcher": 270,
+ "captain": 230,
+ "lurker": 190,
+ "toad": 160,
+ "slime": 150,
+ "mosquito": 180,
+ "wisp": 190,
+ "iceling": 180
+}

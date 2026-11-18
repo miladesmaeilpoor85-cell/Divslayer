@@ -1,0 +1,812 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Shrine of Tides",
+  "w": 680,
+  "h": 520,
+  "bg": "#425450",
+  "walls": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 680,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 400,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 640,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   }
+  ],
+  "exits": [
+   {
+    "x": 320,
+    "y": 506,
+    "w": 40,
+    "h": 14,
+    "to": "shadowfen",
+    "spawnX": 117,
+    "spawnY": 572,
+    "dir": "down"
+   }
+  ],
+  "hazards": [],
+  "traps": [],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "toad",
+    "x": 326,
+    "y": 364
+   },
+   {
+    "type": "toad",
+    "x": 246,
+    "y": 404
+   },
+   {
+    "type": "toad",
+    "x": 406,
+    "y": 404
+   }
+  ],
+  "items": [],
+  "playerStart": {
+   "x": 327,
+   "y": 443
+  },
+  "v16shrine": true
+ },
+ "objects": [
+  {
+   "sprite": "shrinewall_200",
+   "x": 340,
+   "y": 40,
+   "sort": 40,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_201",
+   "x": 140,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_202",
+   "x": 540,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_203",
+   "x": 160,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_204",
+   "x": 520,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_205",
+   "x": 20,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_206",
+   "x": 660,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_207",
+   "x": 160,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_208",
+   "x": 520,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "altar",
+   "id": "altar",
+   "cx": 8,
+   "cy": 1,
+   "x": 322,
+   "y": 46,
+   "w": 36,
+   "h": 30,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 322,
+    "y": 46
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "door",
+   "id": "door",
+   "cx": 8,
+   "cy": 3,
+   "needs": [
+    "p0",
+    "clear"
+   ],
+   "x": 320,
+   "y": 120,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 320,
+    "y": 120
+   },
+   "mapKey": "shrine_tides",
+   "open": false,
+   "openK": 0
+  },
+  {
+   "t": "plate",
+   "heavy": false,
+   "id": "p0",
+   "cx": 6,
+   "cy": 4,
+   "x": 243,
+   "y": 163,
+   "w": 34,
+   "h": 34,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 243,
+    "y": 163
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "frost",
+   "cx": 12,
+   "cy": 4,
+   "x": 487,
+   "y": 170,
+   "w": 26,
+   "h": 26,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 487,
+    "y": 170
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 1,
+   "cy": 6,
+   "x": 40,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 40,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 2,
+   "cy": 6,
+   "x": 80,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 80,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 3,
+   "cy": 6,
+   "x": 120,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 120,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 4,
+   "cy": 6,
+   "x": 160,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 160,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 5,
+   "cy": 6,
+   "x": 200,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 200,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 6,
+   "cy": 6,
+   "x": 240,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 240,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 7,
+   "cy": 6,
+   "x": 280,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 280,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 8,
+   "cy": 6,
+   "x": 320,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 320,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 9,
+   "cy": 6,
+   "x": 360,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 360,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 10,
+   "cy": 6,
+   "x": 400,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 400,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 11,
+   "cy": 6,
+   "x": 440,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 440,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 12,
+   "cy": 6,
+   "x": 480,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 480,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 13,
+   "cy": 6,
+   "x": 520,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 520,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 14,
+   "cy": 6,
+   "x": 560,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 560,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 15,
+   "cy": 6,
+   "x": 600,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 600,
+    "y": 240
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 1,
+   "cy": 7,
+   "x": 40,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 40,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 2,
+   "cy": 7,
+   "x": 80,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 80,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 3,
+   "cy": 7,
+   "x": 120,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 120,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 4,
+   "cy": 7,
+   "x": 160,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 160,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 5,
+   "cy": 7,
+   "x": 200,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 200,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 6,
+   "cy": 7,
+   "x": 240,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 240,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 7,
+   "cy": 7,
+   "x": 280,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 280,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 8,
+   "cy": 7,
+   "x": 320,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 320,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 9,
+   "cy": 7,
+   "x": 360,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 360,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 10,
+   "cy": 7,
+   "x": 400,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 400,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 11,
+   "cy": 7,
+   "x": 440,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 440,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 12,
+   "cy": 7,
+   "x": 480,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 480,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 13,
+   "cy": 7,
+   "x": 520,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 520,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 14,
+   "cy": 7,
+   "x": 560,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 560,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "water",
+   "cx": 15,
+   "cy": 7,
+   "x": 600,
+   "y": 280,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 600,
+    "y": 280
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "frost",
+   "cx": 2,
+   "cy": 9,
+   "x": 87,
+   "y": 370,
+   "w": 26,
+   "h": 26,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 87,
+    "y": 370
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "storm",
+   "cx": 14,
+   "cy": 9,
+   "x": 567,
+   "y": 370,
+   "w": 26,
+   "h": 26,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 567,
+    "y": 370
+   },
+   "mapKey": "shrine_tides"
+  },
+  {
+   "t": "tablet",
+   "en": "Frost turns water into a path: strike the crystal, then the water ahead of you. The storm crystal makes water deadly to whatever stands in it.",
+   "fa": "سرما آب را راه می‌کند: به کریستال یخ بزن، بعد به آبِ جلوی پایت. کریستال آذرخش هم آب را برای هرکه تویش ایستاده کشنده می‌کند.",
+   "cx": 5,
+   "cy": 11,
+   "x": 205,
+   "y": 458,
+   "w": 30,
+   "h": 18,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 205,
+    "y": 458
+   },
+   "mapKey": "shrine_tides"
+  }
+ ]
+}

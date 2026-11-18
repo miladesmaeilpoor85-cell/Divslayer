@@ -1,0 +1,358 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Shrine of the Fuse",
+  "w": 680,
+  "h": 520,
+  "bg": "#56403a",
+  "walls": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 680,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 400,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 640,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 120,
+    "y": 360,
+    "w": 40,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 520,
+    "y": 360,
+    "w": 40,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   }
+  ],
+  "exits": [
+   {
+    "x": 320,
+    "y": 506,
+    "w": 40,
+    "h": 14,
+    "to": "peaks",
+    "spawnX": 97,
+    "spawnY": 342,
+    "dir": "down"
+   }
+  ],
+  "hazards": [
+   {
+    "x": 80,
+    "y": 200,
+    "w": 120,
+    "h": 40,
+    "type": "lava",
+    "tick": -66.60000000000036
+   },
+   {
+    "x": 480,
+    "y": 200,
+    "w": 120,
+    "h": 40,
+    "type": "lava",
+    "tick": -66.60000000000036
+   },
+   {
+    "x": 80,
+    "y": 240,
+    "w": 120,
+    "h": 40,
+    "type": "lava",
+    "tick": -66.60000000000036
+   },
+   {
+    "x": 480,
+    "y": 240,
+    "w": 120,
+    "h": 40,
+    "type": "lava",
+    "tick": -66.60000000000036
+   }
+  ],
+  "traps": [],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "imp",
+    "x": 246,
+    "y": 244
+   },
+   {
+    "type": "imp",
+    "x": 406,
+    "y": 244
+   }
+  ],
+  "items": [],
+  "playerStart": {
+   "x": 327,
+   "y": 443
+  },
+  "v16shrine": true
+ },
+ "objects": [
+  {
+   "sprite": "shrinewall_189",
+   "x": 340,
+   "y": 40,
+   "sort": 40,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_190",
+   "x": 140,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_191",
+   "x": 540,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_192",
+   "x": 160,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_193",
+   "x": 520,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_194",
+   "x": 20,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_195",
+   "x": 660,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_196",
+   "x": 140,
+   "y": 440,
+   "sort": 440,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_197",
+   "x": 540,
+   "y": 440,
+   "sort": 440,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_198",
+   "x": 160,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_199",
+   "x": 520,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "altar",
+   "id": "altar",
+   "cx": 8,
+   "cy": 1,
+   "x": 322,
+   "y": 46,
+   "w": 36,
+   "h": 30,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 322,
+    "y": 46
+   },
+   "mapKey": "shrine_fuse"
+  },
+  {
+   "t": "cracked",
+   "id": "door",
+   "cx": 8,
+   "cy": 3,
+   "x": 320,
+   "y": 120,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 320,
+    "y": 120
+   },
+   "mapKey": "shrine_fuse"
+  },
+  {
+   "t": "barrel",
+   "push": true,
+   "id": "x0",
+   "cx": 2,
+   "cy": 8,
+   "x": 85,
+   "y": 326,
+   "w": 30,
+   "h": 30,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 85,
+    "y": 326
+   },
+   "mapKey": "shrine_fuse"
+  },
+  {
+   "t": "tablet",
+   "en": "Cracked stone fears a blast. Push the barrel beside it, light it — then run! Shove foes into lava (⋯ wheel, or a charged attack).",
+   "fa": "سنگ ترک‌خورده از انفجار می‌ترسد. بشکه را کنارش ببر، روشنش کن — و فرار کن! دشمن‌ها را با هل دادن (چرخهٔ ⋯ یا ضربهٔ پرقدرت) توی گدازه بینداز.",
+   "cx": 8,
+   "cy": 10,
+   "x": 325,
+   "y": 418,
+   "w": 30,
+   "h": 18,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 325,
+    "y": 418
+   },
+   "mapKey": "shrine_fuse",
+   "shown": true
+  },
+  {
+   "t": "source",
+   "cx": 15,
+   "cy": 10,
+   "x": 605,
+   "y": 409,
+   "w": 30,
+   "h": 28,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 605,
+    "y": 409
+   },
+   "mapKey": "shrine_fuse",
+   "lit": true
+  }
+ ]
+}

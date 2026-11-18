@@ -1,0 +1,2294 @@
+[
+ {
+  "en": "STREAK",
+  "fa": "زنجیرهٔ کشتار"
+ },
+ {
+  "en": "ELITE SLAIN",
+  "fa": "نخبه از پا درآمد"
+ },
+ {
+  "en": "Close",
+  "fa": "بستن"
+ },
+ {
+  "en": "Pack & Equipment",
+  "fa": "کوله و تجهیزات"
+ },
+ {
+  "en": "Equip from pack — nothing is ever lost on the ground.",
+  "fa": "از کوله بپوش — هیچ آیتمی دیگر روی زمین گم نمی‌شود."
+ },
+ {
+  "en": "Unequip",
+  "fa": "درآوردن"
+ },
+ {
+  "en": "empty",
+  "fa": "خالی"
+ },
+ {
+  "en": "In your pack",
+  "fa": "داخل کوله"
+ },
+ {
+  "en": "Empty. Elites and bosses drop accessories.",
+  "fa": "خالی است. هیولاها و غول‌های نخبه آیتم می‌اندازند."
+ },
+ {
+  "en": "Equip",
+  "fa": "پوشیدن"
+ },
+ {
+  "en": "Sell +",
+  "fa": "فروش +"
+ },
+ {
+  "en": "Pack full!",
+  "fa": "کوله پُر است!"
+ },
+ {
+  "en": "The Sunken Crypt",
+  "fa": "سردابِ فرورفته"
+ },
+ {
+  "en": "Defeat Arzhang the Div in the crypt north of the forest, then report to Zal.",
+  "fa": "ارژنگ دیو در شمالِ جنگل را شکست بده، سپس به زال گزارش بده."
+ },
+ {
+  "en": "The King of Mazandaran",
+  "fa": "شاه مازندران"
+ },
+ {
+  "en": "Slay the colossus atop the Ashen Peaks — east through the forest.",
+  "fa": "شاه مازندران را بر فرازِ قله‌های خاکستر (شرقِ جنگل) از پا در بیاور."
+ },
+ {
+  "en": "The Sorceress",
+  "fa": "زنِ جادو"
+ },
+ {
+  "en": "Hunt the Sorceress in Shadowfen Bog, west of the peaks.",
+  "fa": "زنِ جادو را در مردابِ سایه (غربِ قله‌ها) شکار کن."
+ },
+ {
+  "en": "The White Div",
+  "fa": "دیو سپید"
+ },
+ {
+  "en": "Optional: cleanse the Crystal Sanctum north of the peaks.",
+  "fa": "اختیاری: معبدِ بلورین در شمالِ قله‌ها را پاک‌سازی کن."
+ },
+ {
+  "en": "The Dragon of Kashaf",
+  "fa": "اژدهای کشف‌رود"
+ },
+ {
+  "en": "Optional: open the sealed chamber with a Wyrm Key.",
+  "fa": "اختیاری: با کلیدِ اژدها، اتاقِ مُهرشده را بگشا."
+ },
+ {
+  "en": "Trial of Embers",
+  "fa": "آزمونِ اخگر"
+ },
+ {
+  "en": "Quest Log",
+  "fa": "دفترچهٔ مأموریت‌ها"
+ },
+ {
+  "en": "Follow the Ember Saga — side hunts are always open.",
+  "fa": "حماسهٔ اخگر را دنبال کن — شکارهای فرعی همیشه بازند."
+ },
+ {
+  "en": "Locked",
+  "fa": "قفل"
+ },
+ {
+  "en": "Complete",
+  "fa": "انجام شد"
+ },
+ {
+  "en": "Open",
+  "fa": "باز کردن"
+ },
+ {
+  "en": "Progress the saga to reveal",
+  "fa": "با پیشروی در حماسه آشکار می‌شود"
+ },
+ {
+  "en": "Survive escalating waves. Leave anytime via the southern gate.",
+  "fa": "در برابر موج‌های فزاینده بایست. هر وقت خواستی از دروازهٔ جنوبی خارج شو."
+ },
+ {
+  "en": "Your record: ",
+  "fa": "رکورد تو: "
+ },
+ {
+  "en": "waves cleared",
+  "fa": "موجِ پاک‌شده"
+ },
+ {
+  "en": "Enter the Arena",
+  "fa": "ورود به میدان"
+ },
+ {
+  "en": "Finish the Boss Rush first!",
+  "fa": "اول نبرد غول‌ها را تمام کن!"
+ },
+ {
+  "en": "The Trial begins! Survive the endless waves.",
+  "fa": "آزمون آغاز شد! در برابر موج‌های بی‌پایان بایست."
+ },
+ {
+  "en": "Wave",
+  "fa": "موج"
+ },
+ {
+  "en": "Cleared",
+  "fa": "پاک"
+ },
+ {
+  "en": "Kills",
+  "fa": "کشتار"
+ },
+ {
+  "en": "+2 Mana Essences",
+  "fa": "+۲ عصارهٔ مانا"
+ },
+ {
+  "en": "Already at maximum.",
+  "fa": "به بیشترین حد رسیده است."
+ },
+ {
+  "en": "Not enough materials.",
+  "fa": "مواد کافی نداری."
+ },
+ {
+  "en": "Upgraded to +",
+  "fa": "ارتقا به +"
+ },
+ {
+  "en": "Relic obtained: ",
+  "fa": "یادگار به دست آمد: "
+ },
+ {
+  "en": "Contract complete — claim it at the board.",
+  "fa": "قرارداد کامل شد — از تابلو دریافت کن."
+ },
+ {
+  "en": "Not during the Boss Rush.",
+  "fa": "در نبرد پیاپی ممکن نیست."
+ },
+ {
+  "en": "Not during the Trial.",
+  "fa": "در آزمون ممکن نیست."
+ },
+ {
+  "en": "Not from the Trial Grounds.",
+  "fa": "از میدان آزمون ممکن نیست."
+ },
+ {
+  "en": "Enemies are too close.",
+  "fa": "دشمنان خیلی نزدیک‌اند."
+ },
+ {
+  "en": "You are already here.",
+  "fa": "همین‌جا هستی."
+ },
+ {
+  "en": "Waypoint unlocked: ",
+  "fa": "نقطهٔ سفر باز شد: "
+ },
+ {
+  "en": "Menu",
+  "fa": "فهرست"
+ },
+ {
+  "en": "Everything in one place.",
+  "fa": "همه‌چیز در یک جا."
+ },
+ {
+  "en": "Pack",
+  "fa": "کوله"
+ },
+ {
+  "en": "Quests",
+  "fa": "مأموریت‌ها"
+ },
+ {
+  "en": "Bounties",
+  "fa": "قراردادها"
+ },
+ {
+  "en": "Forge",
+  "fa": "آهنگری"
+ },
+ {
+  "en": "Talents",
+  "fa": "استعدادها"
+ },
+ {
+  "en": "Awards",
+  "fa": "دستاوردها"
+ },
+ {
+  "en": "Travel",
+  "fa": "سفر"
+ },
+ {
+  "en": "Trial",
+  "fa": "آزمون"
+ },
+ {
+  "en": "Codex",
+  "fa": "دفترچهٔ سفر"
+ },
+ {
+  "en": "Settings",
+  "fa": "تنظیمات"
+ },
+ {
+  "en": "Save",
+  "fa": "ذخیره"
+ },
+ {
+  "en": "Maximum refinement — ",
+  "fa": "بیشترین حد — "
+ },
+ {
+  "en": "Now: ",
+  "fa": "اکنون: "
+ },
+ {
+  "en": "Next: ",
+  "fa": "بعدی: "
+ },
+ {
+  "en": "Cost: ",
+  "fa": "هزینه: "
+ },
+ {
+  "en": "herb",
+  "fa": "گیاه"
+ },
+ {
+  "en": "essence",
+  "fa": "عصاره"
+ },
+ {
+  "en": "Max",
+  "fa": "کامل"
+ },
+ {
+  "en": "Upgrade",
+  "fa": "ارتقا"
+ },
+ {
+  "en": "The Forge",
+  "fa": "کورهٔ آهنگری"
+ },
+ {
+  "en": "Kavian can refine what you already carry.",
+  "fa": "کاویان می‌تواند همان چیزی را که داری تقویت کند."
+ },
+ {
+  "en": "You have ",
+  "fa": "داری: "
+ },
+ {
+  "en": "herbs",
+  "fa": "گیاه"
+ },
+ {
+  "en": "essences",
+  "fa": "عصاره"
+ },
+ {
+  "en": "Bounty Board",
+  "fa": "تابلوی قراردادها"
+ },
+ {
+  "en": "Three contracts. Finish one, another appears.",
+  "fa": "سه قرارداد. یکی را تمام کن، یکی دیگر می‌آید."
+ },
+ {
+  "en": "Claim",
+  "fa": "دریافت"
+ },
+ {
+  "en": "In progress",
+  "fa": "در جریان"
+ },
+ {
+  "en": "Contracts completed: ",
+  "fa": "قراردادهای انجام‌شده: "
+ },
+ {
+  "en": "Waypoints",
+  "fa": "نقاط سفر"
+ },
+ {
+  "en": "Regions you have already reached.",
+  "fa": "مناطقی که پیش‌تر به آن‌ها رسیده‌ای."
+ },
+ {
+  "en": "— undiscovered —",
+  "fa": "— کشف‌نشده —"
+ },
+ {
+  "en": "You are here",
+  "fa": "همین‌جا هستی"
+ },
+ {
+  "en": "Travel here",
+  "fa": "سفر به اینجا"
+ },
+ {
+  "en": "Reach it on foot first",
+  "fa": "اول با پای پیاده برو"
+ },
+ {
+  "en": "Go",
+  "fa": "برو"
+ },
+ {
+  "en": "h ",
+  "fa": "س "
+ },
+ {
+  "en": "m",
+  "fa": "د"
+ },
+ {
+  "en": "Everything this run has cost you and earned you.",
+  "fa": "هرآنچه این سفر برایت داشته است."
+ },
+ {
+  "en": "Time played",
+  "fa": "زمان بازی"
+ },
+ {
+  "en": "Level",
+  "fa": "سطح"
+ },
+ {
+  "en": "Enemies slain",
+  "fa": "دشمنان کشته‌شده"
+ },
+ {
+  "en": "Elites slain",
+  "fa": "نخبگان کشته‌شده"
+ },
+ {
+  "en": "Bosses slain",
+  "fa": "غول‌ها"
+ },
+ {
+  "en": "Deaths",
+  "fa": "مرگ‌ها"
+ },
+ {
+  "en": "Critical hits",
+  "fa": "ضربه‌های کاری"
+ },
+ {
+  "en": "Parries",
+  "fa": "دفع ضربه"
+ },
+ {
+  "en": "Contracts done",
+  "fa": "قراردادها"
+ },
+ {
+  "en": "Best trial wave",
+  "fa": "بهترین موج آزمون"
+ },
+ {
+  "en": "Bestiary",
+  "fa": "دشمن‌نامه"
+ },
+ {
+  "en": "Nothing slain yet.",
+  "fa": "هنوز چیزی نکشته‌ای."
+ },
+ {
+  "en": "On",
+  "fa": "روشن"
+ },
+ {
+  "en": "Off",
+  "fa": "خاموش"
+ },
+ {
+  "en": "Tuned for this device. Kept between sessions.",
+  "fa": "برای همین دستگاه. بین اجراها باقی می‌ماند."
+ },
+ {
+  "en": "Language",
+  "fa": "زبان"
+ },
+ {
+  "en": "Graphics",
+  "fa": "گرافیک"
+ },
+ {
+  "en": "Higher is sharper, lower is faster.",
+  "fa": "بالاتر واضح‌تر، پایین‌تر روان‌تر."
+ },
+ {
+  "en": "Auto",
+  "fa": "خودکار"
+ },
+ {
+  "en": "Low",
+  "fa": "کم"
+ },
+ {
+  "en": "Med",
+  "fa": "متوسط"
+ },
+ {
+  "en": "High",
+  "fa": "زیاد"
+ },
+ {
+  "en": "Show FPS",
+  "fa": "نمایش نرخ فریم"
+ },
+ {
+  "en": "Sound",
+  "fa": "صدا"
+ },
+ {
+  "en": "Music",
+  "fa": "موسیقی"
+ },
+ {
+  "en": "Vibration",
+  "fa": "لرزش"
+ },
+ {
+  "en": "Screen shake",
+  "fa": "لرزش صفحه"
+ },
+ {
+  "en": "Auto-attack",
+  "fa": "حملهٔ خودکار"
+ },
+ {
+  "en": "Swings on its own when an enemy is in reach.",
+  "fa": "وقتی دشمن در دسترس باشد خودش می‌زند."
+ },
+ {
+  "en": "Difficulty",
+  "fa": "درجهٔ سختی"
+ },
+ {
+  "en": "Applies to enemies spawned from now on.",
+  "fa": "روی دشمنانی که از این پس ظاهر می‌شوند اثر دارد."
+ },
+ {
+  "en": "Normal",
+  "fa": "عادی"
+ },
+ {
+  "en": "Hard",
+  "fa": "سخت"
+ },
+ {
+  "en": "Nightmare",
+  "fa": "کابوس"
+ },
+ {
+  "en": "Puladvand blazes hotter!",
+  "fa": "پولادوند شعله‌ورتر می‌شود!"
+ },
+ {
+  "en": "Warden Core recovered — bring it to Jamshid.",
+  "fa": "هستهٔ نگهبان به‌دست آمد — به جمشید برسان."
+ },
+ {
+  "en": "Puladvand is extinguished. Return to Jamshid.",
+  "fa": "پولادوند خاموش شد. نزد جمشید برگرد."
+ },
+ {
+  "en": "Kindling Key received — the Peaks door is open.",
+  "fa": "کلید افروزنده گرفتی — درِ قله‌ها باز شد."
+ },
+ {
+  "en": "+350 Gold · weapon and armour refined",
+  "fa": "+۳۵۰ سکه، سلاح و زره تقویت شد"
+ },
+ {
+  "en": "Jamshid\\'s masterwork: +2/+2 forge, 3 talent points",
+  "fa": "شاهکار جمشید: +۲/+۲ آهنگری، ۳ امتیاز استعداد"
+ },
+ {
+  "en": "Health full.",
+  "fa": "جان کامل است."
+ },
+ {
+  "en": "miss",
+  "fa": "خطا"
+ },
+ {
+  "en": "ROAR",
+  "fa": "نعره"
+ },
+ {
+  "en": "Skill learned: ",
+  "fa": "مهارت آموختی: "
+ },
+ {
+  "en": "Not enough mana!",
+  "fa": "مانا کافی نیست!"
+ },
+ {
+  "en": "Nothing equipped there.",
+  "fa": "چیزی در آن جایگاه نیست."
+ },
+ {
+  "en": "Enchanted: ",
+  "fa": "افسون شد: "
+ },
+ {
+  "en": "Skills",
+  "fa": "مهارت‌ها"
+ },
+ {
+  "en": "Bind any two skills to the spell buttons.",
+  "fa": "هر دو مهارتی را که خواستی به دکمه‌های جادو ببند."
+ },
+ {
+  "en": "slot ",
+  "fa": "جایگاه "
+ },
+ {
+  "en": " mana",
+  "fa": " مانا"
+ },
+ {
+  "en": "s cd",
+  "fa": "ث انتظار"
+ },
+ {
+  "en": "Locked — found through Jamshid\\'s questline.",
+  "fa": "قفل — از راه مأموریت جمشید به دست می‌آید."
+ },
+ {
+  "en": "Unlocks at level ",
+  "fa": "در سطح "
+ },
+ {
+  "en": "",
+  "fa": "  باز می‌شود"
+ },
+ {
+  "en": "Enchanting",
+  "fa": "افسون‌گری"
+ },
+ {
+  "en": "Add a second affix to something you wear.",
+  "fa": "یک ویژگی دوم به چیزی که پوشیده‌ای اضافه کن."
+ },
+ {
+  "en": "Reroll",
+  "fa": "تغییر"
+ },
+ {
+  "en": "Enchant",
+  "fa": "افسون"
+ },
+ {
+  "en": "The Shade of Jamshid",
+  "fa": "روانِ جمشید"
+ },
+ {
+  "en": "Return the Warden Core to Jamshid.",
+  "fa": "هستهٔ نگهبان را به جمشید برگردان."
+ },
+ {
+  "en": "Slay Pulad of Ghandi in the Forge.",
+  "fa": "پولادِ غندی را در کوره بکش."
+ },
+ {
+  "en": "Return to Jamshid for your reward.",
+  "fa": "برای پاداش نزد جمشید برگرد."
+ },
+ {
+  "en": "Extinguish Puladvand, the First Flame.",
+  "fa": "پولادوند، نخستین شعله را خاموش کن."
+ },
+ {
+  "en": "Completed. The forge answers to you now.",
+  "fa": "تمام شد. کوره حالا به تو پاسخ می‌دهد."
+ },
+ {
+  "en": "done",
+  "fa": "تمام"
+ },
+ {
+  "en": "active",
+  "fa": "در جریان"
+ },
+ {
+  "en": "Dynamic light",
+  "fa": "نور پویا"
+ },
+ {
+  "en": "Darkness with light around you and fires.",
+  "fa": "تاریکی، با نور پیرامون تو و آتش‌ها."
+ },
+ {
+  "en": "Glow",
+  "fa": "درخشش"
+ },
+ {
+  "en": "Shadows",
+  "fa": "سایه‌ها"
+ },
+ {
+  "en": "Extra effects",
+  "fa": "جلوه‌های اضافه"
+ },
+ {
+  "en": "Squash, dust, sparks, weapon arcs.",
+  "fa": "کشیدگی، گردوخاک، جرقه، کمان سلاح."
+ },
+ {
+  "en": "Purchases restored.",
+  "fa": "خریدها بازگردانی شد."
+ },
+ {
+  "en": "Not unlocked yet.",
+  "fa": "هنوز باز نشده."
+ },
+ {
+  "en": "Appearance: ",
+  "fa": "ظاهر: "
+ },
+ {
+  "en": "Appearance unlocked: ",
+  "fa": "ظاهر باز شد: "
+ },
+ {
+  "en": "Thank you — purchase complete.",
+  "fa": "سپاسگزارم — خرید انجام شد."
+ },
+ {
+  "en": "Purchase cancelled.",
+  "fa": "خرید لغو شد."
+ },
+ {
+  "en": "Store unavailable.",
+  "fa": "فروشگاه در دسترس نیست."
+ },
+ {
+  "en": "Not available in the browser",
+  "fa": "در نسخهٔ مرورگر ممکن نیست"
+ },
+ {
+  "en": "Support link",
+  "fa": "لینک حمایت"
+ },
+ {
+  "en": "Android build only.",
+  "fa": "فقط در نسخهٔ اندروید."
+ },
+ {
+  "en": "Checking…",
+  "fa": "در حال بررسی…"
+ },
+ {
+  "en": "No video available right now.",
+  "fa": "الان ویدیویی موجود نیست."
+ },
+ {
+  "en": "No video available.",
+  "fa": "ویدیویی موجود نیست."
+ },
+ {
+  "en": "advertisement (simulated)",
+  "fa": "تبلیغ (نمایشی)"
+ },
+ {
+  "en": "This is where the real video ad plays in the Android build.",
+  "fa": "در نسخهٔ اندروید، ویدیوی تبلیغاتی واقعی اینجا پخش می‌شود."
+ },
+ {
+  "en": "One breath left",
+  "fa": "یک نفس باقی مانده"
+ },
+ {
+  "en": "Watch a short video and stand back up with half your health — or fall here.",
+  "fa": "یک ویدیوی کوتاه ببین و با نیمی از جانت برخیز — یا همین‌جا بیفت."
+ },
+ {
+  "en": "Watch and revive",
+  "fa": "تماشا و برخاستن"
+ },
+ {
+  "en": "Back on your feet.",
+  "fa": "دوباره روی پا."
+ },
+ {
+  "en": "Let go",
+  "fa": "رها کردن"
+ },
+ {
+  "en": "Double the payout?",
+  "fa": "دو برابر کردن پاداش؟"
+ },
+ {
+  "en": "A short video doubles this contract\\'s gold and experience.",
+  "fa": "یک ویدیوی کوتاه، سکه و تجربهٔ این قرارداد را دو برابر می‌کند."
+ },
+ {
+  "en": "Watch",
+  "fa": "تماشا"
+ },
+ {
+  "en": "No thanks",
+  "fa": "نه ممنون"
+ },
+ {
+  "en": "Appearance",
+  "fa": "ظاهر"
+ },
+ {
+  "en": "Looks only. None of these change your stats.",
+  "fa": "فقط ظاهر. هیچ‌کدام روی آماره‌هایت اثری ندارند."
+ },
+ {
+  "en": "aura",
+  "fa": "هاله"
+ },
+ {
+  "en": "trail",
+  "fa": "دنباله"
+ },
+ {
+  "en": "cape",
+  "fa": "شنل"
+ },
+ {
+  "en": "crown",
+  "fa": "تاج"
+ },
+ {
+  "en": "plain",
+  "fa": "ساده"
+ },
+ {
+  "en": "Earned by defeating Puladvand",
+  "fa": "با شکست پولادوند به دست می‌آید"
+ },
+ {
+  "en": "Earned at 25 contracts",
+  "fa": "با ۲۵ قرارداد به دست می‌آید"
+ },
+ {
+  "en": "A thank-you for supporters",
+  "fa": "سپاسی برای حامیان"
+ },
+ {
+  "en": " Toman",
+  "fa": " تومان"
+ },
+ {
+  "en": "Worn",
+  "fa": "پوشیده"
+ },
+ {
+  "en": "Wear",
+  "fa": "پوشیدن"
+ },
+ {
+  "en": "Buy",
+  "fa": "خرید"
+ },
+ {
+  "en": "Purchases are tied to this device and survive a new game.",
+  "fa": "خریدها به همین دستگاه بسته‌اند و با بازی جدید از دست نمی‌روند."
+ },
+ {
+  "en": "Support the game",
+  "fa": "حمایت از بازی"
+ },
+ {
+  "en": "The game is free and always will be.",
+  "fa": "بازی رایگان است و همیشه می‌ماند."
+ },
+ {
+  "en": "Everything in the game is reachable without paying. Support only buys appearance and removes ads.",
+  "fa": "همه‌چیزِ بازی بدون پرداخت به دست می‌آید. حمایت فقط ظاهر می‌خرد و تبلیغات را برمی‌دارد."
+ },
+ {
+  "en": "Owned",
+  "fa": "خریداری‌شده"
+ },
+ {
+  "en": "Choose",
+  "fa": "انتخاب"
+ },
+ {
+  "en": "Remove ads",
+  "fa": "حذف تبلیغات"
+ },
+ {
+  "en": "Small support",
+  "fa": "حمایت کوچک"
+ },
+ {
+  "en": "Medium support",
+  "fa": "حمایت متوسط"
+ },
+ {
+  "en": "Large support",
+  "fa": "حمایت بزرگ"
+ },
+ {
+  "en": "Donate link",
+  "fa": "لینک حمایت"
+ },
+ {
+  "en": "Opens outside the game.",
+  "fa": "بیرون از بازی باز می‌شود."
+ },
+ {
+  "en": "Restore purchases",
+  "fa": "بازگردانی خریدها"
+ },
+ {
+  "en": "If you reinstalled the game.",
+  "fa": "اگر بازی را دوباره نصب کرده‌ای."
+ },
+ {
+  "en": "Check",
+  "fa": "بررسی"
+ },
+ {
+  "en": "Thank you. Truly.",
+  "fa": "سپاسگزارم. واقعاً."
+ },
+ {
+  "en": "Support",
+  "fa": "حمایت"
+ },
+ {
+  "en": "Start a new adventure?",
+  "fa": "ماجرای تازه شروع شود؟"
+ },
+ {
+  "en": "Start new",
+  "fa": "شروع تازه"
+ },
+ {
+  "en": "Cancel",
+  "fa": "انصراف"
+ },
+ {
+  "en": "Restore backup?",
+  "fa": "پشتیبان بازگردانی شود؟"
+ },
+ {
+  "en": "Restore",
+  "fa": "بازگردانی"
+ },
+ {
+  "en": "Backup restored. Tap Continue.",
+  "fa": "پشتیبان بازگشت. «ادامه» را بزن."
+ },
+ {
+  "en": "Emberfall Edition",
+  "fa": "نسخهٔ Emberfall"
+ },
+ {
+  "en": "From Zabol to the Forge of the First Flame. Four classes, a talent tree, forged gear, and bosses that fight back.",
+  "fa": "از زابل تا کورهٔ نخستین شعله. چهار کلاس، درخت استعداد، تجهیزات آهنگری‌شده و سرکرده‌هایی که کوتاه نمی‌آیند."
+ },
+ {
+  "en": "Left thumb: drag anywhere to move. Right thumb: attack and skills. Hold attack to charge it. Everything else is in Menu, top right.",
+  "fa": "شست چپ: هر جا بکشی حرکت می‌کنی. شست راست: حمله و مهارت‌ها. حمله را نگه داری شارژ می‌شود. بقیه در «فهرست» بالا سمت راست است."
+ },
+ {
+  "en": "WASD to move, Space to attack, Shift and X for skills, V to dodge, F to dash, E to talk, M for the menu.",
+  "fa": "WASD حرکت، Space حمله، Shift و X مهارت‌ها، V جاخالی، F دش، E گفتگو، M فهرست."
+ },
+ {
+  "en": "New Adventure",
+  "fa": "ماجرای تازه"
+ },
+ {
+  "en": "Continue",
+  "fa": "ادامه"
+ },
+ {
+  "en": "The store did not answer. Try again.",
+  "fa": "فروشگاه پاسخ نداد. دوباره امتحان کن."
+ },
+ {
+  "en": "Tip: ",
+  "fa": "نکته: "
+ },
+ {
+  "en": "Brightness",
+  "fa": "روشنایی"
+ },
+ {
+  "en": "Raise it if nights or caves are hard to see on your phone.",
+  "fa": "اگر شب‌ها یا غارها روی گوشی‌ات خوب دیده نمی‌شوند، بالاتر ببر."
+ },
+ {
+  "en": "Bright",
+  "fa": "روشن"
+ },
+ {
+  "en": "Brightest",
+  "fa": "خیلی روشن"
+ },
+ {
+  "en": "Story intro",
+  "fa": "مقدمهٔ داستان"
+ },
+ {
+  "en": "Watch the opening again.",
+  "fa": "دوباره تماشا کن."
+ },
+ {
+  "en": "Replay",
+  "fa": "پخش دوباره"
+ },
+ {
+  "en": "Look at your hand. The mark has gone dark: the ember has gone home.",
+  "fa": "به دستت نگاه کن. نشان خاموش شده: اخگر به خانه برگشته است."
+ },
+ {
+  "en": "The stones return to their places.",
+  "fa": "سنگ‌ها به جای خود برگشتند."
+ },
+ {
+  "en": "Not enough stamina.",
+  "fa": "توان کافی نیست."
+ },
+ {
+  "en": "SPLASH!",
+  "fa": "شالاپ!"
+ },
+ {
+  "en": "LAVA!",
+  "fa": "گدازه!"
+ },
+ {
+  "en": "SPIKES!",
+  "fa": "تیغ!"
+ },
+ {
+  "en": "The runes sing in harmony.",
+  "fa": "رون‌ها هم‌صدا شدند."
+ },
+ {
+  "en": "Wrong order — the runes go dark. Read the mosaic.",
+  "fa": "ترتیب غلط — رون‌ها خاموش شدند. موزاییک را بخوان."
+ },
+ {
+  "en": "Hidden cache found!",
+  "fa": "گنج پنهان پیدا شد!"
+ },
+ {
+  "en": "Shrine Sigil",
+  "fa": "نشانِ زیارتگاه"
+ },
+ {
+  "en": "The sigil answers your will. Choose its gift — it lasts forever.",
+  "fa": "نشان به خواست تو پاسخ می‌دهد. هدیه‌اش را انتخاب کن — برای همیشه می‌ماند."
+ },
+ {
+  "en": "Vitality",
+  "fa": "سرزندگی"
+ },
+ {
+  "en": "+12 Max HP",
+  "fa": "۱۲+ بیشترین جان"
+ },
+ {
+  "en": "Focus",
+  "fa": "تمرکز"
+ },
+ {
+  "en": "+6 Max MP",
+  "fa": "۶+ بیشترین مانا"
+ },
+ {
+  "en": "SNEAK ATTACK!",
+  "fa": "حملهٔ پنهانی!"
+ },
+ {
+  "en": "A body!",
+  "fa": "جسد!"
+ },
+ {
+  "en": "Sneaking",
+  "fa": "مخفی‌کاری"
+ },
+ {
+  "en": "Walking",
+  "fa": "راه رفتن عادی"
+ },
+ {
+  "en": "Sneaking — tap to stand",
+  "fa": "مخفی‌کاری — برای ایستادن بزن"
+ },
+ {
+  "en": "To me, lads!",
+  "fa": "به من برسید، بچه‌ها!"
+ },
+ {
+  "en": "The camp is abandoned. The bandits are gone.",
+  "fa": "اردوگاه خالی است. راهزن‌ها رفته‌اند."
+ },
+ {
+  "en": "A bandit camp — dangerous at your level. Sneak, or come back stronger.",
+  "fa": "اردوگاه راهزن‌ها — برای سطح تو خطرناک است. مخفیانه برو، یا قوی‌تر برگرد."
+ },
+ {
+  "en": "Out without a trace. Nobody saw you.",
+  "fa": "بی‌ردپا بیرون آمدی. هیچ‌کس تو را ندید."
+ },
+ {
+  "en": "Ashkbus of Kushan has fallen. His men will scatter.",
+  "fa": "اشکبوسِ کشانی از پا درآمد. افرادش پراکنده می‌شوند."
+ },
+ {
+  "en": "Halt!",
+  "fa": "ایست!"
+ },
+ {
+  "en": "Ashkbus of Kushan",
+  "fa": "اشکبوسِ کشانی"
+ },
+ {
+  "en": "Easy now. Blades stay sheathed and everyone keeps their fingers.",
+  "fa": "آرام. شمشیرها در غلاف می‌مانند و همه انگشت‌هایشان را نگه می‌دارند."
+ },
+ {
+  "en": "You smell of Sindokht\\'s coin. She sent you for her little box, didn\\'t she?",
+  "fa": "بوی سکه‌های سیندخت را می‌دهی. فرستادت دنبال صندوقچهٔ کوچکش، نه؟"
+ },
+ {
+  "en": "Here\\'s how this goes: two hundred gold, and the box walks out with you.",
+  "fa": "حساب ساده است: دویست سکه، و صندوقچه همراهت بیرون می‌رود."
+ },
+ {
+  "en": "Pleasure doing business. Tell Sindokht the road tax just went up.",
+  "fa": "معامله با تو لذت داشت. به سیندخت بگو باجِ جاده گران‌تر شد."
+ },
+ {
+  "en": "...The Crypt? That was you?",
+  "fa": "...سرداب؟ کار تو بود؟"
+ },
+ {
+  "en": "Take the box. Nobody here is paid enough to die today.",
+  "fa": "صندوقچه را بردار. اینجا به هیچ‌کس آن‌قدر مزد نمی‌دهند که امروز بمیرد."
+ },
+ {
+  "en": "Ha! ...Ha. No. No, I don\\'t think I do.",
+  "fa": "ها! ...ها. نه. نه، فکر نکنم بخواهم."
+ },
+ {
+  "en": "Take the box — and this purse. Call it a gift between professionals.",
+  "fa": "صندوقچه را ببر — و این کیسه را هم. اسمش را بگذار هدیه‌ای بین دو حرفه‌ای."
+ },
+ {
+  "en": "...No one has ever offered us mercy before.",
+  "fa": "...تا حالا هیچ‌کس به ما رحم پیشنهاد نکرده بود."
+ },
+ {
+  "en": "Here. The box. And my mother\\'s charm — it kept me alive. Maybe it will do the same for you.",
+  "fa": "بیا. صندوقچه. و طلسمِ مادرم — مرا زنده نگه داشت. شاید تو را هم نگه دارد."
+ },
+ {
+  "en": "The Hand? Why didn\\'t you say so!",
+  "fa": "دست خاکستر؟ چرا زودتر نگفتی!"
+ },
+ {
+  "en": "Guild law: no one robs a brother\\'s mark. The box is yours — and the Hand\\'s cut, with my respects.",
+  "fa": "قانون انجمن: کسی از نشانِ برادرش نمی‌دزدد. صندوقچه مال تو — و سهم دست خاکستر هم، با احترام."
+ },
+ {
+  "en": "D-DRAGON! RUN! EVERYONE RUN!",
+  "fa": "ا-اژدها! فرار کنید! همه فرار کنید!"
+ },
+ {
+  "en": "Where did you— ...Quiet. QUIET!",
+  "fa": "این را از کجا— ...هیس. هیس!"
+ },
+ {
+  "en": "The box. And a hundred and fifty for your silence. We never spoke.",
+  "fa": "صندوقچه. و صد و پنجاه سکه برای سکوتت. ما هیچ‌وقت با هم حرف نزدیم."
+ },
+ {
+  "en": "The way out is behind you. Don\\'t come back without coin.",
+  "fa": "راه خروج پشت سرت است. بی‌پول برنگرد."
+ },
+ {
+  "en": "Then we do this the old way!",
+  "fa": "پس به روش قدیمی!"
+ },
+ {
+  "en": "Run!",
+  "fa": "فرار!"
+ },
+ {
+  "en": "The camp is empty. Take the strongbox.",
+  "fa": "اردوگاه خالی شد. صندوقچه را بردار."
+ },
+ {
+  "en": "Ashkbus\\'s Ledger",
+  "fa": "دفتر حساب اشکبوس"
+ },
+ {
+  "en": "Two columns of numbers. Left: what Ashkbus tells his men they earned. Right: what they really earned.",
+  "fa": "دو ستون عدد. چپ: آنچه اشکبوس به افرادش می‌گوید درآمدشان بوده. راست: درآمدِ واقعی‌شان."
+ },
+ {
+  "en": "He has been robbing his own crew for years. And at the back — a list of merchants to rob next, Sindokht first.",
+  "fa": "سال‌هاست از افراد خودش می‌دزدد. و در صفحهٔ آخر — فهرست تاجرهایی که نوبتشان است، اولی‌اش سیندخت."
+ },
+ {
+  "en": "This could be useful.",
+  "fa": "این به کار می‌آید."
+ },
+ {
+  "en": "Found: Ashkbus\\'s ledger",
+  "fa": "پیدا شد: دفتر حساب اشکبوس"
+ },
+ {
+  "en": "Got: Sindokht\\'s strongbox. Now get out!",
+  "fa": "صندوقچهٔ سیندخت را برداشتی. حالا بزن به چاک!"
+ },
+ {
+  "en": "THIEF!",
+  "fa": "دزد!"
+ },
+ {
+  "en": "Sindokht the Merchant",
+  "fa": "سیندختِ بازرگان"
+ },
+ {
+  "en": "Psst — a word before you browse. Bandits have made camp in the Thornwood, past the south edge of the Whispering Forest.",
+  "fa": "پیش از آن‌که چیزی بخری، یک سخن. راهزن‌ها در خارزار اردو زده‌اند، آن سوی لبهٔ جنوبی جنگل نجواگر."
+ },
+ {
+  "en": "Their leader, Ashkbus of Kushan, robbed my caravan. My strongbox is in his camp — everything I own is in it.",
+  "fa": "سردسته‌شان، اشکبوسِ کشانی، کاروانم را زد. صندوقچه‌ام در اردوگاه اوست — همهٔ دارایی‌ام در آن است."
+ },
+ {
+  "en": "I don\\'t care how you get it back. Fight them, talk to them, or slip in like a shadow — just bring it home.",
+  "fa": "برایم مهم نیست چطور پسش می‌گیری. بجنگ، حرف بزن، یا چون سایه بی‌صدا درون شو — فقط برش گردان."
+ },
+ {
+  "en": "Bless you. The camp is a palisade of sharpened logs, and Ashkbus keeps archers on watch.",
+  "fa": "خیر ببینی. دور اردوگاه حصاری از کنده‌های تیز است، و اشکبوس کماندارهایش را به نگهبانی گذاشته."
+ },
+ {
+  "en": "If you\\'d rather not be seen: move slowly, keep to the tall grass, and stay out of their torchlight.",
+  "fa": "اگر نمی‌خواهی دیده شوی: آهسته برو، در علف بلند بمان و از نور مشعل‌هایشان دور باش."
+ },
+ {
+  "en": "New quest: Thornwood Toll",
+  "fa": "مأموریت تازه: باج خارزار"
+ },
+ {
+  "en": "My strongbox! Every coin, every letter — it\\'s all here.",
+  "fa": "صندوقچه‌ام! همهٔ سکه‌ها، همهٔ نامه‌ها — همه‌اش اینجاست."
+ },
+ {
+  "en": "Here — you\\'ve earned this.",
+  "fa": "بیا — حقت است."
+ },
+ {
+  "en": "Sindokht\\'s friends\\' price: everything 20% off",
+  "fa": "قیمت دوستانهٔ سیندخت: همه‌چیز ۲۰٪ ارزان‌تر"
+ },
+ {
+  "en": "★ About your strongbox…",
+  "fa": "★ دربارهٔ صندوقچه‌ات…"
+ },
+ {
+  "en": "   ·   Friends\\' price: −20%",
+  "fa": "، قیمت دوستانه: ۲۰٪ تخفیف"
+ },
+ {
+  "en": "Thornwood Toll",
+  "fa": "باج خارزار"
+ },
+ {
+  "en": "Bring the strongbox back to Sindokht in Zabol.",
+  "fa": "صندوقچه را به سیندخت در زابل برگردان."
+ },
+ {
+  "en": "Recover Sindokht\\'s strongbox from the bandit camp south of the Whispering Forest — fight, talk, or sneak.",
+  "fa": "صندوقچهٔ سیندخت را از اردوگاه راهزن‌ها در جنوب جنگل نجواگر پس بگیر — با جنگ، با حرف، یا با مخفی‌کاری."
+ },
+ {
+  "en": "A Watcher heard your steps!",
+  "fa": "نگهبان صدای پایت را شنید!"
+ },
+ {
+  "en": "A Watcher saw you!",
+  "fa": "نگهبان تو را دید!"
+ },
+ {
+  "en": "They haven\\'t seen you",
+  "fa": "هنوز تو را ندیده‌اند"
+ },
+ {
+  "en": "Enemies only notice what is in front of their eyes — or what they hear.",
+  "fa": "دشمن‌ها فقط چیزی را که جلوی چشمشان است — یا صدایش را می‌شنوند — می‌فهمند."
+ },
+ {
+  "en": "<b>Sneak</b>: ⋯ → Sneak (or push the joystick gently). Slow and silent; you see their sight cones.",
+  "fa": "<b>مخفی‌کاری</b>: ⋯ ← مخفی‌کاری (یا جوی‌استیک را آرام فشار بده). آهسته و بی‌صدا؛ مخروط دیدشان را می‌بینی."
+ },
+ {
+  "en": "<b>Hide</b> in tall grass and bushes. Night helps; torchlight gives you away.",
+  "fa": "<b>پنهان شو</b> در علف بلند و بوته‌ها. شب کمک می‌کند؛ نور مشعل لوت می‌دهد."
+ },
+ {
+  "en": "<b>Strike from behind</b> for a Sneak Attack — triple damage, often a silent kill.",
+  "fa": "<b>از پشت بزن</b> تا حملهٔ پنهانی بزنی — سه برابر آسیب، اغلب کشتنِ بی‌صدا."
+ },
+ {
+  "en": "Try it: start sneaking",
+  "fa": "امتحان کن: مخفی‌کاری را شروع کن"
+ },
+ {
+  "en": "Save backup",
+  "fa": "پشتیبان ذخیره"
+ },
+ {
+  "en": "Keep this code somewhere safe (a note, a chat with yourself). If the game data is ever wiped, paste it back here.",
+  "fa": "این کد را جای امنی نگه دار (یادداشت گوشی، پیام به خودت). اگر روزی دادهٔ بازی پاک شد، همین‌جا واردش کن."
+ },
+ {
+  "en": "Copy code",
+  "fa": "کپی کد"
+ },
+ {
+  "en": "Code copied",
+  "fa": "کد کپی شد"
+ },
+ {
+  "en": "Select the text and copy it",
+  "fa": "متن را انتخاب و کپی کن"
+ },
+ {
+  "en": "Share…",
+  "fa": "اشتراک…"
+ },
+ {
+  "en": "Restore from a code",
+  "fa": "بازگردانی از کد"
+ },
+ {
+  "en": "This code is not valid or was copied incompletely.",
+  "fa": "این کد معتبر نیست یا کامل کپی نشده."
+ },
+ {
+  "en": "Restore this save?",
+  "fa": "این ذخیره بازگردانی شود؟"
+ },
+ {
+  "en": "Backup",
+  "fa": "پشتیبان"
+ },
+ {
+  "en": "STAGGERED!",
+  "fa": "گیج شد!"
+ },
+ {
+  "en": "Immune",
+  "fa": "آسیب‌ناپذیر"
+ },
+ {
+  "en": "Shielded",
+  "fa": "سپر دارد"
+ },
+ {
+  "en": "Perfect dodge!",
+  "fa": "جاخالیِ بی‌نقص!"
+ },
+ {
+  "en": "Phase II",
+  "fa": "مرحلهٔ دوم"
+ },
+ {
+  "en": "Final phase",
+  "fa": "واپسین مرحله"
+ },
+ {
+  "en": "tap to skip",
+  "fa": "برای رد شدن بزن"
+ },
+ {
+  "en": "Recovers",
+  "fa": "به خود آمد"
+ },
+ {
+  "en": "VANQUISHED",
+  "fa": "از پا درآمد"
+ },
+ {
+  "en": "Again!",
+  "fa": "دوباره!"
+ },
+ {
+  "en": "Burnt!",
+  "fa": "سوخت!"
+ },
+ {
+  "en": "Melted!",
+  "fa": "ذوب شد!"
+ },
+ {
+  "en": "Smashed the pillar — STAGGERED!",
+  "fa": "ستون را شکست — گیج شد!"
+ },
+ {
+  "en": "Hit the wall — STAGGERED!",
+  "fa": "به دیوار خورد — گیج شد!"
+ },
+ {
+  "en": "Rise, wardens!",
+  "fa": "برخیزید، نگهبانان!"
+ },
+ {
+  "en": "Armour reforms",
+  "fa": "زره‌اش دوباره شکل گرفت"
+ },
+ {
+  "en": "The mountain stirs…",
+  "fa": "کوه می‌جنبد…"
+ },
+ {
+  "en": "CORE EXPOSED!",
+  "fa": "هسته‌اش باز شد!"
+ },
+ {
+  "en": "My children!",
+  "fa": "بچه‌هایم!"
+ },
+ {
+  "en": "Judgement multiplies.",
+  "fa": "داوری چندبرابر می‌شود."
+ },
+ {
+  "en": "Shattered!",
+  "fa": "خرد شد!"
+ },
+ {
+  "en": "  · core exposed",
+  "fa": "، هستهٔ باز"
+ },
+ {
+  "en": "  · magma armour",
+  "fa": "، زرهِ مذاب"
+ },
+ {
+  "en": "Zabol",
+  "fa": "دهکدهٔ زابل"
+ },
+ {
+  "en": "Whispering Forest",
+  "fa": "جنگل نجواگر"
+ },
+ {
+  "en": "Sunken Crypt",
+  "fa": "سردابِ فرورفته"
+ },
+ {
+  "en": "Ashen Peaks",
+  "fa": "قله‌های خاکستر"
+ },
+ {
+  "en": "Shadowfen Bog",
+  "fa": "مردابِ سایه"
+ },
+ {
+  "en": "Crystal Sanctum",
+  "fa": "معبد بلورین"
+ },
+ {
+  "en": "Arzhang\\'s Bulwark",
+  "fa": "سپرِ ارژنگ"
+ },
+ {
+  "en": "Take 10% less damage",
+  "fa": "۱۰٪ آسیب کمتر می‌بینی"
+ },
+ {
+  "en": "Emberheart of Mazandaran",
+  "fa": "قلب‌اخگرِ مازندران"
+ },
+ {
+  "en": "Reflect 30% of damage taken",
+  "fa": "۳۰٪ آسیب دریافتی را بازتاب می‌دهی"
+ },
+ {
+  "en": "Sorceress\\'s Fang",
+  "fa": "نیشِ زنِ جادو"
+ },
+ {
+  "en": "25% chance to poison on hit",
+  "fa": "۲۵٪ شانس مسموم‌کردن با هر ضربه"
+ },
+ {
+  "en": "White Div\\'s Rime",
+  "fa": "برفکِ دیو سپید"
+ },
+ {
+  "en": "18% chance to freeze on hit",
+  "fa": "۱۸٪ شانس یخ‌زدن دشمن"
+ },
+ {
+  "en": "Wyrmking Crown",
+  "fa": "تاج اژدهاشاه"
+ },
+ {
+  "en": "+40% ATK below 40% HP",
+  "fa": "زیر ۴۰٪ جان، ۴۰٪ حمله بیشتر"
+ },
+ {
+  "en": "Forge of the First Flame",
+  "fa": "کورهٔ نخستین شعله"
+ },
+ {
+  "en": "Emberfall Brand",
+  "fa": "داغ اخگرفرود"
+ },
+ {
+  "en": "Every 5th hit erupts in flame",
+  "fa": "هر ضربهٔ پنجم شعله می‌شود"
+ },
+ {
+  "en": "Hold the sword button to charge a heavy blow that knocks enemies back.",
+  "fa": "دکمهٔ شمشیر را نگه دار تا ضربهٔ سنگینِ شارژشده بزنی و دشمن را عقب بیندازی."
+ },
+ {
+  "en": "Dodge through an attack — you are untouchable for a moment while rolling.",
+  "fa": "از میان حمله جاخالی بده؛ هنگام غلت لحظه‌ای آسیب نمی‌بینی."
+ },
+ {
+  "en": "Kavian and Sindokht in the village sell better armour and blades.",
+  "fa": "کاویان و سیندخت در دهکده زره و شمشیر بهتر می‌فروشند."
+ },
+ {
+  "en": "The ⋯ button holds sneak, dash, shove, block, mana potions and scrolls.",
+  "fa": "دکمهٔ ⋯ مخفی‌کاری، جهش، هل دادن، دفاع، معجون مانا و طومارها را در خود دارد."
+ },
+ {
+  "en": "Each wild region hides an ancient shrine — look for a pillar of light.",
+  "fa": "در هر منطقهٔ وحشی یک زیارتگاهِ کهن پنهان است — دنبال ستونی از نور بگرد."
+ },
+ {
+  "en": "A heavy (held) blow can knock foes into lava, spikes or deep water.",
+  "fa": "ضربهٔ سنگین (نگه‌داشته) دشمن را توی گدازه، تله یا آب عمیق می‌اندازد."
+ },
+ {
+  "en": "Foes only notice what they see or hear. Sneak (⋯ → Sneak, or Z) and strike from behind for a Sneak Attack.",
+  "fa": "دشمن‌ها فقط چیزی را که می‌بینند یا می‌شنوند می‌فهمند. مخفی‌کاری کن (⋯ ← مخفی‌کاری، یا Z) و از پشت بزن تا حملهٔ پنهانی بزنی."
+ },
+ {
+  "en": "Tall grass and bushes hide you while you sneak. Night helps — torchlight does not.",
+  "fa": "وقتی مخفی‌کاری می‌کنی، علف بلند و بوته‌ها پنهانت می‌کنند. شب کمک می‌کند — نور مشعل نه."
+ },
+ {
+  "en": "Sindokht the merchant has a problem with bandits. There is more than one way to solve it.",
+  "fa": "سیندختِ بازرگان با راهزن‌ها مشکل دارد. برای حلش بیش از یک راه هست."
+ },
+ {
+  "en": "Spend talent points from the Menu — every level gives one.",
+  "fa": "امتیاز استعداد را از فهرست خرج کن؛ هر سطح یک امتیاز می‌دهد."
+ },
+ {
+  "en": "Drink the fountain in Zabol to heal for free.",
+  "fa": "از چشمهٔ دهکده بنوش تا رایگان درمان شوی."
+ },
+ {
+  "en": "Strike the eternal flame — your blade carries its fire for a while. Light every brazier. Oil carries fire far.",
+  "fa": "به شعلهٔ جاودان ضربه بزن — تیغت تا مدتی آتشش را با خود دارد. همهٔ آتشدان‌ها را روشن کن. روغن آتش را دور می‌برد."
+ },
+ {
+  "en": "Only stone weighs these plates down — walk into a block to push it. If a block gets stuck, strike the lever.",
+  "fa": "فقط سنگ این صفحه‌ها را پایین می‌برد — برای هل دادن سنگ به سمتش راه برو. اگر سنگی گیر کرد، به اهرم ضربه بزن."
+ },
+ {
+  "en": "Cracked stone fears a blast. Push the barrel beside it, light it — then run! Shove foes into lava (⋯ wheel, or a charged attack).",
+  "fa": "سنگ ترک‌خورده از انفجار می‌ترسد. بشکه را کنارش ببر، روشنش کن — و فرار کن! دشمن‌ها را با هل دادن (چرخهٔ ⋯ یا ضربهٔ پرقدرت) توی گدازه بینداز."
+ },
+ {
+  "en": "Frost turns water into a path: strike the crystal, then the water ahead of you. The storm crystal makes water deadly to whatever stands in it.",
+  "fa": "سرما آب را راه می‌کند: به کریستال یخ بزن، بعد به آبِ جلوی پایت. کریستال آذرخش هم آب را برای هرکه تویش ایستاده کشنده می‌کند."
+ },
+ {
+  "en": "Strike a mirror to turn it. Lead the light to the crystal. Ice blocks the way — fire melts it.",
+  "fa": "با ضربه، آینه را بچرخان. نور را به کریستال برسان. یخ راه را بسته — آتش آبش می‌کند."
+ },
+ {
+  "en": "The mosaic shows the order: step on the runes as it tells — one dot, two, three, four. Then light both braziers; they burn only briefly.",
+  "fa": "موزاییک ترتیب را نشان می‌دهد: به ترتیب نقطه‌ها روی رون‌ها قدم بگذار — یک، دو، سه، چهار. بعد هر دو آتشدان را روشن کن؛ زود خاموش می‌شوند."
+ },
+ {
+  "en": "Thornwood Camp",
+  "fa": "اردوگاه خارزار"
+ },
+ {
+  "en": "[Gold]",
+  "fa": "[سکه]"
+ },
+ {
+  "en": "You don\\'t have enough gold.",
+  "fa": "سکهٔ کافی نداری."
+ },
+ {
+  "en": "[Arzhang-slayer]",
+  "fa": "[کُشندهٔ ارژنگ]"
+ },
+ {
+  "en": "Only someone who has defeated Arzhang the Div could say this.",
+  "fa": "فقط کسی که ارژنگ دیو را شکست داده می‌تواند این را بگوید."
+ },
+ {
+  "en": "[Warrior]",
+  "fa": "[جنگجو]"
+ },
+ {
+  "en": "Needs level 5 — right now he isn\\'t afraid of you.",
+  "fa": "نیاز به سطح ۵ — فعلاً از تو نمی‌ترسد."
+ },
+ {
+  "en": "[Paladin]",
+  "fa": "[سوگندوَر]"
+ },
+ {
+  "en": "[Rogue]",
+  "fa": "[شبگرد]"
+ },
+ {
+  "en": "[Mage]",
+  "fa": "[فرزانه]"
+ },
+ {
+  "en": "Not enough mana.",
+  "fa": "مانای کافی نداری."
+ },
+ {
+  "en": "[Ledger]",
+  "fa": "[دفتر حساب]"
+ },
+ {
+  "en": "You have nothing on him… yet. Maybe something in his camp?",
+  "fa": "فعلاً چیزی علیه‌اش نداری… شاید در اردوگاهش چیزی باشد؟"
+ },
+ {
+  "en": "[Fight]",
+  "fa": "[نبرد]"
+ },
+ {
+  "en": "Ghost — they never saw you.",
+  "fa": "شبح — هرگز تو را ندیدند."
+ },
+ {
+  "en": "Snatched from under their noses.",
+  "fa": "از زیر دماغشان قاپیدی."
+ },
+ {
+  "en": "Ashkbus of Kushan is dead.",
+  "fa": "اشکبوسِ کشانی مُرد."
+ },
+ {
+  "en": "You paid the toll.",
+  "fa": "باج را پرداختی."
+ },
+ {
+  "en": "Your renown alone was enough.",
+  "fa": "آوازه‌ات به‌تنهایی کافی بود."
+ },
+ {
+  "en": "Ashkbus backed down.",
+  "fa": "اشکبوس کوتاه آمد."
+ },
+ {
+  "en": "Mercy, sworn on the Ember.",
+  "fa": "رحم، با سوگند به اخگر."
+ },
+ {
+  "en": "Guild law, honoured.",
+  "fa": "قانون انجمن، محترم شمرده شد."
+ },
+ {
+  "en": "A dragon of flame scattered them.",
+  "fa": "اژدهایی از شعله پراکنده‌شان کرد."
+ },
+ {
+  "en": "Blackmail, with a ledger.",
+  "fa": "باج‌گیری، با یک دفتر حساب."
+ },
+ {
+  "en": "And they never even saw you? Ha! Then you\\'re no errand-runner — you\\'re a ghost.",
+  "fa": "و اصلاً تو را ندیدند؟ ها! پس تو پادو نیستی — یک شبحی."
+ },
+ {
+  "en": "From now on you pay what my family pays. One fifth off, always.",
+  "fa": "از حالا به بعد همان قیمتی را می‌دهی که خانواده‌ام می‌دهند. همیشه یک‌پنجم کمتر."
+ },
+ {
+  "en": "I heard the shouting from here. Well — a box in hand is worth ten in a bandit\\'s tent.",
+  "fa": "صدای داد و فریادشان تا اینجا آمد. خب — یک صندوقچه در دست بهتر از ده تا در چادر راهزن است."
+ },
+ {
+  "en": "Ashkbus of Kushan... dead? The roads will be safer for every merchant in the valley.",
+  "fa": "اشکبوسِ کشانی... مُرده؟ جاده‌ها برای همهٔ تاجرهای این دره امن‌تر می‌شود."
+ },
+ {
+  "en": "You paid them? For me? ...No. I won\\'t let you lose coin on my account. Take it back — and more.",
+  "fa": "به آن‌ها پول دادی؟ به خاطر من؟ ...نه. نمی‌گذارم به خاطر من ضرر کنی. پسش بگیر — و بیشتر."
+ },
+ {
+  "en": "He just... handed it over? Your name must travel faster than you do.",
+  "fa": "همین‌طوری... تحویلش داد؟ لابد آوازه‌ات از خودت تندتر سفر می‌کند."
+ },
+ {
+  "en": "He just... handed it over? You must have quite a reputation.",
+  "fa": "همین‌طوری... تحویلش داد؟ لابد آوازه‌ات خیلی بلند است."
+ },
+ {
+  "en": "A paladin\\'s oath, to bandits? And they took it? Perhaps there\\'s hope for this valley yet.",
+  "fa": "سوگندِ یک پهلوانِ پاک‌دل، برای راهزن‌ها؟ و پذیرفتند؟ شاید هنوز برای این دره امیدی باشد."
+ },
+ {
+  "en": "The Ashen Hand? I won\\'t ask. I really won\\'t.",
+  "fa": "دست خاکستر؟ نمی‌پرسم. واقعاً نمی‌پرسم."
+ },
+ {
+  "en": "A dragon of fire? They\\'ll be running till winter!",
+  "fa": "اژدهایی از آتش؟ تا زمستان دارند می‌دوند!"
+ },
+ {
+  "en": "Ashkbus\\'s own ledger — with my name at the top of his list. You\\'ve saved half the valley\\'s merchants.",
+  "fa": "دفتر خودِ اشکبوس — با اسم من در صدر فهرستش. نصف تاجرهای دره را نجات دادی."
+ },
+ {
+  "en": "Friends\\' price for you from now on — one fifth off, always.",
+  "fa": "از حالا قیمتِ دوستانه برای تو — همیشه یک‌پنجم کمتر."
+ },
+ {
+  "en": "The Watchers see whatever walks in their light, and hear whoever walks loudly. Sneak, keep to the tall grass, and step on the far plate.",
+  "fa": "نگهبان‌ها هر چه در نورشان راه برود را می‌بینند و صدای هر که بلند قدم بردارد را می‌شنوند. مخفیانه برو، در علف بلند بمان و روی صفحهٔ آن سر قدم بگذار."
+ },
+ {
+  "en": "Arzhang the Div",
+  "fa": "ارژنگ دیو"
+ },
+ {
+  "en": "Echo of the Sixth Labour",
+  "fa": "پژواکِ خوانِ ششم"
+ },
+ {
+  "en": "Heart of the Ashen Peaks",
+  "fa": "قلبِ قله‌های خاکستر"
+ },
+ {
+  "en": "Echo of the Fourth Labour",
+  "fa": "پژواکِ خوانِ چهارم"
+ },
+ {
+  "en": "Usurper of the Crystal Sanctum",
+  "fa": "غاصبِ معبدِ بلورین"
+ },
+ {
+  "en": "Puladvand, the First Flame",
+  "fa": "پولادوند، نخستین شعله"
+ },
+ {
+  "en": "Lord of the Emberforge",
+  "fa": "سالارِ آهنگرخانهٔ اخگر"
+ },
+ {
+  "en": "Sleeper beneath the Sanctum",
+  "fa": "خفتهٔ زیر معبد"
+ },
+ {
+  "en": "Bid the Div",
+  "fa": "دیو بید"
+ },
+ {
+  "en": "Bully of the Bog",
+  "fa": "دیوِ مرداب"
+ },
+ {
+  "en": "Pulad of Ghandi",
+  "fa": "پولادِ غندی"
+ },
+ {
+  "en": "Keeper of the Forge Gate",
+  "fa": "دربانِ دروازهٔ آهنگرخانه"
+ },
+ {
+  "en": "Chief of the Turanian Raiders",
+  "fa": "سردستهٔ راهزنانِ تورانی"
+ },
+ {
+  "en": "Bosses have a stagger bar under their health. Heavy blows, well-timed blocks, ice and stuns fill it — a staggered boss takes 50% more damage.",
+  "fa": "سرکرده‌ها زیر نوار جانشان نوار گیجی دارند. ضربهٔ سنگین، دفاعِ به‌موقع، یخ و بیهوشی پرش می‌کنند — سرکردهٔ گیج ۵۰٪ آسیب بیشتر می‌خورد."
+ },
+ {
+  "en": "Fell to a boss? \"Rematch\" puts you back at the arena with your gold and potions intact.",
+  "fa": "از یک سرکرده شکست خوردی؟ «نبرد دوباره» تو را با همان سکه‌ها و معجون‌ها به میدان برمی‌گرداند."
+ },
+ {
+  "en": "Zal",
+  "fa": "زال"
+ },
+ {
+  "en": "Kavian the Smith",
+  "fa": "کاویانِ آهنگر"
+ },
+ {
+  "en": "Rudabeh the Alchemist",
+  "fa": "کیمیاگر رودابه"
+ },
+ {
+  "en": "Sorush",
+  "fa": "سروش"
+ },
+ {
+  "en": "Fists",
+  "fa": "دست خالی"
+ },
+ {
+  "en": "Iron Sword",
+  "fa": "شمشیر آهنی"
+ },
+ {
+  "en": "Steel Sword",
+  "fa": "شمشیر پولادی"
+ },
+ {
+  "en": "Mythril Blade",
+  "fa": "تیغِ هندی"
+ },
+ {
+  "en": "Dragonslayer",
+  "fa": "اژدهاکُش"
+ },
+ {
+  "en": "Emberfang Cleaver",
+  "fa": "تیغِ اخگرنیش"
+ },
+ {
+  "en": "Frostreaver",
+  "fa": "تیغ یخ‌دَر"
+ },
+ {
+  "en": "None",
+  "fa": "بی‌زره"
+ },
+ {
+  "en": "Leather Vest",
+  "fa": "جلیقهٔ چرمی"
+ },
+ {
+  "en": "Chainmail",
+  "fa": "زره زنجیری"
+ },
+ {
+  "en": "Ember Plate",
+  "fa": "زره اخگر"
+ },
+ {
+  "en": "Dragonscale",
+  "fa": "فلس اژدها"
+ },
+ {
+  "en": "Glacial Aegis",
+  "fa": "جوشنِ یخین"
+ },
+ {
+  "en": "Health Potion",
+  "fa": "معجون جان"
+ },
+ {
+  "en": "Mana Potion",
+  "fa": "معجون مانا"
+ },
+ {
+  "en": "Iron",
+  "fa": "شمشیر آهنی"
+ },
+ {
+  "en": "Steel",
+  "fa": "شمشیر پولادی"
+ },
+ {
+  "en": "Mythril",
+  "fa": "تیغِ هندی"
+ },
+ {
+  "en": "Emberfang",
+  "fa": "نیش‌اخگر"
+ },
+ {
+  "en": "Leather",
+  "fa": "جلیقهٔ چرمی"
+ },
+ {
+  "en": "Ember",
+  "fa": "زره اخگر"
+ },
+ {
+  "en": "Glacial",
+  "fa": "جوشنِ یخین"
+ },
+ {
+  "en": "Trial Grounds",
+  "fa": "میدان آزمون"
+ },
+ {
+  "en": "Might",
+  "fa": "نیرو"
+ },
+ {
+  "en": "Fortitude",
+  "fa": "پایداری"
+ },
+ {
+  "en": "Cunning",
+  "fa": "زیرکی"
+ },
+ {
+  "en": "Strength I",
+  "fa": "زور ۱"
+ },
+ {
+  "en": "Critical Eye",
+  "fa": "چشم تیزبین"
+ },
+ {
+  "en": "Strength II",
+  "fa": "زور ۲"
+ },
+ {
+  "en": "Power Attacks",
+  "fa": "ضربه‌های سنگین"
+ },
+ {
+  "en": "Ultimate Power",
+  "fa": "قدرت نهایی"
+ },
+ {
+  "en": "Vitality I",
+  "fa": "سرزندگی ۱"
+ },
+ {
+  "en": "Iron Skin",
+  "fa": "پوست آهنین"
+ },
+ {
+  "en": "Vitality II",
+  "fa": "سرزندگی ۲"
+ },
+ {
+  "en": "Block Mastery",
+  "fa": "استاد دفاع"
+ },
+ {
+  "en": "Second Wind",
+  "fa": "نفس دوباره"
+ },
+ {
+  "en": "Swift",
+  "fa": "چابک"
+ },
+ {
+  "en": "Dodge Master",
+  "fa": "استاد جاخالی"
+ },
+ {
+  "en": "Haste Aura",
+  "fa": "هالهٔ شتاب"
+ },
+ {
+  "en": "Scholar",
+  "fa": "دانش‌پژوه"
+ },
+ {
+  "en": "Treasure Hunter",
+  "fa": "گنج‌یاب"
+ },
+ {
+  "en": "+1 ATK per rank",
+  "fa": "+۱ حمله در هر رتبه"
+ },
+ {
+  "en": "+5% crit per rank",
+  "fa": "+۵٪ ضربهٔ کاری در هر رتبه"
+ },
+ {
+  "en": "+2 ATK per rank",
+  "fa": "+۲ حمله در هر رتبه"
+ },
+ {
+  "en": "Charge attacks +25% dmg",
+  "fa": "ضربهٔ شارژی +۲۵٪ آسیب"
+ },
+ {
+  "en": "Ultimates +30% dmg",
+  "fa": "ضربهٔ نهایی +۳۰٪ آسیب"
+ },
+ {
+  "en": "+10 Max HP per rank",
+  "fa": "+۱۰ بیشینهٔ جان در هر رتبه"
+ },
+ {
+  "en": "+1 DEF per rank",
+  "fa": "+۱ دفاع در هر رتبه"
+ },
+ {
+  "en": "+20 Max HP per rank",
+  "fa": "+۲۰ بیشینهٔ جان در هر رتبه"
+ },
+ {
+  "en": "+30% block effectiveness",
+  "fa": "+۳۰٪ اثر دفاع"
+ },
+ {
+  "en": "Below 25% HP, +50% damage",
+  "fa": "زیر ۲۵٪ جان، +۵۰٪ آسیب"
+ },
+ {
+  "en": "+5% speed per rank",
+  "fa": "+۵٪ سرعت در هر رتبه"
+ },
+ {
+  "en": "+100ms dodge i-frames",
+  "fa": "+۱۰۰ میلی‌ثانیه آسیب‌ناپذیری در جاخالی"
+ },
+ {
+  "en": "+10% attack speed",
+  "fa": "+۱۰٪ سرعت حمله"
+ },
+ {
+  "en": "+20% XP per rank",
+  "fa": "+۲۰٪ تجربه در هر رتبه"
+ },
+ {
+  "en": "+25% drop rate",
+  "fa": "+۲۵٪ شانس غنیمت"
+ },
+ {
+  "en": "Boar of Arman",
+  "fa": "گرازِ ارمان"
+ },
+ {
+  "en": "Div of Mazandaran",
+  "fa": "دیوِ مازندران"
+ },
+ {
+  "en": "Archer of Mazandaran",
+  "fa": "کماندارِ مازندران"
+ },
+ {
+  "en": "Sorcerer of Mazandaran",
+  "fa": "جادوگرِ مازندران"
+ },
+ {
+  "en": "Eagle of Kavus",
+  "fa": "عقابِ کاووس"
+ },
+ {
+  "en": "Ember Imp",
+  "fa": "دیوچهٔ اخگر"
+ },
+ {
+  "en": "Raging White Elephant",
+  "fa": "پیلِ سپیدِ مست"
+ },
+ {
+  "en": "King of Mazandaran",
+  "fa": "شاه مازندران"
+ },
+ {
+  "en": "Sorcerous Pari",
+  "fa": "پریِ جادو"
+ },
+ {
+  "en": "Swamp Nahang",
+  "fa": "نهنگِ مرداب"
+ },
+ {
+  "en": "Swamp Div",
+  "fa": "دیوِ مرداب"
+ },
+ {
+  "en": "Spark of Ahriman",
+  "fa": "شرارهٔ اهریمن"
+ },
+ {
+  "en": "Bid the Div",
+  "fa": "دیو بید"
+ },
+ {
+  "en": "Bazur's Hail",
+  "fa": "تگرگِ بازور"
+ },
+ {
+  "en": "Frozen Soldier",
+  "fa": "سپاهیِ یخ‌زده"
+ },
+ {
+  "en": "Lion of the Seven Labours",
+  "fa": "شیرِ هفت‌خوان"
+ },
+ {
+  "en": "Ice Div",
+  "fa": "دیوِ یخ"
+ },
+ {
+  "en": "TRAP!",
+  "fa": "تله!"
+ },
+ {
+  "en": "CRIT!",
+  "fa": "ضربهٔ کاری!"
+ },
+ {
+  "en": "EMBER NOVA",
+  "fa": "انفجار اخگر"
+ },
+ {
+  "en": "ENRAGED!",
+  "fa": "خشمگین!"
+ },
+ {
+  "en": "AWAKENED!",
+  "fa": "بیدار شد!"
+ },
+ {
+  "en": "CHARGED CRIT!",
+  "fa": "ضربهٔ کاریِ شارژی!"
+ },
+ {
+  "en": "CHARGED!",
+  "fa": "شارژ!"
+ },
+ {
+  "en": "WHIRLWIND!",
+  "fa": "گردباد!"
+ },
+ {
+  "en": "TEMPEST!",
+  "fa": "توفان!"
+ },
+ {
+  "en": "SHADOW DANCE!",
+  "fa": "رقص سایه!"
+ },
+ {
+  "en": "STRIKE!",
+  "fa": "ضربه!"
+ },
+ {
+  "en": "FARR SMITE!",
+  "fa": "کوبهٔ فرّه!"
+ },
+ {
+  "en": "DIVINE LIGHT!",
+  "fa": "نور ایزدی!"
+ },
+ {
+  "en": "FROZEN RAGE!",
+  "fa": "خشم یخ‌زده!"
+ },
+ {
+  "en": "THE WYRM STIRS!",
+  "fa": "اژدها می‌جنبد!"
+ },
+ {
+  "en": "ANCIENT FURY!",
+  "fa": "خشم کهن!"
+ },
+ {
+  "en": "PARRY!",
+  "fa": "دفع!"
+ },
+ {
+  "en": "BLOCK",
+  "fa": "دفاع"
+ },
+ {
+  "en": "FINISHER!",
+  "fa": "ضربهٔ پایانی!"
+ },
+ {
+  "en": "ELITE",
+  "fa": "نخبه"
+ },
+ {
+  "en": "Turanian Raider",
+  "fa": "راهزنِ تورانی"
+ },
+ {
+  "en": "Turanian Archer",
+  "fa": "کماندارِ تورانی"
+ },
+ {
+  "en": "Grave Pillar",
+  "fa": "ستون گور"
+ },
+ {
+  "en": "Bog Egg",
+  "fa": "تخم باتلاق"
+ },
+ {
+  "en": "Ice Echo",
+  "fa": "همزاد یخی"
+ },
+ {
+  "en": "Greetings, traveler! Evil forces stir in the Sunken Crypt.",
+  "fa": "درود، مسافر! نیروهای اهریمنی در سردابِ فرورفته بیدار شده‌اند."
+ },
+ {
+  "en": "Arzhang the Div weaves shadow magic beyond the northern forest.",
+  "fa": "ارژنگ دیو آن سوی جنگل شمالی جادوی سایه می‌بافد."
+ },
+ {
+  "en": "Defeat him and protect Zabol. Sindokht sells supplies — and Kavian forges armor!",
+  "fa": "شکستش بده و از زابل نگهبانی کن. سیندخت آذوقه می‌فروشد — و کاویان زره می‌سازد!"
+ },
+ {
+  "en": "The Crypt lies north, past the Whispering Forest.",
+  "fa": "سرداب در شمال است، آن سوی جنگلِ نجواگر."
+ },
+ {
+  "en": "You defeated Arzhang! Take this gold, champion.",
+  "fa": "ارژنگ را شکست دادی! این سکه‌ها را بگیر، اخگردار."
+ },
+ {
+  "en": "Yet... Arzhang's fall has cracked an ancient seal.",
+  "fa": "اما... سقوطِ ارژنگ مُهری کهن را ترک انداخته است."
+ },
+ {
+  "en": "Rest well. Come speak with me again soon.",
+  "fa": "خوب استراحت کن. به‌زودی دوباره با من حرف بزن."
+ },
+ {
+  "en": "The seal east of the forest is broken. Ash chokes the wind.",
+  "fa": "مُهرِ شرق جنگل شکسته است. خاکستر باد را خفه می‌کند."
+ },
+ {
+  "en": "The King of Mazandaran has awakened in the Ashen Peaks.",
+  "fa": "شاه مازندران در قله‌های خاکستر بیدار شده است."
+ },
+ {
+  "en": "Long ago the sorcerer-king made himself a mountain of stone and fire. Kavian's armor may save your life. Go!",
+  "fa": "روزگاری آن شاهِ جادوگر خود را به کوهی از سنگ و آتش بدل کرد. شاید زرهِ کاویان جانت را نجات دهد. برو!"
+ },
+ {
+  "en": "The eastern path through the forest leads to the Ashen Peaks.",
+  "fa": "راه شرقیِ جنگل به قله‌های خاکستر می‌رسد."
+ },
+ {
+  "en": "The mountain falls silent... Zabol is truly safe.",
+  "fa": "کوه خاموش شد... زابل به‌راستی در امان است."
+ },
+ {
+  "en": "Zabol owes you much, ember-bearer. Take this reward!",
+  "fa": "زابل وامدارِ توست، اخگردار. این پاداش را بگیر!"
+ },
+ {
+  "en": "Whispers spread of a deeper darkness — the Shadowfen Bog west of the peaks.",
+  "fa": "زمزمهٔ تاریکیِ ژرف‌تری پیچیده — مردابِ سایه، غربِ قله‌ها."
+ },
+ {
+  "en": "The Sorceress poisons the land and Bid the Div terrorizes travelers.",
+  "fa": "زنِ جادو زمین را زهرآگین می‌کند و دیو بید مسافران را می‌ترساند."
+ },
+ {
+  "en": "Rudabeh the Alchemist in the village crafts potions & scrolls from herbs. Speak with her! Then hunt the Sorceress.",
+  "fa": "کیمیاگر رودابه در دهکده از گیاهان معجون و طومار می‌سازد. با او حرف بزن! بعد به شکار زنِ جادو برو."
+ },
+ {
+  "en": "The Shadowfen lies west through the Ashen Peaks. Beware its poison.",
+  "fa": "مردابِ سایه در غرب است، از میان قله‌های خاکستر. از زهرش بپرهیز."
+ },
+ {
+  "en": "The Sorceress is slain! The bog is cleansed.",
+  "fa": "زنِ جادو کشته شد! مرداب پاک شد."
+ },
+ {
+  "en": "You are now a Legend of Zabol. Take this final reward!",
+  "fa": "اکنون تو افسانهٔ زابلی. این پاداش آخر را بگیر!"
+ },
+ {
+  "en": "The bards will sing of you for generations, Champion.",
+  "fa": "خنیاگران نسل‌ها از تو خواهند خواند، اخگردار."
+ },
+ {
+  "en": "The rush is on. Continue, champion!",
+  "fa": "نبرد پیاپی آغاز شده. ادامه بده، اخگردار!"
+ },
+ {
+  "en": "I am Sorush — keeper of battles past.",
+  "fa": "من سروش هستم — پاسدارِ نبردهای گذشته."
+ },
+ {
+  "en": "I can summon echoes of every great foe you have faced.",
+  "fa": "می‌توانم پژواکِ هر دشمنِ بزرگی را که دیده‌ای فرا بخوانم."
+ },
+ {
+  "en": "Are you ready to face them all again, in sequence?",
+  "fa": "آماده‌ای دوباره پشت سر هم با همه‌شان روبه‌رو شوی؟"
+ },
+ {
+  "en": "(Talk to me again to start Boss Rush.)",
+  "fa": "(دوباره با من حرف بزن تا نبرد پیاپی با سرکرده‌ها آغاز شود.)"
+ },
+ {
+  "en": "Greater Potion",
+  "fa": "معجون بزرگ"
+ },
+ {
+  "en": "Hom the Trapper",
+  "fa": "هومِ تله‌گذار"
+ },
+ {
+  "en": "That mark on your hand... so the ember chose you. Then the old tale is true.",
+  "fa": "آن نشانِ روی دستت... پس اخگر تو را برگزیده است. افسانهٔ کهن راست بود."
+ },
+ {
+  "en": "Qaren, Kaveh's Son",
+  "fa": "قارن، پسرِ کاوه"
+ },
+ {
+  "en": "Rostam",
+  "fa": "رستم"
+ },
+ {
+  "en": "Siavash",
+  "fa": "سیاوش"
+ },
+ {
+  "en": "Gordafarid",
+  "fa": "گردآفرید"
+ },
+ {
+  "en": "Sindokht of Kabul",
+  "fa": "سیندختِ کابلی"
+ },
+ {
+  "en": "Rudabeh the Healer",
+  "fa": "رودابهٔ درمانگر"
+ }
+]

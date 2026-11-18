@@ -1,0 +1,16 @@
+[
+ {"do":"menu"},
+ {"do":"wait","sec":2},
+ {"do":"shot","name":"title"},
+ {"do":"new","class":"warrior"},
+ {"do":"wait","sec":2},
+ {"do":"shot","name":"village"},
+ {"do":"state"},
+ {"do":"walk_to_npc","id":"elder"},
+ {"do":"talk"},
+ {"do":"shot","name":"after_talk"},
+ {"do":"stick","dir":[1,0],"sec":1},
+ {"do":"button","id":"attack"},
+ {"do":"burst","name":"swing","n":4,"every":0.1},
+ {"do":"state"}
+]

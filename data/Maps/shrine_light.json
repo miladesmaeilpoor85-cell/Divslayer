@@ -1,0 +1,387 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Shrine of Light",
+  "w": 680,
+  "h": 520,
+  "bg": "#5a6e86",
+  "walls": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 680,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 400,
+    "y": 40,
+    "w": 280,
+    "h": 80,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 120,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 640,
+    "y": 160,
+    "w": 40,
+    "h": 320,
+    "color": "#3a3640"
+   },
+   {
+    "x": 0,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   },
+   {
+    "x": 360,
+    "y": 480,
+    "w": 320,
+    "h": 40,
+    "color": "#3a3640"
+   }
+  ],
+  "exits": [
+   {
+    "x": 320,
+    "y": 506,
+    "w": 40,
+    "h": 14,
+    "to": "sanctum",
+    "spawnX": 317,
+    "spawnY": 462,
+    "dir": "down"
+   }
+  ],
+  "hazards": [],
+  "traps": [],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "iceling",
+    "x": 126,
+    "y": 204
+   },
+   {
+    "type": "iceling",
+    "x": 446,
+    "y": 204
+   }
+  ],
+  "items": [],
+  "playerStart": {
+   "x": 327,
+   "y": 443
+  },
+  "v16shrine": true
+ },
+ "objects": [
+  {
+   "sprite": "shrinewall_209",
+   "x": 340,
+   "y": 40,
+   "sort": 40,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_210",
+   "x": 140,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_211",
+   "x": 540,
+   "y": 120,
+   "sort": 120,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_212",
+   "x": 160,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_213",
+   "x": 520,
+   "y": 160,
+   "sort": 160,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_214",
+   "x": 20,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_215",
+   "x": 660,
+   "y": 480,
+   "sort": 480,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_216",
+   "x": 160,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "shrinewall_217",
+   "x": 520,
+   "y": 520,
+   "sort": 520,
+   "kind": "shrinewall",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "altar",
+   "id": "altar",
+   "cx": 8,
+   "cy": 1,
+   "x": 322,
+   "y": 46,
+   "w": 36,
+   "h": 30,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 322,
+    "y": 46
+   },
+   "mapKey": "shrine_light"
+  },
+  {
+   "t": "door",
+   "id": "door",
+   "cx": 8,
+   "cy": 3,
+   "needs": [
+    "target"
+   ],
+   "x": 320,
+   "y": 120,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 320,
+    "y": 120
+   },
+   "mapKey": "shrine_light",
+   "open": false,
+   "openK": 0
+  },
+  {
+   "t": "target",
+   "id": "target",
+   "cx": 6,
+   "cy": 4,
+   "x": 245,
+   "y": 166,
+   "w": 30,
+   "h": 30,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 245,
+    "y": 166
+   },
+   "mapKey": "shrine_light",
+   "lightOn": false
+  },
+  {
+   "t": "mirror",
+   "o": 0,
+   "id": "m0",
+   "cx": 6,
+   "cy": 6,
+   "x": 243,
+   "y": 243,
+   "w": 34,
+   "h": 34,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 243,
+    "y": 243
+   },
+   "mapKey": "shrine_light"
+  },
+  {
+   "t": "icewall",
+   "id": "iw0",
+   "cx": 9,
+   "cy": 6,
+   "x": 360,
+   "y": 240,
+   "w": 40,
+   "h": 40,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 360,
+    "y": 240
+   },
+   "mapKey": "shrine_light"
+  },
+  {
+   "t": "mirror",
+   "o": 0,
+   "id": "m1",
+   "cx": 12,
+   "cy": 6,
+   "x": 483,
+   "y": 243,
+   "w": 34,
+   "h": 34,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 483,
+    "y": 243
+   },
+   "mapKey": "shrine_light"
+  },
+  {
+   "t": "source",
+   "cx": 14,
+   "cy": 8,
+   "x": 565,
+   "y": 329,
+   "w": 30,
+   "h": 28,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 565,
+    "y": 329
+   },
+   "mapKey": "shrine_light",
+   "lit": true
+  },
+  {
+   "t": "emitter",
+   "dir": [
+    1,
+    0
+   ],
+   "cx": 1,
+   "cy": 10,
+   "x": 43,
+   "y": 403,
+   "w": 34,
+   "h": 34,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 43,
+    "y": 403
+   },
+   "mapKey": "shrine_light"
+  },
+  {
+   "t": "mirror",
+   "o": 1,
+   "id": "m2",
+   "cx": 12,
+   "cy": 10,
+   "x": 483,
+   "y": 403,
+   "w": 34,
+   "h": 34,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 483,
+    "y": 403
+   },
+   "mapKey": "shrine_light"
+  },
+  {
+   "t": "tablet",
+   "en": "Strike a mirror to turn it. Lead the light to the crystal. Ice blocks the way — fire melts it.",
+   "fa": "با ضربه، آینه را بچرخان. نور را به کریستال برسان. یخ راه را بسته — آتش آبش می‌کند.",
+   "cx": 7,
+   "cy": 11,
+   "x": 285,
+   "y": 458,
+   "w": 30,
+   "h": 18,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 285,
+    "y": 458
+   },
+   "mapKey": "shrine_light",
+   "shown": true
+  }
+ ]
+}

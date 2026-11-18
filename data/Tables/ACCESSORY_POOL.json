@@ -1,0 +1,262 @@
+[
+ {
+  "slot": "ring",
+  "rarity": "common",
+  "name": "Iron Band",
+  "stat": {
+   "key": "atk",
+   "val": 2,
+   "label": "+2 ATK"
+  }
+ },
+ {
+  "slot": "ring",
+  "rarity": "common",
+  "name": "Copper Signet",
+  "stat": {
+   "key": "crit",
+   "val": 0.05,
+   "label": "+5% Crit"
+  }
+ },
+ {
+  "slot": "ring",
+  "rarity": "rare",
+  "name": "Band of Fury",
+  "stat": {
+   "key": "atk",
+   "val": 5,
+   "label": "+5 ATK"
+  }
+ },
+ {
+  "slot": "ring",
+  "rarity": "rare",
+  "name": "Scholar Signet",
+  "stat": {
+   "key": "mpMax",
+   "val": 5,
+   "label": "+5 Max MP"
+  }
+ },
+ {
+  "slot": "ring",
+  "rarity": "epic",
+  "name": "Bloodstone",
+  "stat": {
+   "key": "lifesteal",
+   "val": 0.08,
+   "label": "+8% Lifesteal"
+  }
+ },
+ {
+  "slot": "ring",
+  "rarity": "epic",
+  "name": "Critical Eye",
+  "stat": {
+   "key": "crit",
+   "val": 0.15,
+   "label": "+15% Crit"
+  }
+ },
+ {
+  "slot": "ring",
+  "rarity": "legendary",
+  "name": "Wyrmfang",
+  "stat": {
+   "key": "atk",
+   "val": 12,
+   "label": "+12 ATK"
+  }
+ },
+ {
+  "slot": "belt",
+  "rarity": "common",
+  "name": "Leather Belt",
+  "stat": {
+   "key": "def",
+   "val": 1,
+   "label": "+1 DEF"
+  }
+ },
+ {
+  "slot": "belt",
+  "rarity": "common",
+  "name": "Pouch Belt",
+  "stat": {
+   "key": "potionBonus",
+   "val": 5,
+   "label": "+5 HP/Pot"
+  }
+ },
+ {
+  "slot": "belt",
+  "rarity": "rare",
+  "name": "Ironweave Belt",
+  "stat": {
+   "key": "def",
+   "val": 3,
+   "label": "+3 DEF"
+  }
+ },
+ {
+  "slot": "belt",
+  "rarity": "rare",
+  "name": "Stamina Cord",
+  "stat": {
+   "key": "stamMax",
+   "val": 20,
+   "label": "+20 Max Stamina"
+  }
+ },
+ {
+  "slot": "belt",
+  "rarity": "epic",
+  "name": "Aegis Girdle",
+  "stat": {
+   "key": "blockBonus",
+   "val": 0.2,
+   "label": "+20% Block"
+  }
+ },
+ {
+  "slot": "belt",
+  "rarity": "legendary",
+  "name": "Titanforge",
+  "stat": {
+   "key": "def",
+   "val": 8,
+   "label": "+8 DEF"
+  }
+ },
+ {
+  "slot": "boots",
+  "rarity": "common",
+  "name": "Leather Boots",
+  "stat": {
+   "key": "speed",
+   "val": 0.15,
+   "label": "+5% Speed"
+  }
+ },
+ {
+  "slot": "boots",
+  "rarity": "common",
+  "name": "Worn Sandals",
+  "stat": {
+   "key": "dodgeBonus",
+   "val": 0.1,
+   "label": "+0.1s Dodge"
+  }
+ },
+ {
+  "slot": "boots",
+  "rarity": "rare",
+  "name": "Swift Greaves",
+  "stat": {
+   "key": "speed",
+   "val": 0.3,
+   "label": "+10% Speed"
+  }
+ },
+ {
+  "slot": "boots",
+  "rarity": "rare",
+  "name": "Shadow Treads",
+  "stat": {
+   "key": "crit",
+   "val": 0.08,
+   "label": "+8% Crit"
+  }
+ },
+ {
+  "slot": "boots",
+  "rarity": "epic",
+  "name": "Phase Walkers",
+  "stat": {
+   "key": "dashCd",
+   "val": 0.2,
+   "label": "-20% Dash CD"
+  }
+ },
+ {
+  "slot": "boots",
+  "rarity": "legendary",
+  "name": "Wyrmstride",
+  "stat": {
+   "key": "speed",
+   "val": 0.5,
+   "label": "+18% Speed"
+  }
+ },
+ {
+  "slot": "amulet",
+  "rarity": "common",
+  "name": "Bone Charm",
+  "stat": {
+   "key": "hpMax",
+   "val": 8,
+   "label": "+8 Max HP"
+  }
+ },
+ {
+  "slot": "amulet",
+  "rarity": "common",
+  "name": "Mana Locket",
+  "stat": {
+   "key": "mpRegen",
+   "val": 0.5,
+   "label": "+0.5 MP/s"
+  }
+ },
+ {
+  "slot": "amulet",
+  "rarity": "rare",
+  "name": "Vital Pendant",
+  "stat": {
+   "key": "hpMax",
+   "val": 20,
+   "label": "+20 Max HP"
+  }
+ },
+ {
+  "slot": "amulet",
+  "rarity": "rare",
+  "name": "Sorcerer Stone",
+  "stat": {
+   "key": "mpMax",
+   "val": 10,
+   "label": "+10 Max MP"
+  }
+ },
+ {
+  "slot": "amulet",
+  "rarity": "epic",
+  "name": "Simurgh's Feather",
+  "stat": {
+   "key": "revive",
+   "val": 1,
+   "label": "Revive 1× (death)"
+  }
+ },
+ {
+  "slot": "amulet",
+  "rarity": "epic",
+  "name": "Regen Charm",
+  "stat": {
+   "key": "hpRegen",
+   "val": 0.5,
+   "label": "+0.5 HP/s"
+  }
+ },
+ {
+  "slot": "amulet",
+  "rarity": "legendary",
+  "name": "Wyrmsoul",
+  "stat": {
+   "key": "ultCharge",
+   "val": 0.3,
+   "label": "+30% Ult charge"
+  }
+ }
+]

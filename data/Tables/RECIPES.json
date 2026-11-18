@@ -1,0 +1,117 @@
+[
+ {
+  "id": "hp_potion",
+  "name": "Health Potion",
+  "icon": "heart",
+  "cost": {
+   "herb": 1
+  },
+  "gold": 3,
+  "result": {
+   "type": "potion",
+   "n": 1
+  },
+  "desc": "+20 HP"
+ },
+ {
+  "id": "mp_potion",
+  "name": "Mana Potion",
+  "icon": "drop",
+  "cost": {
+   "herb": 2
+  },
+  "gold": 4,
+  "result": {
+   "type": "mana_potion",
+   "n": 1
+  },
+  "desc": "+10 MP"
+ },
+ {
+  "id": "greater_hp",
+  "name": "Greater Potion",
+  "icon": "potion_big",
+  "cost": {
+   "herb": 3,
+   "essence": 1
+  },
+  "gold": 20,
+  "result": {
+   "type": "greater_potion",
+   "n": 1
+  },
+  "desc": "+50 HP, +30% max HP"
+ },
+ {
+  "id": "fire_scroll",
+  "name": "Scroll: Fireball",
+  "icon": "scroll",
+  "cost": {
+   "essence": 2
+  },
+  "gold": 35,
+  "result": {
+   "type": "fire_scroll",
+   "n": 1
+  },
+  "desc": " hurl a fireball"
+ },
+ {
+  "id": "ice_scroll",
+  "name": "Scroll: Frostbolt",
+  "icon": "scroll",
+  "cost": {
+   "essence": 2
+  },
+  "gold": 35,
+  "result": {
+   "type": "ice_scroll",
+   "n": 1
+  },
+  "desc": " freeze enemy 3s"
+ },
+ {
+  "id": "regen_scroll",
+  "name": "Scroll: Regen",
+  "icon": "scroll",
+  "cost": {
+   "herb": 2,
+   "essence": 1
+  },
+  "gold": 25,
+  "result": {
+   "type": "regen_scroll",
+   "n": 1
+  },
+  "desc": " 8s regeneration"
+ },
+ {
+  "id": "frost_scroll",
+  "name": "Scroll: Frost Lance",
+  "icon": "scroll",
+  "cost": {
+   "essence": 3
+  },
+  "gold": 50,
+  "result": {
+   "type": "frost_scroll",
+   "n": 1
+  },
+  "desc": " ice lance, big dmg + freeze"
+ },
+ {
+  "id": "haste_scroll",
+  "name": "Scroll: Haste",
+  "icon": "scroll",
+  "cost": {
+   "herb": 3,
+   "essence": 2
+  },
+  "gold": 40,
+  "result": {
+   "type": "haste_scroll",
+   "n": 1
+  },
+  "desc": " +45% speed 8s"
+ }
+]

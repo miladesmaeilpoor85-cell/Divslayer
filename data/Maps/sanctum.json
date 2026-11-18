@@ -1,0 +1,1745 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "Crystal Sanctum",
+  "w": 1200,
+  "h": 1000,
+  "bg": "#172c44",
+  "walls": [
+   {
+    "x": 80,
+    "y": 80,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 300,
+    "y": 140,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 540,
+    "y": 100,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 780,
+    "y": 160,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 1000,
+    "y": 80,
+    "w": 50,
+    "h": 80,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 150,
+    "y": 380,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 420,
+    "y": 340,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 660,
+    "y": 400,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 920,
+    "y": 380,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 200,
+    "y": 680,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 480,
+    "y": 720,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 760,
+    "y": 680,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   },
+   {
+    "x": 1040,
+    "y": 740,
+    "w": 50,
+    "h": 70,
+    "color": "#2a4a6a"
+   }
+  ],
+  "exits": [
+   {
+    "x": 0,
+    "y": 480,
+    "w": 20,
+    "h": 120,
+    "to": "peaks",
+    "spawnX": 1080,
+    "spawnY": 540,
+    "dir": "left"
+   },
+   {
+    "x": 308,
+    "y": 400,
+    "w": 44,
+    "h": 16,
+    "to": "shrine_light",
+    "spawnX": 327,
+    "spawnY": 443,
+    "dir": "up"
+   },
+   {
+    "x": 1180,
+    "y": 460,
+    "w": 20,
+    "h": 120,
+    "to": "frostvale",
+    "spawnX": 30,
+    "spawnY": 506,
+    "dir": "right"
+   },
+   {
+    "x": 620,
+    "y": 0,
+    "w": 80,
+    "h": 16,
+    "to": "wyrmhollow",
+    "spawnX": 637,
+    "spawnY": 50,
+    "dir": "up"
+   }
+  ],
+  "hazards": [
+   {
+    "x": 120,
+    "y": 200,
+    "w": 140,
+    "h": 80,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 380,
+    "y": 240,
+    "w": 140,
+    "h": 80,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 600,
+    "y": 200,
+    "w": 140,
+    "h": 80,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 840,
+    "y": 240,
+    "w": 140,
+    "h": 80,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 240,
+    "y": 540,
+    "w": 160,
+    "h": 90,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 560,
+    "y": 580,
+    "w": 140,
+    "h": 90,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 820,
+    "y": 540,
+    "w": 160,
+    "h": 90,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 200,
+    "y": 880,
+    "w": 180,
+    "h": 80,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 520,
+    "y": 880,
+    "w": 180,
+    "h": 80,
+    "type": "ice",
+    "tick": -66.69999999999982
+   },
+   {
+    "x": 820,
+    "y": 880,
+    "w": 180,
+    "h": 80,
+    "type": "ice",
+    "tick": -66.69999999999982
+   }
+  ],
+  "npcs": [
+   {
+    "id": "keeper",
+    "x": 600,
+    "y": 500,
+    "w": 26,
+    "h": 34,
+    "color": "#a8d4ff",
+    "name": "Sorush",
+    "_en": "Sorush"
+   }
+  ],
+  "enemySpawns": [
+   {
+    "type": "iceling",
+    "x": 180,
+    "y": 160
+   },
+   {
+    "type": "iceling",
+    "x": 340,
+    "y": 280
+   },
+   {
+    "type": "iceling",
+    "x": 520,
+    "y": 160
+   },
+   {
+    "type": "iceling",
+    "x": 720,
+    "y": 280
+   },
+   {
+    "type": "iceling",
+    "x": 920,
+    "y": 160
+   },
+   {
+    "type": "crystalSpider",
+    "x": 200,
+    "y": 400
+   },
+   {
+    "type": "crystalSpider",
+    "x": 460,
+    "y": 500
+   },
+   {
+    "type": "crystalSpider",
+    "x": 720,
+    "y": 400
+   },
+   {
+    "type": "crystalSpider",
+    "x": 980,
+    "y": 500
+   },
+   {
+    "type": "frostknight",
+    "x": 280,
+    "y": 600
+   },
+   {
+    "type": "frostknight",
+    "x": 620,
+    "y": 680
+   },
+   {
+    "type": "frostknight",
+    "x": 920,
+    "y": 600
+   },
+   {
+    "type": "frostknight",
+    "x": 380,
+    "y": 820
+   },
+   {
+    "type": "icegolem",
+    "x": 200,
+    "y": 880
+   },
+   {
+    "type": "icegolem",
+    "x": 940,
+    "y": 880
+   },
+   {
+    "type": "arbiter",
+    "x": 600,
+    "y": 140
+   }
+  ],
+  "items": [
+   {
+    "x": 120,
+    "y": 120,
+    "w": 24,
+    "h": 24,
+    "type": "relic_frost"
+   },
+   {
+    "x": 1080,
+    "y": 120,
+    "w": 20,
+    "h": 26,
+    "type": "potion"
+   },
+   {
+    "x": 560,
+    "y": 880,
+    "w": 24,
+    "h": 24,
+    "type": "frost_scroll"
+   },
+   {
+    "x": 80,
+    "y": 880,
+    "w": 20,
+    "h": 26,
+    "type": "greater_potion"
+   }
+  ],
+  "playerStart": null
+ },
+ "objects": [
+  {
+   "sprite": "pillar_108",
+   "x": 105,
+   "y": 150,
+   "sort": 150,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_109",
+   "x": 325,
+   "y": 210,
+   "sort": 210,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_110",
+   "x": 565,
+   "y": 170,
+   "sort": 170,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_111",
+   "x": 805,
+   "y": 230,
+   "sort": 230,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_112",
+   "x": 1025,
+   "y": 160,
+   "sort": 160,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_113",
+   "x": 175,
+   "y": 450,
+   "sort": 450,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_114",
+   "x": 445,
+   "y": 410,
+   "sort": 410,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_115",
+   "x": 685,
+   "y": 470,
+   "sort": 470,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_116",
+   "x": 945,
+   "y": 450,
+   "sort": 450,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 225,
+   "y": 750,
+   "sort": 750,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_118",
+   "x": 505,
+   "y": 790,
+   "sort": 790,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_119",
+   "x": 785,
+   "y": 750,
+   "sort": 750,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_120",
+   "x": 1065,
+   "y": 810,
+   "sort": 810,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 9.948436319828033,
+   "y": 13.295990615151823,
+   "sort": 13.295990615151823,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 11.178585447371006,
+   "y": 998.5250248406082,
+   "sort": 998.5250248406082,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 100.5346527826041,
+   "y": 13.54299624171108,
+   "sort": 13.54299624171108,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 92.38744991086423,
+   "y": 1006.2965109045617,
+   "sort": 1006.2965109045617,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 176.4396941717714,
+   "y": 5.156394401565194,
+   "sort": 5.156394401565194,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_122",
+   "x": 176.46524147875607,
+   "y": 1002.4006635746919,
+   "sort": 1002.4006635746919,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 230.4415343850851,
+   "y": 8.453718808013946,
+   "sort": 8.453718808013946,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 231.28169123455882,
+   "y": 998.837629953865,
+   "sort": 998.837629953865,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 303.47114471532404,
+   "y": 6.432070962153375,
+   "sort": 6.432070962153375,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 305.60937865264714,
+   "y": 1001.4640050181188,
+   "sort": 1001.4640050181188,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 379.0554202515632,
+   "y": 5.746504065115005,
+   "sort": 5.746504065115005,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_124",
+   "x": 364.522269891575,
+   "y": 999.851377944462,
+   "sort": 999.851377944462,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 435.7692372277379,
+   "y": 8.39449442923069,
+   "sort": 8.39449442923069,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_122",
+   "x": 447.44804299250245,
+   "y": 999.2758358814754,
+   "sort": 999.2758358814754,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 509.2124575600028,
+   "y": 9.262223963625729,
+   "sort": 9.262223963625729,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 513.2902922108769,
+   "y": 1005.4142234046012,
+   "sort": 1005.4142234046012,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_125",
+   "x": 594.4496750608087,
+   "y": 10.397998492233455,
+   "sort": 10.397998492233455,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 597.827196136117,
+   "y": 1002.6867567067966,
+   "sort": 1002.6867567067966,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 693.4645364060998,
+   "y": 12.503118431195617,
+   "sort": 12.503118431195617,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_124",
+   "x": 691.7922991141677,
+   "y": 999.2513482514769,
+   "sort": 999.2513482514769,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 785.2838144935668,
+   "y": 13.451330010779202,
+   "sort": 13.451330010779202,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 783.0882695689797,
+   "y": 994.7692052735947,
+   "sort": 994.7692052735947,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 870.4127635080367,
+   "y": 8.00480450130999,
+   "sort": 8.00480450130999,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 860.8146215956658,
+   "y": 998.3685245243832,
+   "sort": 998.3685245243832,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 936.3610373269767,
+   "y": 4.681438426952809,
+   "sort": 4.681438426952809,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 935.1643343735486,
+   "y": 999.469841032289,
+   "sort": 999.469841032289,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 1008.2895032726228,
+   "y": 13.862202087882906,
+   "sort": 13.862202087882906,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1013.7261917367578,
+   "y": 1006.8272181414068,
+   "sort": 1006.8272181414068,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1090.2477052807808,
+   "y": 14.318438414949924,
+   "sort": 14.318438414949924,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1077.0292902551591,
+   "y": 999.7620121561922,
+   "sort": 999.7620121561922,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 1158.3238726854324,
+   "y": 8.341381004080176,
+   "sort": 8.341381004080176,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1160.2424356378615,
+   "y": 1004.8082195585594,
+   "sort": 1004.8082195585594,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_125",
+   "x": 11.030103338882327,
+   "y": 49.53610660741106,
+   "sort": 49.53610660741106,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_122",
+   "x": 1197.8354112464003,
+   "y": 51.14650533767417,
+   "sort": 51.14650533767417,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 16.5484686200507,
+   "y": 144.10554846841842,
+   "sort": 144.10554846841842,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1179.7805597251281,
+   "y": 146.43571311468259,
+   "sort": 146.43571311468259,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_125",
+   "x": 2.044836758170277,
+   "y": 242.17179611511528,
+   "sort": 242.17179611511528,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_122",
+   "x": 1197.527329582721,
+   "y": 239.77081770030782,
+   "sort": 239.77081770030782,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 5.845555259846151,
+   "y": 309.44127126410604,
+   "sort": 309.44127126410604,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1185.4187461612746,
+   "y": 314.97548630507663,
+   "sort": 314.97548630507663,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1195.6236491906457,
+   "y": 416.58113754726946,
+   "sort": 416.58113754726946,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1194.9412315497175,
+   "y": 487.5567727931775,
+   "sort": 487.5567727931775,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 1188.6865969845094,
+   "y": 554.098886853084,
+   "sort": 554.098886853084,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1190.3136898190714,
+   "y": 639.5412433678284,
+   "sort": 639.5412433678284,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_125",
+   "x": 9.936341077554971,
+   "y": 718.5091701806523,
+   "sort": 718.5091701806523,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1193.3127338150516,
+   "y": 715.9661996113136,
+   "sort": 715.9661996113136,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 12.707607152871788,
+   "y": 795.9645412922837,
+   "sort": 795.9645412922837,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_124",
+   "x": 1188.6105528939515,
+   "y": 800.1991560393944,
+   "sort": 800.1991560393944,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 8.171949622686952,
+   "y": 880.9672510391101,
+   "sort": 880.9672510391101,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1196.288584807422,
+   "y": 879.4771640980616,
+   "sort": 879.4771640980616,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_123",
+   "x": 2.386760793160647,
+   "y": 945.3152790185995,
+   "sort": 945.3152790185995,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_124",
+   "x": 1188.7305184979923,
+   "y": 943.4777682609856,
+   "sort": 943.4777682609856,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 78.22518307715654,
+   "y": 927.8577463142574,
+   "sort": 927.8577463142574,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 252.3090698197484,
+   "y": 147.7275037765503,
+   "sort": 147.7275037765503,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 309.5557238534093,
+   "y": 743.7263470795006,
+   "sort": 743.7263470795006,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1083.6030231788754,
+   "y": 217.58115777745843,
+   "sort": 217.58115777745843,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 339.47965510189533,
+   "y": 749.6229028888047,
+   "sort": 749.6229028888047,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 423.8141334056854,
+   "y": 690.0026997271925,
+   "sort": 690.0026997271925,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 867.4288148805499,
+   "y": 782.173117455095,
+   "sort": 782.173117455095,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1091.0603888705373,
+   "y": 608.7432709801942,
+   "sort": 608.7432709801942,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1090.8306283131242,
+   "y": 931.0971935838461,
+   "sort": 931.0971935838461,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 454.44368593394756,
+   "y": 888.5458429064602,
+   "sort": 888.5458429064602,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 481.6970284283161,
+   "y": 473.289815755561,
+   "sort": 473.289815755561,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1139.301735199988,
+   "y": 744.9154590256512,
+   "sort": 744.9154590256512,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 215.404650606215,
+   "y": 790.0909466482699,
+   "sort": 790.0909466482699,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 298.5790942236781,
+   "y": 95.96661200746894,
+   "sort": 95.96661200746894,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 471.0093941166997,
+   "y": 109.71971019171178,
+   "sort": 109.71971019171178,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 743.863065354526,
+   "y": 343.5508040059358,
+   "sort": 343.5508040059358,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1035.8448326215148,
+   "y": 652.8996202535927,
+   "sort": 652.8996202535927,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 364.3760735541582,
+   "y": 723.5236446373165,
+   "sort": 723.5236446373165,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 520,
+   "y": 470,
+   "sort": 470,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 680,
+   "y": 470,
+   "sort": 470,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": true,
+   "smoke": null
+  },
+  {
+   "sprite": "banner_127",
+   "x": 560,
+   "y": 16,
+   "sort": 16,
+   "kind": "banner",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "banner_127",
+   "x": 640,
+   "y": 16,
+   "sort": 16,
+   "kind": "banner",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [
+  {
+   "x": 9.948436319828033,
+   "y": 3.2959906151518226,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 11.178585447371006,
+   "y": 988.5250248406082,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 100.5346527826041,
+   "y": 3.54299624171108,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 92.38744991086423,
+   "y": 996.2965109045617,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 176.4396941717714,
+   "y": -4.843605598434806,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 231.28169123455882,
+   "y": 988.837629953865,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 303.47114471532404,
+   "y": -3.567929037846625,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 305.60937865264714,
+   "y": 991.4640050181188,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 435.7692372277379,
+   "y": -1.60550557076931,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 513.2902922108769,
+   "y": 995.4142234046012,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 597.827196136117,
+   "y": 992.6867567067966,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 785.2838144935668,
+   "y": 3.451330010779202,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 783.0882695689797,
+   "y": 984.7692052735947,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 870.4127635080367,
+   "y": -1.9951954986900091,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 860.8146215956658,
+   "y": 988.3685245243832,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 936.3610373269767,
+   "y": -5.318561573047191,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 935.1643343735486,
+   "y": 989.469841032289,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1013.7261917367578,
+   "y": 996.8272181414068,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1090.2477052807808,
+   "y": 4.318438414949924,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1077.0292902551591,
+   "y": 989.7620121561922,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1160.2424356378615,
+   "y": 994.8082195585594,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 16.5484686200507,
+   "y": 134.10554846841842,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1179.7805597251281,
+   "y": 136.43571311468259,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 5.845555259846151,
+   "y": 299.44127126410604,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1185.4187461612746,
+   "y": 304.97548630507663,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1195.6236491906457,
+   "y": 406.58113754726946,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1194.9412315497175,
+   "y": 477.5567727931775,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1190.3136898190714,
+   "y": 629.5412433678284,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1193.3127338150516,
+   "y": 705.9661996113136,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 12.707607152871788,
+   "y": 785.9645412922837,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 8.171949622686952,
+   "y": 870.9672510391101,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1196.288584807422,
+   "y": 869.4771640980616,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 78.22518307715654,
+   "y": 903.8577463142574,
+   "r": 160,
+   "i": 0.85,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 252.3090698197484,
+   "y": 123.7275037765503,
+   "r": 160,
+   "i": 0.85,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 309.5557238534093,
+   "y": 733.7263470795006,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1083.6030231788754,
+   "y": 207.58115777745843,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 339.47965510189533,
+   "y": 739.6229028888047,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 423.8141334056854,
+   "y": 666.0026997271925,
+   "r": 160,
+   "i": 0.85,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 867.4288148805499,
+   "y": 772.173117455095,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1091.0603888705373,
+   "y": 598.7432709801942,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1090.8306283131242,
+   "y": 907.0971935838461,
+   "r": 160,
+   "i": 0.85,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 454.44368593394756,
+   "y": 878.5458429064602,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 481.6970284283161,
+   "y": 463.289815755561,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1139.301735199988,
+   "y": 734.9154590256512,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 215.404650606215,
+   "y": 766.0909466482699,
+   "r": 160,
+   "i": 0.85,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 298.5790942236781,
+   "y": 85.96661200746894,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 471.0093941166997,
+   "y": 85.71971019171178,
+   "r": 160,
+   "i": 0.85,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 743.863065354526,
+   "y": 333.5508040059358,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1035.8448326215148,
+   "y": 642.8996202535927,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 364.3760735541582,
+   "y": 713.5236446373165,
+   "r": 70,
+   "i": 0.45,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 520,
+   "y": 446,
+   "r": 160,
+   "i": 0.85,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 680,
+   "y": 446,
+   "r": 160,
+   "i": 0.85,
+   "c": "#9fdcff"
+  }
+ ],
+ "grass": null,
+ "v16objs": [
+  {
+   "t": "arch",
+   "x": 330,
+   "y": 450,
+   "w": 1,
+   "h": 1,
+   "shrine": "shrine_light",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 330,
+    "y": 450
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "archwall",
+   "x": 284,
+   "y": 402,
+   "w": 18,
+   "h": 46,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 284,
+    "y": 402
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "archwall",
+   "x": 358,
+   "y": 402,
+   "w": 18,
+   "h": 46,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 358,
+    "y": 402
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "archwall",
+   "x": 284,
+   "y": 386,
+   "w": 92,
+   "h": 16,
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 284,
+    "y": 386
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "icewall",
+   "x": 1080,
+   "y": 0,
+   "w": 40,
+   "h": 40,
+   "id": "vault0",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 1080,
+    "y": 0
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "icewall",
+   "x": 1080,
+   "y": 40,
+   "w": 40,
+   "h": 40,
+   "id": "vault1",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 1080,
+    "y": 40
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "icewall",
+   "x": 1080,
+   "y": 80,
+   "w": 40,
+   "h": 40,
+   "id": "vault2",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 1080,
+    "y": 80
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "icewall",
+   "x": 1120,
+   "y": 80,
+   "w": 40,
+   "h": 40,
+   "id": "vault3",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 1120,
+    "y": 80
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "icewall",
+   "x": 1160,
+   "y": 80,
+   "w": 40,
+   "h": 40,
+   "id": "vault4",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 1160,
+    "y": 80
+   },
+   "mapKey": "sanctum"
+  },
+  {
+   "t": "chest",
+   "x": 1128,
+   "y": 44,
+   "w": 30,
+   "h": 24,
+   "id": "vault",
+   "gold": 150,
+   "drops": [
+    "greater_potion",
+    "relic_essence"
+   ],
+   "acc": "epic",
+   "invisible": true,
+   "_v16": true,
+   "home": {
+    "x": 1128,
+    "y": 44
+   },
+   "mapKey": "sanctum"
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "fire": {
+  "col": "#ff8a3c",
+  "glow": "#ff9a40",
+  "status": "burn",
+  "icon": "flame",
+  "en": "Fire",
+  "fa": "آتش"
+ },
+ "ice": {
+  "col": "#9fdcff",
+  "glow": "#a8e4ff",
+  "status": "freeze",
+  "icon": "frost",
+  "en": "Frost",
+  "fa": "یخ"
+ },
+ "storm": {
+  "col": "#ffe066",
+  "glow": "#fff0a0",
+  "status": "stun",
+  "icon": "spark",
+  "en": "Storm",
+  "fa": "آذرخش"
+ }
+}

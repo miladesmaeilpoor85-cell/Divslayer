@@ -1,0 +1,338 @@
+{
+ "music": [
+  {
+   "use": "title",
+   "title": "Divslayer — Main Theme",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "ending",
+   "title": "Divslayer — Main Theme (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "village",
+   "title": "Divslayer — Zabol",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "boss",
+   "title": "Divslayer — Battle with a Div",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -17.5 LUFS"
+  },
+  {
+   "use": "boss_b",
+   "title": "Divslayer — Battle with a Div (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -17.5 LUFS"
+  },
+  {
+   "use": "forest",
+   "title": "Divslayer — The Whispering Forest",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "dungeon",
+   "title": "Divslayer — The Sunken Crypt",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "zahhakcave",
+   "title": "Divslayer — The Cave of Chains",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18 LUFS"
+  },
+  {
+   "use": "peaks",
+   "title": "Divslayer — The Ashen Peaks",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "shadowfen",
+   "title": "Divslayer — The Shadowfen",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "shadowfen_2",
+   "title": "Divslayer — The Shadowfen (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "sanctum",
+   "title": "Divslayer — The Crystal Sanctum",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "sanctum_2",
+   "title": "Divslayer — The Crystal Sanctum (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "emberforge",
+   "title": "Divslayer — The Ember Forge",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18 LUFS"
+  },
+  {
+   "use": "emberforge_2",
+   "title": "Divslayer — The Ember Forge (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18 LUFS"
+  },
+  {
+   "use": "camp",
+   "title": "Divslayer — The Thornwood Camp",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "camp_2",
+   "title": "Divslayer — The Thornwood Camp (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "trial",
+   "title": "Divslayer — The Trial of Embers",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18 LUFS"
+  },
+  {
+   "use": "trial_2",
+   "title": "Divslayer — The Trial of Embers (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18 LUFS"
+  },
+  {
+   "use": "shrine",
+   "title": "Divslayer — The Shrines",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "shrine_2",
+   "title": "Divslayer — The Shrines (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "frostvale",
+   "title": "Divslayer — The Hoarfrost Vale",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "wyrmhollow",
+   "title": "Divslayer — The Wyrm's Hollow",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "wyrmhollow_2",
+   "title": "Divslayer — The Wyrm's Hollow (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "boss_ancientwyrm",
+   "title": "Divslayer — The Dragon of Kashaf",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -17.5 LUFS"
+  },
+  {
+   "use": "boss_ancientwyrm_2",
+   "title": "Divslayer — The Dragon of Kashaf (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -17.5 LUFS"
+  },
+  {
+   "use": "boss_zahhak",
+   "title": "Divslayer — Zahhak",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -17.5 LUFS"
+  },
+  {
+   "use": "boss_zahhak_2",
+   "title": "Divslayer — Zahhak (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -17.5 LUFS"
+  },
+  {
+   "use": "damavand",
+   "title": "Divslayer — Mount Damavand",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  },
+  {
+   "use": "damavand_2",
+   "title": "Divslayer — Mount Damavand (second take)",
+   "author": "made for this game with Suno V6 (via the Hoosha API)",
+   "url": "",
+   "license": "Suno (commercial, owned)",
+   "edit": "levelled to -18.5 LUFS"
+  }
+ ],
+ "ambience": [
+  {
+   "use": "crickets",
+   "title": "Crickets Ambient Noise - loopable",
+   "author": "Wolfgang_ (Ted Kerr)",
+   "url": "https://opengameart.org/content/crickets-ambient-noise-loopable",
+   "license": "CC0 1.0"
+  },
+  {
+   "use": "wind",
+   "title": "wind whoosh loop",
+   "author": "SketchMan3",
+   "url": "https://opengameart.org/content/wind-whoosh-loop",
+   "license": "CC0 1.0"
+  },
+  {
+   "use": "birds",
+   "title": "Ambient Bird Sounds (cut to loop)",
+   "author": "isaiah658",
+   "url": "https://opengameart.org/content/ambient-bird-sounds",
+   "license": "CC0 1.0"
+  },
+  {
+   "use": "fire",
+   "title": "Fireplace Sound loop (cut to loop)",
+   "author": "PagDev",
+   "url": "https://opengameart.org/content/fireplace-sound-loop",
+   "license": "CC0 1.0"
+  },
+  {
+   "use": "cave",
+   "title": "Loopable Dungeon Ambience",
+   "author": "JaggedStone",
+   "url": "https://opengameart.org/content/loopable-dungeon-ambience",
+   "license": "CC0 1.0"
+  },
+  {
+   "use": "water",
+   "title": "loop_water_02 (40 CC0 water / splash / slime SFX)",
+   "author": "rubberduck",
+   "url": "https://opengameart.org/content/40-cc0-water-splash-slime-sfx",
+   "license": "CC0 1.0"
+  }
+ ],
+ "sfx": [
+  {
+   "title": "Impact Sounds",
+   "author": "Kenney (www.kenney.nl)",
+   "url": "https://kenney.nl/assets/impact-sounds",
+   "license": "CC0 1.0"
+  },
+  {
+   "title": "Interface Sounds",
+   "author": "Kenney (www.kenney.nl)",
+   "url": "https://kenney.nl/assets/interface-sounds",
+   "license": "CC0 1.0"
+  },
+  {
+   "title": "Music Jingles",
+   "author": "Kenney (www.kenney.nl)",
+   "url": "https://kenney.nl/assets/music-jingles",
+   "license": "CC0 1.0"
+  },
+  {
+   "title": "RPG Audio",
+   "author": "Kenney (www.kenney.nl)",
+   "url": "https://kenney.nl/assets/rpg-audio",
+   "license": "CC0 1.0"
+  },
+  {
+   "title": "UI Audio",
+   "author": "Kenney (www.kenney.nl)",
+   "url": "https://kenney.nl/assets/ui-audio",
+   "license": "CC0 1.0"
+  },
+  {
+   "title": "80 CC0 creature SFX",
+   "author": "rubberduck",
+   "url": "https://opengameart.org/content/80-cc0-creature-sfx",
+   "license": "CC0 1.0"
+  },
+  {
+   "title": "40 CC0 water / splash / slime SFX",
+   "author": "rubberduck",
+   "url": "https://opengameart.org/content/40-cc0-water-splash-slime-sfx",
+   "license": "CC0 1.0"
+  },
+  {
+   "title": "Swishes Sound Pack",
+   "author": "artisticdude",
+   "url": "https://opengameart.org/content/swishes-sound-pack",
+   "license": "CC0 1.0"
+  }
+ ]
+}

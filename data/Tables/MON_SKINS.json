@@ -1,0 +1,219 @@
+{
+ "ember": {
+  "nameEn": "Ember (default)",
+  "nameFa": "اخگر (پیش‌فرض)",
+  "free": true,
+  "pal": [
+   "#b8632e",
+   "#6e3a1c",
+   "#e0a23c"
+  ],
+  "aura": null,
+  "trail": null,
+  "crown": false,
+  "cape": null
+ },
+ "crimson": {
+  "nameEn": "Crimson Oath",
+  "nameFa": "سوگند سرخ",
+  "pal": [
+   "#a8252b",
+   "#5e1417",
+   "#e8606a"
+  ],
+  "aura": "#ff5060",
+  "trail": "#ff6a5a",
+  "crown": false,
+  "cape": "#7a1a20"
+ },
+ "frost": {
+  "nameEn": "Frostborn",
+  "nameFa": "زادهٔ یخ‌بندان",
+  "pal": [
+   "#5f9ec4",
+   "#2d4f6b",
+   "#cfeaff"
+  ],
+  "aura": "#a8e0ff",
+  "trail": "#bfe8ff",
+  "crown": false,
+  "cape": "#2b5b7a"
+ },
+ "void": {
+  "nameEn": "Voidtouched",
+  "nameFa": "سایه‌گزیده",
+  "pal": [
+   "#5b3a86",
+   "#291845",
+   "#b57ce0"
+  ],
+  "aura": "#a45ce0",
+  "trail": "#c9a3ff",
+  "crown": false,
+  "cape": "#1e1030"
+ },
+ "verdant": {
+  "nameEn": "Verdant Warden",
+  "nameFa": "نگهبان سبز",
+  "pal": [
+   "#4f8a3c",
+   "#25441e",
+   "#a8d878"
+  ],
+  "aura": "#8fe070",
+  "trail": "#9fe07a",
+  "crown": false,
+  "cape": "#2f5a26"
+ },
+ "azure": {
+  "nameEn": "Azure Adept",
+  "nameFa": "استاد لاجوردی",
+  "pal": [
+   "#3c6fa8",
+   "#1b3350",
+   "#8fc4f0"
+  ],
+  "aura": "#6fb4f0",
+  "trail": "#9fd8ff",
+  "crown": false,
+  "cape": "#1d3b5c"
+ },
+ "obsidian": {
+  "nameEn": "Obsidian Vow",
+  "nameFa": "پیمانِ سنگِ سیاه",
+  "pal": [
+   "#2b2b33",
+   "#14141a",
+   "#9d7ce8"
+  ],
+  "aura": "#8a6adf",
+  "trail": "#9d7ce8",
+  "crown": false,
+  "cape": "#101016"
+ },
+ "gold": {
+  "nameEn": "Gilded Sovereign",
+  "nameFa": "شهریار زرین",
+  "pal": [
+   "#c9a349",
+   "#7a5f22",
+   "#f4e9cf"
+  ],
+  "aura": "#ffd76a",
+  "trail": "#ffe9a8",
+  "crown": true,
+  "cape": "#6b5218"
+ },
+ "sunfire": {
+  "nameEn": "Sunfire",
+  "nameFa": "آتش خورشید",
+  "earn": "ignarok",
+  "pal": [
+   "#e8701e",
+   "#8a3a0c",
+   "#fff0a0"
+  ],
+  "aura": "#ffb14a",
+  "trail": "#ff9040",
+  "crown": false,
+  "cape": "#8a3a0c"
+ },
+ "ranger": {
+  "nameEn": "Wayfarer",
+  "nameFa": "رهسپار",
+  "earn": "bounty25",
+  "pal": [
+   "#7a6a4a",
+   "#3c3322",
+   "#d8c088"
+  ],
+  "aura": null,
+  "trail": "#d8c088",
+  "crown": false,
+  "cape": "#4a3d2c"
+ },
+ "pahlavan": {
+  "nameEn": "Rostam's Robe of Honour",
+  "nameFa": "خلعتِ رستم",
+  "earn": "support",
+  "pal": [
+   "#a8763c",
+   "#4a3118",
+   "#2fa79a"
+  ],
+  "aura": "#2fd7c4",
+  "trail": "#2fd7c4",
+  "crown": true,
+  "cape": "#0f5a54"
+ },
+ "ashen": {
+  "nameEn": "Ashen Saint",
+  "nameFa": "پارسای خاکستر",
+  "earn": "ng_wyrm",
+  "pal": [
+   "#d6cdbf",
+   "#5e534a",
+   "#ffb070"
+  ],
+  "aura": "#ffb070",
+  "trail": "#ffd2a0",
+  "crown": false,
+  "cape": null
+ },
+ "kaviani": {
+  "nameEn": "Kaviani",
+  "nameFa": "کاویانی",
+  "earn": "zahhak",
+  "pal": [
+   "#b8322c",
+   "#4a1612",
+   "#f0c048"
+  ],
+  "aura": "#f0b040",
+  "trail": "#ff8a60",
+  "crown": false,
+  "cape": "#7a1a18"
+ },
+ "npc_rostam": {
+  "nameEn": "Rostam",
+  "nameFa": "رستم",
+  "earn": "",
+  "pal": [
+   "#c4892e",
+   "#5a3010",
+   "#f0c860"
+  ],
+  "aura": "",
+  "trail": "",
+  "crown": false,
+  "cape": null
+ },
+ "npc_siavash": {
+  "nameEn": "Siavash",
+  "nameFa": "سیاوش",
+  "earn": "",
+  "pal": [
+   "#ece4d2",
+   "#8a7650",
+   "#ffe08a"
+  ],
+  "aura": "",
+  "trail": "",
+  "crown": false,
+  "cape": null
+ },
+ "npc_gordafarid": {
+  "nameEn": "Gordafarid",
+  "nameFa": "گردآفرید",
+  "earn": "",
+  "pal": [
+   "#3e5f92",
+   "#1a2742",
+   "#d0455a"
+  ],
+  "aura": "",
+  "trail": "",
+  "crown": false,
+  "cape": null
+ }
+}

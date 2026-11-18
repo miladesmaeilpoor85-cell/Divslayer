@@ -1,0 +1,971 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "The Cave of Chains",
+  "w": 1200,
+  "h": 1000,
+  "bg": "#000000",
+  "walls": [
+   {
+    "x": 6,
+    "y": 6,
+    "w": 488,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 706,
+    "y": 6,
+    "w": 488,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 56,
+    "w": 438,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 756,
+    "y": 56,
+    "w": 438,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 106,
+    "w": 388,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 806,
+    "y": 106,
+    "w": 388,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 156,
+    "w": 338,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 556,
+    "y": 156,
+    "w": 88,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 556,
+    "y": 456,
+    "w": 88,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 856,
+    "y": 156,
+    "w": 338,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 206,
+    "w": 288,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 906,
+    "w": 288,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 506,
+    "y": 206,
+    "w": 188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 506,
+    "y": 406,
+    "w": 188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 906,
+    "y": 206,
+    "w": 288,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 906,
+    "y": 906,
+    "w": 288,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 256,
+    "w": 238,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 506,
+    "w": 238,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 456,
+    "y": 256,
+    "w": 288,
+    "h": 138,
+    "color": "#1a1420"
+   },
+   {
+    "x": 956,
+    "y": 256,
+    "w": 238,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 956,
+    "y": 506,
+    "w": 238,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 306,
+    "w": 188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 456,
+    "w": 188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 856,
+    "w": 188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 1006,
+    "y": 306,
+    "w": 188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 1006,
+    "y": 456,
+    "w": 188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 1006,
+    "y": 856,
+    "w": 188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 356,
+    "w": 138,
+    "h": 88,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 556,
+    "w": 138,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 806,
+    "w": 138,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 1056,
+    "y": 356,
+    "w": 138,
+    "h": 88,
+    "color": "#1a1420"
+   },
+   {
+    "x": 1056,
+    "y": 556,
+    "w": 138,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 1056,
+    "y": 806,
+    "w": 138,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 606,
+    "w": 88,
+    "h": 188,
+    "color": "#1a1420"
+   },
+   {
+    "x": 1106,
+    "y": 606,
+    "w": 88,
+    "h": 188,
+    "color": "#1a1420"
+   },
+   {
+    "x": 6,
+    "y": 956,
+    "w": 1188,
+    "h": 38,
+    "color": "#1a1420"
+   },
+   {
+    "x": 707,
+    "y": 160,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 904,
+    "y": 217,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 752,
+    "y": 311,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1003,
+    "y": 361,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 506,
+    "y": 419,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 655,
+    "y": 418,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1006,
+    "y": 509,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 102,
+    "y": 664,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1049,
+    "y": 663,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 225,
+    "y": 540,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 925,
+    "y": 540,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 225,
+    "y": 830,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 925,
+    "y": 830,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   }
+  ],
+  "exits": [
+   {
+    "x": 560,
+    "y": 0,
+    "w": 80,
+    "h": 16,
+    "to": "damavand",
+    "spawnX": 760,
+    "spawnY": 130,
+    "dir": "up"
+   }
+  ],
+  "hazards": [],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "serpentguard",
+    "x": 560,
+    "y": 180
+   },
+   {
+    "type": "serpentguard",
+    "x": 630,
+    "y": 190
+   },
+   {
+    "type": "serpent",
+    "x": 300,
+    "y": 320
+   },
+   {
+    "type": "serpent",
+    "x": 360,
+    "y": 380
+   },
+   {
+    "type": "serpent",
+    "x": 240,
+    "y": 420
+   },
+   {
+    "type": "serpent",
+    "x": 880,
+    "y": 320
+   },
+   {
+    "type": "serpent",
+    "x": 830,
+    "y": 390
+   },
+   {
+    "type": "serpent",
+    "x": 930,
+    "y": 430
+   },
+   {
+    "type": "serpentarcher",
+    "x": 300,
+    "y": 470
+   },
+   {
+    "type": "serpentarcher",
+    "x": 880,
+    "y": 470
+   },
+   {
+    "type": "zahhak",
+    "x": 570,
+    "y": 698
+   }
+  ],
+  "items": [
+   {
+    "x": 220,
+    "y": 360,
+    "w": 20,
+    "h": 26,
+    "type": "greater_potion"
+   },
+   {
+    "x": 980,
+    "y": 360,
+    "w": 20,
+    "h": 26,
+    "type": "greater_potion"
+   },
+   {
+    "x": 600,
+    "y": 520,
+    "w": 20,
+    "h": 26,
+    "type": "potion"
+   }
+  ],
+  "playerStart": {
+   "x": 600,
+   "y": 60
+  }
+ },
+ "objects": [
+  {
+   "sprite": "brazier_61",
+   "x": 520,
+   "y": 80,
+   "sort": 80,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "brazier_61",
+   "x": 680,
+   "y": 80,
+   "sort": 80,
+   "kind": "brazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 432,
+   "y": 129,
+   "sort": 129,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 569,
+   "y": 129,
+   "sort": 129,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_26",
+   "x": 674,
+   "y": 179,
+   "sort": 179,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 530,
+   "y": 187,
+   "sort": 187,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_66",
+   "x": 732,
+   "y": 230,
+   "sort": 230,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 329,
+   "y": 231,
+   "sort": 231,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_125",
+   "x": 871,
+   "y": 232,
+   "sort": 232,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_76",
+   "x": 432,
+   "y": 282,
+   "sort": 282,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_68",
+   "x": 929,
+   "y": 287,
+   "sort": 287,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 223,
+   "y": 333,
+   "sort": 333,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_124",
+   "x": 767,
+   "y": 335,
+   "sort": 335,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_66",
+   "x": 777,
+   "y": 381,
+   "sort": 381,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_71",
+   "x": 1027,
+   "y": 389,
+   "sort": 389,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_62",
+   "x": 1028,
+   "y": 431,
+   "sort": 431,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_62",
+   "x": 680,
+   "y": 488,
+   "sort": 488,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_62",
+   "x": 531,
+   "y": 489,
+   "sort": 489,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 623,
+   "y": 533,
+   "sort": 533,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 932,
+   "y": 537,
+   "sort": 537,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 578,
+   "y": 538,
+   "sort": 538,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_68",
+   "x": 1031,
+   "y": 579,
+   "sort": 579,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_108",
+   "x": 250,
+   "y": 610,
+   "sort": 610,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_108",
+   "x": 950,
+   "y": 610,
+   "sort": 610,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_252",
+   "x": 122,
+   "y": 629,
+   "sort": 629,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 1069,
+   "y": 633,
+   "sort": 633,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 358,
+   "y": 650,
+   "sort": 650,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 230,
+   "y": 663,
+   "sort": 663,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 119,
+   "y": 679,
+   "sort": 679,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 1071,
+   "y": 686,
+   "sort": 686,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 816,
+   "y": 723,
+   "sort": 723,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_64",
+   "x": 1074,
+   "y": 733,
+   "sort": 733,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "spire_69",
+   "x": 127,
+   "y": 734,
+   "sort": 734,
+   "kind": "spire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 889,
+   "y": 738,
+   "sort": 738,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 917,
+   "y": 743,
+   "sort": 743,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 779,
+   "y": 764,
+   "sort": 764,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 844,
+   "y": 791,
+   "sort": 791,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 326,
+   "y": 810,
+   "sort": 810,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 171,
+   "y": 840,
+   "sort": 840,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 252,
+   "y": 866,
+   "sort": 866,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 798,
+   "y": 881,
+   "sort": 881,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 814,
+   "y": 885,
+   "sort": 885,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_108",
+   "x": 250,
+   "y": 900,
+   "sort": 900,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_108",
+   "x": 950,
+   "y": 900,
+   "sort": 900,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [
+  {
+   "x": 520,
+   "y": 58,
+   "r": 130,
+   "i": 0.8,
+   "c": "#b070ff"
+  },
+  {
+   "x": 680,
+   "y": 58,
+   "r": 130,
+   "i": 0.8,
+   "c": "#b070ff"
+  },
+  {
+   "x": 250,
+   "y": 550,
+   "r": 120,
+   "i": 0.5,
+   "c": "#b070ff"
+  },
+  {
+   "x": 950,
+   "y": 550,
+   "r": 120,
+   "i": 0.5,
+   "c": "#b070ff"
+  },
+  {
+   "x": 250,
+   "y": 840,
+   "r": 120,
+   "i": 0.5,
+   "c": "#b070ff"
+  },
+  {
+   "x": 950,
+   "y": 840,
+   "r": 120,
+   "i": 0.5,
+   "c": "#b070ff"
+  },
+  {
+   "x": 600,
+   "y": 750,
+   "r": 280,
+   "i": 0.35,
+   "c": "#9060d0"
+  }
+ ],
+ "grass": null,
+ "v16objs": [],
+ "ch3": {
+  "anchors": [
+   [
+    250,
+    610
+   ],
+   [
+    950,
+    610
+   ],
+   [
+    250,
+    900
+   ],
+   [
+    950,
+    900
+   ]
+  ],
+  "lair": [
+   600,
+   770
+  ]
+ }
+}

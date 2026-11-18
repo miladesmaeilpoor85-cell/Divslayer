@@ -1,0 +1,1627 @@
+{
+ "groundScale": 2,
+ "data": {
+  "name": "The Wyrm's Hollow",
+  "w": 1300,
+  "h": 1100,
+  "bg": "#000000",
+  "walls": [
+   {
+    "x": 6,
+    "y": 6,
+    "w": 588,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 706,
+    "y": 6,
+    "w": 588,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 56,
+    "w": 438,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 856,
+    "y": 56,
+    "w": 438,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 106,
+    "w": 388,
+    "h": 88,
+    "color": "#1a2430"
+   },
+   {
+    "x": 906,
+    "y": 106,
+    "w": 388,
+    "h": 88,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 206,
+    "w": 338,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 556,
+    "y": 206,
+    "w": 188,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 956,
+    "y": 206,
+    "w": 338,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 256,
+    "w": 288,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 1056,
+    "w": 288,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 506,
+    "y": 256,
+    "w": 288,
+    "h": 238,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1006,
+    "y": 256,
+    "w": 288,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1006,
+    "y": 1056,
+    "w": 288,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 306,
+    "w": 188,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 606,
+    "w": 188,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 706,
+    "w": 188,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1106,
+    "y": 306,
+    "w": 188,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1106,
+    "y": 606,
+    "w": 188,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1106,
+    "y": 706,
+    "w": 188,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 356,
+    "w": 138,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 556,
+    "w": 138,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 756,
+    "w": 138,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 1006,
+    "w": 138,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1156,
+    "y": 356,
+    "w": 138,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1156,
+    "y": 556,
+    "w": 138,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1156,
+    "y": 756,
+    "w": 138,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1156,
+    "y": 1006,
+    "w": 138,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 406,
+    "w": 88,
+    "h": 138,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 806,
+    "w": 88,
+    "h": 188,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1206,
+    "y": 406,
+    "w": 88,
+    "h": 138,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1206,
+    "y": 806,
+    "w": 88,
+    "h": 188,
+    "color": "#1a2430"
+   },
+   {
+    "x": 456,
+    "y": 506,
+    "w": 388,
+    "h": 138,
+    "color": "#1a2430"
+   },
+   {
+    "x": 456,
+    "y": 706,
+    "w": 388,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 6,
+    "y": 656,
+    "w": 238,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 406,
+    "y": 656,
+    "w": 488,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 1056,
+    "y": 656,
+    "w": 238,
+    "h": 38,
+    "color": "#1a2430"
+   },
+   {
+    "x": 648,
+    "y": 118,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 753,
+    "y": 166,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 299,
+    "y": 211,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 953,
+    "y": 218,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 803,
+    "y": 269,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1002,
+    "y": 261,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1053,
+    "y": 267,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 156,
+    "y": 314,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1096,
+    "y": 310,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 803,
+    "y": 363,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1146,
+    "y": 370,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 794,
+    "y": 415,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 93,
+    "y": 465,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 404,
+    "y": 469,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1042,
+    "y": 561,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 345,
+    "y": 614,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 999,
+    "y": 614,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1042,
+    "y": 663,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 143,
+    "y": 717,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 106,
+    "y": 809,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1143,
+    "y": 863,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 256,
+    "y": 961,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1003,
+    "y": 963,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1101,
+    "y": 969,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 480,
+    "y": 70,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 770,
+    "y": 70,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 145,
+    "y": 310,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 365,
+    "y": 350,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 125,
+    "y": 520,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 395,
+    "y": 540,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 125,
+    "y": 790,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1125,
+    "y": 790,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 155,
+    "y": 970,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   },
+   {
+    "x": 1095,
+    "y": 970,
+    "w": 50,
+    "h": 70,
+    "color": "#2a3a4a"
+   }
+  ],
+  "exits": [
+   {
+    "x": 610,
+    "y": 0,
+    "w": 80,
+    "h": 16,
+    "to": "sanctum",
+    "spawnX": 647,
+    "spawnY": 40,
+    "dir": "up"
+   }
+  ],
+  "hazards": [
+   {
+    "x": 880,
+    "y": 380,
+    "w": 270,
+    "h": 230,
+    "type": "ice"
+   }
+  ],
+  "npcs": [],
+  "enemySpawns": [
+   {
+    "type": "skeleton",
+    "x": 560,
+    "y": 170
+   },
+   {
+    "type": "skeleton",
+    "x": 720,
+    "y": 175
+   },
+   {
+    "type": "frostknight",
+    "x": 640,
+    "y": 210
+   },
+   {
+    "type": "crystalSpider",
+    "x": 250,
+    "y": 470
+   },
+   {
+    "type": "crystalSpider",
+    "x": 330,
+    "y": 520
+   },
+   {
+    "type": "crystalSpider",
+    "x": 210,
+    "y": 540
+   },
+   {
+    "type": "wyrmling",
+    "x": 300,
+    "y": 400
+   },
+   {
+    "type": "wyrmling",
+    "x": 360,
+    "y": 580
+   },
+   {
+    "type": "rimewraith",
+    "x": 240,
+    "y": 620
+   },
+   {
+    "type": "frostknight",
+    "x": 960,
+    "y": 440
+   },
+   {
+    "type": "frostknight",
+    "x": 1080,
+    "y": 520
+   },
+   {
+    "type": "iceling",
+    "x": 1000,
+    "y": 560
+   },
+   {
+    "type": "iceling",
+    "x": 920,
+    "y": 520
+   },
+   {
+    "type": "wyrmling",
+    "x": 1040,
+    "y": 400
+   },
+   {
+    "type": "bat",
+    "x": 300,
+    "y": 670
+   },
+   {
+    "type": "bat",
+    "x": 330,
+    "y": 700
+   },
+   {
+    "type": "bat",
+    "x": 970,
+    "y": 670
+   },
+   {
+    "type": "bat",
+    "x": 1000,
+    "y": 700
+   },
+   {
+    "type": "ancientwyrm",
+    "x": 615,
+    "y": 825
+   }
+  ],
+  "items": [
+   {
+    "x": 290,
+    "y": 345,
+    "w": 20,
+    "h": 26,
+    "type": "chest"
+   },
+   {
+    "x": 1180,
+    "y": 450,
+    "w": 20,
+    "h": 26,
+    "type": "potion"
+   },
+   {
+    "x": 860,
+    "y": 500,
+    "w": 20,
+    "h": 26,
+    "type": "mana_potion"
+   },
+   {
+    "x": 240,
+    "y": 715,
+    "w": 20,
+    "h": 26,
+    "type": "greater_potion"
+   },
+   {
+    "x": 1060,
+    "y": 715,
+    "w": 20,
+    "h": 26,
+    "type": "greater_potion"
+   }
+  ],
+  "playerStart": {
+   "x": 637,
+   "y": 40
+  }
+ },
+ "objects": [
+  {
+   "sprite": "icebrazier_126",
+   "x": 560,
+   "y": 70,
+   "sort": 70,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 740,
+   "y": 70,
+   "sort": 70,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_125",
+   "x": 875,
+   "y": 140,
+   "sort": 140,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_108",
+   "x": 505,
+   "y": 140,
+   "sort": 140,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "pillar_108",
+   "x": 795,
+   "y": 140,
+   "sort": 140,
+   "kind": "pillar",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_48",
+   "x": 630,
+   "y": 179,
+   "sort": 179,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 420,
+   "y": 185,
+   "sort": 185,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_62",
+   "x": 673,
+   "y": 188,
+   "sort": 188,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_70",
+   "x": 778,
+   "y": 236,
+   "sort": 236,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_48",
+   "x": 924,
+   "y": 237,
+   "sort": 237,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_255",
+   "x": 526,
+   "y": 238,
+   "sort": 238,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_70",
+   "x": 324,
+   "y": 281,
+   "sort": 281,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_140",
+   "x": 826,
+   "y": 288,
+   "sort": 288,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_119",
+   "x": 978,
+   "y": 288,
+   "sort": 288,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_111",
+   "x": 1027,
+   "y": 331,
+   "sort": 331,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_125",
+   "x": 217,
+   "y": 333,
+   "sort": 333,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 480,
+   "y": 334,
+   "sort": 334,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_69",
+   "x": 1078,
+   "y": 337,
+   "sort": 337,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_64",
+   "x": 828,
+   "y": 339,
+   "sort": 339,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 860,
+   "y": 360,
+   "sort": 360,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1170,
+   "y": 360,
+   "sort": 360,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_72",
+   "x": 828,
+   "y": 380,
+   "sort": 380,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_67",
+   "x": 1121,
+   "y": 380,
+   "sort": 380,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 170,
+   "y": 380,
+   "sort": 380,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_109",
+   "x": 181,
+   "y": 384,
+   "sort": 384,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 390,
+   "y": 420,
+   "sort": 420,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_62",
+   "x": 828,
+   "y": 433,
+   "sort": 433,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 117,
+   "y": 435,
+   "sort": 435,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_67",
+   "x": 1171,
+   "y": 440,
+   "sort": 440,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_62",
+   "x": 819,
+   "y": 485,
+   "sort": 485,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 1179,
+   "y": 486,
+   "sort": 486,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 1171,
+   "y": 531,
+   "sort": 531,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_64",
+   "x": 118,
+   "y": 535,
+   "sort": 535,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_26",
+   "x": 869,
+   "y": 537,
+   "sort": 537,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_67",
+   "x": 429,
+   "y": 539,
+   "sort": 539,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_74",
+   "x": 1123,
+   "y": 580,
+   "sort": 580,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_252",
+   "x": 430,
+   "y": 582,
+   "sort": 582,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_119",
+   "x": 150,
+   "y": 590,
+   "sort": 590,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_111",
+   "x": 420,
+   "y": 610,
+   "sort": 610,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 880,
+   "y": 630,
+   "sort": 630,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1150,
+   "y": 630,
+   "sort": 630,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_64",
+   "x": 1067,
+   "y": 631,
+   "sort": 631,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_50",
+   "x": 427,
+   "y": 633,
+   "sort": 633,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_66",
+   "x": 370,
+   "y": 684,
+   "sort": 684,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_113",
+   "x": 1024,
+   "y": 684,
+   "sort": 684,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_124",
+   "x": 275,
+   "y": 687,
+   "sort": 687,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 222,
+   "y": 731,
+   "sort": 731,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 1067,
+   "y": 733,
+   "sort": 733,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_124",
+   "x": 421,
+   "y": 737,
+   "sort": 737,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_117",
+   "x": 168,
+   "y": 787,
+   "sort": 787,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 470,
+   "y": 794,
+   "sort": 794,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 419,
+   "y": 805,
+   "sort": 805,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 260,
+   "y": 820,
+   "sort": 820,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1040,
+   "y": 820,
+   "sort": 820,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_49",
+   "x": 125,
+   "y": 831,
+   "sort": 831,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 823,
+   "y": 840,
+   "sort": 840,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_115",
+   "x": 150,
+   "y": 860,
+   "sort": 860,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_111",
+   "x": 1150,
+   "y": 860,
+   "sort": 860,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_65",
+   "x": 131,
+   "y": 879,
+   "sort": 879,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 881,
+   "y": 880,
+   "sort": 880,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_49",
+   "x": 1179,
+   "y": 885,
+   "sort": 885,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 520,
+   "y": 909,
+   "sort": 909,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 504,
+   "y": 914,
+   "sort": 914,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_68",
+   "x": 1168,
+   "y": 933,
+   "sort": 933,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 941,
+   "y": 939,
+   "sort": 939,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 1024,
+   "y": 951,
+   "sort": 951,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 218,
+   "y": 961,
+   "sort": 961,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 378,
+   "y": 970,
+   "sort": 970,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 1181,
+   "y": 979,
+   "sort": 979,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_57",
+   "x": 957,
+   "y": 993,
+   "sort": 993,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 260,
+   "y": 1010,
+   "sort": 1010,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icebrazier_126",
+   "x": 1040,
+   "y": 1010,
+   "sort": 1010,
+   "kind": "icebrazier",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 561,
+   "y": 1011,
+   "sort": 1011,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_109",
+   "x": 281,
+   "y": 1031,
+   "sort": 1031,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_79",
+   "x": 935,
+   "y": 1032,
+   "sort": 1032,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_64",
+   "x": 1028,
+   "y": 1033,
+   "sort": 1033,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "smallcrystal_121",
+   "x": 230,
+   "y": 1036,
+   "sort": 1036,
+   "kind": "smallcrystal",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "bones_264",
+   "x": 1080,
+   "y": 1037,
+   "sort": 1037,
+   "kind": "bones",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "icespire_63",
+   "x": 1126,
+   "y": 1039,
+   "sort": 1039,
+   "kind": "icespire",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "rock_255",
+   "x": 178,
+   "y": 1040,
+   "sort": 1040,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_119",
+   "x": 180,
+   "y": 1040,
+   "sort": 1040,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "crystals_115",
+   "x": 1120,
+   "y": 1040,
+   "sort": 1040,
+   "kind": "crystals",
+   "isWall": true,
+   "animated": false,
+   "smoke": null
+  }
+ ],
+ "lights": [
+  {
+   "x": 560,
+   "y": 48,
+   "r": 120,
+   "i": 0.75,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 740,
+   "y": 48,
+   "r": 120,
+   "i": 0.75,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 170,
+   "y": 340,
+   "r": 110,
+   "i": 0.6,
+   "c": "#8fd8ff"
+  },
+  {
+   "x": 390,
+   "y": 380,
+   "r": 110,
+   "i": 0.6,
+   "c": "#8fd8ff"
+  },
+  {
+   "x": 150,
+   "y": 550,
+   "r": 110,
+   "i": 0.6,
+   "c": "#8fd8ff"
+  },
+  {
+   "x": 420,
+   "y": 570,
+   "r": 110,
+   "i": 0.6,
+   "c": "#8fd8ff"
+  },
+  {
+   "x": 860,
+   "y": 338,
+   "r": 110,
+   "i": 0.7,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1170,
+   "y": 338,
+   "r": 110,
+   "i": 0.7,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 880,
+   "y": 608,
+   "r": 110,
+   "i": 0.7,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1150,
+   "y": 608,
+   "r": 110,
+   "i": 0.7,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 260,
+   "y": 798,
+   "r": 140,
+   "i": 0.8,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1040,
+   "y": 798,
+   "r": 140,
+   "i": 0.8,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 260,
+   "y": 988,
+   "r": 140,
+   "i": 0.8,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 1040,
+   "y": 988,
+   "r": 140,
+   "i": 0.8,
+   "c": "#9fdcff"
+  },
+  {
+   "x": 150,
+   "y": 820,
+   "r": 120,
+   "i": 0.6,
+   "c": "#8fd8ff"
+  },
+  {
+   "x": 1150,
+   "y": 820,
+   "r": 120,
+   "i": 0.6,
+   "c": "#8fd8ff"
+  },
+  {
+   "x": 180,
+   "y": 1000,
+   "r": 120,
+   "i": 0.6,
+   "c": "#8fd8ff"
+  },
+  {
+   "x": 1120,
+   "y": 1000,
+   "r": 120,
+   "i": 0.6,
+   "c": "#8fd8ff"
+  },
+  {
+   "x": 650,
+   "y": 880,
+   "r": 260,
+   "i": 0.35,
+   "c": "#6fb8e0"
+  }
+ ],
+ "grass": null,
+ "v16objs": []
+}

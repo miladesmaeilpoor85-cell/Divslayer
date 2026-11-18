@@ -1,0 +1,87 @@
+[
+ {
+  "type": "slime",
+  "maps": [
+   "forest"
+  ]
+ },
+ {
+  "type": "skeleton",
+  "maps": [
+   "dungeon"
+  ]
+ },
+ {
+  "type": "archer",
+  "maps": [
+   "dungeon"
+  ]
+ },
+ {
+  "type": "bat",
+  "maps": [
+   "peaks"
+  ]
+ },
+ {
+  "type": "imp",
+  "maps": [
+   "peaks"
+  ]
+ },
+ {
+  "type": "wraith",
+  "maps": [
+   "dungeon",
+   "forest"
+  ]
+ },
+ {
+  "type": "mosquito",
+  "maps": [
+   "shadowfen"
+  ]
+ },
+ {
+  "type": "toad",
+  "maps": [
+   "shadowfen"
+  ]
+ },
+ {
+  "type": "lurker",
+  "maps": [
+   "shadowfen"
+  ]
+ },
+ {
+  "type": "wisp",
+  "maps": [
+   "shadowfen"
+  ]
+ },
+ {
+  "type": "iceling",
+  "maps": [
+   "sanctum"
+  ]
+ },
+ {
+  "type": "frostknight",
+  "maps": [
+   "sanctum"
+  ]
+ },
+ {
+  "type": "crystalSpider",
+  "maps": [
+   "sanctum"
+  ]
+ },
+ {
+  "type": "golem",
+  "maps": [
+   "peaks"
+  ]
+ }
+]
