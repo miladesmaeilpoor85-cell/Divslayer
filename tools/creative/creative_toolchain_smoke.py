@@ -336,9 +336,11 @@ def render_audio_preview(ffmpeg: str, source_audio: Path, out: Path) -> dict[str
             "-i",
             str(source_audio),
             "-af",
-            "silenceremove=stop_periods=1:stop_duration=0.15:stop_threshold=-60dB,"
-            "afade=t=out:st=16.2:d=1.45,"
-            "loudnorm=I=-18.5:TP=-2.0:LRA=7:linear=true",
+            (
+                "silenceremove=stop_periods=1:stop_duration=0.15:stop_threshold=-60dB,"
+                "afade=t=out:st=16.2:d=1.45,"
+                "loudnorm=I=-18.5:TP=-2.0:LRA=7:linear=true"
+            ),
             "-ar",
             "44100",
             "-ac",
