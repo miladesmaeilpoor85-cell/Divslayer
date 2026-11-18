@@ -83,6 +83,23 @@ func run(m: Node) -> void:
 	Game.state = {}
 	check("cut_save_falls_back", Game.load_game() and Game.cls == "rogue" and int(Game.state["gold"]) == 777, Game.state.get("gold"))
 	check("menu_reads_the_fallback", main.menu == null or main.menu._save_info() != "")
+
+	# A valid JSON document can still be an unusable save; this must also fall back to the last good hero.
+	var schema_path := "user://save_schema_test.json"
+	DirAccess.remove_absolute(schema_path)
+	DirAccess.remove_absolute(schema_path + ".bak")
+	Game.write_safe(schema_path, JSON.stringify({"v": 2, "cls": "rogue", "state": {"gold": 777}}))
+	Game.write_safe(schema_path, JSON.stringify({"v": 2, "cls": "rogue", "state": {"gold": 778}}))
+	var schema_file := FileAccess.open(schema_path, FileAccess.WRITE)
+	if schema_file:
+		schema_file.store_string(JSON.stringify({"v": 2, "cls": "rogue", "state": []}))
+		schema_file.close()
+	var schema_recovered = Game.read_game_save(schema_path)
+	check("schema_invalid_save_falls_back", typeof(schema_recovered) == TYPE_DICTIONARY and int(schema_recovered.get("state", {}).get("gold", 0)) == 777, schema_recovered)
+	DirAccess.remove_absolute(schema_path + ".bak")
+	check("schema_invalid_save_rejected", Game.read_game_save(schema_path) == null)
+	DirAccess.remove_absolute(schema_path)
+
 	# a profile cut in half keeps the last good one too
 	Game.Ach.p()["stats"]["probe"] = 5
 	Game.Ach.save()
