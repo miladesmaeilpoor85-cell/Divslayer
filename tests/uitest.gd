@@ -96,6 +96,16 @@ func run(m: Node) -> void:
 			small.append(k)
 	check("touch_targets_44px", small.is_empty() and hud.menu_btn.size.x >= 44.0, small)
 
+	# Expanded touch tolerance must never guess between neighbouring action buttons.
+	var hit_test_buttons := {
+		"skill2": {"pos": Vector2(120, 172), "r": 29.0},
+		"ult": {"pos": Vector2(196, 178), "r": 31.0},
+	}
+	var hit_gap: Vector2 = (hit_test_buttons["skill2"]["pos"] + hit_test_buttons["ult"]["pos"]) * 0.5
+	check("touch_exact_target_wins", hud.pad._button_at(hit_test_buttons["ult"]["pos"], hit_test_buttons) == "ult")
+	check("touch_ambiguous_gap_ignores_mistap", hud.pad._button_at(hit_gap, hit_test_buttons) == "")
+	check("touch_single_near_edge_keeps_tolerance", hud.pad._button_at(Vector2(150, 172), hit_test_buttons) == "skill2")
+
 	# ---- pause menu through the menu button, settings
 	await click(hud.menu_btn)
 	await frames(4)

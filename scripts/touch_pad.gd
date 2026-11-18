@@ -95,6 +95,32 @@ func spell_of(b_name: String) -> String:
 func _local(p: Vector2) -> Vector2:
 	return get_global_transform_with_canvas().affine_inverse() * p
 
+## Prefer a button's visible circle. The 12 px forgiving edge is used only when it selects one control;
+## overlapping forgiving edges are treated as an ambiguous tap, not guessed as another action.
+func _button_at(pos: Vector2, bs: Dictionary) -> String:
+	var exact := ""
+	var exact_score := INF
+	var expanded := ""
+	var expanded_score := INF
+	var expanded_count := 0
+	for b_name in bs:
+		var b: Dictionary = bs[b_name]
+		var radius := float(b["r"])
+		var distance := pos.distance_to(b["pos"])
+		if distance <= radius:
+			var score := distance / max(1.0, radius)
+			if score < exact_score:
+				exact_score = score
+				exact = str(b_name)
+		elif distance <= radius + 12.0:
+			expanded_count += 1
+			if distance - radius < expanded_score:
+				expanded_score = distance - radius
+				expanded = str(b_name)
+	if exact != "":
+		return exact
+	return expanded if expanded_count == 1 else ""
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
 		queue_redraw()
@@ -108,14 +134,7 @@ func _input(event: InputEvent) -> void:
 		var pos := _local(event.position)
 		if event.pressed:
 			var bs := buttons()
-			var best := ""
-			var bd := INF
-			for b_name in bs:
-				var b: Dictionary = bs[b_name]
-				var d: float = pos.distance_to(b["pos"])
-				if d < float(b["r"]) + 12.0 and d - float(b["r"]) < bd:
-					bd = d - float(b["r"])
-					best = b_name
+			var best := _button_at(pos, bs)
 			if best != "":
 				held[event.index] = best
 				_press(best)
