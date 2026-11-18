@@ -872,6 +872,7 @@ func _settings() -> void:
 	body.add_child(_choice("sparkles", Game.t("Graphics", "گرافیک"), [[1, Game.t("Full", "کامل")], [0, Game.t("Light", "سبک")]], int(Game.settings.get("fx", 1)), func(v): Game.set_setting("fx", v)))
 	var levels := [[0, Game.t("Normal", "معمولی")], [1, Game.t("Bright", "روشن")], [2, Game.t("Brightest", "خیلی روشن")]]
 	body.add_child(_choice("sun", Game.t("Brightness", "روشنایی"), levels, int(Game.settings.get("bright", 0)), func(v): Game.set_setting("bright", v)))
+	body.add_child(_choice("user", Game.t("Left-handed controls", "کنترل چپ‌دست"), on_off, bool(Game.settings.get("left_hand", false)), func(v): Game.set_setting("left_hand", v)))
 	body.add_child(_section(Game.t("Difficulty", "درجهٔ سختی")))
 	var diffs := []
 	for id in ["story", "normal", "hard", "nightmare"]:
@@ -898,8 +899,11 @@ func _settings() -> void:
 		note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		body.add_child(note)
 	body.add_child(_section(Game.t("How to play", "راهنمای بازی")))
+	var move_hint := Game.t("Drag anywhere on the left half to move.", "برای حرکت، هر جای نیمهٔ چپ صفحه را بکش.")
+	if bool(Game.settings.get("left_hand", false)):
+		move_hint = Game.t("Drag anywhere on the right half to move.", "برای حرکت، هر جای نیمهٔ راست صفحه را بکش.")
 	var help := [
-		["footprints", Game.t("Drag anywhere on the left half to move.", "برای حرکت، هر جای نیمهٔ چپ صفحه را بکش.")],
+		["footprints", move_hint],
 		["sword", Game.t("Tap Attack to strike; hold it for a heavy blow.", "برای ضربه حمله را بزن؛ نگه داری ضربهٔ سنگین می‌زنی.")],
 		["wind", Game.t("Roll through attacks — right as they land is a perfect dodge.", "از میان حمله‌ها غلت بزن — درست لحظهٔ فرود، جاخالیِ بی‌نقص است.")],
 		["skull", Game.t("Bosses telegraph every attack on the ground. Fill their stagger bar.", "سرکرده‌ها هر حمله را روی زمین نشان می‌دهند. نوار گیجی‌شان را پر کن.")],
