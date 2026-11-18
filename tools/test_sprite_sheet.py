@@ -4,9 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from PIL import Image
-
 import sprite_sheet
+from PIL import Image
 
 
 class SpriteSheetTransparencyTests(unittest.TestCase):

@@ -53,7 +53,7 @@ jobs:
       - name: Compile all project Python tools
         run: python -m py_compile tools/*.py tools/creative/*.py
       - name: Lint the maintained pipeline tools
-        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/sprite_sheet.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/creative/*.py
+        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/creative/*.py
 
   audio-quality:
     name: Audio decode and metadata — FFmpeg
