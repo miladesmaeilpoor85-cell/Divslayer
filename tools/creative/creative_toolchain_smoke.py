@@ -11,7 +11,6 @@ import os
 import shutil
 import signal
 import subprocess
-import sys
 import time
 import wave
 import xml.etree.ElementTree as ET
