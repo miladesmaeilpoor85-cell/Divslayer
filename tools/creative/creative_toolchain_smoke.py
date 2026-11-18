@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Non-destructive smoke tests for the creative applications used by Divslayer.
 
 This script creates temporary QA assets only. It never edits files under assets/.
