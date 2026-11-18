@@ -373,6 +373,7 @@ func _settings() -> void:
 	v.add_child(_row("vibrate", Game.t("Vibration", "لرزش گوشی"), "haptics", on_off))
 	v.add_child(_row("zap", Game.t("Screen shake", "لرزش صفحه"), "shake", on_off))
 	v.add_child(_row("user", Game.t("Interface size", "اندازهٔ رابط"), "ui", [[0, Game.t("Small", "کوچک")], [1, Game.t("Normal", "معمولی")], [2, Game.t("Large", "بزرگ")]]))
+	v.add_child(_row("user", Game.t("Left-handed controls", "کنترل چپ‌دست"), "left_hand", on_off))
 	v.add_child(_row("zoom-in", Game.t("Camera", "دوربین"), "cam", [[0, Game.t("Far", "دور")], [1, Game.t("Normal", "معمولی")], [2, Game.t("Near", "نزدیک")]]))
 	v.add_child(_row("sparkles", Game.t("Graphics", "گرافیک"), "fx", [[1, Game.t("Full", "کامل")], [0, Game.t("Light", "سبک")]]))
 	v.add_child(_row("sun", Game.t("Brightness", "روشنایی"), "bright", [[0, Game.t("Normal", "معمولی")], [1, Game.t("Bright", "روشن")], [2, Game.t("Brightest", "خیلی روشن")]]))
