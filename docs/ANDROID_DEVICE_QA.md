@@ -109,7 +109,7 @@ A device/build passes this QA pass only when:
 
 - **Build:** Divslayer QA `0.39.0-qa`, GitHub Actions run [`44277080841`](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44277080841), source commit [`9d3fc3184ff0b4dc812478834696448ab662a49d`](https://github.com/miladesmaeilpoor85-cell/Divslayer/commit/9d3fc3184ff0b4dc812478834696448ab662a49d).
 - **User-reported outcome:** the user installed and launched the game and reported that it ran without apparent problems or lag.
-- **Not yet recorded or verified:** device model, Android version, session duration, measured FPS/frame time, boss phase/death cleanup, multitouch behavior, pause/resume, save persistence, and thermal behavior.
+- **Not yet recorded or verified at the initial smoke-test stage:** device model, Android version, session duration, measured FPS/frame time, boss phase/death cleanup, multitouch behavior, pause/resume, save persistence, and thermal behavior.
 
 This is a positive initial smoke-test report, not a complete pass of the physical-device QA checklist above.
 
@@ -123,3 +123,14 @@ This is a positive initial smoke-test report, not a complete pass of the physica
 - **Not established by the screenshot:** SoC/GPU, actual RAM/storage configuration, measured FPS/frame time, test duration, thermal behavior, or results of the boss-phase, boss-death, multitouch, lifecycle, and save-persistence checks.
 
 The device identity and software versions above were read from the user's supplied About phone screenshot. Do not infer unshown hardware or test measurements.
+
+
+### Follow-up user-reported performance observations — 2026-11-18
+
+For the same POCO X7 Pro / Android 16 device and Divslayer QA `0.39.0-qa` build, the user additionally reported:
+
+- Gameplay ran at **about 70 FPS most of the time** (user-observed estimate; measurement method and frame-time capture were not supplied).
+- Gameplay felt smooth, with no noticeable stutter or lag.
+- The user did not notice unusual device load or heating during the reported play session.
+
+These are qualitative, user-reported observations from one device. They are encouraging results for this device/build combination, but do not establish a repeatable benchmark, a 20–30 minute thermal test, or performance on lower-spec devices. Test duration, battery change, peak temperature, RAM usage, and frame-time data remain unrecorded.
