@@ -68,6 +68,9 @@ var regional_skill := ""
 var regional_cooldown := 0.0
 var regional_windup := 0.0
 var regional_attack_pending := false
+var elite_attack_cooldown := 0.0
+var elite_attack_pending := false
+var elite_attack_trap_next := true
 const LEAP_WINDUP := 0.42
 const LEAP_DURATION := 0.34
 
@@ -232,6 +235,7 @@ func _physics_process(dt: float) -> void:
 	squad_pressure_t = maxf(0.0, squad_pressure_t - dt)
 	regional_cooldown = maxf(0.0, regional_cooldown - dt)
 	regional_windup = maxf(0.0, regional_windup - dt)
+	elite_attack_cooldown = maxf(0.0, elite_attack_cooldown - dt)
 	_flash(dt)
 	_hover(dt)
 	if _estatus(dt):
@@ -242,6 +246,7 @@ func _physics_process(dt: float) -> void:
 		teleport_target_valid = false
 		regional_windup = 0.0
 		regional_attack_pending = false
+		elite_attack_pending = false
 		if anim:
 			anim.position.y = 0.0
 		# frozen or stunned: no AI, knockback still slides it
@@ -310,6 +315,8 @@ func _physics_process(dt: float) -> void:
 		# Boars of the marsh (toads) pause to telegraph a short, avoidable leap.
 		if chasing and not special_move and can_leap:
 			special_move = _leap_step(dt, to, d)
+		if chasing and not special_move and elite == "venom":
+			special_move = _venom_attack_step(p, d)
 		if chasing and not special_move and regional_skill != "":
 			special_move = _regional_attack_step(p, d)
 		if special_move:
@@ -373,6 +380,62 @@ func _leap_step(dt: float, to: Vector2, d: float) -> bool:
 		return true
 	return false
 
+
+
+# ---------------------------------------------------------------- elite signature attacks
+## Venom elites alternate a slow poison spit with a marked ground trap. The trap's
+## circle is deliberately left visible for 0.9 s so a moving or rolling hero can leave it.
+func _venom_attack_step(p: Node, d: float) -> bool:
+	if elite_attack_pending:
+		return true
+	if elite_attack_cooldown > 0.0 or d < 90.0 or d > 285.0:
+		return false
+	if world == null or world.bossfx == null or p == null:
+		return false
+	var target: Vector2 = p.pc() if p.has_method("pc") else p.global_position
+	var col := Color(0.48, 0.88, 0.30)
+	if elite_attack_trap_next:
+		elite_attack_pending = true
+		elite_attack_cooldown = randf_range(4.8, 5.6)
+		world.bossfx.circle(target, 52.0, 0.9, col, _fire_venom_trap, self)
+		world.float_text(global_position + Vector2(0, -box.y - 14), "!", col, true)
+		Sfx.play("poison", -7.0, 0.12)
+		return true
+	var direction: Vector2 = target - center()
+	if direction.length() < 1.0:
+		direction = Vector2.RIGHT
+	world.bossfx.shots.append({
+		"pos": center(),
+		"v": direction.normalized() * 2.6 * Game.PXS,
+		"life": 2.0,
+		"dmg": maxf(1.0, round(dmg * 0.72)),
+		"col": col,
+		"applies": "poison",
+		"sec": 2.2,
+		"src": "venom_elite:spit"
+	})
+	if world.fx:
+		world.fx.ring(center(), col, 20.0, 0.28)
+	world.burst(center(), col, 4, 70.0)
+	Sfx.play("poison", -6.0, 0.12)
+	flash = 0.08
+	elite_attack_trap_next = true
+	elite_attack_cooldown = randf_range(4.2, 5.0)
+	return true
+
+
+func _fire_venom_trap(t: Dictionary) -> void:
+	if not elite_attack_pending or elite != "venom" or dead or world == null or world.bossfx == null:
+		return
+	elite_attack_pending = false
+	elite_attack_trap_next = false
+	var bfx: Node = world.bossfx
+	var pos: Vector2 = t["pos"]
+	bfx.pool(pos, 92.0, 2.8, "poison", self, 0.65, ["poison", 1.6, 1.0])
+	world.burst(pos, Color(0.42, 0.88, 0.30), 12, 105.0)
+	Sfx.play("trap", -5.0, 0.12)
+	if bfx.in_circle(t):
+		bfx.hit(self, 0.74, ["poison", 1.8, 1.0])
 
 
 # ---------------------------------------------------------------- regional signature attacks
@@ -569,6 +632,9 @@ func make_elite(el: String, power := 1.0) -> void:
 	xp = int(xp * 3 * power)
 	gold = int(gold * 3 * power)
 	applies[str(d["status"])] = 1.0
+	if el == "venom":
+		elite_attack_cooldown = randf_range(2.4, 3.2)
+		elite_attack_trap_next = true
 	if anim:
 		anim.modulate = Color(str(d["col"])).lerp(Color.WHITE, 0.35)
 	_aura = Node2D.new()
@@ -610,6 +676,7 @@ func hurt(amount: float, crit: bool, from_dir: Vector2, heavy := false) -> void:
 	leap_time = 0.0
 	regional_windup = 0.0
 	regional_attack_pending = false
+	elite_attack_pending = false
 	if anim:
 		anim.position.y = 0.0
 	if parley and world and world.has_method("truce_broken"):

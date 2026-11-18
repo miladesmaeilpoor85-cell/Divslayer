@@ -96,5 +96,49 @@ func run(m: Node) -> void:
 	p._statuses(0.61)
 	check("venom_poison_tick_damages_hero", Game.hp < hp_before_tick, {"hp_before": hp_before_tick, "hp_after": Game.hp})
 
+	# ---- the elite signature moves: a warned pool trap and a slow poison spit
+	var bfx: Node = main.world.bossfx
+	foe.global_position = Vector2(600, 520)
+	p.global_position = Vector2(450, 520)
+	foe.elite_attack_cooldown = 0.0
+	foe.elite_attack_pending = false
+	foe.elite_attack_trap_next = true
+	var tele_before: int = bfx.tele.size()
+	var trap_started: bool = foe._venom_attack_step(p, 150.0)
+	check("venom_elite_starts_ground_trap", trap_started and foe.elite_attack_pending and bfx.tele.size() == tele_before + 1)
+	var trap_mark: Dictionary = bfx.tele.back()
+	check("venom_trap_has_dodgeable_warning", str(trap_mark.get("kind", "")) == "circle" and is_equal_approx(float(trap_mark.get("total", 0.0)), 0.9), trap_mark)
+	var pools_before_trap: int = bfx.pools.size()
+	var hp_before_dodged_trap: float = Game.hp
+	p.global_position = Vector2(760, 520) # leave the marked circle before it bursts
+	foe._fire_venom_trap(trap_mark)
+	check("venom_trap_leaves_temporary_poison_pool", bfx.pools.size() == pools_before_trap + 1 and str(bfx.pools.back().get("type", "")) == "poison", bfx.pools.back())
+	check("venom_trap_can_be_dodged", is_equal_approx(Game.hp, hp_before_dodged_trap), {"before": hp_before_dodged_trap, "after": Game.hp})
+	check("venom_trap_alternates_to_projectile", not foe.elite_attack_trap_next)
+
+	# A hit during the warning cancels the delayed pool callback.
+	p.global_position = Vector2(450, 520)
+	foe.elite_attack_cooldown = 0.0
+	foe.elite_attack_trap_next = true
+	foe.elite_attack_pending = false
+	foe._venom_attack_step(p, 150.0)
+	var interrupted_mark: Dictionary = bfx.tele.back()
+	var pools_before_interrupt: int = bfx.pools.size()
+	foe.hurt(1.0, false, Vector2.RIGHT)
+	foe._fire_venom_trap(interrupted_mark)
+	check("venom_trap_is_canceled_when_elite_is_hit", not foe.elite_attack_pending and bfx.pools.size() == pools_before_interrupt)
+
+	# The alternate spit is a slow moving, poison-applying bolt rather than instant damage.
+	foe.elite_attack_cooldown = 0.0
+	foe.elite_attack_pending = false
+	foe.elite_attack_trap_next = false
+	var shots_before: int = bfx.shots.size()
+	var spit_started: bool = foe._venom_attack_step(p, 150.0)
+	check("venom_elite_fires_spit_projectile", spit_started and bfx.shots.size() == shots_before + 1)
+	var venom_shot: Dictionary = bfx.shots.back()
+	var venom_shot_velocity: Vector2 = venom_shot.get("v", Vector2.ZERO)
+	check("venom_spit_is_slow_and_poisonous", str(venom_shot.get("applies", "")) == "poison" and is_equal_approx(venom_shot_velocity.length(), 2.6 * Game.PXS), venom_shot)
+	check("venom_spit_has_finite_dodge_window", float(venom_shot.get("life", 0.0)) == 2.0 and float(venom_shot.get("sec", 0.0)) == 2.2, venom_shot)
+
 	print("ELITETEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit()
