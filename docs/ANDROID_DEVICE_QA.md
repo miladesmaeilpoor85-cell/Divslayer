@@ -134,3 +134,14 @@ For the same POCO X7 Pro / Android 16 device and Divslayer QA `0.39.0-qa` build,
 - The user did not notice unusual device load or heating during the reported play session.
 
 These are qualitative, user-reported observations from one device. They are encouraging results for this device/build combination, but do not establish a repeatable benchmark, a 20–30 minute thermal test, or performance on lower-spec devices. Test duration, battery change, peak temperature, RAM usage, and frame-time data remain unrecorded.
+
+
+### User-reported boss and control test results — 2026-11-18
+
+For the Divslayer QA `0.39.0-qa` build on the POCO X7 Pro / Android 16, the user reports completing the requested in-game checks and finding them correct:
+
+- Boss phase transitions (phase II and final phase) behaved as expected; previous-phase attacks and poison pools were cleared.
+- After boss defeat, leftover attacks/effects did not continue to damage the player.
+- The requested movement + attack control check worked as expected.
+
+These are user-reported physical-device results. No screen recording, device logs, or independent instrumentation were supplied. The broader checklist items not explicitly reported as tested—such as save persistence/update installation, pause/resume and lock/unlock lifecycle, left-handed layout, extended 20–30 minute thermal testing, and testing on lower-spec devices—remain open.
