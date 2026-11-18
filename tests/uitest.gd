@@ -106,6 +106,22 @@ func run(m: Node) -> void:
 	check("touch_ambiguous_gap_ignores_mistap", hud.pad._button_at(hit_gap, hit_test_buttons) == "")
 	check("touch_single_near_edge_keeps_tolerance", hud.pad._button_at(Vector2(150, 172), hit_test_buttons) == "skill2")
 
+	# Interrupting a held attack must cancel the charge, not release it as a heavy strike.
+	var touch_player = main.player
+	touch_player.atk_cd = 0.0
+	touch_player.attacking = 0.0
+	touch_player.hold_attack = true
+	touch_player.charging = true
+	touch_player.charge = 0.8
+	touch_player.charge_fx.visible = true
+	touch_player.joy = Vector2(0.5, 0.0)
+	hud.pad.release_all()
+	check("release_all_cancels_charge_without_heavy_hit",
+		not touch_player.hold_attack and not touch_player.charging and is_zero_approx(touch_player.charge)
+		and not touch_player.charge_fx.visible and touch_player.joy == Vector2.ZERO
+		and is_zero_approx(touch_player.atk_cd),
+		[touch_player.hold_attack, touch_player.charging, touch_player.charge, touch_player.atk_cd])
+
 	# ---- pause menu through the menu button, settings
 	await click(hud.menu_btn)
 	await frames(4)

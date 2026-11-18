@@ -181,6 +181,7 @@ func release_all() -> void:
 	if player:
 		player.joy = Vector2.ZERO
 		player.hold_attack = false
+		player.cancel_attack_charge()
 		player.hold_block = false
 		player.block_end()
 

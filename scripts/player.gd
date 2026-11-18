@@ -534,9 +534,15 @@ func attack_press() -> void:
 func attack_release() -> void:
 	if charging and charge >= HEAVY_AT:
 		attack(true)
+	cancel_attack_charge()
+
+## Cancel a held charge when input is interrupted by a pause, focus loss, or another system action.
+## Unlike attack_release(), this never turns an interrupted hold into a heavy attack.
+func cancel_attack_charge() -> void:
 	charging = false
 	charge = 0.0
-	charge_fx.visible = false
+	if charge_fx:
+		charge_fx.visible = false
 
 func attack(heavy := false) -> void:
 	if dead or (atk_cd > 0.0 and not heavy) or caster.ult_active() or blocking:
