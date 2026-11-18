@@ -171,13 +171,14 @@ func back() -> bool:
 	return true
 
 func _save_info() -> String:
-	var d = Game.read_safe(Game.SAVE_PATH)
-	if typeof(d) != TYPE_DICTIONARY or not d.has("state"):
+	var d = Game.read_game_save(Game.SAVE_PATH)
+	if typeof(d) != TYPE_DICTIONARY:
 		return ""
+	var saved_state: Dictionary = d["state"]
 	var c: String = str(d.get("cls", "warrior"))
 	var cname: String = CARDS.get(c, CARDS["warrior"])[1 if Game.lang == "fa" else 0]
-	var where := Game.map_title(str(d["state"].get("map", "village")))
-	return cname + Game.sep() + "%s %s" % [Game.t("Level", "سطح"), Game.num(int(d["state"].get("level", 1)))] + Game.sep() + where
+	var where := Game.map_title(str(saved_state.get("map", "village")))
+	return cname + Game.sep() + "%s %s" % [Game.t("Level", "سطح"), Game.num(int(saved_state.get("level", 1)))] + Game.sep() + where
 
 func _orn(c: Control) -> void:
 	var mid := Vector2(c.size.x * 0.5, 7)
