@@ -22,7 +22,7 @@ See the [asset pipeline](docs/ASSET_PIPELINE.md) for the automated image/audio i
 
 See the [multi-tool production pipeline](docs/MULTITOOL_PIPELINE.md) for cloud-based GDScript/Python analysis, FFmpeg audio decoding, full image inspection, and automated map-layout previews.
 
-See the [creative applications workflow](docs/CREATIVE_TOOLS.md) for Krita, Audacity, LMMS, and Blender cloud smoke tests and source-project handling.
+See the [creative applications workflow](docs/CREATIVE_TOOLS.md) for Krita, Audacity, LMMS, and Blender cloud smoke tests and source-project handling.\n\nSee the [Google Flow cinematic production pack](docs/GOOGLE_FLOW_PRODUCTION_PACK.md) for the Divslayer teaser shot list, consistent character-reference workflow, and ready-to-use video prompts.\n\nبرای تولید تیزر سینمایی با Google Flow، [بستهٔ تولید سینمایی](docs/GOOGLE_FLOW_PRODUCTION_PACK.md) شامل ترتیب نماها، روش حفظ ثبات قهرمان و پرامپت‌های آماده را ببینید.
 
 ## Goals / اهداف
 - Share project progress and receive feedback from the community.
