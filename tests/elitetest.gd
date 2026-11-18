@@ -136,7 +136,8 @@ func run(m: Node) -> void:
 	var spit_started: bool = foe._venom_attack_step(p, 150.0)
 	check("venom_elite_fires_spit_projectile", spit_started and bfx.shots.size() == shots_before + 1)
 	var venom_shot: Dictionary = bfx.shots.back()
-	check("venom_spit_is_slow_and_poisonous", str(venom_shot.get("applies", "")) == "poison" and is_equal_approx((venom_shot.get("v", Vector2.ZERO) as Vector2).length(), 2.6 * Game.PXS), venom_shot)
+	var venom_shot_velocity: Vector2 = venom_shot.get("v", Vector2.ZERO)
+	check("venom_spit_is_slow_and_poisonous", str(venom_shot.get("applies", "")) == "poison" and is_equal_approx(venom_shot_velocity.length(), 2.6 * Game.PXS), venom_shot)
 	check("venom_spit_has_finite_dodge_window", float(venom_shot.get("life", 0.0)) == 2.0 and float(venom_shot.get("sec", 0.0)) == 2.2, venom_shot)
 
 	print("ELITETEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
