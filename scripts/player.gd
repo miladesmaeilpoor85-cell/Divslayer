@@ -388,6 +388,8 @@ func _feel(dir: Vector2) -> void:
 	var rot := 0.0
 	var now := Time.get_ticks_msec() / 1000.0
 	if dir.length() > 0.1 and dash_t <= 0.0:
+		# A restrained lean gives directional movement more weight without tilting the sprite off its feet.
+		rot += clampf(dir.x * 0.04 + dir.y * 0.012, -0.045, 0.045)
 		walk_ph += dt * 14.0
 		oy = -abs(sin(walk_ph)) * 2.4
 		sx = 1.0 + sin(walk_ph * 2.0) * 0.045
@@ -395,7 +397,7 @@ func _feel(dir: Vector2) -> void:
 		_dust_t -= dt
 		if _dust_t <= 0.0 and world and world.fx and not sneaking:
 			_dust_t = 0.19
-			world.fx.dust(global_position + Vector2(0, -2), 2, -facing_vec())
+			world.fx.dust(global_position + Vector2(0, -2), 2, -facing_vec(), _footstep_dust_color())
 	else:
 		var b := sin(now / 0.62)
 		sy = 1.0 + b * 0.022
@@ -426,6 +428,26 @@ func _feel(dir: Vector2) -> void:
 	body.rotation = rot
 	if shadow:
 		Fx.lift_shadow(shadow, -oy * 2.0)
+
+## Dust colour follows the ground so footfalls belong to the region without adding texture assets.
+func _footstep_dust_color() -> Color:
+	if world == null:
+		return Color(0.62, 0.56, 0.47, 0.55)
+	match world.key:
+		"sanctum", "frostvale", "wyrmhollow":
+			return Color(0.72, 0.86, 1.0, 0.58)
+		"shadowfen":
+			return Color(0.44, 0.68, 0.43, 0.52)
+		"peaks", "damavand":
+			return Color(0.72, 0.43, 0.28, 0.58)
+		"emberforge":
+			return Color(0.95, 0.48, 0.22, 0.62)
+		"dungeon", "zahhakcave", "trial":
+			return Color(0.58, 0.56, 0.62, 0.5)
+		"forest", "camp":
+			return Color(0.52, 0.62, 0.39, 0.52)
+		_:
+			return Color(0.72, 0.62, 0.48, 0.55)
 
 ## (v0.17) footsteps on the map's ground while the hero really moves (not into a wall, not mid-roll);
 ## faster steps when hasted, soft ones when sneaking
@@ -706,7 +728,7 @@ func dodge() -> void:
 	Sfx.play("dodge")
 	Game.Ach.add("dodges")
 	if world.fx:
-		world.fx.dust(global_position + Vector2(0, -2), 6, -dir)
+		world.fx.dust(global_position + Vector2(0, -2), 6, -dir, _footstep_dust_color())
 		world.fx.emit("shine", global_position + Vector2(0, -12), 6, Color(0.66, 0.85, 0.63), -dir, 70.0, 80.0)
 
 func drink() -> void:

@@ -85,7 +85,24 @@ func run(m: Node) -> void:
 	await frames(2)
 	check("rain_stops", not main.world.atmos.emitters["rain"].emitting and not Music._amb_want["rain"])
 
-	# ---- quest compass: the route over the exits, and the arrow
+	# ---- footfalls carry a subtle palette from the ground beneath the hero
+	main.goto_map("sanctum", Vector2(450, 470))
+	var snow_dust: Color = main.player._footstep_dust_color()
+	main.goto_map("shadowfen", Vector2(450, 470))
+	var bog_dust: Color = main.player._footstep_dust_color()
+	main.goto_map("village", Vector2(450, 470))
+	var soil_dust: Color = main.player._footstep_dust_color()
+	check("footstep_dust_matches_region",
+		snow_dust.b > snow_dust.r and bog_dust.g > bog_dust.r and soil_dust.r > soil_dust.b,
+		[snow_dust, bog_dust, soil_dust])
+	main.player._feel(Vector2.RIGHT)
+	var lean_right: float = main.player.body.rotation
+	main.player._feel(Vector2.LEFT)
+	var lean_left: float = main.player.body.rotation
+	check("walk_animation_leans_into_direction", lean_right > 0.0 and lean_left < 0.0,
+		[lean_right, lean_left])
+
+	# ---- quest compass: the route over the regions' exits, and the arrow
 	check("route_village_to_crypt", Game.next_hop("village", "dungeon") == "forest", Game.next_hop("village", "dungeon"))
 	check("route_village_to_bog", Game.next_hop("village", "shadowfen") == "forest" and Game.next_hop("forest", "shadowfen") == "peaks")
 	var cp: Dictionary = Game.compass_point("village")
