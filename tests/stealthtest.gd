@@ -94,6 +94,8 @@ func regional_attack_test(map_key: String, enemy_type: String, skill: String, st
 	clear_foes()
 	main.goto_map(map_key, Vector2(600, 520))
 	await frames(4)
+	clear_foes()
+	await frames(2)
 	var hero_now: Node = main.player
 	hero_now.global_position = Vector2(600, 520)
 	hero_now.joy = Vector2.ZERO
@@ -221,6 +223,8 @@ func run(m: Node) -> void:
 	await regional_attack_test("damavand", "serpentguard", "venom_lash", "poison", "damavand_serpent", true)
 	main.goto_map("trial", Vector2(450, 520))
 	await frames(4)
+	clear_foes()
+	await frames(2)
 	var out_of_region: Node = main.world.spawn_enemy("mosquito", Vector2(600, 520))
 	check("regional_signature_stays_in_its_own_biome", out_of_region.regional_skill == "")
 	clear_foes()
