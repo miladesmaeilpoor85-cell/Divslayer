@@ -55,6 +55,12 @@ def executable(name: str) -> str:
 
 
 def get_version(name: str, binary: str, version_args: tuple[str, ...] = ("--version",)) -> str:
+    if name == "Audacity":
+        result = run(
+            ["dpkg-query", "-W", "-f=${Version}", "audacity"],
+            timeout=15,
+        )
+        return f"Audacity Debian package {result.stdout.strip()}"
     command = [binary, *version_args]
     if name == "Krita":
         command = ["xvfb-run", "-a", *command]
