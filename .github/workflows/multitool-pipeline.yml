@@ -1,0 +1,112 @@
+name: Multi-tool production pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/multitool-pipeline.yml"
+      - "scripts/**"
+      - "tests/**"
+      - "tools/**"
+      - "assets/**"
+      - "data/**"
+      - "scenes/**"
+      - "project.godot"
+      - "gdlintrc"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: multitool-pipeline-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gdscript-static-analysis:
+    name: GDScript lint — gdtoolkit 4.5.0
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pinned GDScript Toolkit
+        run: python -m pip install --disable-pip-version-check "gdtoolkit==4.5.0"
+      - name: Lint all GDScript source and tests
+        run: gdlint scripts tests
+
+  python-static-analysis:
+    name: Python lint — Ruff
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pinned Ruff
+        run: python -m pip install --disable-pip-version-check "ruff==0.16.8"
+      - name: Compile all project Python tools
+        run: python -m py_compile tools/*.py
+      - name: Lint the maintained pipeline tools
+        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/artwork_review.py tools/ci_map_previews.py
+
+  audio-quality:
+    name: Audio decode and metadata — FFmpeg
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install FFmpeg and ffprobe
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes ffmpeg
+          ffmpeg -version | head -n 2
+          ffprobe -version | head -n 1
+      - name: Unit-test and decode every game audio file
+        run: |
+          python -m unittest discover -s tools -p "test_audio_audit.py" -v
+          python tools/audio_audit.py --report artifacts/audio-report.json
+      - name: Upload audio analysis report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Audio-Analysis
+          path: artifacts/audio-report.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  artwork-and-level-design:
+    name: Artwork decode and map previews — Pillow
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned Pillow
+        run: python -m pip install --disable-pip-version-check "Pillow==13.0.0"
+      - name: Fully decode the game's images and create contact sheets
+        run: python tools/artwork_review.py --output artifacts/artwork-review
+      - name: Render every map from map data and object sprites
+        run: python tools/ci_map_previews.py --output artifacts/map-previews --scale 0.25
+      - name: Upload art contact sheets and map-layout previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Artwork-and-Map-Review
+          path: |
+            artifacts/artwork-review/
+            artifacts/map-previews/
+          if-no-files-found: ignore
+          retention-days: 14
