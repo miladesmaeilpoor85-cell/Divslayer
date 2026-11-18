@@ -18,7 +18,7 @@ On 18 November 2026, the `main` branch history was rewritten to remove an old sa
 
 See [release readiness](docs/RELEASE_READINESS.md) for the current blockers before Android or commercial release.
 
-See the [asset pipeline](docs/ASSET_PIPELINE.md) for the automated image/audio integrity checks and artwork rights-register workflow.
+See the [art direction guide](docs/ART_DIRECTION_GUIDE.md) for the Persian-mythology visual identity, character/creature/environment design rules, Imagine prompt templates, and Godot sprite standards.\n\nراهنمای [جهت‌گیری هنری](docs/ART_DIRECTION_GUIDE.md) هویت بصری اسطوره‌ای ایرانی، قواعد طراحی، الگوهای پرامپت و استانداردهای اسپرایت Godot را توضیح می‌دهد.\n\nSee the [asset pipeline](docs/ASSET_PIPELINE.md) for the automated image/audio integrity checks and artwork rights-register workflow.
 
 See the [multi-tool production pipeline](docs/MULTITOOL_PIPELINE.md) for cloud-based GDScript/Python analysis, FFmpeg audio decoding, full image inspection, and automated map-layout previews.
 
