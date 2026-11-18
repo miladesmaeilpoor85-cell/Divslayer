@@ -35,10 +35,23 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo apt-get update --quiet
-          sudo apt-get install --quiet --yes --no-install-recommends \
+          # Bound network stalls and retry transient package mirror failures.
+          timeout 600s sudo apt-get --quiet \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=45 \
+            -o Acquire::https::Timeout=45 \
+            update
+          timeout 900s sudo apt-get --quiet install --yes --no-install-recommends \
             -o Dpkg::Use-Pty=0 \
+            -o Acquire::Retries=3 \
+            -o Acquire::http::Timeout=45 \
+            -o Acquire::https::Timeout=45 \
             audacity blender krita lmms xvfb xauth
+          sudo apt-get check
+          command -v audacity
+          command -v blender
+          command -v krita
+          command -v lmms
 
       - name: Install image inspection dependency
         uses: actions/setup-python@v5
