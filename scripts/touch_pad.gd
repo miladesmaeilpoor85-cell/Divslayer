@@ -64,6 +64,11 @@ func buttons() -> Dictionary:
 		b["scroll"] = Vector2(s.x - 244, s.y - 252)
 	if player and player.near_npc:
 		b["talk"] = Vector2(s.x - 240, s.y - 180)
+	# Mirror the complete action cluster, including contextual buttons, for left-handed play.
+	if bool(Game.settings.get("left_hand", false)):
+		for k in b:
+			var p: Vector2 = b[k]
+			b[k] = Vector2(s.x - p.x, p.y)
 	var out := {}
 	for k in b:
 		var col: Color = BTN[k]["col"]
@@ -116,7 +121,10 @@ func _input(event: InputEvent) -> void:
 				_press(best)
 				get_viewport().set_input_as_handled()
 				return
-			if pos.x < size.x * 0.5 and pos.y > 70.0 and joy_id == -1:
+			var mid := size.x * 0.5
+			var move_on_right := bool(Game.settings.get("left_hand", false))
+			var on_move_side := pos.x > mid if move_on_right else pos.x < mid
+			if on_move_side and pos.y > 70.0 and joy_id == -1:
 				joy_id = event.index
 				joy_origin = pos
 				joy_knob = pos
@@ -247,7 +255,8 @@ func _draw() -> void:
 		draw_arc(joy_knob, 23.0, 0, TAU, 36, Color(UI.GOLD_HI, 0.9), 2.0, true)
 	else:
 		# resting: where the stick usually sits (it appears under your thumb anywhere on the left half)
-		var hint := Vector2(104, s.y - 98)
+		var hint_x := s.x - 104.0 if bool(Game.settings.get("left_hand", false)) else 104.0
+		var hint := Vector2(hint_x, s.y - 98)
 		draw_circle(hint, JOY_R + 6.0, Color(0, 0, 0, 0.14))
 		draw_arc(hint, JOY_R + 6.0, 0, TAU, 56, Color(UI.CREAM, 0.26), 2.0, true)
 		draw_circle(hint, 20.0, Color(UI.CREAM, 0.14))
