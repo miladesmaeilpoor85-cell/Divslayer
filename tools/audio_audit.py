@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Decode and inventory every game audio asset with FFmpeg through PyAV."""
 from __future__ import annotations
 
@@ -73,7 +72,7 @@ def audit_audio(root: Path) -> dict[str, Any]:
             metadata["path"] = rel
             metadata["size_bytes"] = path.stat().st_size
             results.append(metadata)
-        except Exception as exc:  # FFmpeg/PyAV exposes codec-specific decode exceptions.
+        except Exception as exc:  # noqa: BLE001 - PyAV codec errors vary by bundled FFmpeg library.
             errors.append(f"{rel}: {type(exc).__name__}: {str(exc)[-1200:]}")
 
     return {
