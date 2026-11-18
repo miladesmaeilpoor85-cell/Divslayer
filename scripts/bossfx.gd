@@ -156,8 +156,10 @@ func shoot(en: Node, n: int, speed: float, mult: float, col: Color, applies := "
 		var a := float(i) / n * TAU + off
 		shots.append({"pos": c, "v": Vector2.from_angle(a) * speed * Game.PXS, "life": 1.8, "dmg": dmg, "col": col, "applies": applies, "src": _src(en) + ":bolt"})
 
-func pool(center: Vector2, size: float, life: float, type := "poison") -> void:
-	pools.append({"rect": Rect2(center - Vector2(size, size) * 0.5, Vector2(size, size)), "life": life, "max": life, "type": type, "tick": 0.0})
+func pool(center: Vector2, size: float, life: float, type := "poison", en: Node = null, mult := 0.0, status: Array = []) -> void:
+	var damaging := en != null and mult > 0.0
+	pools.append({"rect": Rect2(center - Vector2(size, size) * 0.5, Vector2(size, size)), "life": life, "max": life,
+		"type": type, "tick": 0.8 if damaging else 0.0, "en": en, "mult": mult, "status": status})
 
 func pool_at(feet: Vector2) -> String:
 	for p in pools:
@@ -253,8 +255,18 @@ func _physics_process(dt: float) -> void:
 				world.burst(s["pos"], s["col"], 5, 80.0)
 		shots = shots.filter(func(x): return float(x["life"]) > 0.0)
 	if not pools.is_empty():
-		for p in pools:
-			p["life"] = float(p["life"]) - dt
+		var pl := player()
+		for puddle in pools:
+			puddle["life"] = float(puddle["life"]) - dt
+			var source = puddle.get("en", null)
+			if source != null and float(puddle.get("mult", 0.0)) > 0.0:
+				puddle["tick"] = float(puddle.get("tick", 0.0)) - dt
+				if float(puddle["tick"]) <= 0.0:
+					puddle["tick"] = 0.8
+					if pl != null and not pl.dead and pl.has_method("pc") and _alive(source) and puddle["rect"].has_point(pl.pc()):
+						cur_src = "regional_poison_pool"
+						hit(source, float(puddle["mult"]), puddle.get("status", []))
+						cur_src = ""
 		pools = pools.filter(func(x): return float(x["life"]) > 0.0)
 	queue_redraw()
 	air.queue_redraw()
