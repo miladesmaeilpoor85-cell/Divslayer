@@ -181,7 +181,9 @@ func mechanics() -> void:
 	h0 = b.hp
 	b.hurt(100.0, false, Vector2.ZERO)
 	check("phase2_at_66", ph_ok and immune and ban == Game.t("Phase II", "مرحلهٔ دوم") and variant == "v1", {"ph": b.ph, "banner": ban, "variant": variant})
-	check("phase_change_adds_layered_visual_rings", phase_rings_added >= 2, {"added": phase_rings_added})
+	var expected_phase_rings := 2 if main.world.fx.quality > 0 else 1
+	check("phase_change_adds_quality_scaled_visual_rings", phase_rings_added >= expected_phase_rings,
+		{"added": phase_rings_added, "expected": expected_phase_rings})
 	check("phase2_clears_previous_projectiles_and_pools", phase2_effects_seeded and phase2_effects_cleared, {"seeded": phase2_effects_seeded, "shots_left": bfx.shots.size(), "pools_left": bfx.pools.size()})
 	check("damage_after_phase_roar", h0 - b.hp > 99.0)
 	var phase3_pool_pos: Vector2 = b.center() + Vector2(360.0, 0.0)
