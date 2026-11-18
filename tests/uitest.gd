@@ -147,7 +147,7 @@ func run(m: Node) -> void:
 	var missing: Array = want.filter(func(w): return not w in texts)
 	check("new_settings_listed", missing.is_empty(), missing)
 	Game.set_setting("left_hand", true)
-	var mirrored := hud.pad.buttons()
+	var mirrored: Dictionary = hud.pad.buttons()
 	check("left_hand_setting_moves_action_buttons_left", mirrored["attack"]["pos"].x < hud.pad.size.x * 0.5)
 	Game.set_setting("left_hand", false)
 	hud.pause.close()
