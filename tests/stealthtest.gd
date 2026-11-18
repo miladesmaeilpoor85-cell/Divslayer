@@ -304,7 +304,7 @@ func run(m: Node) -> void:
 	check("touch_shove", p.sig_uses == n + 1)
 
 	# ---- left-handed layout mirrors the action cluster and moves the joystick to the right half
-	var move_left := pad.get_global_transform_with_canvas() * Vector2(100, pad.size.y - 100)
+	var move_left: Vector2 = pad.get_global_transform_with_canvas() * Vector2(100, pad.size.y - 100)
 	touch(7, move_left, true)
 	await frames(2)
 	check("right_hand_movement_starts_on_left", pad.joy_id == 7)
@@ -317,12 +317,12 @@ func run(m: Node) -> void:
 	p.stamina = 100.0
 	p.attacking = 0.0
 	n = p.sig_uses
-	var left_shove := pad.get_global_transform_with_canvas() * left_bs["shove"]["pos"]
+	var left_shove: Vector2 = pad.get_global_transform_with_canvas() * left_bs["shove"]["pos"]
 	touch(8, left_shove, true)
 	await frames(2)
 	touch(8, left_shove, false)
 	check("left_hand_action_button_works", p.sig_uses == n + 1)
-	var move_right := pad.get_global_transform_with_canvas() * Vector2(pad.size.x - 100, pad.size.y - 100)
+	var move_right: Vector2 = pad.get_global_transform_with_canvas() * Vector2(pad.size.x - 100, pad.size.y - 100)
 	touch(9, move_right, true)
 	await frames(2)
 	check("left_hand_movement_starts_on_right", pad.joy_id == 9)
