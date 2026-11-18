@@ -14,15 +14,15 @@ CONFIG = ROOT / "creative/animation/warrior_starter_attack.json"
 
 
 class AnimationPipelineTests(unittest.TestCase):
-    def test_builds_three_direction_four_frame_attack_sheet(self) -> None:
+    def test_builds_three_direction_five_frame_review_sheet(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary)
             report = build_animation(CONFIG, output)
             self.assertEqual(report["status"], "passed")
-            self.assertEqual(report["total_frames"], 12)
-            self.assertEqual(report["asset_dimensions"], [640, 468])
+            self.assertEqual(report["total_frames"], 15)
+            self.assertEqual(report["asset_dimensions"], [800, 468])
             self.assertEqual(report["directions"], ["down", "up", "side"])
-            self.assertEqual(report["frames_per_direction"], 4)
+            self.assertEqual(report["frames_per_direction"], 5)
 
             with Image.open(output / report["asset"]) as opened:
                 atlas = opened.convert("RGBA")
@@ -36,21 +36,21 @@ class AnimationPipelineTests(unittest.TestCase):
 
             for preview in report["previews"]:
                 with Image.open(output / preview) as gif:
-                    self.assertEqual(gif.n_frames, 4)
+                    self.assertEqual(gif.n_frames, 5)
 
 
-    def test_validates_and_previews_the_tracked_editable_atlas(self) -> None:
+    def test_validates_and_previews_the_tracked_warrior_source_sheet(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary)
             report = build_animation(CONFIG, output)
             self.assertEqual(report["status"], "passed")
-            self.assertEqual(report["total_frames"], 12)
-            self.assertEqual(report["asset_dimensions"], [640, 468])
+            self.assertEqual(report["total_frames"], 15)
+            self.assertEqual(report["asset_dimensions"], [800, 468])
             self.assertEqual(report["fps"], 25)
             self.assertEqual(report["directions"], ["down", "up", "side"])
             for preview in report["previews"]:
                 with Image.open(output / preview) as gif:
-                    self.assertEqual(gif.n_frames, 4)
+                    self.assertEqual(gif.n_frames, 5)
 
     def test_build_is_deterministic(self) -> None:
         with tempfile.TemporaryDirectory() as first, tempfile.TemporaryDirectory() as second:
