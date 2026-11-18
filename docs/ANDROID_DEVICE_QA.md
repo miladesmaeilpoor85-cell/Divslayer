@@ -156,6 +156,22 @@ These are user-reported physical-device results. No screen recording, device log
 - **Package / version:** `com.example.divslayer.qa` / `0.40.0-qa`.
 - **APK SHA-256:** `8d263c58f9ee06c80afae53680271f3c7486bb423f22cad04f5b17d2873b7294`.
 - **Signature verification:** APK Signature Scheme v2 and v3 verified successfully.
-- **Device test status:** this new 0.40.0 build has not yet been reported as installed or tested by the user.
+- **Device test status:** the user subsequently confirmed downloading, installing and testing this 0.40.0 build successfully; see the user-confirmed device smoke-test note above.
 
 As with earlier QA builds, this APK uses a temporary debug signing key generated for this workflow run. Uninstall the previous `Divslayer QA` test app before installing this artifact; its local QA save will be removed. The production app uses a different package ID and is not affected.
+
+
+### Divslayer 0.41.0 QA Android build — 2026-11-18
+- **Change:** Venom elite variants now alternate a slow, poison-applying spit projectile with a ground trap. The trap is telegraphed for 0.9 seconds, leaves a damaging poison pool for 2.8 seconds, and is canceled if the elite is interrupted during its warning.
+- **Merged PR:** [#14](https://github.com/miladesmaeilpoor85-cell/Divslayer/pull/14).
+- **Source commit:** `31705f36631f178c698f5b814190f5a7749d1c19`.
+- **Godot CI:** [run #44294335874](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44294335874) — completed successfully, **1,154 checks across 30 test suites**, zero failures.
+- **Android QA workflow:** [run #44294335880](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44294335880) — completed successfully.
+- **Artifact:** `Divslayer-Android-QA-APK`, artifact ID `14422987494`; retention expires `2026-12-02T11:25:31Z`.
+- **Package / version:** `com.example.divslayer.qa` / `0.41.0-qa` (version code 1).
+- **APK SHA-256:** `03a5bd3b329502583a4976fbe4cc943a99014475dc22b68d55318dde22146038`.
+- **Artifact ZIP SHA-256:** `5e474a4b19f14e8e146223751b8e22502a5406882c9eb0409adb03bd9d945272`.
+- **Signature verification:** APK Signature Scheme v2 and v3 verified successfully; v1 was not enabled in this export.
+- **Device test status:** pending user installation and physical-device playtest. Automated CI and APK export success do not replace this test.
+
+As with the previous QA APK, this build is signed with a fresh temporary debug key generated for this workflow run. Uninstall the previous `Divslayer QA` app before installing this new artifact; uninstalling removes its local QA save data. The production app uses a different package ID and is not affected.
