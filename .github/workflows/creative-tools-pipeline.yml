@@ -52,7 +52,7 @@ jobs:
             -o Acquire::Retries=1 \
             -o Acquire::http::Timeout=30 \
             -o Acquire::https::Timeout=30 \
-            audacity blender krita lmms xvfb xauth
+            audacity blender ffmpeg krita lmms xvfb xauth
           sudo apt-get check
           command -v audacity
           command -v blender
