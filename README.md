@@ -22,6 +22,8 @@ See the [asset pipeline](docs/ASSET_PIPELINE.md) for the automated image/audio i
 
 See the [multi-tool production pipeline](docs/MULTITOOL_PIPELINE.md) for cloud-based GDScript/Python analysis, FFmpeg audio decoding, full image inspection, and automated map-layout previews.
 
+See the [creative applications workflow](docs/CREATIVE_TOOLS.md) for Krita, Audacity, LMMS, and Blender cloud smoke tests and source-project handling.
+
 ## Goals / اهداف
 - Share project progress and receive feedback from the community.
 - Keep official publishing, distribution, branding, and release decisions under the project owner's control.

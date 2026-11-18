@@ -1,0 +1,82 @@
+name: Creative tools pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/creative-tools-pipeline.yml"
+      - "tools/creative/**"
+      - "creative/**"
+      - "assets/art/**"
+      - "assets/audio/**"
+      - "docs/CREATIVE_TOOLS.md"
+      - "README.md"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: creative-tools-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  creative-application-smoke-tests:
+    name: Krita / Audacity / LMMS / Blender
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install creative applications
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          # Bound network stalls and retry transient package mirror failures.
+          # Refresh indexes, but don't let a slow mirror block the creative smoke tests.
+          if ! timeout 120s sudo apt-get --quiet \
+            -o Acquire::ForceIPv4=true \
+            -o Acquire::Retries=1 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 \
+            -o Acquire::Languages=none \
+            update; then
+            echo "::warning::apt index refresh did not finish; continuing with runner-cached indexes"
+          fi
+          timeout 300s sudo apt-get --quiet install --yes --no-install-recommends \
+            -o Dpkg::Use-Pty=0 \
+            -o Acquire::ForceIPv4=true \
+            -o Acquire::Retries=1 \
+            -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 \
+            audacity blender krita lmms xvfb xauth
+          sudo apt-get check
+          command -v audacity
+          command -v blender
+          command -v krita
+          command -v lmms
+
+      - name: Install image inspection dependency
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned Pillow
+        run: python -m pip install --disable-pip-version-check "Pillow==13.0.0"
+
+      - name: Exercise creative applications without changing game assets
+        run: |
+          python tools/creative/creative_toolchain_smoke.py \
+            --output artifacts/creative-tools
+
+      - name: Upload creative tool smoke-test outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Creative-Tools-Review
+          path: artifacts/creative-tools/
+          if-no-files-found: ignore
+          retention-days: 14
