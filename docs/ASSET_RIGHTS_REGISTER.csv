@@ -78,7 +78,7 @@
 "assets/art/Items/page.png","assets/art/Items","","","","","UNVERIFIED","",""
 "assets/art/Items/potion.png","assets/art/Items","","","","","UNVERIFIED","",""
 "assets/art/Items/regen_scroll.png","assets/art/Items","","","","","UNVERIFIED","",""
-"assets/art/Items/relic.png","assets/art/Items","","","","","UNVERIFIED","",""
+"assets/art/Items/relic.png","assets/art/Items","Divslayer project-generated procedural concept; AI-assisted","Blender 4.0.2 + Krita 5.2.2 + Pillow 13.0.0","2026-11-18","Original in-repo render and finishing; commercial-use status not legally reviewed","UNVERIFIED","tools/creative/blender_smoke_scene.py; GitHub Actions artifact 14433743197","72x78 inventory/pickup icon derived from the editable Flame Seal render; rights remain unverified"
 "assets/art/Items/relic_essence.png","assets/art/Items","","","","","UNVERIFIED","",""
 "assets/art/Items/relic_frost.png","assets/art/Items","","","","","UNVERIFIED","",""
 "assets/art/Items/shard_frost.png","assets/art/Items","","","","","UNVERIFIED","",""

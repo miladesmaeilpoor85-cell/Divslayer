@@ -325,8 +325,45 @@ def run_lmms(lmms: str, out: Path, root: Path) -> dict[str, Any]:
         "note": "Original eight-bar draft for review; not yet approved as the shipped game soundtrack.",
     }
 
+def render_audio_preview(ffmpeg: str, source_audio: Path, out: Path) -> dict[str, Any]:
+    """Create a trimmed, loudness-matched review copy; never replace the raw LMMS render."""
+    preview = out / "divslayer-title-theme-sketch-01-preview.wav"
+    run(
+        [
+            ffmpeg,
+            "-hide_banner",
+            "-y",
+            "-i",
+            str(source_audio),
+            "-af",
+            (
+                "silenceremove=stop_periods=1:stop_duration=0.15:stop_threshold=-60dB,"
+                "afade=t=out:st=16.2:d=1.45,"
+                "loudnorm=I=-18.5:TP=-2.0:LRA=7:linear=true"
+            ),
+            "-ar",
+            "44100",
+            "-ac",
+            "2",
+            "-c:a",
+            "pcm_s16le",
+            str(preview),
+        ],
+        timeout=120,
+        log_path=out / "ffmpeg-audio-preview.log",
+    )
+    return {
+        "status": "rendered",
+        "render": preview.name,
+        "audio": inspect_wav(preview),
+        "target_integrated_loudness_lufs": -18.5,
+        "target_true_peak_dbfs": -2.0,
+        "note": "Trimmed trailing digital silence and made a separate review copy at the project's usual soundtrack loudness target. This is not a production soundtrack approval.",
+    }
+
+
 def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]:
-    """Open an existing OGG in Audacity under Xvfb without enabling remote scripting."""
+    """Launch Audacity with the rendered WAV path under Xvfb; remote scripting stays disabled."""
     log_path = out / "audacity-gui.log"
     env = os.environ.copy()
     env["HOME"] = str(out / "audacity-home")
@@ -346,14 +383,14 @@ def run_audacity(audacity: str, source_audio: Path, out: Path) -> dict[str, Any]
         return_code = process.poll()
         if return_code is not None:
             raise RuntimeError(
-                f"Audacity exited during file-open smoke test ({return_code}); "
+                f"Audacity exited during WAV-argument launch smoke test ({return_code}); "
                 f"see {log_path}"
             )
         return {
-            "status": "launched_with_input",
+            "status": "process_remained_active_with_wav_argument",
             "source": str(source_audio),
             "observation_seconds": 8,
-            "note": "Audacity process remained active during the observation window after receiving the OGG input argument; full audio decoding is verified separately by PyAV/FFmpeg.",
+            "note": "Audacity was launched with the generated WAV path and remained active for 8 seconds. This confirms process startup only; it does not verify waveform inspection, playback, or mastering. Full audio decoding is verified separately by PyAV/FFmpeg.",
         }
     finally:
         try:
@@ -402,9 +439,10 @@ def main() -> int:
         "Krita": executable("krita"),
         "LMMS": executable("lmms"),
         "Audacity": executable("audacity"),
+        "FFmpeg": executable("ffmpeg"),
     }
     versions = {
-        name: get_version(name, binary, ("-version",) if name == "Audacity" else ("--version",))
+        name: get_version(name, binary, ("-version",) if name == "Audacity" else ("-version",) if name == "FFmpeg" else ("--version",))
         for name, binary in binaries.items()
     }
 
@@ -412,8 +450,11 @@ def main() -> int:
     layered_ora = create_krita_ora(blender_preview, out)
     krita_export = run_krita(binaries["Krita"], layered_ora, out)
     lmms_result = run_lmms(binaries["LMMS"], out, root)
+    audio_preview_result = render_audio_preview(
+        binaries["FFmpeg"], out / lmms_result["render"], out
+    )
 
-    audacity_source = out / lmms_result["render"]
+    audacity_source = out / audio_preview_result["render"]
     audacity_result = run_audacity(binaries["Audacity"], audacity_source, out)
 
     report = {
@@ -435,6 +476,7 @@ def main() -> int:
             "note": "OpenRaster is an editable layered format supported by Krita.",
         },
         "lmms": lmms_result,
+        "audio_preview": audio_preview_result,
         "audacity": audacity_result,
         "source_project_inventory": source_inventory,
     }
