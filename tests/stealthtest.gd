@@ -125,15 +125,21 @@ func regional_attack_test(map_key: String, enemy_type: String, skill: String, st
 					damaging_pool = true
 			check(label + "_leaves_a_real_poison_pool", damaging_pool)
 			var hits_before_pool_tick: int = int(main.world.bossfx.counts["hits"])
-			await frames(70)
+			var hp_before_pool_tick: int = Game.hp
+			# Isolate the lingering-pool test from the direct splash's brief i-frames.
+			for i in 70:
+				hero_now.invuln = 0.0
+				hero_now.dodge_iframes = 0.0
+				await frames(1)
 			var pool_diagnostics: Array = []
 			for puddle in main.world.bossfx.pools:
 				pool_diagnostics.append({"life": puddle.get("life", -1.0), "tick": puddle.get("tick", -1.0),
 					"mult": puddle.get("mult", 0.0), "contains_hero": puddle["rect"].has_point(hero_now.pc()),
 					"owner_alive": is_instance_valid(foe) and not foe.dead})
-			check(label + "_poison_pool_hurts_if_ignored", int(main.world.bossfx.counts["hits"]) > hits_before_pool_tick,
-				{"before": hits_before_pool_tick, "after": main.world.bossfx.counts["hits"], "hp": Game.hp,
-					"invuln": hero_now.invuln, "pools": pool_diagnostics})
+			check(label + "_poison_pool_hurts_if_ignored", int(main.world.bossfx.counts["hits"]) > hits_before_pool_tick
+				and Game.hp < hp_before_pool_tick,
+				{"before": hits_before_pool_tick, "after": main.world.bossfx.counts["hits"], "hp_before": hp_before_pool_tick,
+					"hp_after": Game.hp, "pools": pool_diagnostics})
 	clear_foes()
 	await frames(2)
 
