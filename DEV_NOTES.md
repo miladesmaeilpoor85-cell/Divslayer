@@ -255,11 +255,14 @@ Screenshots: `tests/uishots.gd`, `tests/fxshots.gd`, `tests/bossshots.gd`, `test
 - Preset "Android": arm64-v8a and armeabi-v7a (one APK, about 65 MB with both; arm64 alone about 45 MB), `version/code` must go up every release, `permissions/vibrate=true`. Its `exclude_filter` must never name a file the game loads (v0.27: the Wyrm's sheet was left out and the boss was invisible on phones only; `tests/v27fixtest.gd` checks it). Test hooks (`--test`, `--autotest`, `--shots`, `--menushot`) work only in debug builds (`OS.is_debug_build()`).
 - Saves, the profile and settings go through `Game.write_safe` / `read_safe`: a side `.tmp` file, then a rename; the last good file stays as `.bak`. Android Back opens the pause menu (`config/quit_on_go_back=false`, `main._notification`).
 - Export unsigned (`godot --headless --path . --export-release Android build/EmberIron_unsigned.apk`), then sign with the
-  **same key every time** (or phones refuse the update). With the Android build tools: `zipalign -p -f 4`, then
-  `apksigner sign --ks signing/emberiron.p12 --ks-type PKCS12 --ks-key-alias emberiron --ks-pass env:ANDROID_KEYSTORE_PASSWORD
-  --key-pass env:ANDROID_KEY_PASSWORD --v1-signing-enabled false --v2-signing-enabled true --v3-signing-enabled true`.
-  Without them: `python3 tools/apk_sign_v2.py build/EmberIron_unsigned.apk build/EmberIron.apk signing` (v2, same key).
-  Certificate SHA-256 starts `88ecd22c`. **Keep `signing/` private.**
+  **same private key every time** (or phones refuse the update). Never store signing passwords in source files, shell
+  history, or public documentation. With the Android build tools: `zipalign -p -f 4`, then use secure local environment
+  variables for the apksigner password sources:
+  `apksigner sign --ks signing/emberiron.p12 --ks-type PKCS12 --ks-key-alias "$ANDROID_KEY_ALIAS" --ks-pass env:ANDROID_KEYSTORE_PASSWORD --key-pass env:ANDROID_KEY_PASSWORD --v1-signing-enabled false --v2-signing-enabled true --v3-signing-enabled true`.
+  Set the variables only in a private local shell or secret manager, and clear them after signing. The alternate
+  `tools/apk_sign_v2.py` path must also be reviewed to ensure it obtains the password securely before use.
+  **Keep `signing/` private.**
+
 - Keep the APK under 30 MB (most of it is the Godot engine library); identical pictures are stored once
   (`map_object_sprites.json` → `"file"`). New PNGs: run `python3 tools/optimize_png.py assets/art` (lossless, checked pixel by pixel).
 - The project zip for Milad must stay under 30 MB (his upload limit): v0.18 was about 23 MB, v0.19 about 26 MB, v0.20 and v0.21 about 26.5 MB.
