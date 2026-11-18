@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Dependency-free integrity/provenance coverage audit for Divslayer assets.
 
 Checks basic image/audio container headers and verifies that every tracked image
