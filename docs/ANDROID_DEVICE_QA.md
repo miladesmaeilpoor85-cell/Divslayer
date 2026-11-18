@@ -198,3 +198,10 @@ As with previous QA APKs, this build uses a fresh temporary debug signing key ge
 - **User-reported outcome:** the user downloaded, installed and launched the 0.42.0 QA build and reported that everything worked well.
 - **Not specified in this confirmation:** device model, Android version, session duration, exact combat scenarios (including the Anvil Warden's forge-furrow attack), measured FPS/frame time, thermal behavior, save persistence, and pause/resume lifecycle. Do not treat these unreported checks as verified.
 - **Status:** initial physical-device installation/launch smoke test passed according to the user. This is not a complete device QA pass or a production-release validation.
+
+### User-reported Anvil Warden combat test — Divslayer 0.42.0 QA — 2026-11-18
+- **Encounter:** Pulad of Ghandi / Anvil Warden.
+- **Build:** `0.42.0-qa`, package `com.example.divslayer.qa`, Android QA workflow [run #44295985491](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44295985491), artifact ID `14424120858`.
+- **User-reported outcome:** during combat, the user verified that the three forge-fire lanes appeared correctly and that the player could dodge through the gaps between them. The user reported that both behaviors worked as intended.
+- **Scope:** this confirms the three-lane telegraph appearing and the intended gap-dodge behavior in a physical-device play session. The user did not explicitly report testing the burn application, exact damage amount, simultaneous-hit guard, performance measurements, or other QA checklist items; those remain unverified by this report.
+- **Status:** targeted manual combat check for the Forge Furrows move passed according to the user. This complements the earlier install/launch smoke test; it does not constitute a complete device QA pass or production-release validation.
