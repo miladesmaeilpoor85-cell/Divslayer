@@ -1,7 +1,7 @@
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
 ## 0.39.0 — Each region fights differently (هر منطقه شیوهٔ نبرد خودش را دارد)
-- Shadowfen mosquitoes mark a poison-splash zone that leaves a brief hazardous pool.
+- Shadowfen mosquitoes mark a poison-splash zone that leaves a brief, damaging pool if the hero stays inside.
 - Emberforge cinderhounds warn along a fiery charge lane before applying burn.
 - Frostvale frostwolves mark a rime-pounce circle that can briefly freeze the hero.
 - Serpent guards in Damavand and Zahhak's Cave telegraph a narrow venom lash.
