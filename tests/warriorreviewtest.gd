@@ -30,13 +30,13 @@ func run(_main: Node) -> void:
 		return
 	var sprite_frames := actor.sprite_frames
 	for direction in ["down", "up", "side"]:
-		var animation := "walk_" + direction
+		var animation: String = "walk_" + str(direction)
 		check("%s_has_four_walk_frames" % direction,
 			sprite_frames.has_animation(animation) and sprite_frames.get_frame_count(animation) == 4)
-		var idle := "idle_" + direction
+		var idle: String = "idle_" + str(direction)
 		check("%s_idle_frame_exists" % direction,
 			sprite_frames.has_animation(idle) and sprite_frames.get_frame_count(idle) == 1)
-		var attack := "attack_" + direction
+		var attack: String = "attack_" + str(direction)
 		check("%s_attack_pose_exists" % direction,
 			sprite_frames.has_animation(attack) and sprite_frames.get_frame_count(attack) == 1)
 
