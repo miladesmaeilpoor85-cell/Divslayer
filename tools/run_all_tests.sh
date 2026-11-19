@@ -33,11 +33,8 @@ for t in "${tests[@]}"; do
   started=$SECONDS
   printf 'START %s\n' "$t" | tee -a "$out"
 
-  if run_godot -- --test "res://tests/${t}.gd" >"$test_log" 2>&1; then
-    status=0
-  else
-    status=$?
-  fi
+  run_godot -- --test "res://tests/${t}.gd" 2>&1 | tee "$test_log"
+  status=${PIPESTATUS[0]}
 
   elapsed=$((SECONDS - started))
   passes=$(grep -cE '^PASS' "$test_log" || true)
@@ -62,11 +59,8 @@ done
 test_log="/tmp/ei_tests/${label}.autotest.raw.log"
 started=$SECONDS
 printf 'START autotest\n' | tee -a "$out"
-if run_godot -- --autotest >"$test_log" 2>&1; then
-  status=0
-else
-  status=$?
-fi
+run_godot -- --autotest 2>&1 | tee "$test_log"
+status=${PIPESTATUS[0]}
 elapsed=$((SECONDS - started))
 json_count=$(grep -c 'AUTOTEST_JSON' "$test_log" || true)
 fails=$(grep -cE '^FAIL' "$test_log" || true)
