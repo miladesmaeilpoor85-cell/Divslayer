@@ -189,7 +189,7 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
         used_names: set[str] = set()
         for item in raw_clips:
             if not isinstance(item, dict):
-                raise ValueError("Each clip must be an object")
+                raise TypeError("Each clip must be an object")
             clip_name = str(item.get("name", "")).strip()
             if not clip_name or any(not (char.isalnum() or char in "_-") for char in clip_name):
                 raise ValueError("Clip names may contain only letters, numbers, underscores, and hyphens")
