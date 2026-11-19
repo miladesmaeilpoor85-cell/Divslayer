@@ -166,9 +166,10 @@ func _direction_label(direction: String) -> String:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event is InputEventKey or not event.pressed or event.echo:
+	var key_event := event as InputEventKey
+	if key_event == null or not key_event.pressed or key_event.echo:
 		return
-	match event.keycode:
+	match key_event.keycode:
 		KEY_1:
 			_show_walk("down")
 		KEY_2:
