@@ -196,6 +196,14 @@ jobs:
               echo "Divslayer process is not running after launch."
               exit 1
             fi
+            activity_state="$(adb shell dumpsys activity activities | grep -E 'mResumedActivity|topResumedActivity' | tail -1 || true)"
+            echo "Foreground activity: $activity_state"
+            if ! grep -Fq "com.example.divslayer.qa/" <<< "$activity_state"; then
+              echo "Divslayer is not the resumed foreground activity."
+              exit 1
+            fi
+            adb exec-out screencap -p > build/android/emulator-launch.png
+            test -s build/android/emulator-launch.png
             echo "Divslayer launched successfully. PID: $app_pid"
 
       - name: Upload installable QA APK
@@ -207,5 +215,6 @@ jobs:
             build/android/Divslayer-QA.apk.sha256
             build/android/apk-badging.txt
             build/android/emulator-logcat.txt
+            build/android/emulator-launch.png
           if-no-files-found: error
           retention-days: 14
