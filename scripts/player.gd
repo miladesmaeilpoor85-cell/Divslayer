@@ -134,6 +134,7 @@ func refresh_look() -> void:
 	if s == sheet and lk == look:
 		return
 	if s != sheet:
+		_cancel_pending_attack()
 		sheet = s
 		var ch: Dictionary = Sheets.character("heroes", s)
 		anim.sprite_frames = ch["frames"]
@@ -704,7 +705,7 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 func _tick_attack_impact(dt: float) -> void:
 	if _pending_attack.is_empty():
 		return
-	if dead or world == null:
+	if dead or world == null or blocking or (caster and (caster.busy() or caster.ult_active())):
 		_cancel_pending_attack()
 		return
 	_attack_impact_remaining -= dt
