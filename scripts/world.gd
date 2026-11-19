@@ -541,7 +541,7 @@ func _refresh_quest_points() -> void:
 				node.add_to_group("npcs")
 			elif not available and node.is_in_group("npcs"):
 				node.remove_from_group("npcs")
-	
+
 func _spawn_quest_point(point: Dictionary) -> Node2D:
 	var point_id := str(point.get("id", ""))
 	var node := Node2D.new()
