@@ -94,8 +94,12 @@ func run(_main: Node) -> void:
 
 	# The attack pose remains visible for at least the legacy gameplay window,
 	# but a longer future multi-frame clip is allowed to finish.
+	var legacy_attack_frames := SpriteFrames.new()
+	legacy_attack_frames.add_animation("attack_down")
+	legacy_attack_frames.set_animation_speed("attack_down", 24.0)
+	legacy_attack_frames.add_frame("attack_down", separate.get_frame_texture("attack_down", 0))
 	check("single_frame_attack_keeps_legacy_minimum",
-		is_equal_approx(Sheets.animation_duration(separate, "attack_down", 0.16), 0.16))
+		is_equal_approx(Sheets.animation_duration(legacy_attack_frames, "attack_down", 0.16), 0.16))
 	check("four_frame_attack_duration_matches_clip_length",
 		is_equal_approx(Sheets.animation_duration(embedded, "attack_up", 0.16), 4.0 / 24.0))
 	check("heavy_attack_keeps_legacy_minimum_for_short_clip",
