@@ -46,7 +46,8 @@ jobs:
             update; then
             echo "::warning::apt index refresh did not finish; continuing with runner-cached indexes"
           fi
-          timeout 900s sudo apt-get --quiet install --yes --no-install-recommends \
+          # The creative desktop applications have a large dependency tree; allow slow mirrors up to 25 minutes.
+timeout 1500s sudo apt-get --quiet install --yes --no-install-recommends \
             -o Dpkg::Use-Pty=0 \
             -o Acquire::ForceIPv4=true \
             -o Acquire::Retries=1 \
