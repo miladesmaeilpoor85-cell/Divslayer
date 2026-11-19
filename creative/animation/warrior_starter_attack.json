@@ -28,13 +28,15 @@
       "name": "walk",
       "start": 0,
       "end": 4,
-      "loop": true
+      "loop": true,
+      "fps": 9
     },
     {
       "name": "attack",
       "start": 4,
       "end": 5,
-      "loop": false
+      "loop": false,
+      "fps": 24
     }
   ]
 }
