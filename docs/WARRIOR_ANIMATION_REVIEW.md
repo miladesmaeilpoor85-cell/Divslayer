@@ -1,6 +1,6 @@
 # Warrior animation review scene | بازبینی انیمیشن جنگجوی دیوکش
 
-**Status:** isolated review candidate — not connected to the playable character and not a production-approved replacement.
+**Status:** isolated review candidate — the production Warrior starter now has a separate four-frame attack atlas, but this scene remains a read-only review harness and is not a replacement for in-game combat.
 
 ## Open the scene
 
@@ -16,7 +16,7 @@ On the review screen, tap **روبه‌رو**, **پشت**, or **نیم‌رخ** 
 
 The review scene deliberately loads the existing `assets/art/Heroes/warrior_starter.png` atlas read-only and reads cell dimensions, row ordering, and foot pivot from `data/art_manifest.json`. The expected project layout is 800 × 468 pixels: five 160 × 156 cells per row, with rows `down`, `up`, `side`; columns 0–3 are walk frames and column 4 is the single-frame attack pose. The scene does not replace the production sheet, edit `data/art_manifest.json`, change `scripts/sheets.gd`, or alter the pivot, class IDs, or main scene.
 
-The separate ImageGen concept pack contains 12 distinct walk poses (four per direction), rather than hop/squash transformations. That new atlas is not loaded by this review scene and is not yet promoted to the repository. The review scene is intentionally a safe harness for the current atlas and adds a separate Godot-drawn slash arc with a 0.34-second preparation/contact/fade window. It is an effect prototype, not a complete multi-frame body-attack animation and not combat hitbox logic.
+The production Warrior starter attack now uses `assets/art/Heroes/warrior_starter_attack.png`, a separate 4-column × 3-direction atlas aligned to the existing 160 × 156 cell grid. The playable attack animation reads its four frames through the metadata-driven loader in `scripts/sheets.gd`; walk frames remain unchanged. This review scene intentionally continues to use the original 5-column atlas read-only and its own Godot-drawn slash arc, so it can compare the established production walk poses without changing combat state.
 
 ## Checks
 
@@ -26,6 +26,6 @@ The image has real alpha transparency and passed local 800 × 468 / 15-cell boun
 
 ## Provenance and rights
 
-The separate walk-cycle concept sheet was created with ChatGPT ImageGen on 19 November 2026 using the accepted Divslayer warrior turnaround as visual guidance. Its printed checkerboard and divider lines were removed during local processing before alignment to the current atlas grid. The concept sheet is delivered outside the runtime asset tree for review; the GitHub scene uses the already-tracked production sprite.
+The original review-scene walk sheet remains the already-tracked production sprite. The separate four-frame attack atlas is an AI-generated candidate, aligned to the same 160 × 156 cells and stored separately so the walk sheet is not overwritten. Its generation provenance is recorded in `docs/ASSET_RIGHTS_REGISTER.csv`.
 
 **Commercial-use / rights status: UNVERIFIED.** Generation and successful technical import do not by themselves prove authorship, exclusivity, or commercial-use clearance. This candidate must remain a review-only resource until the service terms and project release requirements are checked. Do not copy it over `assets/art/Heroes/warrior_starter.png` without a separate reviewed PR and Android test.

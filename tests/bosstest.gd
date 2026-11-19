@@ -1,4 +1,6 @@
 extends Node
+
+const Sheets = preload("res://scripts/sheets.gd")
 ## v18 boss checks.  godot --headless --fixed-fps 60 --path . -- --test res://tests/bosstest.gd [--bot] [--natural]
 ## Mechanics (default): boss health, intro card + tap to skip, stagger, phases, telegraphs, perfect dodge,
 ## wall/pillar crashes, pillar shield, magma armour, eggs, echoes, death -> rematch / respawn, victory,
@@ -509,6 +511,70 @@ func mechanics() -> void:
 	h0 = dg.hp
 	main.player.attack()
 	check("aim_assist_diagonal", dg.hp < h0 and main.player.facing != "up", {"facing": main.player.facing})
+
+	printerr("STEP: frame-timed impact applies damage only when the configured attack frame begins")
+	for e in get_tree().get_nodes_in_group("enemies"):
+		e.queue_free()
+	await frames(2)
+	var delayed_enemy: Node = main.world.spawn_enemy("golem", main.player.global_position + Vector2(0, 38))
+	delayed_enemy.spd = 0.0
+	main.player.facing = "down"
+	main.player.atk_cd = 0.0
+	var original_frames: SpriteFrames = main.player.anim.sprite_frames
+	var hero_meta: Dictionary = Game.manifest["heroes"][main.player.sheet]
+	var had_impact_meta := hero_meta.has("attackImpactFrame")
+	var previous_impact_meta = hero_meta.get("attackImpactFrame", null)
+	var synthetic_image := Image.create(16 * 8, 12 * 3, false, Image.FORMAT_RGBA8)
+	synthetic_image.fill(Color(0, 0, 0, 0))
+	for row in 3:
+		for column in 8:
+			synthetic_image.fill_rect(Rect2i(column * 16, row * 12, 16, 12), Color(1, 1, 1, 1))
+	var synthetic_attack := Sheets.character_frames(ImageTexture.create_from_image(synthetic_image), {
+		"cellW": 16,
+		"cellH": 12,
+		"cols": ["walk0", "walk1", "walk2", "walk3", "attack0", "attack1", "attack2", "attack3"],
+		"walkFps": 9.0,
+		"attackFps": 24.0,
+	})
+	main.player.anim.sprite_frames = synthetic_attack
+	hero_meta["attackImpactFrame"] = 2
+	var delayed_hp: float = float(delayed_enemy.hp)
+	var delayed_hits: int = int(main.player.hits_landed)
+	main.player.attack()
+	check("impact_frame_waits_before_damage",
+		not main.player._pending_attack.is_empty() and is_equal_approx(delayed_enemy.hp, delayed_hp)
+		and main.player.hits_landed == delayed_hits)
+	check("impact_frame_restarts_attack_clip",
+		main.player.anim.animation == "attack_down" and main.player.anim.frame == 0 and main.player.anim.is_playing())
+	await frames(4)
+	check("impact_frame_does_not_hit_early",
+		is_equal_approx(delayed_enemy.hp, delayed_hp) and main.player.hits_landed == delayed_hits)
+	await frames(3)
+	check("impact_frame_applies_damage_at_contact",
+		delayed_enemy.hp < delayed_hp and main.player.hits_landed == delayed_hits + 1
+		and main.player._pending_attack.is_empty())
+
+	printerr("STEP: dodge cancels a pending impact instead of striking after the roll starts")
+	main.player.atk_cd = 0.0
+	main.player.dodge_cd = 0.0
+	main.player.stamina = 100.0
+	main.player.facing = "down"
+	var canceled_hp: float = float(delayed_enemy.hp)
+	main.player.attack()
+	var was_pending: bool = not main.player._pending_attack.is_empty()
+	main.player.dodge()
+	check("dodge_cancels_pending_impact", was_pending and main.player._pending_attack.is_empty())
+	await frames(8)
+	check("canceled_attack_does_not_apply_late_damage", is_equal_approx(delayed_enemy.hp, canceled_hp))
+
+	main.player.anim.sprite_frames = original_frames
+	main.player.attacking = 0.0
+	main.player._attack_visual_facing = ""
+	if had_impact_meta:
+		hero_meta["attackImpactFrame"] = previous_impact_meta
+	else:
+		hero_meta.erase("attackImpactFrame")
+	await frames(2)
 
 	printerr("STEP: hints do not follow you to another map; the hero is drawn over a boss standing on him")
 	b = await arena("boss2")

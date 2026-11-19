@@ -13,9 +13,30 @@ Krita receives a two-layer OpenRaster document (.ora): the Blender render is the
 
 Audacity opens the generated LMMS WAV in a virtual display as an application-level smoke check. Its GUI is not remotely scripted; the full-file codec/decode checks remain with the established PyAV/FFmpeg tool. A human listening/mastering pass is still required before any sound is approved for the game.
 
+## Sprite animation review previews
+
+The **Artwork decode and map previews** job in the multi-tool production pipeline runs `tools/animation_review.py` against `data/art_manifest.json`. It validates declared sprite-sheet dimensions and exports review-only previews:
+
+- Hero walk loops for each declared direction, plus still previews of the attack pose.
+- Enemy loops for every declared variant; single-frame enemies are exported as still previews.
+- A checkerboard background makes transparent edges easier to inspect, and a guide line shows the configured vertical pivot.
+- `animation-review.json` records each checked sheet, expected/actual dimensions, playback rate, generated preview files, skipped metadata entries, and errors.
+
+Run it locally with:
+
+```sh
+python -m pip install "Pillow==13.0.0"
+python -m unittest discover -s tools -p "test_animation_review.py" -v
+python tools/animation_review.py --output artifacts/animation-review
+```
+
+The preview uses frames already present in the repository; it does not invent new animation frames or modify the production sheets. Hero walk previews use the current 9 FPS runtime setting. Enemy timing uses `timedMs` when declared and the current 7 FPS fallback otherwise. An entry explicitly marked with an `error` in the manifest is reported as skipped rather than treated as a valid production sheet.
+
+The multi-tool pipeline uploads **Divslayer-Artwork-Animation-and-Map-Review** for 14 days. Animation GIF/PNG files are review artifacts and are not shipped in the Android build.
+
 ## Artifact contents
 
-The workflow uploads **Divslayer-Creative-Tools-Review** for 14 days:
+The creative-tools workflow uploads **Divslayer-Creative-Tools-Review** for 14 days:
 
 - flame-seal-relic.blend — editable Blender scene
 - flame-seal-relic-blender.png — Blender render
@@ -29,9 +50,10 @@ The tracked LMMS source project is creative/lmms/divslayer_title_theme_sketch_01
 
 ## Guardrails
 
-- All generated files stay in the CI artifact; this workflow does not overwrite existing files under assets/.
+- All generated files stay in CI artifacts; the workflows do not overwrite existing files under assets/.
 - No QA APK is produced for this asset-only review branch. A device APK should be built only after the owner accepts an actual in-game art/audio change.
 - The project’s image rights register and audio credits still need real source, authorship, and usage-term evidence. A successful render or decode is not proof of commercial-use permission.
+- The animation review verifies sprite-sheet layout and produces previews; it does not judge artistic quality, timing feel, hitbox fairness, or mobile performance. Those still need human review in the running game.
 - Audacity's remote named-pipe scripting is intentionally disabled. Its GUI startup smoke test only proves the process remains active with a WAV path argument; it does not prove that a person has listened, inspected the waveform, or mastered the track. Do not expose an automation pipe as a public server endpoint.
 
 ## Future source folders
@@ -45,7 +67,6 @@ Keep native editable source files in the repository alongside exported game asse
 
 The first source project is kept in creative/lmms/. The Blender scene and Krita OpenRaster document are generated as reproducible workflow artifacts from the tracked Blender script and creative-tool automation. The reviewed 72 × 78 PNG is the only art output promoted into the game asset tree.
 
-
 ## In-game Flame Seal item icon review
 
 The first-pass Flame Seal asset is now represented by the 72 × 78 `assets/art/Items/relic.png` pickup icon. It is a reduced, palette-limited derivative of the Blender render. The editable Krita OpenRaster source and Blender `.blend` scene are generated and retained in the CI review artifact; their reproducible source scripts and automation are tracked in the repository. The existing `relic` pickup identifier and import settings are unchanged, so map references continue to resolve.
@@ -57,6 +78,5 @@ The original 512 × 512 Blender/Krita render is retained in the review artifact,
 The editable LMMS project is an eight-bar, 108 BPM D-Hijaz-flavoured motif with a low drone. The CI render is 44.1 kHz, stereo, 16-bit PCM. The first render measured approximately -9.8 LUFS integrated and -4.0 dBFS true peak, with no clipped samples. That is substantially louder than the project's existing soundtrack notes (typically around -18 to -17.5 LUFS), so a separate -18.5 LUFS listening preview is provided for review.
 
 The sketch is only about 18 seconds of musical material. Technical file checks do not establish musical quality. It has not been auditioned and approved as the game's title theme, and it is not connected to production audio. The project uses an LMMS built-in oscillator waveform; commercial redistribution still requires checking the applicable LMMS content/licensing terms.
-
 
 The creative workflow uses FFmpeg to produce a separate listening copy of the LMMS render: trailing digital silence is removed, a short fade is applied, and the level is matched to -18.5 LUFS. The raw LMMS render is preserved unchanged. Audacity is launched with this preview WAV, but the automated check does not substitute for human listening and approval.
