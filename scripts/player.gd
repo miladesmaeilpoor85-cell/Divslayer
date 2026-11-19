@@ -597,6 +597,14 @@ func attack(heavy := false) -> void:
 	# Keep the attack direction visually locked through the wind-up and impact.
 	var attack_direction := "side" if facing == "left" or facing == "right" else facing
 	_attack_visual_facing = facing
+	# Restart the clip even when the previous attack used the same direction.
+	var attack_animation := "attack_" + attack_direction
+	if anim.sprite_frames and anim.sprite_frames.has_animation(attack_animation):
+		anim.stop()
+		anim.animation = attack_animation
+		anim.frame = 0
+		anim.frame_progress = 0.0
+		anim.play()
 	var minimum_attack_time := 0.16 if not heavy else 0.26
 	attacking = Sheets.animation_duration(anim.sprite_frames, "attack_" + attack_direction, minimum_attack_time, anim.speed_scale)
 	var hero_meta: Dictionary = Game.manifest.get("heroes", {}).get(sheet, {})
