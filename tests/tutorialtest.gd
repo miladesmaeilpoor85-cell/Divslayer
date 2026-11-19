@@ -182,7 +182,7 @@ func run(m: Node) -> void:
 	await frames(4)
 	check("the_ember_answers", cast_ok and T.step() == "sig" and T.teaches() == "shove", [cast_ok, T.step()])
 	# ---- (v0.26) the calling's own move closes the training; its button comes for the drill
-	check("calling_button_comes", main.hud.pad.buttons().has("shove") and str(main.hud.pad.buttons()["shove"]["label"]) == "گذر از آتش"
+	check("calling_button_comes", main.hud.pad.buttons().has("shove") and str(main.hud.pad.buttons()["shove"]["label"]) == "آتش"
 		and Game.objective().find("گذر از آتش") >= 0, Game.objective())
 	check("not_paid_before_the_calling", int(Game.state["gold"]) == gold0)
 	p.stamina = 100.0
