@@ -2,6 +2,7 @@ extends Node
 ## Regression tests for all production character sheets and metadata-driven multi-frame attacks.
 
 const Sheets = preload("res://scripts/sheets.gd")
+const PlayerCombat = preload("res://scripts/player.gd")
 var results := {}
 var fails: Array = []
 
@@ -90,6 +91,34 @@ func run(_main: Node) -> void:
 		first_separate.region.position == Vector2(0, 24) and last_separate.region.position == Vector2(48, 24))
 	check("separate_attack_uses_configured_speed",
 		is_equal_approx(separate.get_animation_speed("attack_down"), 24.0))
+
+	# The attack pose remains visible for at least the legacy gameplay window,
+	# but a longer future multi-frame clip is allowed to finish.
+	check("single_frame_attack_keeps_legacy_minimum",
+		is_equal_approx(Sheets.animation_duration(separate, "attack_down", 0.16), 0.16))
+	check("four_frame_attack_duration_matches_clip_length",
+		is_equal_approx(Sheets.animation_duration(embedded, "attack_up", 0.16), 4.0 / 24.0))
+	check("heavy_attack_keeps_legacy_minimum_for_short_clip",
+		is_equal_approx(Sheets.animation_duration(embedded, "attack_up", 0.26), 0.26))
+	check("animation_duration_respects_playback_scale",
+		is_equal_approx(Sheets.animation_duration(embedded, "attack_up", 0.0, 2.0), 2.0 / 24.0))
+	check("missing_animation_uses_safe_minimum",
+		is_equal_approx(Sheets.animation_duration(embedded, "missing", 0.16), 0.16))
+
+	# Directional hitboxes must extend forward while retaining the player's body.
+	var combat_body := Rect2(100.0, 100.0, 26.0, 34.0)
+	check("hitbox_down_extends_forward",
+		PlayerCombat.swing_box_for(combat_body, "down", 20.0) == Rect2(96.0, 96.0, 34.0, 58.0))
+	check("hitbox_up_extends_forward",
+		PlayerCombat.swing_box_for(combat_body, "up", 20.0) == Rect2(96.0, 80.0, 34.0, 58.0))
+	check("hitbox_left_extends_forward",
+		PlayerCombat.swing_box_for(combat_body, "left", 26.0) == Rect2(74.0, 96.0, 56.0, 42.0))
+	check("hitbox_right_extends_forward",
+		PlayerCombat.swing_box_for(combat_body, "right", 26.0) == Rect2(96.0, 96.0, 56.0, 42.0))
+	check("zero_reach_hitbox_still_covers_player_body",
+		PlayerCombat.swing_box_for(combat_body, "down", 0.0) == combat_body.grow(4.0))
+	check("negative_reach_is_clamped_to_zero",
+		PlayerCombat.swing_box_for(combat_body, "down", -12.0) == combat_body.grow(4.0))
 
 	# Validate every enemy atlas and each declared variant, then release the cache.
 	var enemy_manifest: Dictionary = Game.manifest.get("enemies", {})
