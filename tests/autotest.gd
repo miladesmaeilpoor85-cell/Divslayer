@@ -271,6 +271,20 @@ func run(m: Node) -> void:
 	await frames(40)
 	report["gate_open_after_q2"] = main.world.key == "peaks"
 
+	printerr("STEP: legacy q1 active saves migrate directly to the boss-ready step")
+	Game.new_game("warrior")
+	Game.set_q(1, "active")
+	report["legacy_q1_migration"] = Game.quest_step("q1") == "boss_ready"
+	Game.state["q1"] = "active"
+	Game.state.erase("quest_progress")
+	main.goto_map("dungeon", Vector2(470, 700))
+	await frames(5)
+	var legacy_bosses := 0
+	for e in get_tree().get_nodes_in_group("bosses"):
+		if e.world == main.world and e.type == "boss" and not e.dead:
+			legacy_bosses += 1
+	report["legacy_boss_single_spawn"] = legacy_bosses == 1
+
 	printerr("STEP: shops: Sindokht sells blades, Kavian armour; the hero's look follows the gear")
 	# ---- shops: Sindokht sells blades, Kavian armour; the hero's look follows the gear
 	main.goto_map("village", Vector2(433, 524))
