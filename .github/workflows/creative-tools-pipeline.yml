@@ -6,6 +6,9 @@ on:
     paths:
       - ".github/workflows/creative-tools-pipeline.yml"
       - "tools/creative/**"
+      - "tools/animation_review.py"
+      - "tools/test_animation_review.py"
+      - "data/art_manifest.json"
       - "creative/**"
       - "assets/art/**"
       - "assets/audio/**"
@@ -79,10 +82,24 @@ jobs:
       - name: Install pinned Pillow
         run: python -m pip install --disable-pip-version-check "Pillow==13.0.0"
 
+      - name: Test and render sprite animation previews
+        run: |
+          python -m unittest discover -s tools -p "test_animation_review.py" -v
+          python tools/animation_review.py --output artifacts/animation-review
+
       - name: Exercise creative applications without changing game assets
         run: |
           python tools/creative/creative_toolchain_smoke.py \
             --output artifacts/creative-tools
+
+      - name: Upload sprite animation review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Sprite-Animation-Review
+          path: artifacts/animation-review/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload creative tool smoke-test outputs
         if: always()
