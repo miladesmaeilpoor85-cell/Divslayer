@@ -195,7 +195,8 @@ jobs:
             fi
             timeout 45s adb shell monkey -p com.example.divslayer.qa 1
             sleep 20
-            if grep -E "FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script" build/android/emulator-logcat.txt 2>/dev/null; then
+            timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt
+            if grep -E "FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script" build/android/emulator-logcat.txt; then
               echo "Android emulator reported a fatal or Godot script error."
               exit 1
             fi
