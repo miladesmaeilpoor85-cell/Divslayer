@@ -13,6 +13,18 @@ on:
       - "data/**"
       - "scenes/**"
       - "scripts/**"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/android-qa-apk.yml"
+      - "ci/android-qa-export-presets.cfg"
+      - "project.godot"
+      - "icon.png"
+      - "assets/**"
+      - "data/**"
+      - "scenes/**"
+      - "scripts/**"
   workflow_dispatch:
 
 permissions:
