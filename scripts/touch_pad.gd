@@ -85,7 +85,9 @@ func buttons() -> Dictionary:
 		elif k == "ult":
 			col = Skills.ult()["col"]
 			label = Skills.ult_name()
-		label = _compact_button_label(k, label)
+		# The signature move's full name is instructional text; do not truncate it to its compact combat label.
+		if not (k == "shove" and Game.Tut.drilling() and Game.Tut.step() == "sig"):
+			label = _compact_button_label(k, label)
 		out[k] = {"pos": b[k], "r": BTN[k]["r"], "label": label, "col": col}
 	return out
 
@@ -147,7 +149,7 @@ func _button_at(pos: Vector2, bs: Dictionary) -> String:
 		var radius := float(b["r"])
 		var distance := pos.distance_to(b["pos"])
 		if distance <= radius:
-			var score := distance / max(1.0, radius)
+			var score: float = distance / max(1.0, radius)
 			if score < exact_score:
 				exact_score = score
 				exact = str(b_name)

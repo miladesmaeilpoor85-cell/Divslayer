@@ -389,13 +389,14 @@ func mechanics() -> void:
 	await real(1.4)
 	var panel: Control = main.hud.death
 	var offered: bool = panel.visible and panel.re_btn.visible and get_tree().paused
-	var gold_lost: int = 500 - int(Game.state["gold"])
+	var gold_held: int = int(Game.state["gold"])
 	await click(panel.re_btn)
 	await frames(4)
 	var nb: Node = null
 	for e in get_tree().get_nodes_in_group("bosses"):
 		nb = e
-	check("rematch_offered", offered and gold_lost == 100, {"gold_lost": gold_lost})
+	# Choosing Rematch is free. The 20% loss is charged only when the player chooses to respawn in the village.
+	check("rematch_offered", offered and gold_held == 500, {"gold_held": gold_held})
 	check("rematch_restores", not get_tree().paused and int(Game.state["gold"]) == 500 and int(Game.state["potions"]) == 5
 		and not main.player.dead and Game.hp == Game.max_hp() and main.world.key == "dungeon" and nb != null and nb.hp == nb.max_hp,
 		{"gold": Game.state["gold"], "potions": Game.state["potions"], "map": main.world.key})

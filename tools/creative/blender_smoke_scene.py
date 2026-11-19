@@ -29,6 +29,14 @@ def material(
     return mat
 
 
+def add_weighted_normals(obj, name: str):
+    """Enable Blender 4.0 custom normals before adding the Weighted Normal modifier."""
+    mesh = obj.data
+    if hasattr(mesh, "use_auto_smooth"):
+        mesh.use_auto_smooth = True
+    return obj.modifiers.new(name, "WEIGHTED_NORMAL")
+
+
 def make_flame(name: str, points: list[tuple[float, float]], z_back: float, z_front: float, mat):
     count = len(points)
     vertices = [(x, y, z_front) for x, y in points] + [(x, y, z_back) for x, y in points]
@@ -44,7 +52,7 @@ def make_flame(name: str, points: list[tuple[float, float]], z_back: float, z_fr
     bevel = obj.modifiers.new("Soft forged edges", "BEVEL")
     bevel.width = 0.025
     bevel.segments = 3
-    obj.modifiers.new("Weighted corner normals", "WEIGHTED_NORMAL")
+    add_weighted_normals(obj, "Weighted corner normals")
     return obj
 
 
@@ -71,7 +79,7 @@ medallion.data.materials.append(bronze)
 bevel = medallion.modifiers.new("Rounded hammered edge", "BEVEL")
 bevel.width = 0.075
 bevel.segments = 4
-medallion.modifiers.new("Weighted normals", "WEIGHTED_NORMAL")
+add_weighted_normals(medallion, "Weighted normals")
 
 bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=0.77, depth=0.028, location=(0.0, 0.0, 0.137))
 inset = bpy.context.object
@@ -80,7 +88,7 @@ inset.data.materials.append(dark)
 bevel = inset.modifiers.new("Inset bevel", "BEVEL")
 bevel.width = 0.025
 bevel.segments = 3
-inset.modifiers.new("Inset normals", "WEIGHTED_NORMAL")
+add_weighted_normals(inset, "Inset normals")
 
 for radius, minor, z, material_slot, name in (
     (0.82, 0.045, 0.17, gold, "Outer gold rim"),
