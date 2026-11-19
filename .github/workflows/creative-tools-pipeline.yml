@@ -48,34 +48,53 @@ jobs:
             echo "::warning::apt index refresh did not finish; continuing with runner-cached indexes"
           fi
 
-      - name: Install creative applications
+      - name: Install Blender
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          echo "Installing Krita, Audacity, LMMS, Blender, and virtual-display dependencies."
-          # Keep package output visible so a slow mirror or package can be identified.
-          timeout 1500s sudo apt-get install --yes --no-install-recommends \
-            -o Dpkg::Use-Pty=0 \
-            -o Acquire::ForceIPv4=true \
-            -o Acquire::Retries=2 \
-            -o Acquire::http::Timeout=30 \
-            -o Acquire::https::Timeout=30 \
-            audacity blender krita lmms xvfb xauth
-          sudo apt-get check
-          command -v audacity
-          command -v blender
+          echo "Installing Blender."
+          timeout 600s sudo apt-get install --yes --no-install-recommends \
+            -o Dpkg::Use-Pty=0 -o Acquire::ForceIPv4=true -o Acquire::Retries=2 \
+            -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 blender
+          blender --version | head -n 2
+
+      - name: Install Krita
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          echo "Installing Krita."
+          timeout 600s sudo apt-get install --yes --no-install-recommends \
+            -o Dpkg::Use-Pty=0 -o Acquire::ForceIPv4=true -o Acquire::Retries=2 \
+            -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 krita
           command -v krita
+
+      - name: Install Audacity
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          echo "Installing Audacity."
+          timeout 600s sudo apt-get install --yes --no-install-recommends \
+            -o Dpkg::Use-Pty=0 -o Acquire::ForceIPv4=true -o Acquire::Retries=2 \
+            -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 audacity
+          command -v audacity
+
+      - name: Install LMMS and virtual-display dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          echo "Installing LMMS, Xvfb, and X authentication support."
+          timeout 600s sudo apt-get install --yes --no-install-recommends \
+            -o Dpkg::Use-Pty=0 -o Acquire::ForceIPv4=true -o Acquire::Retries=2 \
+            -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 lmms xvfb xauth
           command -v lmms
+          command -v xvfb-run
+          sudo apt-get check
           # GitHub's Ubuntu runner images commonly include FFmpeg already. Only
           # install it separately when that preinstalled binary is unavailable.
           if ! command -v ffmpeg >/dev/null 2>&1; then
             timeout 300s sudo apt-get install --yes --no-install-recommends \
-              -o Dpkg::Use-Pty=0 \
-              -o Acquire::ForceIPv4=true \
-              -o Acquire::Retries=2 \
-              -o Acquire::http::Timeout=30 \
-              -o Acquire::https::Timeout=30 \
-              ffmpeg
+              -o Dpkg::Use-Pty=0 -o Acquire::ForceIPv4=true -o Acquire::Retries=2 \
+              -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 ffmpeg
           fi
           command -v ffmpeg
 
