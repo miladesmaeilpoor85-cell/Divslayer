@@ -6,9 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from PIL import Image, ImageDraw
-
 import animation_review
+from PIL import Image, ImageDraw
 
 
 class AnimationReviewTests(unittest.TestCase):
