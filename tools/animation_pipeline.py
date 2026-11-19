@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import shutil
 import sys
 from pathlib import Path
@@ -59,8 +60,8 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
     directions = [str(item) for item in config["directions"]]
     frames_per_direction = int(config["frames_per_direction"])
     fps = float(config["fps"])
-    if cell_w <= 0 or cell_h <= 0 or fps <= 0:
-        raise ValueError("Cell dimensions and FPS must be positive")
+    if cell_w <= 0 or cell_h <= 0 or not math.isfinite(fps) or fps <= 0:
+        raise ValueError("Cell dimensions and FPS must be positive and finite")
 
     asset_name = str(config.get("name", config_path.stem)) + ".png"
     atlas_path = output_dir / asset_name
@@ -173,7 +174,6 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
 
     gif_paths: list[str] = []
     preview_clips: list[dict[str, Any]] = []
-    duration_ms = max(1, round(1000.0 / fps))
     raw_clips = config.get("clips")
     if raw_clips is None:
         clip_specs = [{
@@ -181,6 +181,7 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
             "start": 0,
             "end": frames_per_direction,
             "loop": bool(config.get("loop", False)),
+            "fps": fps,
         }]
     else:
         if not isinstance(raw_clips, list) or not raw_clips:
@@ -202,11 +203,15 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
                 raise ValueError(
                     f"Clip {clip_name} range must satisfy 0 <= start < end <= {frames_per_direction}"
                 )
+            clip_fps = float(item.get("fps", fps))
+            if not math.isfinite(clip_fps) or clip_fps <= 0:
+                raise ValueError(f"Clip {clip_name} FPS must be positive and finite")
             clip_specs.append({
                 "name": clip_name,
                 "start": start,
                 "end": end,
                 "loop": bool(item.get("loop", False)),
+                "fps": clip_fps,
             })
 
     for direction, frames in preview_frames.items():
@@ -219,6 +224,9 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
             gif_path = output_dir / (
                 f"{config.get('name', config_path.stem)}_{direction}_{clip['name']}.gif"
             )
+            requested_frame_ms = 1000.0 / float(clip["fps"])
+            # GIF stores frame delays in centiseconds (10 ms), not arbitrary milliseconds.
+            duration_ms = max(10, round(requested_frame_ms / 10.0) * 10)
             selected[0].save(
                 gif_path,
                 save_all=True,
@@ -238,6 +246,10 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
                 "end_frame": clip["end"],
                 "frame_count": len(selected),
                 "loop": clip["loop"],
+                "fps": clip["fps"],
+                "effective_fps": round(1000.0 / duration_ms, 3),
+                "frame_duration_ms": duration_ms,
+                "duration_seconds": round(len(selected) * duration_ms / 1000.0, 3),
             })
 
     review_scale = int(config.get("review_scale", 2))
