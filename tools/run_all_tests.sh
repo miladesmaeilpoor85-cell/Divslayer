@@ -26,7 +26,7 @@ run_godot() {
   fi
 }
 
-tests=(quittest achtest rushtest audiotest shrinetest chapter2test chapter3test tutorialtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest)
+tests=(fxtest quittest achtest rushtest audiotest shrinetest chapter2test chapter3test tutorialtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest bossfxcleartest bosstest skilltest)
 
 for t in "${tests[@]}"; do
   test_log="/tmp/ei_tests/${label}.${t}.raw.log"
