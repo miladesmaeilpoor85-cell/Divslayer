@@ -4,6 +4,19 @@ on:
   push:
     branches:
       - "main"
+      - "feature/quest-point-framework"
+    paths:
+      - ".github/workflows/android-qa-apk.yml"
+      - "ci/android-qa-export-presets.cfg"
+      - "project.godot"
+      - "icon.png"
+      - "assets/**"
+      - "data/**"
+      - "scenes/**"
+      - "scripts/**"
+  pull_request:
+    branches:
+      - "main"
     paths:
       - ".github/workflows/android-qa-apk.yml"
       - "ci/android-qa-export-presets.cfg"
@@ -113,8 +126,22 @@ jobs:
           set -euo pipefail
           export ANDROID_HOME="$ANDROID_HOME"
           export JAVA_HOME="$JAVA_HOME"
-          godot --headless --editor --path . --quit
-          godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
+          run_godot_checked() {
+            local label="$1"
+            shift
+            local logfile="$RUNNER_TEMP/${label}.log"
+            set +e
+            "$@" 2>&1 | tee "$logfile"
+            local status=${PIPESTATUS[0]}
+            set -e
+            if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$logfile"; then
+              echo "::error::Godot reported a script parse/load error during ${label}."
+              return 1
+            fi
+            return "$status"
+          }
+          run_godot_checked import godot --headless --editor --path . --quit
+          run_godot_checked export godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
           test -s build/android/Divslayer-QA.apk
 
       - name: Verify APK package and signature
@@ -125,8 +152,68 @@ jobs:
           aapt="$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS/aapt"
           "$apksigner" verify --verbose build/android/Divslayer-QA.apk
           "$aapt" dump badging build/android/Divslayer-QA.apk | tee build/android/apk-badging.txt
+          "$aapt" dump xmltree build/android/Divslayer-QA.apk AndroidManifest.xml | tee build/android/manifest-xmltree.txt
           grep -F "package: name='com.example.divslayer.qa'" build/android/apk-badging.txt
+          # Godot uses an exported activity-alias; validate the actual binary manifest
+          # rather than relying on aapt dump badging to resolve activity aliases.
+          grep -F 'com.godot.game.GodotAppLauncher' build/android/manifest-xmltree.txt
+          grep -F 'android.intent.action.MAIN' build/android/manifest-xmltree.txt
+          grep -F 'android.intent.category.LAUNCHER' build/android/manifest-xmltree.txt
+          grep -F 'android:exported(0x01010010)=(type 0x12)0xffffffff' build/android/manifest-xmltree.txt
+          grep -F "native-code: 'arm64-v8a'" build/android/apk-badging.txt
           sha256sum build/android/Divslayer-QA.apk | tee build/android/Divslayer-QA.apk.sha256
+
+      - name: Upload APK diagnostics if validation fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Android-APK-Diagnostics
+          path: |
+            build/android/Divslayer-QA.apk
+            build/android/apk-badging.txt
+            build/android/manifest-xmltree.txt
+            build/android/Divslayer-QA.apk.sha256
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Enable KVM for Android emulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          test -e /dev/kvm
+          sudo chmod 666 /dev/kvm
+          ls -l /dev/kvm
+
+      - name: Install and launch APK in Android emulator
+        timeout-minutes: 20
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          disable-spellchecker: true
+          disable-linux-hw-accel: false
+          script: >-
+            set -eu; trap 'timeout 20s adb logcat -d -v time > build/android/emulator-logcat.txt 2>&1 || true; timeout 20s adb shell dumpsys activity activities > build/android/emulator-activity.txt 2>&1 || true' EXIT; adb logcat -c; timeout 180s adb install -r build/android/Divslayer-QA.apk; timeout 30s adb shell cmd package resolve-activity --brief --user 0 -a android.intent.action.MAIN -c android.intent.category.LAUNCHER com.example.divslayer.qa | tr -d '\r' | grep -F 'com.example.divslayer.qa/'; timeout 45s adb shell monkey -p com.example.divslayer.qa 1; sleep 20; timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt; ! grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' build/android/emulator-logcat.txt; timeout 30s adb shell pidof com.example.divslayer.qa | grep -E '[0-9]'; timeout 30s adb shell dumpsys activity activities | grep -E 'mResumedActivity|topResumedActivity' | grep -F 'com.example.divslayer.qa/'; timeout 30s adb exec-out screencap -p > build/android/emulator-launch.png; test -s build/android/emulator-launch.png; echo 'Divslayer launched and is the resumed foreground app.'
+
+      - name: Upload emulator diagnostics if launch validation fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Android-Emulator-Diagnostics
+          path: |
+            build/android/Divslayer-QA.apk
+            build/android/emulator-logcat.txt
+            build/android/emulator-activity.txt
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Upload installable QA APK
         uses: actions/upload-artifact@v4
@@ -136,5 +223,7 @@ jobs:
             build/android/Divslayer-QA.apk
             build/android/Divslayer-QA.apk.sha256
             build/android/apk-badging.txt
+            build/android/emulator-logcat.txt
+            build/android/emulator-launch.png
           if-no-files-found: error
           retention-days: 14

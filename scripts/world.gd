@@ -73,12 +73,13 @@ var spells: Node2D               # the hero's spells in flight (v0.6)
 var hazard_layer: Node2D
 var exits_armed := false
 var rush := false                # (v0.21) this map is a memory of the Boss Rush: only its boss, no way out, a cold tint
-var stats := {"walls": 0, "objects": 0, "exits": 0, "npcs": 0, "enemies": 0, "hazards": 0}
+var stats := {"walls": 0, "objects": 0, "exits": 0, "npcs": 0, "enemies": 0, "hazards": 0, "quest_points": 0}
 var enemy_tactics_clock := 0.0
 var enemy_volley_ready_at := 0.0
 
 func build(map_key: String) -> void:
 	key = map_key
+	Game.on_map_entered(map_key)
 	name = "World_" + map_key
 	rush = not Game.rush.is_empty() and str(Game.rush.get("map", "")) == map_key
 	var md: Dictionary = Game.map_data(map_key)
@@ -182,8 +183,12 @@ func build(map_key: String) -> void:
 	for n in _arr(data.get("npcs")):
 		if not rush:
 			_npc(n)
+	if not rush:
+		_refresh_quest_points()
 	for s in _arr(data.get("enemySpawns")):
 		if rush and str(s["type"]) != str(Game.rush.get("type", "")):
+			continue
+		if not rush and str(s["type"]) == "boss" and key == "dungeon" and Game.q(1) == "active" and Game.quest_step("q1") != "boss_ready":
 			continue
 		if not rush and Game.is_boss_type(str(s["type"])) and Game.is_defeated(str(s["type"])):
 			continue
@@ -195,6 +200,7 @@ func build(map_key: String) -> void:
 		if not Game.testing and Game.lvl() >= 3 and not Game.BOSS_CFG.has(str(s["type"])) and key != "village" and randf() < Game.elite_chance():
 			var elite_pool: Array[String] = Game.elite_pool(key)
 			se.make_elite(elite_pool[randi() % elite_pool.size()])
+	_ensure_q1_boss()
 	if key == "trial":
 		trial = Trial.new()
 		trial.world = self
@@ -208,6 +214,7 @@ func build(map_key: String) -> void:
 		_items_setup()
 	_update_markers()
 	Game.stats_changed.connect(_update_markers)
+	Game.stats_changed.connect(_refresh_quest_points)
 	atmos = Atmos.new()
 	add_child(atmos)
 	atmos.setup(self)
@@ -473,10 +480,13 @@ func _relabel_all() -> void:
 	if ysort == null:
 		return
 	for n in ysort.get_children():
-		if n.is_in_group("npcs"):
+		if n.is_in_group("npcs") or n.is_in_group("quest_points"):
 			var label := n.get_node_or_null("NamePlate") as Label
 			if label:
-				label.text = Game.t(str(n.get_meta("name_en", "")))
+				if n.is_in_group("quest_points"):
+					label.text = Game.t(str(n.get_meta("name_en", "")), str(n.get_meta("title_fa", "")))
+				else:
+					label.text = Game.t(str(n.get_meta("name_en", "")))
 				label.reset_size()
 				label.position = Vector2(-label.size.x * 0.5, -66 - float(n.get_meta("lift", 0.0)))
 
@@ -508,6 +518,98 @@ func _update_markers() -> void:
 				mk.visible = Game.Ch3.has_news(nid)
 			else:
 				mk.visible = Game.Ch2.has_news(nid)
+
+## Spawn and refresh map-authored story points. They join the same proximity interaction system as NPCs.
+func _refresh_quest_points() -> void:
+	if rush or ysort == null or not is_instance_valid(ysort):
+		return
+	for point in Game.quest_points_for_map(key):
+		var point_id := str(point.get("id", ""))
+		if point_id == "":
+			continue
+		var node: Node = null
+		for existing in get_tree().get_nodes_in_group("quest_points"):
+			if is_instance_valid(existing) and ysort.is_ancestor_of(existing) and str(existing.get_meta("point_id", "")) == point_id:
+				node = existing
+				break
+		var available := Game.quest_point_available(key, point_id)
+		if node == null and available:
+			node = _spawn_quest_point(point)
+		elif node != null:
+			node.visible = available
+			if available and not node.is_in_group("npcs"):
+				node.add_to_group("npcs")
+			elif not available and node.is_in_group("npcs"):
+				node.remove_from_group("npcs")
+
+func _spawn_quest_point(point: Dictionary) -> Node2D:
+	var point_id := str(point.get("id", ""))
+	var node := Node2D.new()
+	node.name = "QuestPoint_" + point_id
+	node.position = Vector2(float(point.get("x", 0)), float(point.get("y", 0)))
+	node.add_to_group("quest_points")
+	node.add_to_group("npcs")
+	node.set_meta("id", "quest_point")
+	node.set_meta("point_id", point_id)
+	node.set_meta("name_en", str(point.get("title_en", "Story clue")))
+	node.set_meta("title_fa", str(point.get("title_fa", "نشانهٔ داستانی")))
+	node.set_meta("map_key", key)
+	var glyph := Node2D.new()
+	glyph.name = "QuestGlyph"
+	glyph.position = Vector2(0, -18)
+	glyph.z_index = 4
+	glyph.draw.connect(_draw_quest_point.bind(glyph))
+	node.add_child(glyph)
+	var label := Label.new()
+	label.name = "NamePlate"
+	label.text = Game.t(str(point.get("title_en", point_id)), str(point.get("title_fa", point_id)))
+	label.add_theme_font_override("font", UI.font_bold)
+	label.add_theme_font_size_override("font_size", 11)
+	label.add_theme_color_override("font_color", Color(1, 0.9, 0.64))
+	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.75))
+	label.add_theme_constant_override("outline_size", 3)
+	label.add_theme_stylebox_override("normal", UI.box(Color(0.06, 0.04, 0.03, 0.55), Color(UI.GOLD, 0.35), 1, 7, 6))
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	node.add_child(label)
+	label.reset_size()
+	label.position = Vector2(-label.size.x * 0.5, -62)
+	var hint := Node2D.new()
+	hint.name = "TalkHint"
+	hint.position = Vector2(0, -48)
+	hint.z_index = 5
+	hint.visible = false
+	hint.draw.connect(_draw_talk_hint.bind(hint))
+	node.add_child(hint)
+	_talk_hints.append(hint)
+	Fx.shadow_for(node, 22, 12, 0.28)
+	if not Game.lang_changed.is_connected(_relabel_all):
+		Game.lang_changed.connect(_relabel_all)
+	ysort.add_child(node)
+	stats["quest_points"] += 1
+	stats["npcs"] += 1
+	return node
+
+func _draw_quest_point(glyph: Node2D) -> void:
+	var pulse := 0.8 + 0.2 * sin(Time.get_ticks_msec() / 280.0)
+	glyph.draw_circle(Vector2(0, 1.5), 12.0, Color(0, 0, 0, 0.4))
+	glyph.draw_circle(Vector2.ZERO, 10.5, Color(0.14, 0.09, 0.05, 0.95))
+	glyph.draw_arc(Vector2.ZERO, 10.5, 0.0, TAU, 32, Color(UI.GOLD, pulse), 2.0, true)
+	glyph.draw_colored_polygon(PackedVector2Array([Vector2(0, -6), Vector2(5, 0), Vector2(0, 6), Vector2(-5, 0)]), Color(UI.GOLD_HI, pulse))
+
+## Once an inscription unlocks the encounter, create the existing boss at its authored map spawn.
+func _ensure_q1_boss() -> void:
+	if key != "dungeon" or Game.q(1) != "active" or Game.quest_step("q1") != "boss_ready" or Game.is_defeated("boss"):
+		return
+	for enemy in get_tree().get_nodes_in_group("bosses"):
+		if is_instance_valid(enemy) and enemy.world == self and enemy.type == "boss" and not enemy.dead:
+			return
+	for spawn in _arr(data.get("enemySpawns")):
+		if str(spawn.get("type", "")) != "boss":
+			continue
+		var def := Game.enemy_def("boss")
+		var feet := Vector2(float(spawn["x"]) + float(def.get("w", 48)) * 0.5, float(spawn["y"]) + float(def.get("h", 58)))
+		spawn_enemy("boss", feet)
+		return
 
 ## (v0.27, level design: "16 foes are spawned inside a wall; one cannot be reached") a common foe whose place in the map
 ## data lies in a wall stands on the nearest clear ground instead

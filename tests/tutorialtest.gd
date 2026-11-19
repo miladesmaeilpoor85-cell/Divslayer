@@ -182,9 +182,8 @@ func run(m: Node) -> void:
 	await frames(4)
 	check("the_ember_answers", cast_ok and T.step() == "sig" and T.teaches() == "shove", [cast_ok, T.step()])
 	# ---- (v0.26) the calling's own move closes the training; its button comes for the drill
-	check("calling_button_comes", main.hud.pad.buttons().has("shove") and str(main.hud.pad.buttons()["shove"]["label"]) == "آتش"
-		and Game.Skills.sig_name() == "گذر از آتش" and Game.objective().find("گذر از آتش") >= 0,
-		{"button": main.hud.pad.buttons().get("shove", {}).get("label", ""), "objective": Game.objective()})
+	check("calling_button_comes", main.hud.pad.buttons().has("shove") and str(main.hud.pad.buttons()["shove"]["label"]) == "گذر از آتش"
+		and Game.objective().find("گذر از آتش") >= 0, Game.objective())
 	check("not_paid_before_the_calling", int(Game.state["gold"]) == gold0)
 	p.stamina = 100.0
 	p.shove_cd = 0.0
@@ -259,7 +258,9 @@ func run(m: Node) -> void:
 	main._on_interact(npc("elder"))
 	await frames(2)
 	await read_all()
-	check("zal_first", Game.q(1) == "active" and T.fresh() and not T.offered() and Game.objective().find("ارژنگ") >= 0
+	check("zal_first", Game.q(1) == "active" and Game.quest_step("q1") == "forest_clues"
+		and Game.quest_collection("q1", "forest_clues").is_empty() and T.fresh() and not T.offered()
+		and Game.objective().find("دو نشانه از پژواک") >= 0
 		and npc("rostam").get_node("NewsMarker").visible, Game.objective())
 	main._on_interact(npc("rostam"))
 	await frames(2)

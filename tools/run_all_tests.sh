@@ -20,7 +20,7 @@ run_godot() {
   fi
 }
 
-for t in quittest achtest rushtest audiotest shrinetest chapter2test chapter3test tutorialtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest warriorreviewtest; do
+for t in quittest achtest rushtest audiotest shrinetest chapter2test chapter3test tutorialtest questpointtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest warriorreviewtest; do
   r=$(run_godot -- --test "res://tests/$t.gd")
   status=$?
   passes=$(printf '%s\n' "$r" | grep -cE '^PASS' || true)
