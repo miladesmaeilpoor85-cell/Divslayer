@@ -295,7 +295,10 @@ func run(m: Node) -> void:
 	var fight_index: int = ids(main._parley_opts).find("fight")
 	check("fight_choice_available", fight_index >= 0, ids(main._parley_opts))
 	main.hud.dialogue._block_until = 0
-	main.hud.dialogue._pick(fight_index)
+	if fight_index >= 0:
+		main.hud.dialogue._pick(fight_index)
+	else:
+		main._parley_resolve("fight") # continue the regression after recording the missing choice failure
 	check("fight_choice_commits_combat", bool(Game.toll().get("fight_started", false)), Game.toll())
 	await finish_dialogue()
 	await frames(3) # let the proximity-based camp tick run after the fight reply closes
