@@ -594,10 +594,6 @@ func attack(heavy := false) -> void:
 		if gap > 16.0:
 			move_and_collide(to.normalized() * min(14.0, gap - 12.0))
 			global_position = global_position.clamp(Vector2(13, 34), world.size - Vector2(13, 0))
-	# Keep the pose visible for its full clip, while preserving the current gameplay minimum.
-	var attack_direction := "side" if facing == "left" or facing == "right" else facing
-	var minimum_attack_time := 0.16 if not heavy else 0.26
-	attacking = Sheets.animation_duration(anim.sprite_frames, "attack_" + attack_direction, minimum_attack_time, anim.speed_scale)
 	# Keep the attack direction visually locked through the wind-up and impact.
 	var attack_direction := "side" if facing == "left" or facing == "right" else facing
 	_attack_visual_facing = facing
@@ -618,7 +614,6 @@ func attack(heavy := false) -> void:
 		"target": tgt,
 		"multiplier": mult,
 		"combo_level": lv,
-		"combo_number": combo,
 		"sneak_attack": sneak_attack,
 	}
 	Sfx.play("heavy" if heavy else ("swing" if combo % 2 == 0 else "swing2"), -2.0)
