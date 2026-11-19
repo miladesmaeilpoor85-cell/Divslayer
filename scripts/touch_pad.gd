@@ -105,7 +105,7 @@ const COMPACT_ACTION_LABELS := {
 	"lasso": ["Lasso", "کمند"],
 	"ward": ["Feather", "پر"],
 	"arrow": ["Arrow", "تیر"],
-	"fire": ["Fire-walk", "گذر از آتش"],
+	"fire": ["Fire", "آتش"],
 	"whirlwind": ["Spin", "گردباد"],
 	"arcane_tempest": ["Tempest", "توفان"],
 	"shadow_dance": ["Shadow", "سایه"],
