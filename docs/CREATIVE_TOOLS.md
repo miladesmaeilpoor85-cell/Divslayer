@@ -15,7 +15,7 @@ Audacity opens the generated LMMS WAV in a virtual display as an application-lev
 
 ## Sprite animation review previews
 
-The same CI workflow now runs `tools/animation_review.py` against `data/art_manifest.json`. It validates the declared sheet dimensions and exports review-only previews:
+The **Artwork decode and map previews** job in the multi-tool production pipeline runs `tools/animation_review.py` against `data/art_manifest.json`. It validates declared sprite-sheet dimensions and exports review-only previews:
 
 - Hero walk loops for each declared direction, plus still previews of the attack pose.
 - Enemy loops for every declared variant; single-frame enemies are exported as still previews.
@@ -30,13 +30,13 @@ python -m unittest discover -s tools -p "test_animation_review.py" -v
 python tools/animation_review.py --output artifacts/animation-review
 ```
 
-The preview uses the frames already present in the repository; it does not invent new animation frames or modify the production sheets. Hero walk previews use the current 9 FPS runtime setting. Enemy timing uses `timedMs` when declared and the current 7 FPS fallback otherwise. An entry explicitly marked with an `error` in the manifest is reported as skipped rather than treated as a valid production sheet.
+The preview uses frames already present in the repository; it does not invent new animation frames or modify the production sheets. Hero walk previews use the current 9 FPS runtime setting. Enemy timing uses `timedMs` when declared and the current 7 FPS fallback otherwise. An entry explicitly marked with an `error` in the manifest is reported as skipped rather than treated as a valid production sheet.
 
-The workflow uploads **Divslayer-Sprite-Animation-Review** for 14 days. These GIF/PNG files are for visual review and are not shipped in the Android build.
+The multi-tool pipeline uploads **Divslayer-Artwork-Animation-and-Map-Review** for 14 days. Animation GIF/PNG files are review artifacts and are not shipped in the Android build.
 
 ## Artifact contents
 
-The workflow uploads **Divslayer-Creative-Tools-Review** for 14 days:
+The creative-tools workflow uploads **Divslayer-Creative-Tools-Review** for 14 days:
 
 - flame-seal-relic.blend — editable Blender scene
 - flame-seal-relic-blender.png — Blender render
@@ -50,7 +50,7 @@ The tracked LMMS source project is creative/lmms/divslayer_title_theme_sketch_01
 
 ## Guardrails
 
-- All generated files stay in CI artifacts; this workflow does not overwrite existing files under assets/.
+- All generated files stay in CI artifacts; the workflows do not overwrite existing files under assets/.
 - No QA APK is produced for this asset-only review branch. A device APK should be built only after the owner accepts an actual in-game art/audio change.
 - The project’s image rights register and audio credits still need real source, authorship, and usage-term evidence. A successful render or decode is not proof of commercial-use permission.
 - The animation review verifies sprite-sheet layout and produces previews; it does not judge artistic quality, timing feel, hitbox fairness, or mobile performance. Those still need human review in the running game.
