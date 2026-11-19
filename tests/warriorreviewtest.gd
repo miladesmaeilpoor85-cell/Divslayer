@@ -41,8 +41,15 @@ func run(_main: Node) -> void:
 			sprite_frames.has_animation(attack) and sprite_frames.get_frame_count(attack) == 1)
 
 	var atlas := sprite_frames.get_frame_texture("walk_side", 0) as AtlasTexture
-	check("atlas_cell_matches_160_by_156_contract",
-		atlas != null and atlas.region.size == Vector2(160, 156), atlas.region if atlas != null else null)
+	var expected_size := Vector2(Game.manifest["heroes"]["warrior_starter"]["cellW"],
+		Game.manifest["heroes"]["warrior_starter"]["cellH"])
+	check("atlas_cell_matches_manifest_contract",
+		atlas != null and atlas.region.size == expected_size, atlas.region if atlas != null else null)
+	var pivot: Array = Game.manifest["heroes"]["warrior_starter"]["pivot"]
+	var expected_offset := Vector2(-expected_size.x * float(pivot[0]),
+		-expected_size.y * (1.0 - float(pivot[1])))
+	check("actor_foot_pivot_matches_manifest", not actor.centered and actor.offset.is_equal_approx(expected_offset),
+		{"centered": actor.centered, "offset": actor.offset, "expected": expected_offset})
 	check("initial_animation_is_side_walk", actor.animation == "walk_side")
 
 	review._show_walk("up")
