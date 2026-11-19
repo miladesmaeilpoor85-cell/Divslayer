@@ -483,7 +483,10 @@ func _relabel_all() -> void:
 		if n.is_in_group("npcs") or n.is_in_group("quest_points"):
 			var label := n.get_node_or_null("NamePlate") as Label
 			if label:
-				label.text = Game.t(str(n.get_meta("name_en", "")))
+				if n.is_in_group("quest_points"):
+					label.text = Game.t(str(n.get_meta("name_en", "")), str(n.get_meta("title_fa", "")))
+				else:
+					label.text = Game.t(str(n.get_meta("name_en", "")))
 				label.reset_size()
 				label.position = Vector2(-label.size.x * 0.5, -66 - float(n.get_meta("lift", 0.0)))
 
@@ -549,6 +552,7 @@ func _spawn_quest_point(point: Dictionary) -> Node2D:
 	node.set_meta("id", "quest_point")
 	node.set_meta("point_id", point_id)
 	node.set_meta("name_en", str(point.get("title_en", "Story clue")))
+	node.set_meta("title_fa", str(point.get("title_fa", "نشانهٔ داستانی")))
 	node.set_meta("map_key", key)
 	var glyph := Node2D.new()
 	glyph.name = "QuestGlyph"
