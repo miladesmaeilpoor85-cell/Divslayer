@@ -2,7 +2,7 @@ extends Node2D
 ## Isolated review scene for the ImageGen warrior walk-cycle candidate.
 ## Run with: godot --path . res://scenes/dev/warrior_animation_review.tscn
 
-const SHEET_B64_PATH := "res://assets/art/Heroes/review/warrior_starter_walkcycle.webp.b64"
+const SHEET_PATH := "res://assets/art/Heroes/warrior_starter.png"
 const CELL_SIZE := Vector2(160.0, 156.0)
 const WALK_DIRECTIONS := ["down", "up", "side"]
 const SLASH_DURATION := 0.34
@@ -27,21 +27,14 @@ func _ready() -> void:
 
 
 func _load_review_texture() -> Texture2D:
-	if not FileAccess.file_exists(SHEET_B64_PATH):
-		push_error("Missing review atlas data: " + SHEET_B64_PATH)
+	var texture := load(SHEET_PATH) as Texture2D
+	if texture == null:
+		push_error("Missing production warrior sheet: " + SHEET_PATH)
 		return null
-	var encoded := FileAccess.get_file_as_string(SHEET_B64_PATH).strip_edges()
-	var bytes := Marshalls.base64_to_raw(encoded)
-	var image := Image.new()
-	var error := image.load_webp_from_buffer(bytes)
-	if error != OK:
-		push_error("Could not decode the WebP review atlas: %s" % error)
+	if texture.get_width() != 800 or texture.get_height() != 468:
+		push_error("Unexpected warrior sheet size: %dx%d" % [texture.get_width(), texture.get_height()])
 		return null
-	if image.get_width() != 800 or image.get_height() != 468:
-		push_error("Unexpected review atlas size: %dx%d" % [image.get_width(), image.get_height()])
-		return null
-	return ImageTexture.create_from_image(image)
-
+	return texture
 
 func _build_frames(texture: Texture2D) -> SpriteFrames:
 	var frames := SpriteFrames.new()
