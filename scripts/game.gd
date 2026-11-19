@@ -609,6 +609,166 @@ func set_q(n: int, v: String) -> void:
 	state["q%d" % n] = v
 	stats_changed.emit()
 
+# ---------------------------------------------------------------- reusable quest progress and world points
+var _quest_point_db := {}
+
+func quest_point_database() -> Dictionary:
+	if _quest_point_db.is_empty():
+		_quest_point_db = _json(DATA + "quest_points.json")
+	return _quest_point_db
+
+## Start or reset the saved progress record for a quest when it is first accepted.
+func begin_quest_progress(quest_id: String, initial_step: String) -> void:
+	var all: Dictionary = state.get("quest_progress", {})
+	all[quest_id] = {"step": initial_step, "collections": {}}
+	state["quest_progress"] = all
+	save_game()
+	stats_changed.emit()
+
+## A missing q1 record means this is an older save from before staged missions existed.
+## Preserve that player's progress by treating the boss as already unlocked.
+func quest_progress(quest_id: String) -> Dictionary:
+	var all: Dictionary = state.get("quest_progress", {})
+	if not all.has(quest_id) or typeof(all[quest_id]) != TYPE_DICTIONARY:
+		var initial_step := "boss_ready" if quest_id == "q1" and q(1) == "active" else ""
+		all[quest_id] = {"step": initial_step, "collections": {}}
+		state["quest_progress"] = all
+		if initial_step != "":
+			save_game()
+			stats_changed.emit()
+	return all[quest_id]
+
+func quest_step(quest_id: String) -> String:
+	return str(quest_progress(quest_id).get("step", ""))
+
+func set_quest_step(quest_id: String, step: String) -> void:
+	quest_progress(quest_id)["step"] = step
+	save_game()
+	stats_changed.emit()
+
+func quest_collection(quest_id: String, collection_id: String) -> Array:
+	var progress := quest_progress(quest_id)
+	var collections: Dictionary = progress.get("collections", {})
+	var found = collections.get(collection_id, [])
+	return found.duplicate() if typeof(found) == TYPE_ARRAY else []
+
+func quest_points_for_map(map_key: String) -> Array:
+	var points = quest_point_database().get(map_key, [])
+	return points if typeof(points) == TYPE_ARRAY else []
+
+func quest_point_definition(map_key: String, point_id: String) -> Dictionary:
+	for point in quest_points_for_map(map_key):
+		if typeof(point) == TYPE_DICTIONARY and str(point.get("id", "")) == point_id:
+			return point
+	return {}
+
+func quest_is_active(quest_id: String) -> bool:
+	if quest_id.begins_with("q") and quest_id.length() > 1 and quest_id.substr(1).is_valid_int():
+		return q(int(quest_id.substr(1))) == "active"
+	return bool(state.get("quest_active", {}).get(quest_id, false))
+
+func quest_point_available(map_key: String, point_id: String) -> bool:
+	var point := quest_point_definition(map_key, point_id)
+	if point.is_empty():
+		return false
+	var quest_id := str(point.get("quest_id", ""))
+	if quest_id == "" or not quest_is_active(quest_id):
+		return false
+	if quest_step(quest_id) != str(point.get("step", "")):
+		return false
+	if str(point.get("kind", "")) == "collect":
+		return not quest_collection(quest_id, str(point.get("collection", ""))).has(str(point.get("collect_id", "")))
+	return true
+
+## Interact with a data-defined story point. The same mechanism can serve future quests and regions.
+func quest_point_interact(map_key: String, point_id: String) -> Dictionary:
+	if not quest_point_available(map_key, point_id):
+		return {}
+	var point := quest_point_definition(map_key, point_id)
+	var quest_id := str(point.get("quest_id", ""))
+	var progress := quest_progress(quest_id)
+	var title := t(str(point.get("title_en", "Story clue")), str(point.get("title_fa", "نشانهٔ داستانی")))
+	var message := t(str(point.get("text_en", "")), str(point.get("text_fa", "")))
+	var advanced := false
+	if str(point.get("kind", "")) == "collect":
+		var collection_id := str(point.get("collection", ""))
+		var collections: Dictionary = progress.get("collections", {})
+		var found = collections.get(collection_id, [])
+		if typeof(found) != TYPE_ARRAY:
+			found = []
+		var collect_id := str(point.get("collect_id", ""))
+		if found.has(collect_id):
+			return {}
+		found.append(collect_id)
+		collections[collection_id] = found
+		progress["collections"] = collections
+		var required := maxi(1, int(point.get("required_count", 1)))
+		var count := found.size()
+		message += "\n" + t("Signs found: %d/%d" % [count, required], "نشانه‌های پیدا‌شده: %s/%s" % [num(count), num(required)])
+		if count >= required:
+			var next_step := str(point.get("next_step", ""))
+			if next_step != "":
+				progress["step"] = next_step
+			advanced = true
+			var completion := t(str(point.get("completion_en", "")), str(point.get("completion_fa", "")))
+			if completion != "":
+				message += "\n" + completion
+	else:
+		var next_step := str(point.get("next_step", ""))
+		if next_step != "":
+			progress["step"] = next_step
+		advanced = true
+		var completion := t(str(point.get("completion_en", "")), str(point.get("completion_fa", "")))
+		if completion != "":
+			message += "\n" + completion
+	save_game()
+	stats_changed.emit()
+	return {"title": title, "text": message, "advanced": advanced}
+
+func quest_point_target(quest_id: String, step: String) -> Dictionary:
+	for map_key in quest_point_database().keys():
+		for point in quest_points_for_map(str(map_key)):
+			if str(point.get("quest_id", "")) != quest_id or str(point.get("step", "")) != step:
+				continue
+			var point_id := str(point.get("id", ""))
+			if quest_point_available(str(map_key), point_id):
+				return {"map": str(map_key), "pos": Vector2(float(point.get("x", 0)), float(point.get("y", 0))), "kind": "quest_point"}
+	return {}
+
+func on_map_entered(map_key: String) -> void:
+	if map_key == "dungeon" and q(1) == "active" and quest_step("q1") == "crypt_entry":
+		set_quest_step("q1", "crypt_inscription")
+
+func _q1_objective() -> String:
+	match quest_step("q1"):
+		"forest_clues":
+			var count := quest_collection("q1", "forest_clues").size()
+			return t("Find two signs of the echo in the Whispering Forest (%d/2)" % count,
+				"دو نشانه از پژواک را در جنگل نجواگر پیدا کن (%s/۲)" % num(count))
+		"crypt_entry":
+			return t("Enter the Sunken Crypt through the northern forest passage", "از گذرگاه شمالی جنگل وارد سرداب فرورفته شو")
+		"crypt_inscription":
+			return t("Read the ancient inscription in the sealed hall", "سنگ‌نوشتهٔ کهن را در تالار مهرگاه بخوان")
+		"boss_ready":
+			return t("Defeat the echo of Arzhang the Div in the Sunken Crypt", "پژواک ارژنگ دیو را در سرداب فرورفته شکست بده")
+	return t("Return to Zal", "نزد زال برگرد")
+
+func _q1_target(g: Dictionary) -> Dictionary:
+	match quest_step("q1"):
+		"forest_clues":
+			return quest_point_target("q1", "forest_clues")
+		"crypt_entry":
+			for exit_data in g.get("forest", {}).get("exits", []):
+				if str(exit_data.get("to", "")) == "dungeon":
+					var r: Array = exit_data.get("r", [])
+					if r.size() >= 4:
+						return {"map": "forest", "pos": Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]) * 0.5), "kind": "exit"}
+		"crypt_inscription":
+			return quest_point_target("q1", "crypt_inscription")
+		"boss_ready":
+			return {"map": "dungeon", "pos": _v(g.get("dungeon", {}).get("bosses", {}).get("boss", [874, 708])), "kind": "boss"}
+	return {}
+
 func is_defeated(type: String) -> bool:
 	return state.get("defeated", {}).has(type)
 
@@ -620,6 +780,7 @@ func elder_lines() -> Array:
 	var lines := []
 	if q(1) == "not_started":
 		set_q(1, "active")
+		begin_quest_progress("q1", "forest_clues")
 		# (v0.24) Zal, lord of Zabol, Rostam's father: he knows whom he speaks to
 		lines = [t("Welcome to Zabol, ember-bearer. I am Zal, son of Sam.", "به زابل خوش آمدی، اخگردار. من زالم، پسرِ سام."),
 			# (v0.29) not a chosen one: the ember fell to a sell-sword, and every echo can smell it on him
@@ -630,9 +791,19 @@ func elder_lines() -> Array:
 			t("Since the day the chains of Damavand cracked, old evils walk again as echoes. The echo of Arzhang the Div — the one my son slew in Mazandaran — weaves shadow in the Sunken Crypt beyond the northern forest.",
 				"از آن روز که زنجیرهای دماوند ترک برداشت، بدی‌های کهن چون پژواک بازگشته‌اند. پژواکِ ارژنگ دیو — همان که پسرم در مازندران کشت — آن سوی جنگلِ شمالی در سردابِ فرورفته سایه می‌بافد."),
 			t("Rostam's blade passes through an echo like mist; only the ember can return it to dust. Sindokht sells blades and provisions, Kavian forges armour, and Rostam will teach you what he can.",
-				"تیغِ رستم از پژواک می‌گذرد، چنان‌که از مه؛ تنها اخگر آن را به خاک برمی‌گرداند. سیندخت تیغ و توشه می‌فروشد، کاویان زره می‌سازد، و رستم هر چه بتواند یادت می‌دهد.")]
+				"تیغِ رستم از پژواک می‌گذرد، چنان‌که از مه؛ تنها اخگر آن را به خاک برمی‌گرداند. سیندخت تیغ و توشه می‌فروشد، کاویان زره می‌سازد، و رستم هر چه بتواند یادت می‌دهد."),
+			t("The road to the Crypt runs through the Whispering Forest. Find two of the three signs left by the echo; each will bring you closer to the sealed hall.",
+				"راهِ سرداب از جنگل نجواگر می‌گذرد. دو نشانه از سه نشانهٔ به‌جامانده از پژواک را پیدا کن؛ هرکدام تو را به تالار مهرگاه نزدیک‌تر می‌کند.")]
 	elif q(1) == "active":
-		lines = [t("The Crypt lies north, past the Whispering Forest.", "سرداب در شمال است، آن سوی جنگلِ نجواگر.")]
+		match quest_step("q1"):
+			"forest_clues":
+				lines = [t("The Crypt lies north, past the Whispering Forest. Find two of the three signs hidden among the trees.", "سرداب در شمال جنگل نجواگر است. دو نشانه از سه نشانهٔ پنهان میان درختان را پیدا کن.")]
+			"crypt_entry":
+				lines = [t("The signs agree: the echo's trail leads north. Enter the Sunken Crypt.", "نشانه‌ها یک چیز می‌گویند: ردّ پژواک به شمال می‌رود. وارد سرداب فرورفته شو.")]
+			"crypt_inscription":
+				lines = [t("The sealed hall lies ahead. Read the inscription before you disturb what is bound there.", "تالار مهرگاه پیش روی توست. پیش از برهم‌زدن آنچه در آن بسته شده، سنگ‌نوشته را بخوان.")]
+			_:
+				lines = [t("The echo waits in the Sunken Crypt. Remember what Rostam taught you about its charge and the grave pillars.", "پژواک در سرداب فرورفته منتظر است. آنچه رستم دربارهٔ یورش و ستون‌های گورستان آموخت به یاد داشته باش.")]
 	elif q(1) == "complete":
 		# (v0.24, critic: Rostam slew the white elephant as a child — no one in Zabol was "quicker at your age")
 		lines = [t("Arzhang's echo is dust! Take this gold, ember-bearer. Sam himself would be glad of this news.", "پژواکِ ارژنگ خاک شد! این سکه‌ها را بگیر، اخگردار. سام هم اگر بود، از این خبر شاد می‌شد."),
@@ -737,6 +908,8 @@ func boss_defeated(type: String) -> String:
 		var n: int = BOSS_QUEST[type]
 		if q(n) != "done":
 			set_q(n, "complete")
+			if n == 1:
+				quest_progress("q1")["step"] = "complete"
 			state["gold"] = int(state.get("gold", 0)) + [0, 30, 60, 80][n]
 			msg += "\n" + t("Return to Zal.", "نزد زال برگرد.")
 	save_game()
@@ -759,7 +932,7 @@ func objective() -> String:
 	if q(1) == "not_started":
 		return t("Speak with Zal in the village", "با زال در دهکده صحبت کن")
 	if q(1) == "active":
-		return t("Defeat the echo of Arzhang the Div in the Sunken Crypt (north of the forest)", "پژواکِ ارژنگ دیو را در سردابِ فرورفته شکست بده (شمالِ جنگل)")
+		return _q1_objective()
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
 		return t("Return to Zal", "نزد زال برگرد")
 	if q(2) == "not_started":
@@ -1438,7 +1611,7 @@ func quest_target() -> Dictionary:
 	if q(1) == "not_started" or q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
 		return elder
 	if q(1) == "active":
-		return {"map": "dungeon", "pos": _v(g.get("dungeon", {}).get("bosses", {}).get("boss", [874, 708])), "kind": "boss"}
+		return _q1_target(g)
 	if q(2) == "not_started":
 		return elder
 	if q(2) == "active":
