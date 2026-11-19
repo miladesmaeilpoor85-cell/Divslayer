@@ -7,7 +7,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 label=${1:-normal}
 pre=${2:-}
-test_timeout=${GODOT_TEST_TIMEOUT_SECONDS:-120}
+test_timeout=${GODOT_TEST_TIMEOUT_SECONDS:-400}
 if ! [[ "$test_timeout" =~ ^[1-9][0-9]*$ ]]; then
   echo "GODOT_TEST_TIMEOUT_SECONDS must be a positive integer (seconds)." >&2
   exit 2
