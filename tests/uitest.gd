@@ -114,7 +114,7 @@ func run(m: Node) -> void:
 		and hud.pad._compact_spell_label("firewall") == "Wall")
 	Game.lang = "fa"
 	check("touch_special_labels_compact",
-		hud.pad._compact_button_label("shove", "Fire-walk") == "آتش"
+		hud.pad._compact_button_label("shove", "Fire-walk") == "گذر از آتش"
 		and hud.pad._compact_button_label("ult", "Farr Smite") == "فرّه")
 
 	# Interrupting a held attack must cancel the charge, not release it as a heavy strike.
