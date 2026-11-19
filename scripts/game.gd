@@ -1389,12 +1389,15 @@ func collect(kind: String, key: String) -> String:
 	return txt
 
 # ---------------------------------------------------------------- side quest: Thornwood Toll (Sindokht's strongbox, v0.9)
-## state.toll = {st: none | active | box | done, how: how the box was won, ledger: has Ashkbus's ledger, truce: a deal was struck}
+## state.toll = {st: none | active | box | done, how: how the box was won, ledger: has Ashkbus's ledger, truce: a deal was struck, fight_started: combat was chosen and must not return to parley}
 func toll() -> Dictionary:
 	var d = state.get("toll", null)
 	if typeof(d) != TYPE_DICTIONARY:
-		d = {"st": "none", "how": "", "ledger": false, "truce": false}
+		d = {"st": "none", "how": "", "ledger": false, "truce": false, "fight_started": false}
 		state["toll"] = d
+	elif not d.has("fight_started"):
+		# Existing saves predate the explicit combat lock; preserve their state safely.
+		d["fight_started"] = false
 	return d
 
 func toll_st() -> String:
