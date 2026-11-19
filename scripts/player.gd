@@ -38,6 +38,9 @@ var charge_fx: Node2D
 const HEAVY_AT := 0.45
 var atk_cd := 0.0
 var attacking := 0.0
+var _attack_visual_facing := ""
+var _pending_attack: Dictionary = {}
+var _attack_impact_remaining := 0.0
 var invuln := 0.0
 var dodge_cd := 0.0
 var stamina := 100.0
@@ -208,6 +211,7 @@ func _look_tick(dt: float) -> void:
 		world.fx.emit("shine", global_position + Vector2(randf_range(-6, 6), -6), 1, Color(tc, 0.85), -facing_vec(), 40.0, 26.0, 0.8)
 
 func enter_world(w: Node, feet: Vector2) -> void:
+	_cancel_pending_attack()
 	world = w
 	global_position = feet
 	velocity = Vector2.ZERO
@@ -246,6 +250,9 @@ func _physics_process(dt: float) -> void:
 	shove_cd = max(0.0, shove_cd - dt)
 	_sig_step(dt)
 	_statuses(dt)
+	if dead:
+		return
+	_tick_attack_impact(dt)
 	if dead:
 		return
 	combo_t = max(0.0, combo_t - dt)
@@ -353,8 +360,9 @@ func _over_bosses() -> void:
 		z_index = over
 
 func _animate(dir: Vector2) -> void:
-	var d := "side" if facing == "left" or facing == "right" else facing
-	anim.flip_h = facing == "left"
+	var visual_facing := _attack_visual_facing if attacking > 0.0 and _attack_visual_facing != "" else facing
+	var d := "side" if visual_facing == "left" or visual_facing == "right" else visual_facing
+	anim.flip_h = visual_facing == "left"
 	var want := ""
 	if attacking > 0.0:
 		want = "attack_" + d
@@ -567,7 +575,7 @@ func cancel_attack_charge() -> void:
 		charge_fx.visible = false
 
 func attack(heavy := false) -> void:
-	if dead or (atk_cd > 0.0 and not heavy) or caster.ult_active() or blocking:
+	if dead or not _pending_attack.is_empty() or (atk_cd > 0.0 and not heavy) or caster.ult_active() or blocking:
 		return
 	atk_cd = (0.28 if not heavy else 0.45) * Game.atk_speed_mul()
 	combo = combo + 1 if combo_t > 0.0 and not heavy else 0
@@ -590,10 +598,53 @@ func attack(heavy := false) -> void:
 	var attack_direction := "side" if facing == "left" or facing == "right" else facing
 	var minimum_attack_time := 0.16 if not heavy else 0.26
 	attacking = Sheets.animation_duration(anim.sprite_frames, "attack_" + attack_direction, minimum_attack_time, anim.speed_scale)
+	# Keep the attack direction visually locked through the wind-up and impact.
+	var attack_direction := "side" if facing == "left" or facing == "right" else facing
+	_attack_visual_facing = facing
+	var minimum_attack_time := 0.16 if not heavy else 0.26
+	attacking = Sheets.animation_duration(anim.sprite_frames, "attack_" + attack_direction, minimum_attack_time, anim.speed_scale)
+	var hero_meta: Dictionary = Game.manifest.get("heroes", {}).get(sheet, {})
+	var impact_frame := int(hero_meta.get("heavyImpactFrame", hero_meta.get("attackImpactFrame", 0))) if heavy else int(hero_meta.get("attackImpactFrame", 0))
+	var impact_delay := Sheets.animation_impact_time(anim.sprite_frames, "attack_" + attack_direction, impact_frame, anim.speed_scale)
+
+	var sneak_attack := sneaking
+	if sneak_attack:
+		sneak_end()
+	var attack_data := {
+		"heavy": heavy,
+		"reach": reach,
+		"aim": aim,
+		"facing": facing,
+		"target": tgt,
+		"multiplier": mult,
+		"combo_level": lv,
+		"combo_number": combo,
+		"sneak_attack": sneak_attack,
+	}
+	Sfx.play("heavy" if heavy else ("swing" if combo % 2 == 0 else "swing2"), -2.0)
+	if impact_delay <= 0.000001:
+		_resolve_attack_impact(attack_data)
+	else:
+		_pending_attack = attack_data
+		_attack_impact_remaining = impact_delay
+
+## Resolves the gameplay hit on the configured impact frame. Animation wind-up is visual only;
+## legacy one-frame attacks have impact_frame 0 and therefore keep their immediate hit timing.
+func _resolve_attack_impact(data: Dictionary) -> void:
+	if dead or world == null or data.is_empty():
+		return
+	var heavy := bool(data.get("heavy", false))
+	var reach := float(data.get("reach", 26.0))
+	var aim: Vector2 = data.get("aim", Vector2.ZERO)
+	var attack_facing := str(data.get("facing", "down"))
+	var fv := _facing_vector(attack_facing)
+	var multiplier := float(data.get("multiplier", 1.0))
+	var lv := int(data.get("combo_level", 0))
+	var sneak_attack := bool(data.get("sneak_attack", false))
 	var body_c := global_position + Vector2(0, -17)
-	var fv := facing_vec()
-	var box := _swing_box(reach)
-	if tgt and _gap(body_rect(), tgt.hit_rect()) <= reach + 6.0:
+	var box := swing_box_for(body_rect(), attack_facing, reach)
+	var tgt: Node = data.get("target")
+	if is_instance_valid(tgt) and not tgt.dead and tgt.targetable() and _gap(body_rect(), tgt.hit_rect()) <= reach + 6.0:
 		box = box.merge(tgt.hit_rect())
 	world.slash(body_c + fv * 8.0, aim if aim != Vector2.ZERO else fv, reach + 10.0, heavy)
 	if world.get("shrine"):
@@ -604,20 +655,17 @@ func attack(heavy := false) -> void:
 		world.altars.strike(box, fv, heavy)
 	if world.get("training"):
 		world.training.strike(box, fv, heavy)
-	Sfx.play("heavy" if heavy else ("swing" if combo % 2 == 0 else "swing2"), -2.0)
+
 	var landed := false
 	var any_crit := false
 	var stabbed := false
-	if sneaking:
-		sneak_end()      # the swing gives you away (the backstab is judged first, below)
-		sneaking = true
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e.dead or not e.targetable():
 			continue
 		if box.intersects(e.hit_rect()):
 			var crit := randf() < Game.crit_chance()
-			var dmg: float = Game.atk() * mult * ((2.3 if Game.cls == "rogue" else 2.0) if crit else 1.0)
-			if sneaking and not e.is_in_group("bosses") and not bool(e.get("alert")):
+			var dmg: float = Game.atk() * multiplier * ((2.3 if Game.cls == "rogue" else 2.0) if crit else 1.0)
+			if sneak_attack and not e.is_in_group("bosses") and not bool(e.get("alert")):
 				dmg *= 3.0
 				backstabs += 1
 				Game.Ach.add("backstabs")
@@ -633,7 +681,6 @@ func attack(heavy := false) -> void:
 			landed = true
 			any_crit = any_crit or crit
 	swings += 1
-	sneaking = false
 	if stabbed:
 		Game.add_ult(4.0)
 	if landed:
@@ -641,7 +688,6 @@ func attack(heavy := false) -> void:
 		Game.mp = min(Game.max_mp(), Game.mp + Game.Skills.MP_PER_HIT)
 		Game.add_ult(3.0 + (2.0 if heavy else 0.0) + (2.0 if any_crit else 0.0))
 		Sfx.play("crit" if any_crit else "hit")
-		# every blow lands with a tiny freeze; heavy blows and crits freeze longer, kick the view and buzz
 		world.hitstop(0.08 if heavy else (0.05 if any_crit else 0.028))
 		if heavy or any_crit:
 			world.shake(5.0 if heavy else 3.0)
@@ -651,6 +697,34 @@ func attack(heavy := false) -> void:
 			Game.vibrate(10, 0.45)
 	if lv >= 2:
 		world.float_text(body_c + Vector2(0, -30), Game.t("Combo x%d" % (lv + 1), "ترکیب ×%s" % Game.num(lv + 1)), Color(1, 0.82, 0.48))
+
+func _tick_attack_impact(dt: float) -> void:
+	if _pending_attack.is_empty():
+		return
+	if dead or world == null:
+		_cancel_pending_attack()
+		return
+	_attack_impact_remaining -= dt
+	if _attack_impact_remaining <= 0.0:
+		var data := _pending_attack
+		_pending_attack = {}
+		_attack_impact_remaining = 0.0
+		_resolve_attack_impact(data)
+
+func _cancel_pending_attack() -> void:
+	if _pending_attack.is_empty():
+		return
+	_pending_attack = {}
+	_attack_impact_remaining = 0.0
+	attacking = 0.0
+	_attack_visual_facing = ""
+
+func _facing_vector(direction: String) -> Vector2:
+	match direction:
+		"left": return Vector2.LEFT
+		"right": return Vector2.RIGHT
+		"up": return Vector2.UP
+	return Vector2.DOWN
 
 ## the swing: a strip in front of the hero (as getAttackHitbox) plus the hero's own body, so an enemy
 ## standing right on top of you is hit too
@@ -709,6 +783,7 @@ func _procs(e: Node) -> void:
 func dodge() -> void:
 	if dead or dodge_cd > 0.0 or stamina < 30.0 or caster.busy():
 		return
+	_cancel_pending_attack()
 	block_end()
 	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if joy.length() > 0.12:
@@ -840,6 +915,7 @@ func take_hit(raw: float, from_status := false) -> void:
 	if Game.hp <= 0 and _revive_item():
 		return
 	if Game.hp <= 0:
+		_cancel_pending_attack()
 		dead = true
 		charging = false
 		charge_fx.visible = false
@@ -887,6 +963,7 @@ func block_start() -> void:
 		return
 	if stamina < 8.0:
 		return
+	_cancel_pending_attack()
 	blocking = true
 	block_t = 0.0
 	charging = false
