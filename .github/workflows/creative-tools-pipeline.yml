@@ -48,7 +48,6 @@ jobs:
 
           git fetch --no-tags --depth=1 origin "$BASE_SHA"
           if git diff --quiet "$BASE_SHA" HEAD -- \
-            ".github/workflows/creative-tools-pipeline.yml" \
             "tools/creative/**" \
             "creative/**" \
             "assets/art/**" \
