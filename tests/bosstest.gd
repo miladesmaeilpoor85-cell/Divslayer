@@ -537,8 +537,8 @@ func mechanics() -> void:
 	})
 	main.player.anim.sprite_frames = synthetic_attack
 	hero_meta["attackImpactFrame"] = 2
-	var delayed_hp := delayed_enemy.hp
-	var delayed_hits := main.player.hits_landed
+	var delayed_hp: float = float(delayed_enemy.hp)
+	var delayed_hits: int = int(main.player.hits_landed)
 	main.player.attack()
 	check("impact_frame_waits_before_damage",
 		not main.player._pending_attack.is_empty() and is_equal_approx(delayed_enemy.hp, delayed_hp)
@@ -558,15 +558,17 @@ func mechanics() -> void:
 	main.player.dodge_cd = 0.0
 	main.player.stamina = 100.0
 	main.player.facing = "down"
-	var canceled_hp := delayed_enemy.hp
+	var canceled_hp: float = float(delayed_enemy.hp)
 	main.player.attack()
-	var was_pending := not main.player._pending_attack.is_empty()
+	var was_pending: bool = not main.player._pending_attack.is_empty()
 	main.player.dodge()
 	check("dodge_cancels_pending_impact", was_pending and main.player._pending_attack.is_empty())
 	await frames(8)
 	check("canceled_attack_does_not_apply_late_damage", is_equal_approx(delayed_enemy.hp, canceled_hp))
 
 	main.player.anim.sprite_frames = original_frames
+	main.player.attacking = 0.0
+	main.player._attack_visual_facing = ""
 	if had_impact_meta:
 		hero_meta["attackImpactFrame"] = previous_impact_meta
 	else:
