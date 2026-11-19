@@ -141,7 +141,37 @@ jobs:
           "$apksigner" verify --verbose build/android/Divslayer-QA.apk
           "$aapt" dump badging build/android/Divslayer-QA.apk | tee build/android/apk-badging.txt
           grep -F "package: name='com.example.divslayer.qa'" build/android/apk-badging.txt
+          grep -F "launchable-activity:" build/android/apk-badging.txt
+          grep -F "native-code: 'arm64-v8a'" build/android/apk-badging.txt
           sha256sum build/android/Divslayer-QA.apk | tee build/android/Divslayer-QA.apk.sha256
+
+      - name: Install and launch APK in Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            adb logcat -c
+            adb install -r build/android/Divslayer-QA.apk
+            adb shell monkey -p com.example.divslayer.qa 1
+            sleep 25
+            adb logcat -d -v time > build/android/emulator-logcat.txt
+            if grep -E "FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script" build/android/emulator-logcat.txt; then
+              echo "Android emulator reported a fatal or Godot script error."
+              exit 1
+            fi
+            app_pid="$(adb shell pidof com.example.divslayer.qa | tr -d '\r')"
+            if [ -z "$app_pid" ]; then
+              echo "Divslayer process is not running after launch."
+              exit 1
+            fi
+            echo "Divslayer launched successfully. PID: $app_pid"
 
       - name: Upload installable QA APK
         uses: actions/upload-artifact@v4
@@ -151,5 +181,6 @@ jobs:
             build/android/Divslayer-QA.apk
             build/android/Divslayer-QA.apk.sha256
             build/android/apk-badging.txt
+            build/android/emulator-logcat.txt
           if-no-files-found: error
           retention-days: 14
