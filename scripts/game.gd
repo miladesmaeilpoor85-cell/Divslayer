@@ -636,6 +636,19 @@ func quest_progress(quest_id: String) -> Dictionary:
 		if initial_step != "":
 			save_game()
 			stats_changed.emit()
+	else:
+		# A legacy active quest may already have acquired an empty progress record
+		# before its old save state was loaded or restored. Treat that empty q1
+		# record just like a missing record, but never overwrite a real new stage.
+		var saved: Dictionary = all[quest_id]
+		if quest_id == "q1" and q(1) == "active" and str(saved.get("step", "")) == "":
+			saved["step"] = "boss_ready"
+			if typeof(saved.get("collections", {})) != TYPE_DICTIONARY:
+				saved["collections"] = {}
+			all[quest_id] = saved
+			state["quest_progress"] = all
+			save_game()
+			stats_changed.emit()
 	return all[quest_id]
 
 func quest_step(quest_id: String) -> String:
