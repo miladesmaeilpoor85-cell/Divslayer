@@ -224,7 +224,9 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
             gif_path = output_dir / (
                 f"{config.get('name', config_path.stem)}_{direction}_{clip['name']}.gif"
             )
-            duration_ms = max(1, round(1000.0 / float(clip["fps"])))
+            requested_frame_ms = 1000.0 / float(clip["fps"])
+            # GIF stores frame delays in centiseconds (10 ms), not arbitrary milliseconds.
+            duration_ms = max(10, round(requested_frame_ms / 10.0) * 10)
             selected[0].save(
                 gif_path,
                 save_all=True,
@@ -245,7 +247,9 @@ def build_animation(config_path: Path, output_dir: Path) -> dict[str, Any]:
                 "frame_count": len(selected),
                 "loop": clip["loop"],
                 "fps": clip["fps"],
+                "effective_fps": round(1000.0 / duration_ms, 3),
                 "frame_duration_ms": duration_ms,
+                "duration_seconds": round(len(selected) * duration_ms / 1000.0, 3),
             })
 
     review_scale = int(config.get("review_scale", 2))
