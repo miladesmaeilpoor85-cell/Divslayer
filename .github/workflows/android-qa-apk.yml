@@ -142,7 +142,12 @@ jobs:
           "$aapt" dump badging build/android/Divslayer-QA.apk | tee build/android/apk-badging.txt
           "$aapt" dump xmltree build/android/Divslayer-QA.apk AndroidManifest.xml | tee build/android/manifest-xmltree.txt
           grep -F "package: name='com.example.divslayer.qa'" build/android/apk-badging.txt
-          grep -F "launchable-activity:" build/android/apk-badging.txt
+          # Godot uses an exported activity-alias; validate the actual binary manifest
+          # rather than relying on aapt dump badging to resolve activity aliases.
+          grep -F 'com.godot.game.GodotAppLauncher' build/android/manifest-xmltree.txt
+          grep -F 'android.intent.action.MAIN' build/android/manifest-xmltree.txt
+          grep -F 'android.intent.category.LAUNCHER' build/android/manifest-xmltree.txt
+          grep -F 'android:exported(0x01010010)=(type 0x12)0xffffffff' build/android/manifest-xmltree.txt
           grep -F "native-code: 'arm64-v8a'" build/android/apk-badging.txt
           sha256sum build/android/Divslayer-QA.apk | tee build/android/Divslayer-QA.apk.sha256
 
@@ -173,6 +178,12 @@ jobs:
             set -euo pipefail
             adb logcat -c
             adb install -r build/android/Divslayer-QA.apk
+            resolved_activity="$(adb shell cmd package resolve-activity --brief --user 0 -a android.intent.action.MAIN -c android.intent.category.LAUNCHER com.example.divslayer.qa | tr -d '\r')"
+            echo "Resolved launcher activity: $resolved_activity"
+            if ! grep -Fq "com.example.divslayer.qa/" <<< "$resolved_activity"; then
+              echo "Android Package Manager could not resolve a launcher activity for Divslayer."
+              exit 1
+            fi
             adb shell monkey -p com.example.divslayer.qa 1
             sleep 25
             adb logcat -d -v time > build/android/emulator-logcat.txt
