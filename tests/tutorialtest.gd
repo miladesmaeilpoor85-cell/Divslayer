@@ -258,7 +258,9 @@ func run(m: Node) -> void:
 	main._on_interact(npc("elder"))
 	await frames(2)
 	await read_all()
-	check("zal_first", Game.q(1) == "active" and T.fresh() and not T.offered() and Game.objective().find("ارژنگ") >= 0
+	check("zal_first", Game.q(1) == "active" and Game.quest_step("q1") == "forest_clues"
+		and Game.quest_collection("q1", "forest_clues").is_empty() and T.fresh() and not T.offered()
+		and Game.objective().find("دو نشانه از پژواک") >= 0
 		and npc("rostam").get_node("NewsMarker").visible, Game.objective())
 	main._on_interact(npc("rostam"))
 	await frames(2)

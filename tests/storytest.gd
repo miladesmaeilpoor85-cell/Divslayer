@@ -275,9 +275,12 @@ func run(m: Node) -> void:
 
 	# ---- Elder's chain keeps its place, the compass shows Jamshid only at a turn-in
 	fresh()
+	# Simulate an older active quest with an empty progress record created before the save was restored.
+	Game.state["quest_progress"] = {"q1": {"step": "", "collections": {}}}
 	Game.state["q1"] = "active"
 	Game.state["brann"] = "anvil"
-	check("elder_objective_wins_while_questing", Game.objective().find("Arzhang") >= 0, Game.objective())
+	check("elder_objective_wins_while_questing", Game.quest_step("q1") == "boss_ready"
+		and Game.objective().find("Arzhang") >= 0, Game.objective())
 	Game.state["q1"] = "done"
 	Game.state["q2"] = "done"
 	Game.state["q3"] = "done"
