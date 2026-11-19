@@ -44,6 +44,8 @@ on every frame and does not replace an Android device test.
    0.167 s, so the normal attack's final frame may be cut slightly short unless
    the gameplay animation window is adjusted. The preview builder now supports
    independent per-clip FPS values, but this does not change runtime combat timing.
+
+5. **Impact frames are data-driven and backward compatible.** Hero sheet metadata may define a zero-based `attackImpactFrame` (and optional `heavyImpactFrame`). The player schedules target checks, object strikes, hit-stop and damage for the beginning of that frame. Missing metadata defaults to frame 0, so the current one-frame attacks still hit immediately. A delayed impact is canceled if the player dodges, raises a block, dies, or changes maps.
   GIF stores frame delays in 10 ms increments, so its reported effective FPS can
   differ slightly from the requested value (for example, 24 FPS is previewed at
   25 FPS using a 40 ms frame delay).
@@ -53,6 +55,7 @@ on every frame and does not replace an Android device test.
 - The character-sheet loader reads named atlas columns from the existing
   `cols` metadata and supports both embedded multi-frame attack columns and an
   optional separate attack atlas.
+- The player computes attack duration from the selected clip and schedules combat impact from the optional zero-based `attackImpactFrame` / `heavyImpactFrame` metadata. The active direction is locked through the strike, and the attack clip is explicitly restarted from frame zero even when the same direction is played twice.
 - The Godot animation regression test checks all 12 current hero looks, all
   sprite-backed enemy atlases/variants, and both future multi-frame attack
   formats using synthetic in-memory sheets.
@@ -63,6 +66,10 @@ on every frame and does not replace an Android device test.
   current attack remains a one-frame, non-looping review pose.
 - CI runs the builder tests and uploads the review sheets, previews, and report
   as a temporary artifact.
+
+## Impact-frame authoring contract
+
+For a reviewed multi-frame attack, add `attackImpactFrame` to that hero's entry in `data/art_manifest.json`. The index is zero-based and identifies the first frame in which the weapon should connect (for example, `2` means the third frame). Set `heavyImpactFrame` separately only when the heavy attack has a different contact frame. The index is clamped to the available clip range at runtime; missing metadata intentionally means immediate contact for legacy one-frame sheets. Do not set a non-zero impact frame until the matching anticipation/contact/recovery poses have been reviewed and the attack's total duration, target reach, and damage timing have been tested together.
 
 ## Scope boundary
 
