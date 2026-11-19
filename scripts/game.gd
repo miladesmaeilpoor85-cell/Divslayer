@@ -1667,7 +1667,7 @@ func compass_point(map: String) -> Dictionary:
 	if t.is_empty():
 		return {}
 	if t["map"] == map:
-		return {"pos": t["pos"], "kind": t["kind"], "exit": false}
+		return {"pos": t["pos"], "kind": t["kind"], "exit": str(t.get("kind", "")) == "exit"}
 	var hop := next_hop(map, str(t["map"]))
 	for e in world_graph().get(map, {}).get("exits", []):
 		if str(e["to"]) == hop:
