@@ -26,7 +26,7 @@ jobs:
   creative-application-smoke-tests:
     name: Krita / Audacity / LMMS / Blender
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -37,19 +37,19 @@ jobs:
         run: |
           # Bound network stalls and retry transient package mirror failures.
           # Refresh indexes, but don't let a slow mirror block the creative smoke tests.
-          if ! timeout 120s sudo apt-get --quiet \
+          if ! timeout 300s sudo apt-get --quiet \
             -o Acquire::ForceIPv4=true \
-            -o Acquire::Retries=1 \
+            -o Acquire::Retries=2 \
             -o Acquire::http::Timeout=30 \
             -o Acquire::https::Timeout=30 \
             -o Acquire::Languages=none \
             update; then
             echo "::warning::apt index refresh did not finish; continuing with runner-cached indexes"
           fi
-          timeout 1800s sudo apt-get --quiet install --yes --no-install-recommends \
+          timeout 3600s sudo apt-get --quiet install --yes --no-install-recommends \
             -o Dpkg::Use-Pty=0 \
             -o Acquire::ForceIPv4=true \
-            -o Acquire::Retries=1 \
+            -o Acquire::Retries=2 \
             -o Acquire::http::Timeout=30 \
             -o Acquire::https::Timeout=30 \
             audacity blender krita lmms xvfb xauth
@@ -61,10 +61,10 @@ jobs:
           # GitHub's Ubuntu runner images commonly include FFmpeg already. Only
           # install it separately when that preinstalled binary is unavailable.
           if ! command -v ffmpeg >/dev/null 2>&1; then
-            timeout 180s sudo apt-get --quiet install --yes --no-install-recommends \
+            timeout 300s sudo apt-get --quiet install --yes --no-install-recommends \
               -o Dpkg::Use-Pty=0 \
               -o Acquire::ForceIPv4=true \
-              -o Acquire::Retries=1 \
+              -o Acquire::Retries=2 \
               -o Acquire::http::Timeout=30 \
               -o Acquire::https::Timeout=30 \
               ffmpeg
