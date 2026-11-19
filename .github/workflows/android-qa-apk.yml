@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "main"
+      - "feat/animation-pipeline-warrior-attack"
     paths:
       - ".github/workflows/android-qa-apk.yml"
       - "ci/android-qa-export-presets.cfg"
