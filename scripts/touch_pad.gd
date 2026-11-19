@@ -107,7 +107,7 @@ const COMPACT_ACTION_LABELS := {
 	"lasso": ["Lasso", "کمند"],
 	"ward": ["Feather", "پر"],
 	"arrow": ["Arrow", "تیر"],
-	"fire": ["Fire", "آتش"],
+	"fire": ["Fire-walk", "گذر از آتش"],
 	"whirlwind": ["Spin", "گردباد"],
 	"arcane_tempest": ["Tempest", "توفان"],
 	"shadow_dance": ["Shadow", "سایه"],
@@ -149,7 +149,7 @@ func _button_at(pos: Vector2, bs: Dictionary) -> String:
 		var radius := float(b["r"])
 		var distance := pos.distance_to(b["pos"])
 		if distance <= radius:
-			var score: float = distance / max(1.0, radius)
+			var score: float = distance / maxf(1.0, radius)
 			if score < exact_score:
 				exact_score = score
 				exact = str(b_name)

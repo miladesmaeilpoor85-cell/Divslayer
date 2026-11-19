@@ -5,6 +5,7 @@ on:
     branches:
       - "main"
       - "feature/quest-point-framework"
+      - "feat/animation-pipeline-warrior-attack"
     paths:
       - ".github/workflows/android-qa-apk.yml"
       - "ci/android-qa-export-presets.cfg"
