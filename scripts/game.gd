@@ -722,8 +722,10 @@ func boss_defeated(type: String) -> String:
 	if not rel.is_empty() and not Gear.has_relic(str(rel["uniq"])):
 		Gear.grant(rel)
 		msg += "\n" + t("Relic obtained: ", "یادگار به دست آمد: ") + Gear.item_name(rel)
-	if type == "captain" and toll_st() == "active" and str(toll().get("how", "")) in ["", "pay", "fame", "oath", "hand", "ledger", "ghost"]:
-		toll()["how"] = "fight"        # a deal that is broken ends the old way
+	if type == "captain" and toll_st() == "active":
+		if str(toll().get("how", "")) in ["", "pay", "fame", "oath", "hand", "ledger", "ghost"]:
+			toll()["how"] = "fight"        # a deal that is broken ends the old way
+		toll()["fight_started"] = false
 	var c2m: String = Ch2.on_boss(type)
 	if c2m != "":
 		msg += "\n" + c2m
