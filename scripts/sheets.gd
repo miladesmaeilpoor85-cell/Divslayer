@@ -17,6 +17,18 @@ static func pivot_offset(meta: Dictionary) -> Vector2:
 	var p: Array = meta.get("pivot", [0.5, 0.0])
 	return Vector2(-float(meta["cellW"]) * float(p[0]), -float(meta["cellH"]) * (1.0 - float(p[1])))
 
+## Duration of a non-looping clip, never shorter than its gameplay minimum.
+## SpriteFrames stores FPS; AnimatedSprite2D.speed_scale is applied at runtime.
+static func animation_duration(frames: SpriteFrames, animation: String, minimum_seconds := 0.0, playback_scale := 1.0) -> float:
+	var minimum := maxf(0.0, float(minimum_seconds))
+	if frames == null or not frames.has_animation(animation):
+		return minimum
+	var count := frames.get_frame_count(animation)
+	var fps := frames.get_animation_speed(animation) * absf(float(playback_scale))
+	if count <= 0 or fps <= 0.0:
+		return minimum
+	return maxf(minimum, float(count) / fps)
+
 ## Build directional hero/villager animations from named atlas columns.
 ## An optional separate attack sheet keeps new combat frames independent from walk art.
 static func character_frames(tex: Texture2D, meta: Dictionary, attack_texture: Texture2D = null) -> SpriteFrames:
