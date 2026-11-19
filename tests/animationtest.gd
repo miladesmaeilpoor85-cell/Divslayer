@@ -36,9 +36,9 @@ func run(_main: Node) -> void:
 		if hero_frames == null:
 			continue
 		for direction in ["down", "up", "side"]:
-			var walk := "walk_" + direction
-			var idle := "idle_" + direction
-			var attack := "attack_" + direction
+			var walk: String = "walk_" + str(direction)
+			var idle: String = "idle_" + str(direction)
+			var attack: String = "attack_" + str(direction)
 			check(sheet_name + "_" + direction + "_walk_has_four_frames",
 				hero_frames.has_animation(walk) and hero_frames.get_frame_count(walk) == 4)
 			check(sheet_name + "_" + direction + "_idle_has_one_frame",
@@ -58,8 +58,8 @@ func run(_main: Node) -> void:
 	}
 	var embedded := Sheets.character_frames(make_test_sheet(8), embedded_meta)
 	for direction in ["down", "up", "side"]:
-		var attack := "attack_" + direction
-		var walk := "walk_" + direction
+		var attack: String = "attack_" + str(direction)
+		var walk: String = "walk_" + str(direction)
 		check("embedded_" + direction + "_attack_has_four_frames", embedded.get_frame_count(attack) == 4)
 		check("embedded_" + direction + "_attack_is_one_shot", not embedded.get_animation_loop(attack))
 		check("embedded_" + direction + "_walk_is_unchanged", embedded.get_frame_count(walk) == 4)
@@ -79,8 +79,8 @@ func run(_main: Node) -> void:
 	}
 	var separate := Sheets.character_frames(make_test_sheet(5), separate_meta, make_test_sheet(4))
 	for direction in ["down", "up", "side"]:
-		var attack := "attack_" + direction
-		var walk := "walk_" + direction
+		var attack: String = "attack_" + str(direction)
+		var walk: String = "walk_" + str(direction)
 		check("separate_" + direction + "_attack_has_four_frames", separate.get_frame_count(attack) == 4)
 		check("separate_" + direction + "_attack_is_one_shot", not separate.get_animation_loop(attack))
 		check("separate_" + direction + "_walk_is_unchanged", separate.get_frame_count(walk) == 4)
