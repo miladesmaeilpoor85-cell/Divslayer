@@ -3,8 +3,11 @@ extends Node2D
 ## Run with: godot --path . res://scenes/dev/warrior_animation_review.tscn
 
 const SHEET_PATH := "res://assets/art/Heroes/warrior_starter.png"
-const CELL_SIZE := Vector2(160.0, 156.0)
 const WALK_DIRECTIONS := ["down", "up", "side"]
+const HERO_SHEET_ID := "warrior_starter"
+
+var _cell_size := Vector2.ZERO
+var _atlas_meta: Dictionary = {}
 const SLASH_DURATION := 0.34
 
 @onready var actor: AnimatedSprite2D = $Actor
@@ -21,18 +24,40 @@ func _ready() -> void:
 		push_error("Warrior review atlas could not be loaded")
 		return
 	actor.sprite_frames = _build_frames(texture)
+	actor.centered = false
+	var pivot: Array = _atlas_meta.get("pivot", [0.5, 0.0])
+	actor.offset = Vector2(
+		-_cell_size.x * float(pivot[0]),
+		-_cell_size.y * (1.0 - float(pivot[1]))
+	)
 	actor.play(_walk_animation)
 	_build_ui()
 	queue_redraw()
 
 
 func _load_review_texture() -> Texture2D:
+	_atlas_meta = Game.manifest.get("heroes", {}).get(HERO_SHEET_ID, {})
+	if _atlas_meta.is_empty():
+		push_error("Missing hero atlas metadata: " + HERO_SHEET_ID)
+		return null
+	_cell_size = Vector2(
+		float(_atlas_meta.get("cellW", 0)),
+		float(_atlas_meta.get("cellH", 0))
+	)
+	var columns: Array = _atlas_meta.get("cols", [])
+	var rows: Array = _atlas_meta.get("rows", [])
+	if _cell_size.x <= 0.0 or _cell_size.y <= 0.0 or columns.size() != 5 or rows != WALK_DIRECTIONS:
+		push_error("Warrior atlas metadata does not match the review contract")
+		return null
 	var texture := load(SHEET_PATH) as Texture2D
 	if texture == null:
 		push_error("Missing production warrior sheet: " + SHEET_PATH)
 		return null
-	if texture.get_width() != 800 or texture.get_height() != 468:
-		push_error("Unexpected warrior sheet size: %dx%d" % [texture.get_width(), texture.get_height()])
+	var expected_size := Vector2(_cell_size.x * columns.size(), _cell_size.y * rows.size())
+	if Vector2(texture.get_width(), texture.get_height()) != expected_size:
+		push_error("Warrior atlas size %s does not match manifest %s" % [
+			Vector2(texture.get_width(), texture.get_height()), expected_size
+		])
 		return null
 	return texture
 
@@ -64,7 +89,7 @@ func _build_frames(texture: Texture2D) -> SpriteFrames:
 func _atlas_frame(texture: Texture2D, column: int, row: int) -> AtlasTexture:
 	var atlas := AtlasTexture.new()
 	atlas.atlas = texture
-	atlas.region = Rect2(Vector2(column * CELL_SIZE.x, row * CELL_SIZE.y), CELL_SIZE)
+	atlas.region = Rect2(Vector2(column * _cell_size.x, row * _cell_size.y), _cell_size)
 	return atlas
 
 
