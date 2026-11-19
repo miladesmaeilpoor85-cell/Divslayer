@@ -413,6 +413,8 @@ func _feel(dir: Vector2) -> void:
 			_ghost_t = 0.05
 			var tc: Color = Game.Looks.trail(look)
 			world.fx.ghost(anim, Color(tc, 0.55) if tc.a > 0.0 else Color(0.62, 0.86, 1.0, 0.5))
+			var dash_col := Color(tc, 0.86) if tc.a > 0.0 else Color(0.62, 0.86, 1.0, 0.86)
+			world.fx.dash_trail(global_position + Vector2(0, -17), dash_v.normalized(), dash_col, 0.18, 38.0)
 	if caster and caster.spin_t > 0.0:
 		rot = caster.spin_ang
 	if _hurt_t > 0.0:
