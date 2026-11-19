@@ -406,6 +406,8 @@ func _on_interact(npc: Node) -> void:
 			if result.is_empty():
 				return
 			hud.dialogue.open(str(result.get("title", who)), [str(result.get("text", ""))], "")
+			if world and world.has_method("_ensure_q1_boss"):
+				world._ensure_q1_boss()
 			hud.refresh()
 		"merchant":
 			_talk_thalia(who)
