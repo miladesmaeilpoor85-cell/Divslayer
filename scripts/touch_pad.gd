@@ -147,7 +147,7 @@ func _button_at(pos: Vector2, bs: Dictionary) -> String:
 		var radius := float(b["r"])
 		var distance := pos.distance_to(b["pos"])
 		if distance <= radius:
-			var score := distance / max(1.0, radius)
+			var score: float = distance / maxf(1.0, radius)
 			if score < exact_score:
 				exact_score = score
 				exact = str(b_name)
