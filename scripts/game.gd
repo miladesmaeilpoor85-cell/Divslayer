@@ -704,7 +704,7 @@ func quest_point_interact(map_key: String, point_id: String) -> Dictionary:
 		collections[collection_id] = found
 		progress["collections"] = collections
 		var required := maxi(1, int(point.get("required_count", 1)))
-		var count := found.size()
+		var count: int = found.size()
 		message += "\n" + t("Signs found: %d/%d" % [count, required], "نشانه‌های پیدا‌شده: %s/%s" % [num(count), num(required)])
 		if count >= required:
 			var next_step := str(point.get("next_step", ""))
