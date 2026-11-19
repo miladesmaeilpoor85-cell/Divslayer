@@ -401,6 +401,14 @@ func _on_interact(npc: Node) -> void:
 	var id := str(npc.get_meta("id", ""))
 	var who := Game.t(str(npc.get_meta("name_en", id)))
 	match id:
+		"quest_point":
+			var result: Dictionary = Game.quest_point_interact(world.key, str(npc.get_meta("point_id", "")))
+			if result.is_empty():
+				return
+			hud.dialogue.open(str(result.get("title", who)), [str(result.get("text", ""))], "")
+			if world and world.has_method("_ensure_q1_boss"):
+				world.call("_ensure_q1_boss")
+			hud.refresh()
 		"merchant":
 			_talk_thalia(who)
 		"strongbox":

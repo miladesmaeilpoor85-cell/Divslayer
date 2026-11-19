@@ -56,7 +56,19 @@ jobs:
           python3 tools/asset_audit.py
 
       - name: Import project and parse Godot resources
-        run: godot --headless --editor --path . --quit
+        shell: bash
+        run: |
+          set -euo pipefail
+          log_file="$RUNNER_TEMP/godot-import.log"
+          set +e
+          godot --headless --editor --path . --quit 2>&1 | tee "$log_file"
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$log_file"; then
+            echo "::error::Godot reported script parse/load errors during project import."
+            exit 1
+          fi
+          exit "$status"
 
       - name: Run complete headless test suite
         run: bash tools/run_all_tests.sh ci

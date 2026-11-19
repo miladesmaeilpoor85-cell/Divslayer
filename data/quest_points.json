@@ -1,0 +1,75 @@
+{
+  "forest": [
+    {
+      "id": "forest_wagon",
+      "quest_id": "q1",
+      "step": "forest_clues",
+      "kind": "collect",
+      "collection": "forest_clues",
+      "collect_id": "wagon",
+      "required_count": 2,
+      "next_step": "crypt_entry",
+      "x": 760,
+      "y": 560,
+      "title_en": "Broken Caravan",
+      "title_fa": "کاروان شکسته",
+      "text_en": "The wheel broke from within, not against a stone. Something rose from beneath the road and struck the caravan.",
+      "text_fa": "چرخ از درون شکسته، نه در برخورد با سنگ. چیزی از زیرِ راه برخاسته و به کاروان تاخته است.",
+      "completion_en": "The trail of ash points deeper into the forest.",
+      "completion_fa": "ردّ خاکستر به ژرفای جنگل اشاره می‌کند."
+    },
+    {
+      "id": "forest_banner",
+      "quest_id": "q1",
+      "step": "forest_clues",
+      "kind": "collect",
+      "collection": "forest_clues",
+      "collect_id": "banner",
+      "required_count": 2,
+      "next_step": "crypt_entry",
+      "x": 420,
+      "y": 250,
+      "title_en": "Torn Banner",
+      "title_fa": "بیرق پاره",
+      "text_en": "Six cuts mark the torn cloth — the same sign named in the tale of the Sixth Labour.",
+      "text_fa": "شش بریدگی بر پارچهٔ پاره مانده؛ همان نشانی که در روایت خوانِ ششم آمده است.",
+      "completion_en": "Two signs agree. The hidden passage to the Sunken Crypt lies north.",
+      "completion_fa": "دو نشانه با هم سازگارند. گذرگاه پنهان سرداب فرورفته در شمال است."
+    },
+    {
+      "id": "forest_stone",
+      "quest_id": "q1",
+      "step": "forest_clues",
+      "kind": "collect",
+      "collection": "forest_clues",
+      "collect_id": "stone",
+      "required_count": 2,
+      "next_step": "crypt_entry",
+      "x": 950,
+      "y": 730,
+      "title_en": "Ash-marked Stone",
+      "title_fa": "سنگِ خاکسترنشان",
+      "text_en": "The ash is still warm. A deep claw-mark points toward the northern Crypt.",
+      "text_fa": "خاکستر هنوز گرم است. خراشِ پنجه‌ای ژرف به سوی سردابِ شمالی اشاره می‌کند.",
+      "completion_en": "Two signs agree. The hidden passage to the Sunken Crypt lies north.",
+      "completion_fa": "دو نشانه با هم سازگارند. گذرگاه پنهان سرداب فرورفته در شمال است."
+    }
+  ],
+  "dungeon": [
+    {
+      "id": "crypt_inscription",
+      "quest_id": "q1",
+      "step": "crypt_inscription",
+      "kind": "advance",
+      "next_step": "boss_ready",
+      "x": 760,
+      "y": 540,
+      "title_en": "The Sealed Inscription",
+      "title_fa": "سنگ‌نوشتهٔ مهرگاه",
+      "text_en": "This is not Arzhang's grave; it is where the echo of his name was bound. What Rostam defeated has returned — not in flesh, but in memory and wrath. Your ember can send that memory back to dust.",
+      "text_fa": "این‌جا گورِ ارژنگ نیست؛ جای دربندکردن پژواکِ نام اوست. آنچه رستم شکست بازگشته است؛ نه با تن، که با خاطره و خشم. اخگر تو می‌تواند این خاطره را دوباره به خاکستر بازگرداند.",
+      "completion_en": "The seal answers the ember. Something stirs in the far hall.",
+      "completion_fa": "مُهر به اخگر پاسخ می‌دهد. چیزی در تالار دوردست به جنبش درآمد."
+    }
+  ]
+}
