@@ -14,7 +14,7 @@ On the review screen, tap **روبه‌رو**, **پشت**, or **نیم‌رخ** 
 
 ## Sprite layout and import contract
 
-The review scene deliberately loads the existing `assets/art/Heroes/warrior_starter.png` atlas read-only. It is 800 × 468 pixels and uses the project's 5-column × 3-row contract: 160 × 156 pixels per cell; rows `down`, `up`, `side`; columns 0–3 are walk frames and column 4 is the single-frame attack pose. The scene does not replace the production sheet, edit `data/art_manifest.json`, change `scripts/sheets.gd`, or alter the pivot, class IDs, or main scene.
+The review scene deliberately loads the existing `assets/art/Heroes/warrior_starter.png` atlas read-only and reads cell dimensions, row ordering, and foot pivot from `data/art_manifest.json`. The expected project layout is 800 × 468 pixels: five 160 × 156 cells per row, with rows `down`, `up`, `side`; columns 0–3 are walk frames and column 4 is the single-frame attack pose. The scene does not replace the production sheet, edit `data/art_manifest.json`, change `scripts/sheets.gd`, or alter the pivot, class IDs, or main scene.
 
 The separate ImageGen concept pack contains 12 distinct walk poses (four per direction), rather than hop/squash transformations. That new atlas is not loaded by this review scene and is not yet promoted to the repository. The review scene is intentionally a safe harness for the current atlas and adds a separate Godot-drawn slash arc with a 0.34-second preparation/contact/fade window. It is an effect prototype, not a complete multi-frame body-attack animation and not combat hitbox logic.
 
