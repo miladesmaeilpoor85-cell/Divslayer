@@ -105,6 +105,20 @@ func run(_main: Node) -> void:
 	check("missing_animation_uses_safe_minimum",
 		is_equal_approx(Sheets.animation_duration(embedded, "missing", 0.16), 0.16))
 
+	# Impact-frame scheduling uses zero-based frame indices and the runtime clip speed.
+	check("impact_frame_zero_is_immediate",
+		is_equal_approx(Sheets.animation_impact_time(embedded, "attack_down", 0), 0.0))
+	check("impact_frame_two_matches_attack_fps",
+		is_equal_approx(Sheets.animation_impact_time(embedded, "attack_down", 2), 2.0 / 24.0))
+	check("impact_frame_respects_playback_scale",
+		is_equal_approx(Sheets.animation_impact_time(embedded, "attack_down", 2, 2.0), 2.0 / 48.0))
+	check("negative_impact_frame_clamps_to_start",
+		is_equal_approx(Sheets.animation_impact_time(embedded, "attack_down", -1), 0.0))
+	check("oversized_impact_frame_clamps_to_last_frame",
+		is_equal_approx(Sheets.animation_impact_time(embedded, "attack_down", 99), 3.0 / 24.0))
+	check("missing_impact_animation_fails_safe",
+		is_equal_approx(Sheets.animation_impact_time(embedded, "missing", 2), 0.0))
+
 	# Directional hitboxes must extend forward while retaining the player's body.
 	var combat_body := Rect2(100.0, 100.0, 26.0, 34.0)
 	check("hitbox_down_extends_forward",
