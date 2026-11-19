@@ -44,6 +44,9 @@ on every frame and does not replace an Android device test.
    0.167 s, so the normal attack's final frame may be cut slightly short unless
    the gameplay animation window is adjusted. The preview builder now supports
    independent per-clip FPS values, but this does not change runtime combat timing.
+  GIF stores frame delays in 10 ms increments, so its reported effective FPS can
+  differ slightly from the requested value (for example, 24 FPS is previewed at
+  25 FPS using a 40 ms frame delay).
 
 ## Changes in this update
 
