@@ -6,4 +6,4 @@
 script = ExtResource("1")
 
 [node name="Actor" type="AnimatedSprite2D" parent="."]
-position = Vector2(427, 234)
+position = Vector2(427, 306)
