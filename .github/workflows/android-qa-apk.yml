@@ -114,8 +114,22 @@ jobs:
           set -euo pipefail
           export ANDROID_HOME="$ANDROID_HOME"
           export JAVA_HOME="$JAVA_HOME"
-          godot --headless --editor --path . --quit
-          godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
+          run_godot_checked() {
+            local label="$1"
+            shift
+            local logfile="$RUNNER_TEMP/${label}.log"
+            set +e
+            "$@" 2>&1 | tee "$logfile"
+            local status=${PIPESTATUS[0]}
+            set -e
+            if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$logfile"; then
+              echo "::error::Godot reported a script parse/load error during ${label}."
+              return 1
+            fi
+            return "$status"
+          }
+          run_godot_checked import godot --headless --editor --path . --quit
+          run_godot_checked export godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
           test -s build/android/Divslayer-QA.apk
 
       - name: Verify APK package and signature
