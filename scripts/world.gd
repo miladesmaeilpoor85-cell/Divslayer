@@ -200,6 +200,7 @@ func build(map_key: String) -> void:
 		if not Game.testing and Game.lvl() >= 3 and not Game.BOSS_CFG.has(str(s["type"])) and key != "village" and randf() < Game.elite_chance():
 			var elite_pool: Array[String] = Game.elite_pool(key)
 			se.make_elite(elite_pool[randi() % elite_pool.size()])
+	_ensure_q1_boss()
 	if key == "trial":
 		trial = Trial.new()
 		trial.world = self
@@ -537,8 +538,7 @@ func _refresh_quest_points() -> void:
 				node.add_to_group("npcs")
 			elif not available and node.is_in_group("npcs"):
 				node.remove_from_group("npcs")
-	_ensure_q1_boss()
-
+	
 func _spawn_quest_point(point: Dictionary) -> Node2D:
 	var point_id := str(point.get("id", ""))
 	var node := Node2D.new()
