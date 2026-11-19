@@ -642,7 +642,8 @@ func quest_step(quest_id: String) -> String:
 	return str(quest_progress(quest_id).get("step", ""))
 
 func set_quest_step(quest_id: String, step: String) -> void:
-	quest_progress(quest_id)["step"] = step
+	var progress := quest_progress(quest_id)
+	progress["step"] = step
 	save_game()
 	stats_changed.emit()
 
@@ -909,7 +910,7 @@ func boss_defeated(type: String) -> String:
 		if q(n) != "done":
 			set_q(n, "complete")
 			if n == 1:
-				quest_progress("q1")["step"] = "complete"
+				set_quest_step("q1", "complete")
 			state["gold"] = int(state.get("gold", 0)) + [0, 30, 60, 80][n]
 			msg += "\n" + t("Return to Zal.", "نزد زال برگرد.")
 	save_game()
