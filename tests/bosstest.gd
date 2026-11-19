@@ -395,7 +395,7 @@ func mechanics() -> void:
 	var nb: Node = null
 	for e in get_tree().get_nodes_in_group("bosses"):
 		nb = e
-	check("rematch_offered", offered and gold_lost == 100, {"gold_lost": gold_lost})
+	check("rematch_offered", offered and gold_lost == 0, {"gold_lost_before_choice": gold_lost, "gold_before_choice": Game.state["gold"]})
 	check("rematch_restores", not get_tree().paused and int(Game.state["gold"]) == 500 and int(Game.state["potions"]) == 5
 		and not main.player.dead and Game.hp == Game.max_hp() and main.world.key == "dungeon" and nb != null and nb.hp == nb.max_hp,
 		{"gold": Game.state["gold"], "potions": Game.state["potions"], "map": main.world.key})
