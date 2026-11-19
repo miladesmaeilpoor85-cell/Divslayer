@@ -165,8 +165,8 @@ func run(m: Node) -> void:
 	dummy.queue_free()
 	Game.tables.erase("CLASSES")
 
-	printerr("STEP: the main quest: Zal -> Guardian -> reward -> sealed peaks open")
-	# ---- the main quest: Zal -> Guardian -> reward -> sealed peaks open
+	printerr("STEP: the main quest: Zal -> forest clues -> crypt inscription -> Guardian -> reward -> sealed peaks open")
+	# ---- the main quest: staged story points, the Guardian, reward and sealed peaks
 	Game.new_game("warrior")
 	for b in Game.BOSS_CFG:
 		Game.v18()["seen"][b] = true
@@ -194,8 +194,48 @@ func run(m: Node) -> void:
 		main.hud.dialogue.advance()
 		pages += 1
 	report["elder_talk"] = {"opened": opened, "pages": pages, "q1": Game.q(1), "unpaused": not get_tree().paused}
+	report["quest_clue_stage_started"] = Game.quest_step("q1") == "forest_clues" and Game.quest_collection("q1", "forest_clues").is_empty()
+	main.goto_map("forest", Vector2(560, 470))
+	await frames(4)
+	var wagon_point = null
+	for n in get_tree().get_nodes_in_group("quest_points"):
+		if str(n.get_meta("point_id", "")) == "forest_wagon":
+			wagon_point = n
+	var wagon_visible: bool = wagon_point != null and wagon_point.visible
+	if wagon_point:
+		main._on_interact(wagon_point)
+		while main.hud.dialogue.visible:
+			await get_tree().create_timer(0.3, true, false, true).timeout
+			main.hud.dialogue.advance()
+	var duplicate_clue: Dictionary = Game.quest_point_interact("forest", "forest_wagon")
+	var banner_point = null
+	for n in get_tree().get_nodes_in_group("quest_points"):
+		if str(n.get_meta("point_id", "")) == "forest_banner":
+			banner_point = n
+	if banner_point:
+		main._on_interact(banner_point)
+		while main.hud.dialogue.visible:
+			await get_tree().create_timer(0.3, true, false, true).timeout
+			main.hud.dialogue.advance()
+	report["quest_clues"] = {"wagon_spawned": wagon_visible, "duplicate_blocked": duplicate_clue.is_empty(),
+		"count": Game.quest_collection("q1", "forest_clues").size(), "next_step": Game.quest_step("q1")}
+	var forest_target := Game.quest_target()
+	report["crypt_exit_target"] = forest_target.get("map", "") == "forest" and forest_target.get("kind", "") == "exit"
 	main.goto_map("dungeon", Vector2(470, 700))
 	await frames(4)
+	report["crypt_inscription_stage"] = Game.quest_step("q1") == "crypt_inscription"
+	var inscription = null
+	for n in get_tree().get_nodes_in_group("quest_points"):
+		if str(n.get_meta("point_id", "")) == "crypt_inscription":
+			inscription = n
+	var inscription_visible: bool = inscription != null and inscription.visible
+	if inscription:
+		main._on_interact(inscription)
+		while main.hud.dialogue.visible:
+			await get_tree().create_timer(0.3, true, false, true).timeout
+			main.hud.dialogue.advance()
+	await frames(4)
+	report["inscription_unlocks_boss"] = inscription_visible and Game.quest_step("q1") == "boss_ready"
 	var guardian = null
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e.type == "boss":
