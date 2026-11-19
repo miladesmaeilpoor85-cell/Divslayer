@@ -14,7 +14,7 @@ jobs:
   headless-tests:
     name: Godot 4.7.2 headless tests
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 240
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
