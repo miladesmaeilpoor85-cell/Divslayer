@@ -29,6 +29,18 @@ static func animation_duration(frames: SpriteFrames, animation: String, minimum_
 		return minimum
 	return maxf(minimum, float(count) / fps)
 
+## Seconds from the animation start to the beginning of a zero-based impact frame.
+## Missing clips, invalid FPS and out-of-range indices fail safely to frame zero / no delay.
+static func animation_impact_time(frames: SpriteFrames, animation: String, impact_frame: int, playback_scale := 1.0) -> float:
+	if frames == null or not frames.has_animation(animation):
+		return 0.0
+	var count := frames.get_frame_count(animation)
+	var fps := frames.get_animation_speed(animation) * absf(float(playback_scale))
+	if count <= 0 or fps <= 0.0:
+		return 0.0
+	var frame := clampi(impact_frame, 0, count - 1)
+	return float(frame) / fps
+
 ## Build directional hero/villager animations from named atlas columns.
 ## An optional separate attack sheet keeps new combat frames independent from walk art.
 static func character_frames(tex: Texture2D, meta: Dictionary, attack_texture: Texture2D = null) -> SpriteFrames:
