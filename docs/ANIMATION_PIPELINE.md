@@ -41,8 +41,9 @@ on every frame and does not replace an Android device test.
    but still does not supply a full attack sequence.
 4. **Clip timing must match gameplay timing.** The normal player attack window is
    0.16 s and the heavy window is 0.26 s. Four attack frames at 24 FPS take about
-   0.167 s, so a future four-frame normal attack would need its clip rate or
-   gameplay animation window checked before approval.
+   0.167 s, so the normal attack's final frame may be cut slightly short unless
+   the gameplay animation window is adjusted. The preview builder now supports
+   independent per-clip FPS values, but this does not change runtime combat timing.
 
 ## Changes in this update
 
@@ -53,9 +54,10 @@ on every frame and does not replace an Android device test.
   sprite-backed enemy atlases/variants, and both future multi-frame attack
   formats using synthetic in-memory sheets.
 - The animation review tool now exports separate directional **walk** and
-  **attack** GIFs. The current warrior review configuration labels the existing
-  attack pose as a one-frame, non-looping clip rather than incorrectly placing
-  it at the end of a looping walk preview.
+  **attack** GIFs, each with its own FPS. The current warrior review config uses
+  9 FPS for walk and 24 FPS for attack to match the Godot animation defaults.
+  Configurations without per-clip FPS continue to inherit the global FPS. The
+  current attack remains a one-frame, non-looping review pose.
 - CI runs the builder tests and uploads the review sheets, previews, and report
   as a temporary artifact.
 
