@@ -44,10 +44,45 @@ func run(_main: Node) -> void:
 				hero_frames.has_animation(walk) and hero_frames.get_frame_count(walk) == 4)
 			check(sheet_name + "_" + direction + "_idle_has_one_frame",
 				hero_frames.has_animation(idle) and hero_frames.get_frame_count(idle) == 1)
-			check(sheet_name + "_" + direction + "_legacy_attack_has_one_frame",
-				hero_frames.has_animation(attack) and hero_frames.get_frame_count(attack) == 1)
+			var expected_attack_frames := int(hero_manifest[sheet_name].get("attackFrames", 1))
+			check(sheet_name + "_" + direction + "_attack_frame_count_matches_metadata",
+				hero_frames.has_animation(attack) and hero_frames.get_frame_count(attack) == expected_attack_frames)
 			check(sheet_name + "_" + direction + "_attack_is_one_shot",
 				hero_frames.has_animation(attack) and not hero_frames.get_animation_loop(attack))
+
+	# Production Warrior starter: a separate, real three-direction attack atlas.
+	var warrior_meta: Dictionary = hero_manifest.get("warrior_starter", {})
+	var warrior_data: Dictionary = Sheets.character("heroes", "warrior_starter")
+	var warrior_frames: SpriteFrames = warrior_data.get("frames")
+	check("warrior_starter_attack_manifest_points_to_separate_atlas",
+		warrior_meta.get("attackSheet", "") == "warrior_starter_attack.svg"
+		and int(warrior_meta.get("attackFrames", 0)) == 4)
+	for direction_index in range(3):
+		var direction: String = ["down", "up", "side"][direction_index]
+		var attack_name := "attack_" + direction
+		var first_frame := warrior_frames.get_frame_texture(attack_name, 0) as AtlasTexture
+		var last_frame := warrior_frames.get_frame_texture(attack_name, 3) as AtlasTexture
+		var atlas_ok := first_frame != null and last_frame != null
+		if atlas_ok:
+			atlas_ok = first_frame.atlas != null and last_frame.atlas == first_frame.atlas
+		if atlas_ok:
+			atlas_ok = first_frame.atlas.get_width() == 640 and first_frame.atlas.get_height() == 468
+		if atlas_ok:
+			atlas_ok = first_frame.region == Rect2(0, direction_index * 156, 160, 156)
+			atlas_ok = atlas_ok and last_frame.region == Rect2(480, direction_index * 156, 160, 156)
+		check("warrior_starter_" + direction + "_attack_uses_four_separate_atlas_cells", atlas_ok)
+		check("warrior_starter_" + direction + "_walk_remains_four_frames",
+			warrior_frames.get_frame_count("walk_" + direction) == 4)
+		check("warrior_starter_" + direction + "_attack_runs_at_sixteen_fps",
+			is_equal_approx(warrior_frames.get_animation_speed(attack_name), 16.0))
+	check("warrior_starter_attack_duration_is_quarter_second",
+		is_equal_approx(Sheets.animation_duration(warrior_frames, "attack_down", 0.16), 0.25))
+	check("warrior_starter_heavy_attack_keeps_minimum_window",
+		is_equal_approx(Sheets.animation_duration(warrior_frames, "attack_down", 0.26), 0.26))
+	check("warrior_starter_impact_frame_two_is_125ms",
+		is_equal_approx(Sheets.animation_impact_time(warrior_frames, "attack_down", 2), 0.125))
+	check("warrior_starter_heavy_impact_frame_two_is_125ms",
+		is_equal_approx(Sheets.animation_impact_time(warrior_frames, "attack_down", int(warrior_meta.get("heavyImpactFrame", 0))), 0.125))
 
 	# Future format A: four walk columns followed by four attack columns in one atlas.
 	var embedded_meta := {
