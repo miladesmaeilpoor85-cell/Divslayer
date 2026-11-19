@@ -570,7 +570,6 @@ func attack(heavy := false) -> void:
 	if dead or (atk_cd > 0.0 and not heavy) or caster.ult_active() or blocking:
 		return
 	atk_cd = (0.28 if not heavy else 0.45) * Game.atk_speed_mul()
-	attacking = 0.16 if not heavy else 0.26
 	combo = combo + 1 if combo_t > 0.0 and not heavy else 0
 	combo_t = 0.9
 	var lv: int = min(combo, 3)
@@ -587,6 +586,10 @@ func attack(heavy := false) -> void:
 		if gap > 16.0:
 			move_and_collide(to.normalized() * min(14.0, gap - 12.0))
 			global_position = global_position.clamp(Vector2(13, 34), world.size - Vector2(13, 0))
+	# Keep the pose visible for its full clip, while preserving the current gameplay minimum.
+	var attack_direction := "side" if facing == "left" or facing == "right" else facing
+	var minimum_attack_time := 0.16 if not heavy else 0.26
+	attacking = Sheets.animation_duration(anim.sprite_frames, "attack_" + attack_direction, minimum_attack_time, anim.speed_scale)
 	var body_c := global_position + Vector2(0, -17)
 	var fv := facing_vec()
 	var box := _swing_box(reach)
@@ -652,14 +655,19 @@ func attack(heavy := false) -> void:
 ## the swing: a strip in front of the hero (as getAttackHitbox) plus the hero's own body, so an enemy
 ## standing right on top of you is hit too
 func _swing_box(reach: float) -> Rect2:
-	var b := body_rect()
-	var r: Rect2
-	match facing:
-		"down": r = Rect2(b.position.x - 3, b.end.y, b.size.x + 6, reach)
-		"up": r = Rect2(b.position.x - 3, b.position.y - reach, b.size.x + 6, reach)
-		"left": r = Rect2(b.position.x - reach, b.position.y - 3, reach, b.size.y + 6)
-		_: r = Rect2(b.end.x, b.position.y - 3, reach, b.size.y + 6)
-	return r.merge(b.grow(4.0))
+	return swing_box_for(body_rect(), facing, reach)
+
+## Pure combat geometry shared by runtime and regression tests. The hero's body
+## remains hittable even when the forward reach is zero.
+static func swing_box_for(body_bounds: Rect2, attack_facing: String, reach: float) -> Rect2:
+	var safe_reach := maxf(0.0, reach)
+	var strip: Rect2
+	match attack_facing:
+		"down": strip = Rect2(body_bounds.position.x - 3.0, body_bounds.end.y, body_bounds.size.x + 6.0, safe_reach)
+		"up": strip = Rect2(body_bounds.position.x - 3.0, body_bounds.position.y - safe_reach, body_bounds.size.x + 6.0, safe_reach)
+		"left": strip = Rect2(body_bounds.position.x - safe_reach, body_bounds.position.y - 3.0, safe_reach, body_bounds.size.y + 6.0)
+		_: strip = Rect2(body_bounds.end.x, body_bounds.position.y - 3.0, safe_reach, body_bounds.size.y + 6.0)
+	return strip.merge(body_bounds.grow(4.0))
 
 static func _gap(a: Rect2, b: Rect2) -> float:
 	var dx: float = max(0.0, max(a.position.x - b.end.x, b.position.x - a.end.x))
