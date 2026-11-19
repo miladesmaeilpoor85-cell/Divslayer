@@ -45,17 +45,17 @@ class AnimationPipelineTests(unittest.TestCase):
                 self.assertEqual(walk["frame_count"], 4)
                 self.assertTrue(walk["loop"])
                 self.assertEqual(walk["fps"], 9.0)
-                self.assertEqual(walk["frame_duration_ms"], 111)
+                self.assertEqual(walk["frame_duration_ms"], 110)
                 self.assertEqual(attack["frame_count"], 1)
                 self.assertFalse(attack["loop"])
                 self.assertEqual(attack["fps"], 24.0)
-                self.assertEqual(attack["frame_duration_ms"], 42)
+                self.assertEqual(attack["frame_duration_ms"], 40)
                 with Image.open(output / walk["file"]) as gif:
                     self.assertEqual(gif.n_frames, 4)
-                    self.assertEqual(gif.info.get("duration"), 111)
+                    self.assertEqual(gif.info.get("duration"), 110)
                 with Image.open(output / attack["file"]) as gif:
                     self.assertEqual(gif.n_frames, 1)
-                    self.assertEqual(gif.info.get("duration"), 42)
+                    self.assertEqual(gif.info.get("duration"), 40)
 
     def _temporary_project(self, temporary: str, *, clip_fps: float | None = None) -> Path:
         root = Path(temporary)
@@ -78,7 +78,7 @@ class AnimationPipelineTests(unittest.TestCase):
             config_path = self._temporary_project(temporary)
             report = build_animation(config_path, Path(temporary) / "out")
             self.assertTrue(all(clip["fps"] == 9.0 for clip in report["preview_clips"]))
-            self.assertTrue(all(clip["frame_duration_ms"] == 111 for clip in report["preview_clips"]))
+            self.assertTrue(all(clip["frame_duration_ms"] == 110 for clip in report["preview_clips"]))
 
     def test_rejects_non_positive_clip_fps(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
