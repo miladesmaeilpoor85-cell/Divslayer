@@ -91,3 +91,14 @@ This is an animation improvement for Warrior Starter only; Mid/Endgame Warrior a
 - [ ] Review the visual result at native Android scale and on a physical device after a new APK is built.
 
 The procedural effects in this step are a presentation improvement, not a substitute for the missing class-specific sprite poses.
+
+
+## Frame-level animation audit — 20 November 2026
+
+- [x] Add a read-only image audit for duplicate frames, adjacent pixel-motion ratios, visible alpha, and bottom-edge drift.
+- [x] Measure both embedded/atlas attack clips and separately registered `attackFrameFiles` (including the Warrior Starter production sequence).
+- [x] Report frame counts, FPS, contact-frame index and contact time when the manifest provides them.
+- [x] Run unit tests and publish a JSON quality report from the artwork CI job.
+- [ ] Review the generated report and native-scale contact sheets; pixel-difference metrics identify review candidates but do not grade acting or artistic quality.
+
+**Manifest-based baseline:** 12 hero looks create 36 directional attack clips. Warrior Starter now has three four-frame directional attack clips; the other 33 hero attack clips still use one pose each. This count describes registered clip/frame data, not a visual quality score.
