@@ -24,6 +24,7 @@ const Boss = preload("res://scripts/boss.gd")
 const ArenaObj = preload("res://scripts/arena_obj.gd")
 const BossFx = preload("res://scripts/bossfx.gd")
 const Hazards = preload("res://scripts/hazards.gd")
+const WindGustController = preload("res://scripts/wind_gust.gd")
 const FloatText = preload("res://scripts/float_text.gd")
 const Fx = preload("res://scripts/fx/fx.gd")
 const Lighting = preload("res://scripts/fx/lighting.gd")
@@ -62,6 +63,7 @@ var data := {}
 var size := Vector2(1000, 800)
 var ysort: Node2D
 var hazards: Array = []
+var wind_zones: Array[Dictionary] = []
 var wall_rects: Array[Rect2] = []
 var bossfx: Node2D
 var fx: Node2D
@@ -85,6 +87,7 @@ func build(map_key: String) -> void:
 	var md: Dictionary = Game.map_data(map_key)
 	data = md.get("data", {})
 	size = Vector2(float(data.get("w", 1000)), float(data.get("h", 800)))
+	configure_wind_zones(data.get("windGusts", []))
 
 	var ground := Sprite2D.new()
 	ground.name = "Ground"
@@ -693,6 +696,74 @@ func wall_hit(r: Rect2) -> bool:
 			return true
 	return false
 
+## Build data-driven wind zones. Each zone uses a [x, y, width, height] rect and optional shelter rects.
+func configure_wind_zones(definitions: Array) -> void:
+	wind_zones.clear()
+	for raw_zone in definitions:
+		if not (raw_zone is Dictionary):
+			continue
+		var zone_data: Dictionary = raw_zone
+		var area := _wind_rect(zone_data.get("rect", []))
+		if area.size.x <= 0.0 or area.size.y <= 0.0:
+			continue
+		var direction_values: Variant = zone_data.get("direction", [1.0, 0.0])
+		var wind_direction := Vector2.RIGHT
+		if direction_values is Array and direction_values.size() >= 2:
+			wind_direction = Vector2(float(direction_values[0]), float(direction_values[1]))
+		var shelters: Array[Rect2] = []
+		var shelter_values: Variant = zone_data.get("shelters", [])
+		if shelter_values is Array:
+			for raw_shelter in shelter_values:
+				var shelter := _wind_rect(raw_shelter)
+				if shelter.size.x > 0.0 and shelter.size.y > 0.0:
+					shelters.append(shelter)
+		var controller = WindGustController.new({
+			"direction": wind_direction,
+			"warning_seconds": float(zone_data.get("warning_seconds", 0.95)),
+			"active_seconds": float(zone_data.get("active_seconds", 1.6)),
+			"rest_seconds": float(zone_data.get("rest_seconds", 1.9)),
+			"drift_speed": float(zone_data.get("drift_speed", 45.0)),
+			"shelter_multiplier": float(zone_data.get("shelter_multiplier", 0.1)),
+		})
+		wind_zones.append({"rect": area, "shelters": shelters, "controller": controller})
+
+
+func _wind_rect(bounds: Variant) -> Rect2:
+	if not (bounds is Array) or bounds.size() < 4:
+		return Rect2()
+	var rect := Rect2(
+		float(bounds[0]),
+		float(bounds[1]),
+		float(bounds[2]),
+		float(bounds[3])
+	)
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return Rect2()
+	return rect
+
+
+## Returns the active zone's drift at a feet position. Zones should not overlap.
+func wind_drift(feet: Vector2, dodging: bool = false) -> Vector2:
+	for zone in wind_zones:
+		var area: Rect2 = zone["rect"]
+		if not area.has_point(feet):
+			continue
+		var sheltered := false
+		for shelter in zone["shelters"]:
+			if shelter.has_point(feet):
+				sheltered = true
+				break
+		var controller = zone["controller"]
+		return controller.drift_velocity(sheltered, dodging)
+	return Vector2.ZERO
+
+
+## Clear any in-progress gust after death or a forced reset.
+func reset_wind() -> void:
+	for zone in wind_zones:
+		zone["controller"].reset()
+
+
 ## one-time hints (saved), shown as a toast
 func tip(id: String, en: String, fa: String) -> void:
 	var seen: Dictionary = Game.v18().get("tips", {})
@@ -771,6 +842,11 @@ func punch(dir: Vector2, amount := 6.0) -> void:
 	var c = _cam()
 	if c:
 		c.punch(dir, amount)
+
+func _physics_process(dt: float) -> void:
+	for zone in wind_zones:
+		zone["controller"].advance(dt)
+
 
 func _process(dt: float) -> void:
 	enemy_tactics_clock += dt
