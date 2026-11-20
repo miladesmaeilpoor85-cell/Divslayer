@@ -7,7 +7,6 @@ import unittest
 from pathlib import Path
 
 from import_animation_atlas import import_atlas
-
 from PIL import Image, ImageDraw
 
 
