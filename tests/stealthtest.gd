@@ -72,7 +72,6 @@ func dummy(feet: Vector2, type := "skeleton", hp := 5000.0) -> Node:
 	e.spd = 0.0
 	e.dmg = 0.0
 	e.hit_cd = 9999.0
-	e.calm = 2.0 # Test dummies stay unaware unless the test explicitly alerts them.
 	return e
 
 func clear_foes() -> void:
@@ -277,6 +276,7 @@ func run(m: Node) -> void:
 	clear_foes()
 	var a = dummy(Vector2(480, 520))
 	p.sneaking = true
+	a.calm = 2.0 # This target deliberately remains unaware during the attack wind-up.
 	a.alert = false
 	p.atk_cd = 0.0
 	p.combo_t = 0.0
