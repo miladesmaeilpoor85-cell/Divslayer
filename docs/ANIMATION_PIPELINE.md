@@ -108,9 +108,9 @@ For each registered hero walk/attack clip and enemy variant, the report records:
   background so hidden RGB values under fully transparent pixels do not cause
   false differences;
 - adjacent changed-pixel ratios using a conservative per-pixel threshold;
-- visible-alpha ratio and visible-foot-baseline variation;
+- visible-alpha ratio and bottom-of-silhouette range across frames;
 - review flags for single-pose attacks, two-frame loops, duplicate frames,
-  very low pixel motion, and hero baseline drift.
+  and very low pixel motion.
 
 The current inventory has 12 hero appearance sheets, each with three walk
 directions and one attack pose per direction. Unless a separate attack atlas is
@@ -124,8 +124,10 @@ Interpretation limits: pixel-difference scores are triage signals, not an
 artistic quality score. Low movement may be correct for a hovering creature,
 and two frames can be enough for a simple wing beat. Likewise, a high changed
 pixel ratio can indicate jitter or inconsistent registration rather than good
-animation. The flags must be checked against the GIF/PNG previews and gameplay
-silhouette before an asset is labelled defective.
+animation. The bottom-of-silhouette range is informational only: a walking
+character naturally lifts one foot, so this value must not be treated as pivot
+or foot-placement error. Check the GIF/PNG previews and gameplay silhouette
+before an asset is labelled defective.
 
 The audit recognises a separate hero attack atlas when `attackSheet` and
 `attackFrames` are present in the manifest. Its expected layout is one
