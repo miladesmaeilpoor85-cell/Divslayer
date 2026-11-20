@@ -1,0 +1,107 @@
+{
+  "groundFile": "frostvale_ground.jpg",
+  "groundScale": 2,
+  "data": {
+    "name": "The High Eyrie — Gale Warden arena",
+    "w": 1000,
+    "h": 820,
+    "bg": "#253341",
+    "walls": [
+      {
+        "x": 180,
+        "y": 500,
+        "w": 130,
+        "h": 28,
+        "color": "#465968"
+      },
+      {
+        "x": 690,
+        "y": 500,
+        "w": 130,
+        "h": 28,
+        "color": "#465968"
+      },
+      {
+        "x": 365,
+        "y": 610,
+        "w": 270,
+        "h": 26,
+        "color": "#465968"
+      },
+      {
+        "x": 320,
+        "y": 275,
+        "w": 34,
+        "h": 125,
+        "color": "#465968"
+      },
+      {
+        "x": 646,
+        "y": 275,
+        "w": 34,
+        "h": 125,
+        "color": "#465968"
+      }
+    ],
+    "exits": [
+      {
+        "x": 0,
+        "y": 500,
+        "w": 20,
+        "h": 120,
+        "to": "alborz",
+        "spawnX": 1290,
+        "spawnY": 520,
+        "dir": "left"
+      }
+    ],
+    "hazards": [],
+    "windGusts": [
+      {
+        "rect": [
+          130,
+          320,
+          740,
+          300
+        ],
+        "direction": [
+          0,
+          -1
+        ],
+        "warning_seconds": 1,
+        "active_seconds": 1.45,
+        "rest_seconds": 1.85,
+        "drift_speed": 38,
+        "shelter_multiplier": 0.1,
+        "shelters": [
+          [
+            180,
+            455,
+            130,
+            95
+          ],
+          [
+            690,
+            455,
+            130,
+            95
+          ]
+        ]
+      }
+    ],
+    "npcs": [],
+    "enemySpawns": [
+      {
+        "type": "alborzwarden",
+        "x": 465,
+        "y": 240
+      }
+    ],
+    "items": [],
+    "playerStart": {
+      "x": 80,
+      "y": 570
+    }
+  },
+  "objects": []
+}
