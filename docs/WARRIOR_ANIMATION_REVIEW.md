@@ -1,6 +1,6 @@
 # Warrior animation review scene | بازبینی انیمیشن جنگجوی دیوکش
 
-**Status:** isolated review candidate — the production Warrior starter now has a separate four-frame attack atlas, but this scene remains a read-only review harness and is not a replacement for in-game combat.
+**Status:** read-only developer review harness. It previews the existing Warrior starter sheet; it does not contain or activate a new multi-frame production attack animation.
 
 ## Open the scene
 
@@ -10,22 +10,46 @@ From the project root:
 godot --path . res://scenes/dev/warrior_animation_review.tscn
 ```
 
-On the review screen, tap **روبه‌رو**, **پشت**, or **نیم‌رخ** to preview the four-frame walk cycle for each direction. Tap **حمله** or press Space to see the current side-attack pose with a short, timed sword-slash arc. Keyboard shortcuts: `1` front/down, `2` back/up, `3` side/right, `Space` attack.
+On the review screen, tap **روبه‌رو**, **پشت**, or **نیم‌رخ** to preview the four-frame walk cycle for each direction. Tap **حمله** or press Space to show the single attack pose with a short sword-slash arc drawn by the review scene. Keyboard shortcuts: `1` front/down, `2` back/up, `3` side/right, `Space` attack.
 
-## Sprite layout and import contract
+The slash arc is a review-scene visual effect. It is not a rendered sequence of new sword poses and does not exercise the production combat damage pipeline.
 
-The review scene deliberately loads the existing `assets/art/Heroes/warrior_starter.png` atlas read-only and reads cell dimensions, row ordering, and foot pivot from `data/art_manifest.json`. The expected project layout is 800 × 468 pixels: five 160 × 156 cells per row, with rows `down`, `up`, `side`; columns 0–3 are walk frames and column 4 is the single-frame attack pose. The scene does not replace the production sheet, edit `data/art_manifest.json`, change `scripts/sheets.gd`, or alter the pivot, class IDs, or main scene.
+## Source sheet and import contract
 
-The production Warrior starter attack now uses `assets/art/Heroes/warrior_starter_attack.png`, a separate 4-column × 3-direction atlas aligned to the existing 160 × 156 cell grid. The playable attack animation reads its four frames through the metadata-driven loader in `scripts/sheets.gd`; walk frames remain unchanged. This review scene intentionally continues to use the original 5-column atlas read-only and its own Godot-drawn slash arc, so it can compare the established production walk poses without changing combat state.
+The review scene loads the already tracked `assets/art/Heroes/warrior_starter.png` read-only and reads cell dimensions, row order, and foot pivot from `data/art_manifest.json`.
+
+The current layout is 800 × 468 pixels: five 160 × 156 cells per row, with rows `down`, `up`, and `side`. Columns 0–3 are the four walk poses; column 4 is one attack pose. The review scene builds four-frame walk clips and a one-frame attack clip from those cells. It does not replace the source sheet, edit the production manifest, change the production loader, or alter the pivot, class IDs, or main scene.
+
+## Actual production status
+
+The current production manifest registers 12 hero appearance sheets: Warrior, Mage, Rogue, and Paladin, each with starter, mid, and endgame looks. All 12 currently use four walk columns and one attack column in each of the three directions.
+
+As of the reviewed `main` revision:
+
+- There is no `assets/art/Heroes/warrior_starter_attack.png` file in the repository.
+- No current hero manifest entry registers an `attackSheet`, `attackFrames`, `attackImpactFrame`, or `heavyImpactFrame`.
+- `scripts/sheets.gd` contains infrastructure for future embedded multi-frame attack columns or a separate attack atlas, but the current hero manifests do not activate either format.
+- `scripts/player.gd` defaults a missing impact-frame setting to frame 0. Therefore the current one-frame production attacks still resolve their gameplay hit immediately; the future delayed-impact path is not active for the current hero sheets.
+
+The similarly named `creative/animation/warrior_starter_attack.json` is a preview configuration file. It points to the existing `warrior_starter.png` source sheet; it is not a new PNG attack atlas.
 
 ## Checks
 
-`tests/warriorreviewtest.gd` verifies the scene loads, all three directional walk animations contain four frames, all idle/attack poses exist, atlas cells match 160 × 156, and the attack effect returns to the selected walk animation. It is included in `tools/run_all_tests.sh`.
+`tests/warriorreviewtest.gd` checks that the review scene loads, the three directional walk clips contain four frames, the idle and single-pose attack clips exist, the atlas cell size and foot pivot match the manifest, and the review attack effect returns to the selected walk animation.
 
-The image has real alpha transparency and passed local 800 × 468 / 15-cell bounds checks. GitHub CI must still perform a clean Godot 4.7.2 import and headless test run. A human must inspect the result in Krita and the owner must test the review scene on Android before any runtime promotion.
+`tests/animationtest.gd` checks the 12 existing hero looks and tests the loader's future multi-frame formats with synthetic in-memory textures. Those synthetic tests validate the loader contract; they do not prove that a real production multi-frame attack atlas exists or is used by the game.
+
+The current `main` revision's Godot CI completed the full headless suite successfully, including 18 Warrior review checks and 291 animation checks. This is an automated resource/code check, not a human visual sign-off in Krita or an Android-device test of new attack art.
 
 ## Provenance and rights
 
-The original review-scene walk sheet remains the already-tracked production sprite. The separate four-frame attack atlas is an AI-generated candidate, aligned to the same 160 × 156 cells and stored separately so the walk sheet is not overwritten. Its generation provenance is recorded in `docs/ASSET_RIGHTS_REGISTER.csv`.
+The existing Warrior source sheet is listed in `docs/ASSET_RIGHTS_REGISTER.csv` with commercial-use status **UNVERIFIED**. This review scene adds no new image asset and makes no new provenance or licensing claim.
 
-**Commercial-use / rights status: UNVERIFIED.** Generation and successful technical import do not by themselves prove authorship, exclusivity, or commercial-use clearance. This candidate must remain a review-only resource until the service terms and project release requirements are checked. Do not copy it over `assets/art/Heroes/warrior_starter.png` without a separate reviewed PR and Android test.
+Any future multi-frame attack art must be created as genuinely distinct anticipation, contact, and recovery poses; checked at native mobile scale; recorded in the asset rights register with its source and applicable terms; imported through the production manifest; and tested in Godot and on Android before being treated as production-ready.
+
+## Next steps
+
+1. Create and visually review real multi-frame Warrior attack poses for all three directions. Do not manufacture a purported animation by merely shifting, rotating, recolouring, or squashing the existing still pose.
+2. Register the reviewed atlas in the manifest, then set the impact-frame metadata only after the contact frame and combat timing have been tested together.
+3. Verify normal and heavy attacks, directional locking, hitbox timing, cancellation by Dodge/Block, death, and map changes.
+4. Test the production animation at native mobile size and on a physical Android device before promoting the asset.
