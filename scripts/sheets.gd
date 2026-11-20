@@ -44,7 +44,7 @@ static func animation_impact_time(frames: SpriteFrames, animation: String, impac
 
 ## Build directional hero/villager animations from named atlas columns.
 ## An optional separate attack sheet keeps new combat frames independent from walk art.
-static func character_frames(tex: Texture2D, meta: Dictionary, attack_texture: Texture2D = null) -> SpriteFrames:
+static func character_frames(tex: Texture2D, meta: Dictionary, attack_texture: Texture2D = null, attack_frame_rows: Array = []) -> SpriteFrames:
 	var sf := SpriteFrames.new()
 	if tex == null:
 		push_error("character sheet texture is missing")
@@ -76,13 +76,34 @@ static func character_frames(tex: Texture2D, meta: Dictionary, attack_texture: T
 		return sf
 
 	var attack_frames := int(meta.get("attackFrames", embedded_attack_columns.size()))
-	if attack_texture == null and embedded_attack_columns.is_empty():
-		push_error("character sheet needs at least one attack column or a separate attack atlas")
+	var has_attack_frame_rows := not attack_frame_rows.is_empty()
+	if attack_texture == null and embedded_attack_columns.is_empty() and not has_attack_frame_rows:
+		push_error("character sheet needs embedded attack columns, a separate attack atlas, or separate attack frame files")
+		return sf
+	if attack_frames < 1:
+		push_error("attackFrames must be a positive integer")
 		return sf
 	if attack_texture != null:
-		if attack_frames < 1 or attack_texture.get_width() < cw * attack_frames or attack_texture.get_height() < ch * DIRS.size():
+		if attack_texture.get_width() < cw * attack_frames or attack_texture.get_height() < ch * DIRS.size():
 			push_error("separate attack atlas dimensions do not fit attackFrames and character cell dimensions")
 			return sf
+	if has_attack_frame_rows:
+		if attack_frame_rows.size() != DIRS.size():
+			push_error("separate attack frame files must provide one row for each character direction")
+			return sf
+		for raw_row in attack_frame_rows:
+			var frame_row: Array = raw_row
+			if frame_row.size() != attack_frames:
+				push_error("separate attack frame row does not match attackFrames")
+				return sf
+			for raw_frame in frame_row:
+				if not (raw_frame is Texture2D):
+					push_error("separate attack frame file did not load as a texture")
+					return sf
+				var frame_texture: Texture2D = raw_frame
+				if frame_texture.get_width() != cw or frame_texture.get_height() != ch:
+					push_error("separate attack frame dimensions must exactly match cellW and cellH")
+					return sf
 
 	var walk_fps := maxf(1.0, float(meta.get("walkFps", 9.0)))
 	var attack_fps := maxf(1.0, float(meta.get("attackFps", 24.0)))
@@ -102,7 +123,11 @@ static func character_frames(tex: Texture2D, meta: Dictionary, attack_texture: T
 		sf.add_animation(hit)
 		sf.set_animation_speed(hit, attack_fps)
 		sf.set_animation_loop(hit, false)
-		if attack_texture != null:
+		if has_attack_frame_rows:
+			var frame_row: Array = attack_frame_rows[row]
+			for frame_texture in frame_row:
+				sf.add_frame(hit, frame_texture)
+		elif attack_texture != null:
 			for frame in range(attack_frames):
 				sf.add_frame(hit, _atlas(attack_texture, frame * cw, row * ch, cw, ch))
 		else:
@@ -127,7 +152,23 @@ static func character(group: String, sheet: String) -> Dictionary:
 		attack_texture = load(Game.ART + folder + "/" + str(meta["attackSheet"]))
 		if attack_texture == null:
 			push_error("separate attack sheet missing from the build: " + str(meta["attackSheet"]))
-	var sf := character_frames(tex, meta, attack_texture)
+	var attack_frame_rows: Array = []
+	if meta.has("attackFrameFiles"):
+		var frame_file_rows: Array = meta["attackFrameFiles"]
+		if frame_file_rows.size() != DIRS.size():
+			push_error("attackFrameFiles must contain down, up and side rows")
+		else:
+			for row in range(DIRS.size()):
+				var loaded_row: Array = []
+				var frame_paths: Array = frame_file_rows[row]
+				for relative_path in frame_paths:
+					var frame_path := Game.ART + folder + "/" + str(relative_path)
+					var frame_texture: Texture2D = load(frame_path)
+					if frame_texture == null:
+						push_error("separate attack frame missing from the build: " + frame_path)
+					loaded_row.append(frame_texture)
+				attack_frame_rows.append(loaded_row)
+	var sf := character_frames(tex, meta, attack_texture, attack_frame_rows)
 	var out := {"frames": sf, "offset": pivot_offset(meta), "meta": meta}
 	_cache[key] = out
 	return out

@@ -69,3 +69,15 @@ The branch `art/warrior-starter-sprite-pilot` contains a first runtime integrati
 - `assets/art/Heroes/warrior_starter_mask.png` is a compact 160×93 one-bit greyscale cloth mask aligned to the source atlas; its shader luminance key is recorded as 0.237 in `data/hero_masks.json`.
 
 This is a starter-tier visual pilot only. It does not provide separate heavy attack, hurt/stagger, block, dodge, death, or other combat clips. There remains one attack frame per direction. The new walk cycle and combat pose must pass Godot import, full CI, wardrobe recolour, actual-scale gameplay, Android QA export/emulator launch, and manual physical-device review before merge. Other Warrior gear tiers and the Mage, Rogue, and Paladin gameplay atlases remain unchanged.
+
+## Warrior Starter multi-frame attack — integration candidate
+
+- [x] Integrate four distinct attack frames per direction (down/up/side) for the Starter Warrior while retaining the existing 5×3 walk atlas and bottom-centre pivot.
+- [x] Register the 12 individual transparent 160×156 attack frames in `data/art_manifest.json` using `attackFrameFiles`; playback runs at 24 FPS and contact is frame index 2.
+- [x] Resolve damage and impact effects on the configured contact frame; preserve immediate-hit behaviour for legacy one-frame hero attacks.
+- [x] Keep Rogue sneak active during the attack wind-up and end it on the contact frame.
+- [ ] Verify the updated code and all gameplay regression tests on the current `main` base; the previously passing CI belongs to the earlier feature-branch commit and is not proof for this integration.
+- [ ] Review the attack poses at native Android scale and confirm hit timing/left-right mirroring on a physical device.
+- [ ] Verify the source image provider terms; asset rights remain `UNVERIFIED` pending owner-side evidence and review.
+
+This is an animation improvement for Warrior Starter only; Mid/Endgame Warrior and the Mage, Rogue and Paladin attack atlases are still unchanged.

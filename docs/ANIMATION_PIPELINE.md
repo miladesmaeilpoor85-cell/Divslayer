@@ -135,3 +135,7 @@ at the real Android display scale before being promoted.
    decorative animation.
 5. Review the final atlas at native mobile scale and on the target Android
    device before changing production assets.
+
+## Separate per-frame attack files
+
+A class entry may define `attackFrameFiles` as a three-row array in the canonical `down`, `up`, `side` order. Each row contains `attackFrames` relative PNG paths under `assets/art/Heroes/`. Every texture must exactly match `cellW × cellH`. The loader validates row count, frame count, resource type and dimensions before creating a one-shot `attack_<direction>` clip. `attackFps` controls playback and `attackImpactFrame` is a zero-based contact frame; damage, impact FX and environmental interactions are resolved on that frame. Leave these fields absent on legacy sheets to preserve their current immediate-hit behaviour.

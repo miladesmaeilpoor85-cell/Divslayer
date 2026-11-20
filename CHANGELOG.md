@@ -1,3 +1,7 @@
+# Unreleased — 2026-11-20
+
+- Warrior Starter now has a four-frame directional attack candidate (down/up/side) at 24 FPS, with gameplay impact on frame 2. Damage and contact effects are synchronized to the authored contact frame; legacy one-frame attacks retain their immediate impact.
+
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
 ## Unreleased — Wind through the realms (وزش باد در سرزمین‌ها)

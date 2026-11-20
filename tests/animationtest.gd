@@ -36,6 +36,7 @@ func run(_main: Node) -> void:
 		check(sheet_name + "_sheet_loaded", hero_frames != null)
 		if hero_frames == null:
 			continue
+		var expected_attack_frames := int(hero_manifest[sheet_name].get("attackFrames", 1))
 		for direction in ["down", "up", "side"]:
 			var walk: String = "walk_" + str(direction)
 			var idle: String = "idle_" + str(direction)
@@ -44,10 +45,28 @@ func run(_main: Node) -> void:
 				hero_frames.has_animation(walk) and hero_frames.get_frame_count(walk) == 4)
 			check(sheet_name + "_" + direction + "_idle_has_one_frame",
 				hero_frames.has_animation(idle) and hero_frames.get_frame_count(idle) == 1)
-			check(sheet_name + "_" + direction + "_legacy_attack_has_one_frame",
-				hero_frames.has_animation(attack) and hero_frames.get_frame_count(attack) == 1)
+			check(sheet_name + "_" + direction + "_attack_matches_manifest",
+				hero_frames.has_animation(attack) and hero_frames.get_frame_count(attack) == expected_attack_frames)
 			check(sheet_name + "_" + direction + "_attack_is_one_shot",
 				hero_frames.has_animation(attack) and not hero_frames.get_animation_loop(attack))
+
+	# Production candidate: Warrior Starter uses 4 individual PNG frames per direction.
+	var warrior_meta: Dictionary = hero_manifest.get("warrior_starter", {})
+	var warrior_file_rows: Array = warrior_meta.get("attackFrameFiles", [])
+	check("warrior_starter_attack_frame_files_have_three_direction_rows",
+		warrior_file_rows.size() == 3)
+	check("warrior_starter_attack_frame_files_have_four_frames_each",
+		warrior_file_rows.size() == 3 and warrior_file_rows.all(func(row): return row.size() == 4))
+	var warrior_entry: Dictionary = Sheets.character("heroes", "warrior_starter")
+	var warrior_frames: SpriteFrames = warrior_entry.get("frames")
+	for direction in ["down", "up", "side"]:
+		var clip: String = "attack_" + str(direction)
+		check("warrior_starter_" + direction + "_frames_are_individual_160x156_textures",
+			warrior_frames.get_frame_count(clip) == 4
+			and (warrior_frames.get_frame_texture(clip, 0) as Texture2D).get_width() == 160
+			and (warrior_frames.get_frame_texture(clip, 0) as Texture2D).get_height() == 156)
+	check("warrior_starter_contact_frame_matches_24_fps_timing",
+		is_equal_approx(Sheets.animation_impact_time(warrior_frames, "attack_down", 2), 2.0 / 24.0))
 
 	# Future format A: four walk columns followed by four attack columns in one atlas.
 	var embedded_meta := {

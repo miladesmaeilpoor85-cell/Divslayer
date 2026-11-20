@@ -116,6 +116,7 @@ func run(m: Node) -> void:
 	e2.hp = 99999.0
 	e2.max_hp = 99999.0
 	e2.spd = 0.0
+	e2.calm = 2.0 # The target remains unaware throughout the short attack wind-up.
 	e2.global_position = p.global_position + Vector2(0, 22)
 	e2.alert = false
 	p.facing = "down"
@@ -125,8 +126,9 @@ func run(m: Node) -> void:
 	var cc = cd.get("critChance", 0.18)
 	cd["critChance"] = 1.0
 	p.attack(false)
+	# Warrior Starter now lands on zero-based impact frame 2 at 24 FPS.
+	await frames(7)
 	cd["critChance"] = cc
-	await frames(2)
 	check("backstab_counts", A.stat("backstabs") >= 1, A.stat("backstabs"))
 	check("crit_counts", A.stat("crits") >= 1, A.stat("crits"))
 
