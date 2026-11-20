@@ -9,14 +9,14 @@ extends CanvasLayer
 const Tex = preload("res://scripts/fx/tex.gd")
 
 const WEATHER := {"village": "rain", "forest": "fog", "peaks": "ash", "shadowfen": "fog", "sanctum": "snow", "frostvale": "snow",
-	"damavand": "ash"}
+	"damavand": "ash", "alborz": "ash", "alborz_eyrie": "ash"}
 ## ambient particle sets per region: names of the presets below
 const AIR := {
 	"village": ["leaves_few", "fireflies"], "forest": ["leaves", "fireflies", "pollen"], "camp": ["leaves_few", "fireflies"],
 	"dungeon": ["motes"], "peaks": ["embers", "ash_flecks"], "shadowfen": ["spores", "fireflies"],
 	"sanctum": ["glints"], "emberforge": ["embers", "heat"], "trial": ["motes", "embers_few"],
 	"frostvale": ["glints"], "wyrmhollow": ["motes", "glints"],
-	"damavand": ["embers", "ash_flecks"], "zahhakcave": ["motes", "embers_few"],
+	"damavand": ["embers", "ash_flecks"], "alborz": ["ash_flecks"], "alborz_eyrie": ["ash_flecks", "glints"], "zahhakcave": ["motes", "embers_few"],
 }
 
 ## (v0.17) the ambience loops under each region (Music.ambience): fire in the bandit camp and the forge, the drip
@@ -118,7 +118,7 @@ func sound() -> void:
 	for a in ["fire", "cave", "water"]:
 		mu.ambience(a, a in base)
 	mu.ambience("rain", weather == "rain")
-	mu.ambience("wind", weather == "ash" or weather == "snow" or k == "peaks" or k == "frostvale")
+	mu.ambience("wind", weather == "ash" or weather == "snow" or k in ["peaks", "frostvale", "alborz", "alborz_eyrie"])
 	mu.ambience("birds", outdoor and not n and k in AMB_BIRDS and weather != "rain")
 	mu.ambience("crickets", outdoor and n and k in AMB_CRICKETS and weather != "rain")
 
