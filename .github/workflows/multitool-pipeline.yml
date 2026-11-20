@@ -54,7 +54,7 @@ jobs:
       - name: Compile all project Python tools
         run: python -m py_compile tools/*.py tools/creative/*.py tools/animation_pipeline.py tools/test_animation_pipeline.py
       - name: Lint the maintained pipeline tools
-        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/animation_review.py tools/test_animation_review.py tools/creative/*.py
+        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/animation_review.py tools/test_animation_review.py tools/animation_quality_audit.py tools/test_animation_quality_audit.py tools/creative/*.py
 
   audio-quality:
     name: Audio decode and metadata — FFmpeg
@@ -97,6 +97,10 @@ jobs:
         run: python -m unittest discover -s tools -p "test_animation_review.py" -v
       - name: Render sprite animation review previews
         run: python tools/animation_review.py --output artifacts/animation-review
+      - name: Test quantitative animation quality audit
+        run: python -m unittest discover -s tools -p "test_animation_quality_audit.py" -v
+      - name: Measure frame variation and foot alignment
+        run: python tools/animation_quality_audit.py --report artifacts/animation-review/animation-quality-report.json
       - name: Fully decode the game's images and create contact sheets
         run: python tools/artwork_review.py --output artifacts/artwork-review
       - name: Render every map from map data and object sprites
