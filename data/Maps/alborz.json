@@ -73,14 +73,14 @@
     ],
     "exits": [
       {
-        "x": 1380,
-        "y": 500,
-        "w": 20,
-        "h": 120,
+        "x": 820,
+        "y": 1080,
+        "w": 120,
+        "h": 20,
         "to": "peaks",
-        "spawnX": 980,
-        "spawnY": 90,
-        "dir": "right"
+        "spawnX": 930,
+        "spawnY": 30,
+        "dir": "down"
       }
     ],
     "hazards": [],
@@ -149,8 +149,8 @@
     ],
     "items": [],
     "playerStart": {
-      "x": 1260,
-      "y": 520
+      "x": 880,
+      "y": 1030
     }
   },
   "objects": [
