@@ -60,7 +60,7 @@ func run(_main: Node) -> void:
 	var warrior_entry: Dictionary = Sheets.character("heroes", "warrior_starter")
 	var warrior_frames: SpriteFrames = warrior_entry.get("frames")
 	for direction in ["down", "up", "side"]:
-		var clip := "attack_" + direction
+		var clip: String = "attack_" + str(direction)
 		check("warrior_starter_" + direction + "_frames_are_individual_160x156_textures",
 			warrior_frames.get_frame_count(clip) == 4
 			and (warrior_frames.get_frame_texture(clip, 0) as Texture2D).get_width() == 160
