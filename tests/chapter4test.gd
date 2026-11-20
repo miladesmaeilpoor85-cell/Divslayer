@@ -76,6 +76,11 @@ func run(m: Node) -> void:
 	await frames(1)
 	Game.lang = "fa"
 	Game.new_game("warrior")
+	# Place the fixture beyond the three previous chapters so the Elder reaches Chapter IV.
+	for quest_index in [1, 2, 3]:
+		Game.set_q(quest_index, "done")
+	Game.Ch2.st()["step"] = "done"
+	Game.Ch3.set_step("bound")
 	for boss_type in Game.BOSS_CFG:
 		Game.v18()["seen"][boss_type] = true
 	main.start_world()
