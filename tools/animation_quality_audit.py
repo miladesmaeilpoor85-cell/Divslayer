@@ -5,6 +5,7 @@ import argparse
 import json
 import sys
 from collections import Counter
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -55,7 +56,7 @@ def frame_metrics(frames: list[Image.Image]) -> dict[str, Any]:
         if keys[left] == keys[right]
     ]
     changes = []
-    for before, after in zip(normalized, normalized[1:]):
+    for before, after in pairwise(normalized):
         histogram = ImageChops.difference(before, after).convert("L").histogram()
         changed = sum(histogram[DIFF_THRESHOLD + 1 :])
         changes.append(changed / (size[0] * size[1]))
