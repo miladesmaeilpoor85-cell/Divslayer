@@ -1,6 +1,6 @@
 {
   "name": "hero_starter_attack_batch",
-  "status": "authoring_contract_only_not_runtime_registered",
+  "status": "imported_on_feature_branch_pending_godot_and_android_validation",
   "directions": [
     "down",
     "up",
@@ -49,9 +49,54 @@
       "identity": "Preserve the starter paladin's exact face, armour silhouette, Persian-inspired details, shield and original weapon. Keep the shield side consistent, grounded footwork, a clear committed weapon strike and recovery. No shield or weapon swaps."
     }
   ],
-  "runtime_activation": "Do not add attackFrameFiles to data/art_manifest.json until all frames pass visual review, direction/orientation checks, asset-rights review and gameplay timing validation.",
+  "runtime_activation": "Registered on the feature branch; Godot and Android validation is still required before merge.",
   "rights": {
     "commercial_use_status": "UNVERIFIED",
     "required_register": "docs/ASSET_RIGHTS_REGISTER.csv"
+  },
+  "import_result": {
+    "source_files": [
+      "1000078726.png",
+      "1000078728.png",
+      "1000078727.png"
+    ],
+    "source_dimensions": [
+      1536,
+      1147
+    ],
+    "normalized_grid": [
+      4,
+      3
+    ],
+    "source_cell_dimensions": [
+      384,
+      384
+    ],
+    "in_cell_scale": 0.88,
+    "output_cell_dimensions": [
+      160,
+      156
+    ],
+    "output_atlas_dimensions": [
+      640,
+      468
+    ],
+    "frames_per_direction": 4,
+    "directions": [
+      "down",
+      "up",
+      "side"
+    ],
+    "fps": 24,
+    "impact_frame_zero_based": 2,
+    "classes": [
+      "mage",
+      "rogue",
+      "paladin"
+    ],
+    "exact_duplicate_frames": 0,
+    "importer_warnings": [],
+    "visual_review": "See docs/THREE_CLASS_STARTER_ATTACK_REVIEW.md",
+    "rights_status": "UNVERIFIED"
   }
 }
