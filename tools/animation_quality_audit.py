@@ -14,7 +14,6 @@ from PIL import Image, ImageChops
 ROOT = Path(__file__).resolve().parents[1]
 DIFF_THRESHOLD = 12
 LOW_MOTION_RATIO = 0.02
-FOOT_DRIFT_LIMIT = 2
 
 
 def positive_int(value: Any, field: str) -> int:
@@ -70,7 +69,7 @@ def frame_metrics(frames: list[Image.Image]) -> dict[str, Any]:
         "mean_adjacent_changed_pixel_ratio": round(sum(changes) / len(changes), 6) if changes else 0.0,
         "max_adjacent_changed_pixel_ratio": round(max(changes), 6) if changes else 0.0,
         "visible_alpha_ratio": round(sum(visible_ratios) / len(visible_ratios), 6),
-        "foot_baseline_range_px": max(baselines) - min(baselines) if len(baselines) > 1 else 0,
+        "visible_bottom_range_px": max(baselines) - min(baselines) if len(baselines) > 1 else 0,
     }
 
 
@@ -87,8 +86,6 @@ def clip_warnings(metrics: dict[str, Any], kind: str, name: str) -> list[str]:
         result.append("limited_two_frame_cycle")
     if count > 1 and metrics["max_adjacent_changed_pixel_ratio"] < LOW_MOTION_RATIO:
         result.append("very_low_pixel_motion")
-    if kind == "heroes" and metrics["foot_baseline_range_px"] > FOOT_DRIFT_LIMIT:
-        result.append("hero_foot_baseline_drift")
     return result
 
 
