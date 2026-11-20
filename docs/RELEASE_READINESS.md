@@ -1,6 +1,6 @@
 # Release readiness | آمادگی انتشار
 
-**Status checked: 18 November 2026 · Current game version: 0.43.0**
+**Status checked: 20 November 2026 · Main-branch baseline: 0.43.0; proposed Chapter IV completion: 0.44.0 pending CI and review**
 
 This file separates verified engineering status from items that still require the project owner's private files, evidence, device testing, or legal review. A passing CI run is not a release approval.
 
@@ -19,6 +19,11 @@ This file separates verified engineering status from items that still require th
 - The production Android export preset, production package identity, and production signing configuration remain private and must be verified separately. QA manifest values must not be treated as proof of production release readiness.
 - The `main` branch history was rewritten on 18 November 2026. Anyone holding an older clone must create a fresh clone; do not merge or push old history back into `main`.
 
+## Proposed Chapter IV completion | تکمیل پیشنهادی فصل چهارم
+
+- The working branch `feat/chapter4-completion-2026-11-20` adds a gated High Eyrie side-area, a three-phase Gale Warden encounter, and Alborz wind ambience. The boss silhouette is procedural placeholder art, not final character art. The multi-frame Warrior attack atlas is still absent; the animation review tool now accepts a future separate attack atlas and explicitly reports the present one-frame attacks as placeholders.
+- CI now emits a machine-readable commercial-evidence report for artwork and soundtrack entries. That report records missing evidence; it does not infer rights from an AI tool name, provider name, or source URL.
+
 ## Android release blockers | موارد لازم برای خروجی اندروید
 
 - **Private export preset:** `export_presets.cfg` is present in `.gitignore` and is not tracked in the public tree. The public `project.godot` does not declare the production Android application ID/package identifier. Confirm the established package ID, version code, target/minimum SDK, architecture, permissions, and asset exclusions from the owner's private export settings. Do not invent a new package ID for an app that may already have been distributed.
@@ -31,9 +36,9 @@ This file separates verified engineering status from items that still require th
 
 ## Asset rights audit | ممیزی حقوق دارایی‌ها
 
-- **Music:** All 30 soundtrack tracks are present under `assets/audio/music/`; project records identify them as generated with Suno V6 through the Hoosha API and explicitly say that commercial-use status still needs verification. The repository does not contain independent evidence for each track. Suno's current help page says commercial-use rights apply to songs downloaded while on a paid plan; its Terms restrict permitted commercial exploitation to downloads through an approved Suno channel. The Hoosha API route is not independently verified. Retain receipts, generation/task IDs, dates, plan/account status, API authorization, download route, and dated terms in a private archive. Do not treat the current metadata claim as proof. See [Suno commercial rights](https://help.suno.com/en/articles/9601665) and [Suno Terms](https://suno.com/terms).
+- **Music:** All 30 soundtrack tracks are present under `assets/audio/music/`; project records identify them as generated with Suno V6 through the Hoosha API and explicitly say that commercial-use status still needs verification. The credits now track `UNVERIFIED` status and a per-track private-proof reference, rather than implying a blanket commercial-use grant. The repository does not contain independent evidence for each track. Suno's current help page says commercial-use rights apply to songs downloaded while on a paid plan; its Terms restrict permitted commercial exploitation to downloads through an approved Suno channel. The Hoosha API route is not independently verified. Retain receipts, generation/task IDs, dates, plan/account status, API authorization, download route, and dated terms in a private archive. Do not treat the current metadata claim as proof. See [Suno commercial rights](https://help.suno.com/en/articles/9601665) and [Suno Terms](https://suno.com/terms).
 - **Ambience and SFX:** The metadata records 6 ambience items and 8 sound-effect entries as CC0. Verify their source files and matching license notices individually; do not extend these notices to the soundtrack or artwork.
-- **Artwork:** `docs/ASSET_RIGHTS_REGISTER.csv` currently contains **371 image entries, all marked `UNVERIFIED`**. Record provenance (owner-created, AI-generated, or third-party), tool/source, creation date, applicable terms, and evidence for every file. Do not assume AI-generated images automatically have exclusive or commercially unrestricted rights.
+- **Artwork:** `docs/ASSET_RIGHTS_REGISTER.csv` contains **371 image entries, all marked `UNVERIFIED`** in the inspected baseline. The CI release-evidence report counts any entry without both `VERIFIED` status and a private evidence reference as a blocker. Record provenance (owner-created, AI-generated, or third-party), tool/source, creation date, applicable terms, and evidence for every file. Do not assume AI-generated images automatically have exclusive or commercially unrestricted rights.
 - **Fonts and icons:** The repository contains separate license notices for its fonts and icon sets. Preserve those notices in any distribution and re-check them if assets are replaced.
 
 ## Technical/security audit | ممیزی فنی و امنیتی
