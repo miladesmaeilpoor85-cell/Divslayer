@@ -66,6 +66,6 @@ The branch `art/warrior-starter-sprite-pilot` contains a first runtime integrati
 - The source atlas stores 15 cells in five columns by three directional rows. Each cell is 32 × 31 pixels and is expanded independently to 160 × 156 with nearest-neighbour sampling at runtime.
 - Runtime atlas: 800 × 468 px, preserving the existing `data/art_manifest.json` contract (`down`, `up`, `side`; `walk0`–`walk3`, `attack`; bottom-centre feet pivot).
 - `scripts/generated/warrior_starter_art.gd` builds and caches the runtime `ImageTexture`; `scripts/sheets.gd` uses it only for `heroes/warrior_starter` and retains the old PNG fallback.
-- `assets/art/Heroes/warrior_starter_mask.png` is the full-size red-channel cloth mask; its shader luminance key is recorded as 0.237 in `data/hero_masks.json`.
+- `assets/art/Heroes/warrior_starter_mask.png` is a compact 160×93 one-bit greyscale cloth mask aligned to the source atlas; its shader luminance key is recorded as 0.237 in `data/hero_masks.json`.
 
 This is a starter-tier visual pilot only. It does not provide separate heavy attack, hurt/stagger, block, dodge, death, or other combat clips. There remains one attack frame per direction. The new walk cycle and combat pose must pass Godot import, full CI, wardrobe recolour, actual-scale gameplay, Android QA export/emulator launch, and manual physical-device review before merge. Other Warrior gear tiers and the Mage, Rogue, and Paladin gameplay atlases remain unchanged.

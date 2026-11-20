@@ -7,7 +7,7 @@
 | Path | Purpose |
 |---|---|
 | `assets/art/Heroes/warrior_starter_source.webp` | Compact 5×3 source atlas, 160×93 px |
-| `assets/art/Heroes/warrior_starter_mask.png` | Full-size cloth recolour mask, 800×468 px |
+| `assets/art/Heroes/warrior_starter_mask.png` | Compact 1-bit greyscale cloth mask, 160×93 px |
 | `scripts/generated/warrior_starter_art.gd` | Cell-by-cell runtime atlas expander/cache |
 | `data/hero_masks.json` | Warrior starter shader key = 0.237 |
 
@@ -19,7 +19,7 @@ The source art is a low-resolution pixel-oriented interpretation of the approved
 
 ## Recolouring
 
-The full-size mask marks the crimson cloth in its red channel. Green and blue are not used. The wardrobe shader key is 0.237. The existing mask path and shader are retained.
+The compact 1-bit greyscale mask has the same aspect ratio and cell layout as the compact source atlas; white pixels mark the crimson cloth. The wardrobe shader samples its red/green channels and clamps the mask intensity. The key is 0.237. The existing mask path and shader are retained.
 
 ## Explicit limitations
 
