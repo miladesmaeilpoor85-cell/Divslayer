@@ -1,61 +1,77 @@
-# Chapter IV wind-gust controller
+# Chapter IV wind system — implementation status
 
-**Status:** the deterministic phase controller and automated unit-style tests are implemented. The controller is not yet connected to a production map or player movement.
+**Status checked: 20 November 2026.** This document distinguishes what is already in `main` from the separate Alborz vertical-slice proposal.
+
+## Current implementation on `main`
+
+The deterministic controller in `scripts/wind_gust.gd` is implemented and has automated coverage in `tests/windgusttest.gd`. It cycles through warning, active, and rest phases; carries excess time across phase boundaries; clamps durations and drift; normalizes direction; and returns a bounded velocity contribution rather than accumulating acceleration.
+
+The generic runtime integration is also present on `main`:
+
+- `scripts/world.gd` parses optional `windGusts` definitions from map data, validates zone and shelter rectangles, advances one controller per zone, and returns the drift at a position.
+- `scripts/player.gd` adds wind drift to ordinary movement. The dodge/dash branch remains separate, and death/revive reset the wind controllers.
+- Maps without `windGusts` retain their normal movement.
+
+**Important boundary:** the current `main` map data does not yet contain an authored Alborz wind zone. The reusable controller and generic integration are implemented, but they do not by themselves create a playable wind level or show wind cues.
 
 ## Runtime contract
 
-scripts/wind_gust.gd provides a small RefCounted controller for one gust zone. It deliberately owns no scene nodes, textures, audio streams, save data, or player references.
+A map may opt in by adding a top-level `windGusts` array inside its data object. Rectangles and directions are numeric arrays:
 
-Example:
+```json
+{
+  "windGusts": [
+    {
+      "rect": [300, 240, 220, 180],
+      "direction": [1, 0],
+      "warning_seconds": 0.95,
+      "active_seconds": 1.6,
+      "rest_seconds": 1.9,
+      "drift_speed": 45,
+      "shelter_multiplier": 0.1,
+      "shelters": [[340, 280, 70, 65]]
+    }
+  ]
+}
+```
 
-    const WindGust = preload("res://scripts/wind_gust.gd")
-    var pass_gust = WindGust.new({
-        "direction": Vector2.LEFT,
-        "warning_seconds": 0.95,
-        "active_seconds": 1.6,
-        "rest_seconds": 1.9,
-        "drift_speed": 45.0,
-        "shelter_multiplier": 0.1,
-    })
+The phases are:
 
-A map can opt in by adding a top-level windGusts array inside its data object. Rectangles and directions are stored as numeric arrays:
+1. **Warning:** readable telegraph time; no movement force.
+2. **Active:** bounded drift contribution.
+3. **Rest:** no movement force before the next warning.
 
-    "windGusts": [
-        {
-            "rect": [300, 240, 220, 180],
-            "direction": [1, 0],
-            "warning_seconds": 0.95,
-            "active_seconds": 1.6,
-            "rest_seconds": 1.9,
-            "drift_speed": 45,
-            "shelter_multiplier": 0.1,
-            "shelters": [[340, 280, 70, 65]]
-        }
-    ]
+Safety constraints enforced by the controller:
 
-Call advance(delta) once per physics frame. The phases cycle in this order:
+- Drift speed is clamped to 0–55 logical pixels/second.
+- Each phase duration is clamped to 0.1–8 seconds.
+- Shelter attenuation is clamped to 0–15% of the exposed force.
+- Dodge has priority over wind.
+- Reset/configure starts at warning, never in an active gust.
 
-1. warning: a readable telegraph; no movement force is returned.
-2. active: drift_velocity() returns a bounded velocity contribution.
-3. rest: no movement force; the next warning begins after the rest interval.
+## Alborz playable slice — PR #36, not yet in `main`
 
-The controller preserves unused frame time when a large delta crosses more than one phase. warning_progress() exposes a 0..1 value for later visual/audio telegraph work.
+[PR #36](https://github.com/miladesmaeilpoor85-cell/Divslayer/pull/36) adds a first playable prototype: a 1400 × 1100 pass map, an Ashen Peaks route, one eastward gust zone, two shelter rectangles with collision support, serpent guards, a trapped scout, and a save-backed briefing/rescue/return objective sequence.
 
-## Safety rules enforced by the controller
+The PR also adds `scripts/fx/wind_visual.gd`, a procedural visual telegraph using Godot draw calls. That visual is not a dedicated texture or final environmental art.
 
-- Wind is a returned velocity contribution, not a stored acceleration; repeated sampling does not accumulate force.
-- Requested direction is normalized; a zero or non-vector direction falls back to Vector2.RIGHT.
-- Drift speed is clamped to 0..55 logical pixels/second.
-- Shelter multiplier is clamped to 0..0.15.
-- Each phase duration is clamped to 0.1..8 seconds.
-- Dodge has priority: drift_velocity(sheltered, true) returns zero.
-- reset() and configure() restart in warning, never in an active gust. Call reset after death, reload, or map transition rather than restoring a mid-gust impulse from a save.
+The PR description reports a 37-suite / 1,575-check Godot run, 28/28 Chapter IV checks, plus Android emulator install/launch validation. The latest PR head also has successful Godot, lint, artwork/map, audio, creative-tool, and Android QA checks. The emulator capture described in the PR is the title screen, not a gameplay visual sign-off; a physical-device playthrough of the new Alborz objectives is still required.
+
+## Temporary assets and remaining work
+
+The prototype currently reuses `frostvale_ground.jpg`, Hesk's existing look, existing props, and the Peaks music alias. These are explicitly temporary. Do not label the Alborz visual or audio treatment final until dedicated assets have been created, registered in the rights ledger, imported, and tested.
+
+Remaining validation before promoting the slice:
+
+- Play the complete route on a physical Android device: enter from Peaks, read each warning, shelter from gusts, fight the guards, rescue the scout, return to Zal, save, quit, and reload.
+- Test boundaries, shelter collision, zone overlap, all four player classes, dodge priority, enemy knockback, and touch controls.
+- Confirm map exits and return spawn coordinates in both directions.
+- Replace reused ground, scout, and props with dedicated art and add an authored wind ambience track.
+- Add the optional eyrie route and dedicated wind encounter only after the core pass is stable and readable.
+- Re-run the full Godot, creative-tool, asset-integrity, and Android QA workflows after integration.
 
 ## Automated coverage
 
-tests/windgusttest.gd is included in tools/run_all_tests.sh. It checks initial warning, warning progress, phase transitions, shelter reduction, dodge priority, no accumulation, reset behavior, negative delta handling, large-delta phase carry-over, zero-direction fallback, and all configuration bounds.
+`tests/windgusttest.gd` covers phase transitions, warning progress, shelter attenuation, dodge priority, repeated sampling without accumulation, reset, negative/large delta handling, safe fallback direction, clamping, and generic World integration. The Chapter IV-specific acceptance checks live in `tests/chapter4test.gd` on PR #36.
 
-## Explicit integration boundary
-
-This is a tested gameplay building block with generic World/Player integration. World reads optional windGusts zone definitions from map data, advances the phase controllers, checks shelter rectangles, and returns a drift contribution. Player adds that contribution only during normal move_and_slide(); the existing dash branch remains separate, and death/revive reset the zones. Maps without windGusts retain their existing movement. This is not a playable Chapter IV implementation: no alborz map, ground art, placed zones, scout rescue, or Div-e Gerdbad boss is added here. The next step is to author and test actual zone placement, wall/map-edge cases, all four classes, persistence/restart, and Android touch controls.
-
+Passing automated tests is necessary but does not replace device playtesting or an art review at native mobile scale.
