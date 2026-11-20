@@ -293,7 +293,9 @@ func _physics_process(dt: float) -> void:
 		move_and_collide(dash_v * step)
 		velocity = Vector2.ZERO
 	else:
-		var wind_drift: Vector2 = world.wind_drift(global_position, caster.busy())
+		var wind_drift := Vector2.ZERO
+		if world.has_method("wind_drift"):
+			wind_drift = world.wind_drift(global_position, caster.busy())
 		velocity = dir * spd + wind_drift
 		move_and_slide()
 	global_position = global_position.clamp(Vector2(13, 34), world.size - Vector2(13, 0))
