@@ -42,4 +42,5 @@ tests/windgusttest.gd is included in tools/run_all_tests.sh. It checks initial w
 
 ## Explicit integration boundary
 
-This is a tested gameplay building block, not a playable Chapter IV implementation. No alborz map, ground art, gust-zone placement, shelter collision data, player/world integration, scout rescue, or Div-e Gerdbad boss is added here. The next integration step must query the active zone from world.gd, detect actual cover, add the returned drift only to normal movement, and keep dash movement isolated. Then add map-level tests for walls, map edges, all four classes, death/restart, save/load, and Android touch controls.
+This is a tested gameplay building block with generic World/Player integration. World reads optional windGusts zone definitions from map data, advances the phase controllers, checks shelter rectangles, and returns a drift contribution. Player adds that contribution only during normal move_and_slide(); the existing dash branch remains separate, and death/revive reset the zones. Maps without windGusts retain their existing movement. This is not a playable Chapter IV implementation: no alborz map, ground art, placed zones, scout rescue, or Div-e Gerdbad boss is added here. The next step is to author and test actual zone placement, wall/map-edge cases, all four classes, persistence/restart, and Android touch controls.
+
