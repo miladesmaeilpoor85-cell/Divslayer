@@ -86,5 +86,42 @@ func run(_main: Node) -> void:
 	check("capped_sheltered_force_stays_bounded",
 		gust.drift_velocity(true).is_equal_approx(Vector2.RIGHT * 8.25))
 
+
+	# World integration: map data creates zones, shelter attenuates drift, dodge bypasses it.
+	var world_script = load("res://scripts/world.gd")
+	var test_world: Node = world_script.new()
+	test_world.configure_wind_zones([
+		{
+			"rect": [100.0, 100.0, 300.0, 300.0],
+			"direction": [1.0, 0.0],
+			"warning_seconds": 0.5,
+			"active_seconds": 1.0,
+			"rest_seconds": 1.0,
+			"drift_speed": 40.0,
+			"shelter_multiplier": 0.1,
+			"shelters": [[150.0, 150.0, 60.0, 60.0]],
+		}
+	])
+	check("world_builds_data_driven_wind_zone", test_world.wind_zones.size() == 1)
+	test_world._physics_process(0.5)
+	check("world_returns_zone_drift", test_world.wind_drift(Vector2(120.0, 120.0))
+		.is_equal_approx(Vector2.RIGHT * 40.0))
+	check("world_applies_shelter_attenuation", test_world.wind_drift(Vector2(160.0, 160.0))
+		.is_equal_approx(Vector2.RIGHT * 4.0))
+	check("world_dodge_bypasses_wind",
+		test_world.wind_drift(Vector2(120.0, 120.0), true) == Vector2.ZERO)
+	check("world_returns_no_drift_outside_zone",
+		test_world.wind_drift(Vector2(450.0, 450.0)) == Vector2.ZERO)
+	test_world.reset_wind()
+	check("world_reset_restarts_zone_warning",
+		test_world.wind_drift(Vector2(120.0, 120.0)) == Vector2.ZERO
+		and test_world.wind_zones[0]["controller"].phase_name() == "warning")
+	test_world.configure_wind_zones([
+		{"rect": [0.0, 0.0, -10.0, 20.0]},
+		{"direction": [1.0, 0.0]},
+	])
+	check("world_ignores_malformed_wind_zones", test_world.wind_zones.is_empty())
+	test_world.free()
+
 	printerr("WINDGUSTTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit(1 if not fails.is_empty() else 0)
