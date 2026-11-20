@@ -1,0 +1,57 @@
+{
+  "name": "hero_starter_attack_batch",
+  "status": "authoring_contract_only_not_runtime_registered",
+  "directions": [
+    "down",
+    "up",
+    "side"
+  ],
+  "grid": {
+    "columns": 4,
+    "rows": 3,
+    "order": "row-major"
+  },
+  "frames": [
+    "anticipation",
+    "windup",
+    "contact",
+    "recovery"
+  ],
+  "output": {
+    "cell_width": 160,
+    "cell_height": 156,
+    "fps": 24,
+    "impact_frame_zero_based": 2
+  },
+  "output_root": "assets/art/Heroes",
+  "chroma_key": {
+    "color": "#ff00ff",
+    "tolerance": 72,
+    "method": "remove_edge_connected_pixels_only"
+  },
+  "first_batch": [
+    {
+      "class": "mage",
+      "source": "assets/art/Heroes/mage_starter.png",
+      "output_folder": "mage_starter_attack",
+      "identity": "Preserve the starter mage's exact face, hair, robe silhouette, Persian-inspired trim, staff, colors and proportions. Distinct staff-hand, torso and robe poses. No projectile; show the staff's contact pose."
+    },
+    {
+      "class": "rogue",
+      "source": "assets/art/Heroes/rogue_starter.png",
+      "output_folder": "rogue_starter_attack",
+      "identity": "Preserve the starter rogue's exact face, hair, compact silhouette, Persian-inspired costume details, belts and exactly two daggers. Keep a low centre of gravity, distinct dual-dagger anticipation, crossing lunge, contact cut and recovery. No extra arms or weapons."
+    },
+    {
+      "class": "paladin",
+      "source": "assets/art/Heroes/paladin_starter.png",
+      "output_folder": "paladin_starter_attack",
+      "identity": "Preserve the starter paladin's exact face, armour silhouette, Persian-inspired details, shield and original weapon. Keep the shield side consistent, grounded footwork, a clear committed weapon strike and recovery. No shield or weapon swaps."
+    }
+  ],
+  "runtime_activation": "Do not add attackFrameFiles to data/art_manifest.json until all frames pass visual review, direction/orientation checks, asset-rights review and gameplay timing validation.",
+  "rights": {
+    "commercial_use_status": "UNVERIFIED",
+    "required_register": "docs/ASSET_RIGHTS_REGISTER.csv"
+  }
+}
