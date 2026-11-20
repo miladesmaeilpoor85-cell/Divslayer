@@ -89,6 +89,8 @@ func run(m: Node) -> void:
 
 	# The fourth chapter is unavailable until the third chapter has its saved completion state.
 	Game.Ch3.set_step("bound")
+	check("previous_chapter_dialogue_cannot_start_ch4", C.elder_lines().is_empty()
+		and C.elder_done() == "" and C.step() == "")
 	check("chapter_locked_before_ch3_completion", not C.open() and C.exit_block("alborz") != "")
 	Game.Ch3.set_step("done")
 	check("chapter_opens_after_ch3", C.open() and C.step() == "")
