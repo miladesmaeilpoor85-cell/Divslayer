@@ -20,7 +20,7 @@ class AnimationQualityAuditTests(unittest.TestCase):
         self.assertEqual(metrics["unique_frames"], 2)
         self.assertEqual(metrics["duplicate_pairs"], [[0, 1]])
         self.assertGreater(metrics["mean_adjacent_changed_pixel_ratio"], 0.0)
-        self.assertEqual(metrics["foot_baseline_range_px"], 0)
+        self.assertEqual(metrics["visible_bottom_range_px"], 0)
 
     def make_project(self, root: Path) -> None:
         manifest = {
