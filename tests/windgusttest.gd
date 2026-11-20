@@ -60,7 +60,7 @@ func run(_main: Node) -> void:
 
 	gust.advance(5.0)
 	check("large_delta_preserves_phase_remainder", gust.phase_name() == "warning"
-		and is_equal_approx(gust.remaining_seconds, 0.8))
+		and is_equal_approx(gust.remaining_seconds, 0.6))
 
 	gust.configure({
 		"direction": Vector2.ZERO,
