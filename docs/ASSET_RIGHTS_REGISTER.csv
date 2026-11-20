@@ -63,7 +63,7 @@
 "assets/art/Heroes/warrior_mid.png","assets/art/Heroes","","","","","UNVERIFIED","",""
 "assets/art/Heroes/warrior_mid_mask.png","assets/art/Heroes","","","","","UNVERIFIED","",""
 "assets/art/Heroes/warrior_starter.png","assets/art/Heroes","","","","","UNVERIFIED","",""
-"assets/art/Heroes/warrior_starter_mask.png","assets/art/Heroes","","","","","UNVERIFIED","",""
+"assets/art/Heroes/warrior_starter_mask.png","assets/art/Heroes","Derived from the user-provided Warrior concept and generated starter atlas","Pillow image-mask pipeline","2026-11-20","Underlying image-generation provider terms not independently reviewed","UNVERIFIED","","800x468 RGB mask; red channel marks recolourable crimson cloth; used by hero_look.gdshader; mean luminance key 0.237"
 "assets/art/Items/accessory.png","assets/art/Items","","","","","UNVERIFIED","",""
 "assets/art/Items/chest.png","assets/art/Items","","","","","UNVERIFIED","",""
 "assets/art/Items/fire_scroll.png","assets/art/Items","","","","","UNVERIFIED","",""
@@ -374,3 +374,4 @@
 "assets/art/ClassCards/mage.webp","assets/art/ClassCards","User-provided generated image","Not specified by user","","Provider terms not yet verified","UNVERIFIED","","Front-view crop from the user-provided female Mage turnaround; class-selection UI only"
 "assets/art/ClassCards/rogue.webp","assets/art/ClassCards","User-provided generated image","Not specified by user","","Provider terms not yet verified","UNVERIFIED","","Front-view crop from the user-provided female Rogue turnaround; class-selection UI only"
 "assets/art/ClassCards/paladin.webp","assets/art/ClassCards","User-provided generated image","Not specified by user","","Provider terms not yet verified","UNVERIFIED","","Front-view crop from the user-provided Paladin turnaround; class-selection UI only"
+"assets/art/Heroes/warrior_starter_source.webp","assets/art/Heroes","AI-generated sprite interpretation of user-approved Warrior concept","OpenAI ImageGen; Pillow downsampling and WebP encoding","2026-11-20","Underlying image-generation provider terms not independently reviewed","UNVERIFIED","","160x93 transparent source atlas; 5 columns x 3 direction rows, one source cell per named frame; expanded to 800x468 in-memory by scripts/generated/warrior_starter_art.gd"

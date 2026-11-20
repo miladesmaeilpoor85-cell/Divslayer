@@ -3,6 +3,7 @@ extends RefCounted
 
 const SCALE := 1.0 / 3.0          # sprites were rendered at 3x the game's logical pixels
 const DIRS := ["down", "up", "side"]
+const WarriorStarterArt = preload("res://scripts/generated/warrior_starter_art.gd")
 
 static var _cache := {}
 
@@ -116,7 +117,11 @@ static func character(group: String, sheet: String) -> Dictionary:
 		return _cache[key]
 	var meta: Dictionary = Game.manifest.get(group, {}).get(sheet, {})
 	var folder := group.capitalize()
-	var tex: Texture2D = load(Game.ART + folder + "/" + sheet + ".png")
+	var tex: Texture2D = null
+	if group == "heroes" and sheet == "warrior_starter":
+		tex = WarriorStarterArt.atlas_texture()
+	if tex == null:
+		tex = load(Game.ART + folder + "/" + sheet + ".png")
 	var attack_texture: Texture2D = null
 	if meta.has("attackSheet"):
 		attack_texture = load(Game.ART + folder + "/" + str(meta["attackSheet"]))

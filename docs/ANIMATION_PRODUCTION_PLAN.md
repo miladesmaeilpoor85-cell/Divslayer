@@ -58,6 +58,14 @@ Do not reuse Warrior poses with palette swaps. Each class needs its own authored
 4. Test all four classes and all three gear tiers before marking the batch complete.
 5. Run the animation builder tests, manifest checks, full Godot test suite, Android export, and physical-device gameplay review.
 
-## Current blocker
+## Current status — Warrior starter sprite pilot
 
-No new production animation PNG/atlas is part of this plan. Image generation is not being used for this update. Until distinct source frames are authored and reviewed, the playable game still has one attack pose per direction for each current hero sheet.
+The branch `art/warrior-starter-sprite-pilot` contains a first runtime integration proposal for the Warrior starter appearance. It does not replace the original PNG and is not merged to `main`.
+
+- Source atlas: `assets/art/Heroes/warrior_starter_source.webp` (160 × 93 px, transparent).
+- The source atlas stores 15 cells in five columns by three directional rows. Each cell is 32 × 31 pixels and is expanded independently to 160 × 156 with nearest-neighbour sampling at runtime.
+- Runtime atlas: 800 × 468 px, preserving the existing `data/art_manifest.json` contract (`down`, `up`, `side`; `walk0`–`walk3`, `attack`; bottom-centre feet pivot).
+- `scripts/generated/warrior_starter_art.gd` builds and caches the runtime `ImageTexture`; `scripts/sheets.gd` uses it only for `heroes/warrior_starter` and retains the old PNG fallback.
+- `assets/art/Heroes/warrior_starter_mask.png` is the full-size red-channel cloth mask; its shader luminance key is recorded as 0.237 in `data/hero_masks.json`.
+
+This is a starter-tier visual pilot only. It does not provide separate heavy attack, hurt/stagger, block, dodge, death, or other combat clips. There remains one attack frame per direction. The new walk cycle and combat pose must pass Godot import, full CI, wardrobe recolour, actual-scale gameplay, Android QA export/emulator launch, and manual physical-device review before merge. Other Warrior gear tiers and the Mage, Rogue, and Paladin gameplay atlases remain unchanged.
