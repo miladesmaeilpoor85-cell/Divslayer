@@ -6,9 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from PIL import Image, ImageDraw
-
 from animation_quality_audit import audit, frame_metrics
+from PIL import Image, ImageDraw
 
 
 class AnimationQualityAuditTests(unittest.TestCase):
