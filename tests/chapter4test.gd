@@ -118,9 +118,8 @@ func run(m: Node) -> void:
 		[data.get("windGusts", []).size(), data.get("enemySpawns", []).size()])
 	check("entry_and_return_are_on_opposite_edges",
 		Vector2(float(data.get("playerStart", {}).get("x", 0)), float(data.get("playerStart", {}).get("y", 0))).y > 900.0
-		and data.get("exits", []).size() == 1
-		and float(data["exits"][0].get("y", 0)) > 1000.0
-		and float(data["exits"][0].get("spawnY", 9999)) < 100.0)
+		and data.get("exits", []).any(func(exit): return str(exit.get("to", "")) == "peaks" and float(exit.get("y", 0)) > 1000.0
+			and float(exit.get("spawnY", 9999)) < 100.0))
 	check("map_uses_existing_ground_placeholder",
 		str(map_data.get("groundFile", "")) == "frostvale_ground.jpg"
 		and ResourceLoader.exists("res://assets/art/Maps/frostvale_ground.jpg"))
@@ -190,8 +189,42 @@ func run(m: Node) -> void:
 	await frames(5)
 	main.player.invuln = 99999.0
 	pages = await talk("elder")
-	check("zal_closes_the_vertical_slice", pages >= 2 and C.step() == "done"
-		and not C.has_news("elder") and C.target().is_empty(), [pages, C.step()])
+	check("zal_closes_the_rescue_chapter_and_unlocks_optional_hunt", pages >= 2 and C.step() == "done"
+		and not C.has_news("elder") and C.target().get("map", "") == "alborz_eyrie", [pages, C.step(), C.target()])
+
+	# The optional eyrie is a real, gated map connection with its own three-phase wind boss.
+	check("high_eyrie_has_bidirectional_world_graph_route",
+		graph.get("alborz", {}).get("exits", []).any(func(e): return str(e.get("to", "")) == "alborz_eyrie")
+		and graph.get("alborz_eyrie", {}).get("exits", []).any(func(e): return str(e.get("to", "")) == "alborz"))
+	check("high_eyrie_is_unlocked_after_scout_report",
+		C.exit_block("alborz_eyrie") == "" and Game.region_open("alborz_eyrie"))
+	main.goto_map("alborz", Vector2(1350, 530))
+	await frames(4)
+	check("high_eyrie_exit_is_physically_connected", exit_try("alborz_eyrie") == "left")
+	main.goto_map("alborz_eyrie", Vector2(80, 570))
+	await frames(10)
+	main.player.invuln = 99999.0
+	var eyrie_world = main.world
+	var gale_warden: Node = null
+	for enemy in get_tree().get_nodes_in_group("bosses"):
+		if is_instance_valid(enemy) and enemy.world == eyrie_world and enemy.type == "alborzwarden":
+			gale_warden = enemy
+	check("high_eyrie_loads_dedicated_wind_boss_and_gust_zone",
+		eyrie_world.key == "alborz_eyrie" and gale_warden != null
+		and eyrie_world.wind_zones.size() == 1 and eyrie_world.wind_visual != null)
+	if gale_warden != null:
+		main.player.global_position = gale_warden.global_position + Vector2(0, -185)
+		gale_warden.gcd = 0.0
+		await frames(8)
+		check("gale_warden_uses_three_separate_telegraphed_lanes",
+			gale_warden.moves.has("crosswind") and eyrie_world.bossfx.tele.size() == 3,
+			{"moves": gale_warden.moves, "telegraphs": eyrie_world.bossfx.tele.size()})
+		check("gale_warden_has_three_health_phases_and_procedural_silhouette",
+			Game.boss_cfg("alborzwarden").get("phases", []) == [0.66, 0.33]
+			and gale_warden.over != null and (gale_warden.anim == null or not gale_warden.anim.visible))
+	main.goto_map("alborz", Vector2(1290, 520))
+	await frames(5)
+
 	Game.save_game()
 	var saved: Variant = Game.read_game_save(Game.SAVE_PATH)
 	check("chapter4_progress_survives_save_read",
