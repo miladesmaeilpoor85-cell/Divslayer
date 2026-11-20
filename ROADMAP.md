@@ -15,9 +15,9 @@ Planning document, not a promise of delivery dates. این سند برنامه�
 
 - [x] Deterministic warning/active/rest wind controller with bounded drift and safe reset.
 - [x] Generic World/Player integration for optional map-defined wind zones.
-- [ ] Integrate and validate weather-aware ambience from PR #25.
-- [ ] Integrate dodge trails and the Thornwood parley state fix from PR #26.
-- [ ] Combine and regression-test PRs #25, #26, and #36 on one branch; see [integration review](docs/INTEGRATION_REVIEW_2026-11-20.md).
+- [x] Port weather-aware ambience from PR #25 into the coordinated integration branch; combined FX/Godot CI passed.
+- [x] Port dodge trails and the Thornwood parley state fix from PR #26; combined FX and Toll regressions passed.
+- [x] Combine PRs #25, #26, and #36 on one draft integration branch; all four Godot shards and focused gameplay regressions passed. See [integration review](docs/INTEGRATION_REVIEW_2026-11-20.md).
 - [ ] Complete the Alborz physical-device route: entry/return, gusts, shelters, guards, rescue, save, quit, and reload.
 - [ ] Add the optional eyrie route and dedicated wind boss after the core pass is stable.
 - [ ] Tune wind, collision, damage, and combat readability for all four classes.
