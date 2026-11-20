@@ -89,7 +89,7 @@ func run(_main: Node) -> void:
 
 	# World integration: map data creates zones, shelter attenuates drift, dodge bypasses it.
 	var world_script = load("res://scripts/world.gd")
-	var test_world: Node = world_script.new()
+	var test_world = world_script.new()
 	test_world.configure_wind_zones([
 		{
 			"rect": [100.0, 100.0, 300.0, 300.0],
@@ -104,10 +104,10 @@ func run(_main: Node) -> void:
 	])
 	check("world_builds_data_driven_wind_zone", test_world.wind_zones.size() == 1)
 	test_world._physics_process(0.5)
-	check("world_returns_zone_drift", test_world.wind_drift(Vector2(120.0, 120.0))
-		.is_equal_approx(Vector2.RIGHT * 40.0))
-	check("world_applies_shelter_attenuation", test_world.wind_drift(Vector2(160.0, 160.0))
-		.is_equal_approx(Vector2.RIGHT * 4.0))
+	var exposed_drift: Vector2 = test_world.wind_drift(Vector2(120.0, 120.0))
+	var sheltered_drift: Vector2 = test_world.wind_drift(Vector2(160.0, 160.0))
+	check("world_returns_zone_drift", exposed_drift.is_equal_approx(Vector2.RIGHT * 40.0))
+	check("world_applies_shelter_attenuation", sheltered_drift.is_equal_approx(Vector2.RIGHT * 4.0))
 	check("world_dodge_bypasses_wind",
 		test_world.wind_drift(Vector2(120.0, 120.0), true) == Vector2.ZERO)
 	check("world_returns_no_drift_outside_zone",
