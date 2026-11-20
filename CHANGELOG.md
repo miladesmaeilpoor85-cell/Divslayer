@@ -4,6 +4,11 @@
 
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## Combat polish — class-specific melee effects
+- Distinguish Mage, Rogue, and Paladin weapon arcs with class-specific palettes and restrained geometry while preserving Warrior's existing steel/bronze treatment.
+- Add contact-frame hit effects per class: arcane motes, paired-dagger sparks, solar rings, and a grounded Warrior impact.
+- Keep damage, hitboxes, reach, cooldowns, contact timing, and mobile controls unchanged; add FX regression coverage for all four classes.
+
 ## Unreleased — Wind through the realms (وزش باد در سرزمین‌ها)
 - Ambient particles now respond to a slow, continuous gust cycle: leaves, rain, snow, ash, embers and drifting spores change direction without abrupt jumps.
 - Fog banks receive the same subtle wind variation, making regional weather feel less static while preserving gameplay visibility.
