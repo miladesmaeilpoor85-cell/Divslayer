@@ -7,6 +7,7 @@ const Ach = preload("res://scripts/achievements.gd")   # (v0.20) achievements, k
 const Looks = preload("res://scripts/looks.gd")        # (v0.20) hero looks earned by achievements
 const Rush = preload("res://scripts/rush.gd")          # (v0.21) the Boss Rush, hosted by Sorush
 const Ch3 = preload("res://scripts/chapter3.gd")       # (v0.23) chapter 3: The Chains of Damavand
+const Ch4 = preload("res://scripts/chapter4.gd")   # (v0.44) the Silent Wind: Alborz pass and scout rescue
 const Tut = preload("res://scripts/tutorial.gd")       # (v0.24) Rostam's training in Zabol
 ## Global state: data tables, language, the hero's progress, saving, input setup.
 
@@ -752,6 +753,7 @@ func quest_point_target(quest_id: String, step: String) -> Dictionary:
 func on_map_entered(map_key: String) -> void:
 	if map_key == "dungeon" and q(1) == "active" and quest_step("q1") == "crypt_entry":
 		set_quest_step("q1", "crypt_inscription")
+	Ch4.on_map_entered(map_key)
 
 func _q1_objective() -> String:
 	match quest_step("q1"):
@@ -855,6 +857,10 @@ func elder_lines() -> Array:
 		if not c3.is_empty():
 			save_game()
 			return c3
+		var c4: Array = Ch4.elder_lines()
+		if not c4.is_empty():
+			save_game()
+			return c4
 		lines = [t("The bards will sing of Rostam, not of you. Zabol will remember all the same, ember-bearer.", "خنیاگران از رستم خواهند خواند، نه از تو. اما زابل فراموشت نمی‌کند، اخگردار.")]
 	save_game()
 	return lines
@@ -866,7 +872,7 @@ func elder_has_news() -> bool:
 	for n in [1, 2, 3]:
 		if q(n) == "complete":
 			return true
-	return (q(1) == "done" and q(2) == "not_started") or (q(2) == "done" and q(3) == "not_started") or Ch2.has_news("elder") or Ch3.has_news("elder")
+	return (q(1) == "done" and q(2) == "not_started") or (q(2) == "done" and q(3) == "not_started") or Ch2.has_news("elder") or Ch3.has_news("elder") or Ch4.has_news("elder")
 
 ## rewards are paid when the conversation ends; returns a message to show, or ""
 func elder_dialog_done() -> String:
@@ -974,6 +980,9 @@ func objective() -> String:
 		return Toll.line("obj_back")
 	if c3o != "":
 		return c3o
+	var c4o: String = Ch4.objective()
+	if c4o != "":
+		return c4o
 	if shrines_done() < SHRINE_ORDER.size():
 		return t("Seek the ancient shrines — a pillar of light marks each one (%d/%d)" % [shrines_done(), SHRINE_ORDER.size()],
 			"زیارتگاه‌های کهن را پیدا کن — ستونی از نور هر کدام را نشان می‌دهد (%s/%s)" % [num(shrines_done()), num(SHRINE_ORDER.size())])
@@ -1052,6 +1061,8 @@ func region_open(map_key: String) -> bool:
 			return q(2) != "not_started"
 		"emberforge":
 			return brann_key()
+		"alborz":
+			return Ch4.path_open()
 	return true
 
 ## where the compass points for the shrines: the altar inside an unfinished shrine, else the nearest unfinished
@@ -1653,6 +1664,9 @@ func quest_target() -> Dictionary:
 		return {"map": "village", "pos": _v(g.get("village", {}).get("npcs", {}).get("merchant", [313, 214])), "kind": "npc"}
 	if not c3t.is_empty():
 		return c3t
+	var c4t: Dictionary = Ch4.target()
+	if not c4t.is_empty():
+		return c4t
 	return shrine_target()
 
 static func _v(a) -> Vector2:

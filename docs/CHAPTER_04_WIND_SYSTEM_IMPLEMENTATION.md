@@ -49,13 +49,13 @@ Safety constraints enforced by the controller:
 - Dodge has priority over wind.
 - Reset/configure starts at warning, never in an active gust.
 
-## Alborz playable slice — PR #36, not yet in `main`
+## Alborz playable slice — PR #36 imported to the integration branch, not yet in `main`
 
 [PR #36](https://github.com/miladesmaeilpoor85-cell/Divslayer/pull/36) adds a first playable prototype: a 1400 × 1100 pass map, an Ashen Peaks route, one eastward gust zone, two shelter rectangles with collision support, serpent guards, a trapped scout, and a save-backed briefing/rescue/return objective sequence.
 
 The PR also adds `scripts/fx/wind_visual.gd`, a procedural visual telegraph using Godot draw calls. That visual is not a dedicated texture or final environmental art.
 
-The PR description reports a 37-suite / 1,575-check Godot run, 28/28 Chapter IV checks, plus Android emulator install/launch validation. The latest PR head also has successful Godot, lint, artwork/map, audio, creative-tool, and Android QA checks. The emulator capture described in the PR is the title screen, not a gameplay visual sign-off; a physical-device playthrough of the new Alborz objectives is still required.
+The source PR reports a 37-suite / 1,575-check Godot run, 28/28 Chapter IV checks, plus Android emulator install/launch validation. The integration branch now includes the Alborz map, chapter flow, wind visuals, and the Chapter IV test in its test runner; the combined branch still requires a fresh CI run. The latest PR head also has successful Godot, lint, artwork/map, audio, creative-tool, and Android QA checks. The emulator capture described in the PR is the title screen, not a gameplay visual sign-off; a physical-device playthrough of the new Alborz objectives is still required.
 
 ## Temporary assets and remaining work
 

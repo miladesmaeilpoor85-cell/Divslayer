@@ -33,7 +33,7 @@ run_godot() {
 }
 
 # Keep every suite from main, including the Chapter IV wind and animation tests.
-tests=(windgusttest quittest achtest rushtest audiotest shrinetest chapter2test chapter3test tutorialtest questpointtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest animationtest warriorreviewtest)
+tests=(windgusttest quittest achtest rushtest audiotest shrinetest chapter2test chapter3test chapter4test tutorialtest questpointtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest animationtest warriorreviewtest)
 selected_tests=()
 for i in "${!tests[@]}"; do
   if (( i % shard_count == shard_index )); then selected_tests+=("${tests[$i]}"); fi
