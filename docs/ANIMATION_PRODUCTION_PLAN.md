@@ -24,7 +24,7 @@ Measured review candidates:
 - Wraith and Rimewraith each have one duplicated pair (indices 1 and 3).
 - Eight enemy variants use two-frame cycles: Bat, Bellow Drone, three Ignarok
   variants, two Matriarch variants, and Mosquito.
-- Four enemy sheets have one frame: Bog Egg, Grave Pillar, Ic eling, and
+- Four enemy sheets have one frame: Bog Egg, Grave Pillar, Iceling, and
   Molten Core. Review whether each is meant to be animated or is intentionally
   static before adding frames.
 
