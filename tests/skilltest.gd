@@ -274,7 +274,10 @@ func run(m: Node) -> void:
 	for a in [0.0, 1.6, 3.2, 4.7]:
 		ww.append(dummy(Vector2(450, 520) + Vector2.from_angle(a) * 46.0))
 	Game.state["ult"] = 100.0
-	check("ultimate_needs_full_meter", p.caster.ultimate() and Game.ult() == 0.0 and p.caster.spin_t > 2.9)
+	var warrior_ult_rings: int = main.world.fx.rings.size()
+	var warrior_ult_started: bool = p.caster.ultimate()
+	check("ultimate_needs_full_meter", warrior_ult_started and Game.ult() == 0.0 and p.caster.spin_t > 2.9)
+	check("warrior_ultimate_has_grounded_start_cue", main.world.fx.rings.size() > warrior_ult_rings)
 	var hp0: float = Game.hp
 	p.take_hit(20.0)
 	var spun_loss: float = hp0 - Game.hp
@@ -296,7 +299,11 @@ func run(m: Node) -> void:
 	var tm := [dummy(Vector2(600, 500)), dummy(Vector2(650, 600)), dummy(Vector2(300, 600))]
 	var bossy = dummy(Vector2(700, 450), "boss2", 50000.0)
 	Game.state["ult"] = 100.0
+	var mage_ult_rings: int = main.world.fx.rings.size()
+	var mage_ult_lights: int = main.world.fx.lights.size()
 	p.caster.ultimate()
+	check("mage_tempest_has_celestial_cast_cue",
+		main.world.fx.rings.size() >= mage_ult_rings + 2 and main.world.fx.lights.size() > mage_ult_lights)
 	var nm: int = main.world.spells.meteors.size()
 	var on_boss := 0
 	for mt in main.world.spells.meteors:
@@ -313,14 +320,17 @@ func run(m: Node) -> void:
 	var sd = dummy(Vector2(560, 520))
 	Game.state["ult"] = 100.0
 	p.caster.ultimate()
+	var rogue_dash_seen := false
 	var inv_ok := true
 	for i in 100:
 		await frames(1)
+		rogue_dash_seen = rogue_dash_seen or not main.world.fx.dashes.is_empty()
 		if not p.caster.dance.is_empty():
 			inv_ok = inv_ok and p.invuln > 0.0
 	var per: float = Game.atk() * Game.melee_mul() * 1.5 * 2.3
 	check("shadow_dance_five_crits", absf((sd.max_hp - sd.hp) - per * 5.0) < per * 0.6 and p.caster.dance.is_empty(), [sd.max_hp - sd.hp, per * 5.0])
 	check("shadow_dance_untouchable", inv_ok)
+	check("shadow_dance_leaves_directional_afterimage", rogue_dash_seen)
 	clear_foes()
 	Game.state["ult"] = 100.0
 	check("shadow_dance_needs_target", not p.caster.ultimate() and Game.ult() == 100.0)
@@ -330,7 +340,9 @@ func run(m: Node) -> void:
 	Game.hp = 10.0
 	p.apply_status("poison", 5.0)
 	Game.state["ult"] = 100.0
+	var paladin_ult_rings: int = main.world.fx.rings.size()
 	p.caster.ultimate()
+	check("paladin_farr_smite_has_solar_rings", main.world.fx.rings.size() >= paladin_ult_rings + 3)
 	await frames(1)
 	var hs_ok := true
 	for x in hs:

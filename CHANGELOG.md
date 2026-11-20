@@ -4,6 +4,11 @@
 
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
 
+## Class ultimate visual polish
+- Add a grounded bronze ignition cue to Warrior Whirlwind and a lapis/amber ritual cue to Mage Arcane Tempest.
+- Give Rogue Shadow Dance a directional emerald afterimage and paired-dagger contact response; add a third solar pulse and upward sparks to Paladin Farr Smite.
+- Preserve all ultimate damage, hit counts, timing, target rules, healing, stun and invulnerability values; cover visual cues in the skill regression suite.
+
 ## Combat polish — class-specific melee effects
 - Distinguish Mage, Rogue, and Paladin weapon arcs with class-specific palettes and restrained geometry while preserving Warrior's existing steel/bronze treatment.
 - Add contact-frame hit effects per class: arcane motes, paired-dagger sparks, solar rings, and a grounded Warrior impact.
