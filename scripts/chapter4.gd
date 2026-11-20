@@ -16,8 +16,10 @@ const L := {
 	"o_pass": ["Reach the Alborz pass beyond the Ashen Peaks", "از قله‌های خاکستر به گذرگاه البرز برس"],
 	"o_scout": ["Clear the serpent guards and speak with the trapped scout", "پاسداران مارنشان را شکست بده و با دیده‌بان گرفتار صحبت کن"],
 	"o_return": ["Return to Zal with the scout's report", "با گزارش دیده‌بان نزد زال برگرد"],
+	"o_warden": ["Optional: challenge the Gale Warden in the High Eyrie", "اختیاری: دیوِ تندباد را در آشیانهٔ بلند به مبارزه بطلب"],
 	"g_locked": ["The Alborz pass is not ready to be crossed. Zal may know why.", "گذرگاه البرز هنوز برای عبور آماده نیست. شاید زال دلیلش را بداند."],
 	"g_speak": ["Zal asked you to read the wind before entering the pass.", "زال خواسته پیش از ورود به گذرگاه، باد را بخوانی."],
+	"g_eyrie_locked": ["The high eyrie is sealed until the scout is brought safely back to Zal.", "آشیانهٔ بلند تا بازگرداندن امنِ دیده‌بان نزد زال مهر شده است."],
 	"e_pass": ["The old markers still point east. Keep to the stone shelters when the cloth snaps taut.", "نشانه‌های کهن هنوز به شرق اشاره می‌کنند. وقتی پارچه‌ها کشیده شدند، به پناهگاه‌های سنگی پناه ببر."],
 	"e_rescue": ["The scout is still trapped in the pass. The serpent guards have not been driven off.", "دیده‌بان هنوز در گذرگاه گرفتار است. پاسداران مارنشان عقب رانده نشده‌اند."],
 	"e_return1": ["You found him. The scout says the wind was knotted around the narrowest stone throat, not stopped at its source.", "پیدایش کردی. دیده‌بان می‌گوید باد در تنگ‌ترین گلوی سنگی گره خورده بود، نه آن‌که از سرچشمه‌اش بند آمده باشد."],
@@ -86,6 +88,8 @@ static func objective() -> String:
 			return line("o_scout")
 		"return":
 			return line("o_return")
+		"done":
+			return line("o_warden") if not Game.is_defeated("alborzwarden") else ""
 	return ""
 
 static func target() -> Dictionary:
@@ -103,6 +107,10 @@ static func target() -> Dictionary:
 			return {"map": "alborz", "pos": scout_pos, "kind": "npc"}
 		"return":
 			return {"map": "village", "pos": elder_pos, "kind": "npc"}
+		"done":
+			if not Game.is_defeated("alborzwarden"):
+				var boss_pos: Vector2 = Game._v(graph.get("alborz_eyrie", {}).get("bosses", {}).get("alborzwarden", [499, 318]))
+				return {"map": "alborz_eyrie", "pos": boss_pos, "kind": "boss"}
 	return {}
 
 static func has_news(id: String) -> bool:
@@ -115,6 +123,10 @@ static func has_news(id: String) -> bool:
 	return false
 
 static func exit_block(to: String) -> String:
+	if to == "alborz_eyrie":
+		if step() not in ["return", "done"]:
+			return line("g_eyrie_locked")
+		return ""
 	if to != "alborz":
 		return ""
 	if not open():
