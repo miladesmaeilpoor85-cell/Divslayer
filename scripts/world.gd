@@ -25,6 +25,7 @@ const ArenaObj = preload("res://scripts/arena_obj.gd")
 const BossFx = preload("res://scripts/bossfx.gd")
 const Hazards = preload("res://scripts/hazards.gd")
 const WindGustController = preload("res://scripts/wind_gust.gd")
+const WindVisual = preload("res://scripts/fx/wind_visual.gd")
 const FloatText = preload("res://scripts/float_text.gd")
 const Fx = preload("res://scripts/fx/fx.gd")
 const Lighting = preload("res://scripts/fx/lighting.gd")
@@ -49,7 +50,7 @@ const NATURAL := ["tree", "pine", "bush", "rock", "stump", "willow", "deadtree",
 const NPC_LOOKS := ["elder", "smith", "merchant", "alchemist", "brann", "keeper", "hesk", "qaren"]
 ## villagers who can have news ("!" over their heads): the Elder (his quests, chapters 2 and 3), Sorush, Jamshid, Hom,
 ## (v0.23) Kaveh and his son Qaren
-const NEWS_NPCS := ["elder", "keeper", "brann", "hesk", "smith", "qaren", "rostam"]
+const NEWS_NPCS := ["elder", "keeper", "brann", "hesk", "smith", "qaren", "rostam", "alborz_scout"]
 ## (v0.24) the Shahnameh's heroes are people of the tale now: drawn from the heroes' own sheets, each in his colours
 const HERO_NPCS := {"rostam": ["warrior_endgame", "npc_rostam"], "siavash": ["paladin_endgame", "npc_siavash"],
 	"gordafarid": ["rogue_endgame", "npc_gordafarid"]}
@@ -64,6 +65,7 @@ var size := Vector2(1000, 800)
 var ysort: Node2D
 var hazards: Array = []
 var wind_zones: Array[Dictionary] = []
+var wind_visual: Node2D = null
 var wall_rects: Array[Rect2] = []
 var bossfx: Node2D
 var fx: Node2D
@@ -88,11 +90,16 @@ func build(map_key: String) -> void:
 	data = md.get("data", {})
 	size = Vector2(float(data.get("w", 1000)), float(data.get("h", 800)))
 	configure_wind_zones(data.get("windGusts", []))
+	if not wind_zones.is_empty():
+		wind_visual = WindVisual.new()
+		add_child(wind_visual)
+		wind_visual.setup(self)
 
 	var ground := Sprite2D.new()
 	ground.name = "Ground"
 	ground.centered = false
-	ground.texture = load(Game.ART + "Maps/" + map_key + "_ground.jpg")
+	var ground_file := str(md.get("groundFile", map_key + "_ground.jpg"))
+	ground.texture = load(Game.ART + "Maps/" + ground_file)
 	ground.scale = Vector2.ONE / float(md.get("groundScale", 2.0))
 	ground.z_index = -10
 	add_child(ground)
@@ -339,6 +346,8 @@ func _on_exit_body(b: Node, to: String, spawn: Vector2) -> void:
 	var blk: String = Game.Ch2.exit_block(to)
 	if blk == "":
 		blk = Game.Ch3.exit_block(to)
+	if blk == "":
+		blk = Game.Ch4.exit_block(to)
 	if blk != "":
 		message.emit(blk)
 		Sfx.play("latch")
@@ -400,7 +409,8 @@ func _draw_apron(ap: Node2D, tex: Texture2D, gs: float) -> void:
 
 func _npc(n: Dictionary) -> void:
 	var id := str(n.get("id", ""))
-	var look: String = id if id in NPC_LOOKS else "merchant"
+	var requested_look := str(n.get("look", id if id in NPC_LOOKS else "merchant"))
+	var look: String = requested_look if requested_look in NPC_LOOKS else "merchant
 	var feet := Vector2(float(n["x"]) + float(n.get("w", 26)) * 0.5, float(n["y"]) + float(n.get("h", 34)))
 	var node := Node2D.new()
 	node.position = feet
@@ -519,6 +529,8 @@ func _update_markers() -> void:
 				mk.visible = Game.Tut.has_news()
 			elif nid in ["smith", "qaren"]:
 				mk.visible = Game.Ch3.has_news(nid)
+			elif nid == "alborz_scout":
+				mk.visible = Game.Ch4.has_news(nid)
 			else:
 				mk.visible = Game.Ch2.has_news(nid)
 
