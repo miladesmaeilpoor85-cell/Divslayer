@@ -140,7 +140,7 @@ static func elder_lines() -> Array:
 	return [line("e_done")]
 
 static func elder_done() -> String:
-	if _elder_told != step():
+	if not open() or _elder_told != step():
 		return ""
 	var spoken := _elder_told
 	_elder_told = ""
