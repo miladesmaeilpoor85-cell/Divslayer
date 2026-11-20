@@ -6,7 +6,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from import_animation_atlas import import_atlas
+from import_animation_atlas import (
+    _remove_enclosed_key_regions,
+    _remove_magenta_edge_fringe,
+    _remove_magenta_hue_pixels,
+    import_atlas,
+)
 from PIL import Image, ImageDraw
 
 
@@ -76,6 +81,36 @@ class AnimationAtlasImportTests(unittest.TestCase):
             Image.new("RGBA", (1024, 768), (20, 30, 40, 255)).save(source)
             with self.assertRaisesRegex(ValueError, "background removed"):
                 import_atlas(source, root / "out", prefix="bad_attack")
+
+
+    def test_removes_enclosed_key_holes_but_keeps_edge_connected_background(self) -> None:
+        image = Image.new("RGBA", (12, 12), (30, 30, 30, 255))
+        ImageDraw.Draw(image).rectangle((4, 4, 7, 7), fill=(255, 0, 255, 255))
+        removed = _remove_enclosed_key_regions(image, (255, 0, 255), 0, 8)
+        self.assertEqual(removed, 16)
+        self.assertEqual(image.getpixel((5, 5))[3], 0)
+        self.assertEqual(image.getpixel((3, 3))[3], 255)
+
+    def test_removes_magenta_spill_only_near_transparency(self) -> None:
+        image = Image.new("RGBA", (12, 12), (30, 30, 30, 255))
+        pixels = image.load()
+        pixels[2, 5] = (130, 60, 115, 255)
+        pixels[6, 6] = (130, 60, 115, 255)
+        removed = _remove_magenta_edge_fringe(image, radius=3)
+        self.assertEqual(removed, 1)
+        self.assertEqual(pixels[2, 5][3], 0)
+        self.assertEqual(pixels[6, 6][3], 255)
+
+    def test_global_magenta_cleanup_preserves_non_magenta_red_details(self) -> None:
+        image = Image.new("RGBA", (2, 1), (0, 0, 0, 0))
+        pixels = image.load()
+        pixels[0, 0] = (130, 60, 115, 255)
+        pixels[1, 0] = (150, 40, 25, 255)
+        removed = _remove_magenta_hue_pixels(image)
+        self.assertEqual(removed, 1)
+        self.assertEqual(pixels[0, 0][3], 0)
+        self.assertEqual(pixels[1, 0][3], 255)
+
 
 
 if __name__ == "__main__":
