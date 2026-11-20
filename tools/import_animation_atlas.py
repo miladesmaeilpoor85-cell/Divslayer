@@ -8,7 +8,7 @@ from collections import deque
 from pathlib import Path
 from typing import Any
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 DIRECTIONS = ("down", "up", "side")
 LABELS = ("anticipation", "windup", "contact", "recovery")
@@ -71,6 +71,98 @@ def _key_connected_background(image: Image.Image, key: tuple[int, int, int], tol
     return removed
 
 
+def _remove_enclosed_key_regions(
+    image: Image.Image,
+    key: tuple[int, int, int],
+    tolerance: int,
+    min_area: int,
+) -> int:
+    """Remove enclosed chroma-key holes without clearing small intentional details."""
+    if min_area <= 0:
+        return 0
+    width, height = image.size
+    pixels = image.load()
+    candidate = bytearray(width * height)
+    for y in range(height):
+        for x in range(width):
+            pixel = pixels[x, y]
+            candidate[y * width + x] = int(
+                pixel[3] > 0
+                and max(abs(pixel[channel] - key[channel]) for channel in range(3)) <= tolerance
+            )
+    visited = bytearray(width * height)
+    removed = 0
+    for index in range(width * height):
+        if not candidate[index] or visited[index]:
+            continue
+        queue: deque[int] = deque([index])
+        visited[index] = 1
+        component: list[int] = []
+        touches_edge = False
+        while queue:
+            current = queue.popleft()
+            component.append(current)
+            x, y = current % width, current // width
+            touches_edge = touches_edge or x == 0 or y == 0 or x == width - 1 or y == height - 1
+            for nx, ny in (
+                (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1),
+                (x - 1, y - 1), (x + 1, y - 1), (x - 1, y + 1), (x + 1, y + 1),
+            ):
+                if 0 <= nx < width and 0 <= ny < height:
+                    neighbour = ny * width + nx
+                    if candidate[neighbour] and not visited[neighbour]:
+                        visited[neighbour] = 1
+                        queue.append(neighbour)
+        if len(component) >= min_area and not touches_edge:
+            for current in component:
+                x, y = current % width, current // width
+                red, green, blue, _ = pixels[x, y]
+                pixels[x, y] = (red, green, blue, 0)
+            removed += len(component)
+    return removed
+
+
+def _remove_magenta_edge_fringe(image: Image.Image, radius: int = 3) -> int:
+    """Remove magenta spill pixels adjacent to the transparent background."""
+    transparent = image.getchannel("A").point(lambda alpha: 255 if alpha == 0 else 0)
+    near_transparent = transparent.filter(ImageFilter.MaxFilter(radius * 2 + 1))
+    near = near_transparent.load()
+    pixels = image.load()
+    removed = 0
+    for y in range(image.height):
+        for x in range(image.width):
+            red, green, blue, alpha = pixels[x, y]
+            if not near[x, y] or alpha == 0:
+                continue
+            is_magenta = (
+                red >= 45 and blue >= 45
+                and red > green + 25 and blue > green + 25
+                and abs(red - blue) <= 115
+            )
+            if is_magenta:
+                pixels[x, y] = (red, green, blue, 0)
+                removed += 1
+    return removed
+
+
+def _remove_magenta_hue_pixels(image: Image.Image) -> int:
+    """Remove remaining magenta-key hue pixels, including enclosed negative spaces."""
+    pixels = image.load()
+    removed = 0
+    for y in range(image.height):
+        for x in range(image.width):
+            red, green, blue, alpha = pixels[x, y]
+            is_magenta = (
+                alpha > 0 and red >= 45 and blue >= 45
+                and red > green + 25 and blue > green + 25
+                and abs(red - blue) <= 115
+            )
+            if is_magenta:
+                pixels[x, y] = (red, green, blue, 0)
+                removed += 1
+    return removed
+
+
 def _visible_bbox(image: Image.Image) -> tuple[int, int, int, int]:
     bbox = image.getchannel("A").point(lambda a: 255 if a >= 16 else 0).getbbox()
     if bbox is None:
@@ -99,6 +191,8 @@ def import_atlas(
     cell_height: int = 156,
     max_content_width: int = 144,
     bottom_padding: int = 6,
+    remove_enclosed_key_min_area: int = 0,
+    remove_magenta_hue_globally: bool = False,
 ) -> dict[str, Any]:
     """Split a generated atlas, remove edge-connected chroma key, and align all feet."""
     if not source.is_file():
@@ -122,6 +216,11 @@ def import_atlas(
         for column, label in enumerate(LABELS):
             cell = atlas.crop((column * src_w, row * src_h, (column + 1) * src_w, (row + 1) * src_h))
             removed = _key_connected_background(cell, key, tolerance)
+            fringe_removed = _remove_magenta_edge_fringe(cell)
+            enclosed_removed = _remove_enclosed_key_regions(
+                cell, key, tolerance, remove_enclosed_key_min_area
+            )
+            hue_removed = _remove_magenta_hue_pixels(cell) if remove_magenta_hue_globally else 0
             ratio = removed / float(src_w * src_h)
             if ratio < 0.05:
                 raise ValueError(f"{direction}/{label}: only {ratio:.1%} background removed; check key color")
@@ -132,6 +231,9 @@ def import_atlas(
                 "direction": direction, "label": label, "index": column,
                 "image": cell.crop(bbox), "source_bbox": list(bbox),
                 "background_removed_ratio": round(ratio, 5),
+                "magenta_fringe_pixels_removed": fringe_removed,
+                "enclosed_key_pixels_removed": enclosed_removed,
+                "magenta_hue_pixels_removed": hue_removed,
             })
     max_w = max(item["image"].width for item in extracted)
     max_h = max(item["image"].height for item in extracted)
@@ -144,7 +246,7 @@ def import_atlas(
     for item in extracted:
         pose: Image.Image = item["image"]
         size = (max(1, round(pose.width * scale)), max(1, round(pose.height * scale)))
-        pose = pose.resize(size, Image.Resampling.LANCZOS)
+        pose = pose.convert("RGBa").resize(size, Image.Resampling.LANCZOS).convert("RGBA")
         frame = Image.new("RGBA", (cell_width, cell_height), (0, 0, 0, 0))
         x = (cell_width - pose.width) // 2
         y = cell_height - bottom_padding - pose.height
@@ -159,6 +261,9 @@ def import_atlas(
             "direction": item["direction"], "frame": index, "label": item["label"],
             "source_bbox": item["source_bbox"], "output_bbox": list(_visible_bbox(frame)),
             "background_removed_ratio": item["background_removed_ratio"],
+            "magenta_fringe_pixels_removed": item["magenta_fringe_pixels_removed"],
+            "enclosed_key_pixels_removed": item["enclosed_key_pixels_removed"],
+            "magenta_hue_pixels_removed": item["magenta_hue_pixels_removed"],
         })
     packed_path = output / f"{prefix}_atlas.png"
     packed.save(packed_path, optimize=True)
@@ -198,9 +303,19 @@ def main() -> int:
     parser.add_argument("--prefix", required=True)
     parser.add_argument("--key-color", default="#ff00ff")
     parser.add_argument("--tolerance", type=int, default=72)
+    parser.add_argument("--remove-enclosed-key-min-area", type=int, default=0)
+    parser.add_argument("--remove-magenta-hue-globally", action="store_true")
     args = parser.parse_args()
     try:
-        report = import_atlas(args.source, args.output, prefix=args.prefix, key_color=args.key_color, tolerance=args.tolerance)
+        report = import_atlas(
+            args.source,
+            args.output,
+            prefix=args.prefix,
+            key_color=args.key_color,
+            tolerance=args.tolerance,
+            remove_enclosed_key_min_area=args.remove_enclosed_key_min_area,
+            remove_magenta_hue_globally=args.remove_magenta_hue_globally,
+        )
     except (OSError, ValueError) as exc:
         parser.exit(2, f"animation atlas import failed: {exc}\n")
     print(json.dumps(report, indent=2))
