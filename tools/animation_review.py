@@ -152,6 +152,7 @@ def review_sheets(
         "skipped": [],
         "errors": [],
         "previews": [],
+        "hero_attack_audit": [],
     }
 
     for kind, folder in (("heroes", "Heroes"), ("enemies", "Enemies")):
@@ -190,8 +191,37 @@ def review_sheets(
                         if str(name).startswith("walk")
                     ]
                     attack_indices = [
-                        i for i, name in enumerate(cols) if str(name) == "attack"
+                        i for i, name in enumerate(cols) if str(name).startswith("attack")
                     ]
+                    attack_fps = float(meta.get("attackFps", 24.0))
+                    if attack_fps <= 0.0:
+                        raise ValueError(f"{key}.attackFps must be positive")
+                    separate_attack = None
+                    separate_attack_relative = ""
+                    if meta.get("attackSheet"):
+                        attack_name = str(meta["attackSheet"])
+                        if Path(attack_name).name != attack_name or "/" in attack_name or "\\" in attack_name:
+                            raise ValueError(f"{key}.attackSheet must be a filename inside Heroes")
+                        separate_attack_relative = (Path("assets") / "art" / folder / attack_name).as_posix()
+                        attack_path = root / separate_attack_relative
+                        if not attack_path.is_file():
+                            raise ValueError(f"missing separate attack atlas: {separate_attack_relative}")
+                        with Image.open(attack_path) as opened_attack:
+                            opened_attack.load()
+                            separate_attack = opened_attack.convert("RGBA")
+                        attack_count = _positive_int(meta.get("attackFrames"), f"{key}.attackFrames")
+                        attack_expected = (cell_w * attack_count, cell_h * len(rows))
+                        if separate_attack.size != attack_expected:
+                            raise ValueError(
+                                f"{separate_attack_relative} is {separate_attack.width}x{separate_attack.height}; "
+                                f"expected {attack_expected[0]}x{attack_expected[1]}"
+                            )
+                        if attack_count < 2:
+                            raise ValueError(f"{key}.attackFrames must contain at least two frames")
+                    else:
+                        attack_count = len(attack_indices)
+                        if attack_count < 1:
+                            raise ValueError(f"{key} has no attack columns or separate attack atlas")
                     if len(walk_indices) < 2:
                         raise ValueError(
                             f"{key} needs at least two walk columns for a loop preview"
@@ -235,16 +265,26 @@ def review_sheets(
                         name = f"hero-{key}-{direction}-walk.gif"
                         _save_animation(frames, output_dir / name, fps)
                         previews_for_sheet.append(name)
-                        for attack_index in attack_indices:
-                            still = _compose_frame(
-                                _cell(sheet, attack_index, row_index, cell_w, cell_h),
-                                (cell_w, cell_h),
-                                pivot,
-                                scale,
+                        attack_frames = [
+                            _compose_frame(
+                                _cell(
+                                    separate_attack if separate_attack is not None else sheet,
+                                    frame_index if separate_attack is not None else attack_indices[frame_index],
+                                    row_index, cell_w, cell_h,
+                                ),
+                                (cell_w, cell_h), pivot, scale,
                             )
-                            still_name = f"hero-{key}-{direction}-attack.png"
-                            _save_still(still, output_dir / still_name)
-                            previews_for_sheet.append(still_name)
+                            for frame_index in range(attack_count)
+                        ]
+                        if len(attack_frames) > 1:
+                            attack_preview = f"hero-{key}-{direction}-attack.gif"
+                            _save_animation(attack_frames, output_dir / attack_preview, attack_fps)
+                            attack_status = "multi_frame_attack_preview"
+                        else:
+                            attack_preview = f"hero-{key}-{direction}-attack.png"
+                            _save_still(attack_frames[0], output_dir / attack_preview)
+                            attack_status = "single_frame_attack_placeholder"
+                        previews_for_sheet.append(attack_preview)
                 else:
                     variants = _positive_int(
                         meta.get("variants", 1), f"{key}.variants"
@@ -267,6 +307,14 @@ def review_sheets(
                             _save_still(frames[0], output_dir / name)
                         previews_for_sheet.append(name)
 
+                if kind == "heroes":
+                    report["hero_attack_audit"].append({
+                        "id": key,
+                        "source": separate_attack_relative if separate_attack is not None else relative.as_posix(),
+                        "frame_count": attack_count,
+                        "frame_rate": round(attack_fps, 3),
+                        "status": "multi_frame_attack_preview" if attack_count > 1 else "single_frame_attack_placeholder",
+                    })
                 report["valid"] += 1
                 report["previews"].append(
                     {
@@ -312,6 +360,8 @@ def main() -> int:
 
     print(f"Sprite sheets checked: {report['checked']}")
     print(f"Valid sheets: {report['valid']}")
+    print(f"Multi-frame hero attacks: {sum(item['frame_count'] > 1 for item in report['hero_attack_audit'])}")
+    print(f"Single-frame hero attack placeholders: {sum(item['frame_count'] == 1 for item in report['hero_attack_audit'])}")
     print(f"Skipped metadata entries: {len(report['skipped'])}")
     print(
         "Animation previews written: "
