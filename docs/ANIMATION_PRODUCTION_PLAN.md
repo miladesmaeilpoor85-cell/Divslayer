@@ -102,3 +102,15 @@ The procedural effects in this step are a presentation improvement, not a substi
 - [ ] Review the generated report and native-scale contact sheets; pixel-difference metrics identify review candidates but do not grade acting or artistic quality.
 
 **Manifest-based baseline:** 12 hero looks create 36 directional attack clips. Warrior Starter now has three four-frame directional attack clips; the other 33 hero attack clips still use one pose each. This count describes registered clip/frame data, not a visual quality score.
+
+
+## Ultimate VFX pass — 20 November 2026
+
+- [x] Warrior Whirlwind begins with a grounded bronze impact cue that feeds into the existing steel vortex.
+- [x] Mage Arcane Tempest gains a restrained lapis/amber ritual cue before its existing meteor telegraphs.
+- [x] Rogue Shadow Dance leaves a directional emerald afterimage and receives the paired-dagger contact response on each strike.
+- [x] Paladin Farr Smite gains an additional solar pulse and upward sparks around the existing pillar and healing burst.
+- [x] Regression tests verify the class-specific visual cues while preserving the existing damage, hit-count, invulnerability and meteor assertions.
+- [ ] Review all four ultimates at native Android display scale and compare low/high FX settings on a physical device.
+
+These additions are presentation-only; ultimate duration, target rules, damage, stun, healing, invulnerability and meter consumption are unchanged.
