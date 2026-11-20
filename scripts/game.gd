@@ -907,8 +907,10 @@ func boss_defeated(type: String) -> String:
 	if not rel.is_empty() and not Gear.has_relic(str(rel["uniq"])):
 		Gear.grant(rel)
 		msg += "\n" + t("Relic obtained: ", "یادگار به دست آمد: ") + Gear.item_name(rel)
-	if type == "captain" and toll_st() == "active" and str(toll().get("how", "")) in ["", "pay", "fame", "oath", "hand", "ledger", "ghost"]:
-		toll()["how"] = "fight"        # a deal that is broken ends the old way
+	if type == "captain" and toll_st() == "active":
+		if str(toll().get("how", "")) in ["", "pay", "fame", "oath", "hand", "ledger", "ghost"]:
+			toll()["how"] = "fight"        # a deal that is broken ends the old way
+		toll()["fight_started"] = false
 	var c2m: String = Ch2.on_boss(type)
 	if c2m != "":
 		msg += "\n" + c2m
@@ -1580,8 +1582,11 @@ func collect(kind: String, key: String) -> String:
 func toll() -> Dictionary:
 	var d = state.get("toll", null)
 	if typeof(d) != TYPE_DICTIONARY:
-		d = {"st": "none", "how": "", "ledger": false, "truce": false}
+		d = {"st": "none", "how": "", "ledger": false, "truce": false, "fight_started": false}
 		state["toll"] = d
+	elif not d.has("fight_started"):
+		# Existing saves predate the explicit combat lock; preserve their state safely.
+		d["fight_started"] = false
 	return d
 
 func toll_st() -> String:

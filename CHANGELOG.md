@@ -5,6 +5,11 @@
 - Fog banks receive the same subtle wind variation, making regional weather feel less static while preserving gameplay visibility.
 - Added regression checks for normalized particle directions, distinct rain/snow profiles and live rain-gust response.
 
+## Visual polish — directional dodge trails
+- Dodge rolls now leave a short, tapered wind-cut energy trail aligned with the actual dash direction.
+- The effect uses lightweight draw geometry and the character's existing trail tint; no new art textures or gameplay timings are introduced.
+- Added an FX regression check for trail direction and minimum readable length.
+
 ## 0.43.0 — Ashkbus calls the Turanian arrowfall (باران تیرهای تورانیِ اشکبوس)
 - Ashkbus of Kushan marks three separated landing circles around the hero's last position, then calls down visible arrows.
 - The warning and falling-arrow travel time give the player a chance to move through the gaps or leave the marked circles.
