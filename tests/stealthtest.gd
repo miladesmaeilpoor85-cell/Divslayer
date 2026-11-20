@@ -280,6 +280,7 @@ func run(m: Node) -> void:
 	p.atk_cd = 0.0
 	p.combo_t = 0.0
 	p.attack()
+	check("sneak_remains_through_windup", p.sneaking)
 	await frames(7)
 	var stab: float = 5000.0 - a.hp
 	check("backstab_counted", p.backstabs == 1)

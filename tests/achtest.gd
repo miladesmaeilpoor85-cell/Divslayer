@@ -125,9 +125,9 @@ func run(m: Node) -> void:
 	var cc = cd.get("critChance", 0.18)
 	cd["critChance"] = 1.0
 	p.attack(false)
-	cd["critChance"] = cc
 	# Warrior Starter now lands on zero-based impact frame 2 at 24 FPS.
 	await frames(7)
+	cd["critChance"] = cc
 	check("backstab_counts", A.stat("backstabs") >= 1, A.stat("backstabs"))
 	check("crit_counts", A.stat("crits") >= 1, A.stat("crits"))
 

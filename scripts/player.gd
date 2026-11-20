@@ -618,8 +618,6 @@ func attack(heavy := false) -> void:
 	var impact_delay := Sheets.animation_impact_time(anim.sprite_frames, "attack_" + attack_direction, impact_frame, anim.speed_scale)
 
 	var sneak_attack := sneaking
-	if sneak_attack:
-		sneak_end()
 	var attack_data := {
 		"heavy": heavy,
 		"reach": reach,
@@ -650,6 +648,9 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 	var multiplier := float(data.get("multiplier", 1.0))
 	var lv := int(data.get("combo_level", 0))
 	var sneak_attack := bool(data.get("sneak_attack", false))
+	# Keep the hero hidden during the wind-up; the sneak ends on the contact frame.
+	if sneak_attack:
+		sneak_end()
 	var body_c := global_position + Vector2(0, -17)
 	var box := swing_box_for(body_rect(), attack_facing, reach)
 	var tgt: Node = data.get("target")
