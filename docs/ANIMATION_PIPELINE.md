@@ -11,9 +11,13 @@ on every frame and does not replace an Android device test.
 
 - The manifest contains **12 hero appearance sheets**: Warrior, Mage, Rogue, and
   Paladin, each with starter, mid, and endgame equipment looks.
-- Every current hero sheet uses a **5-column × 3-direction** atlas with
-  **160 × 156 px** cells (800 × 468 px total): four walk poses and one attack
-  pose per direction.
+- The 12 legacy hero appearance sheets still use a **5-column × 3-direction**
+  atlas with **160 × 156 px** cells (800 × 468 px total): four walk poses and
+  one legacy attack pose per direction.
+- This feature branch adds a separate four-frame attack sequence for Warrior
+  Starter only: 12 individual transparent 160 × 156 PNGs, grouped as down, up
+  and side. The legacy walk sheet remains unchanged; the other 11 appearances
+  keep their existing one-pose attacks.
 - The runtime uses the first walk pose as the one-frame idle animation. Breathing,
   squash, foot dust, dodge spin, and hit tint are added procedurally by the
   player controller.
@@ -29,8 +33,10 @@ on every frame and does not replace an Android device test.
 
 ## Confirmed limitations
 
-1. **Hero attack coverage is one pose per direction.** There is no multi-frame
-   attack sequence in any of the 12 current hero appearance sheets.
+1. **Hero attack coverage is still mostly one pose per direction.** This
+   feature branch supplies four distinct poses for Warrior Starter in three
+   directions (3 of 36 attack clips); the remaining 33 clips still have one
+   authored pose.
 2. **No dedicated hero hurt, stagger, block, dodge, or death atlas clips are
    declared.** Several of these states are represented by controller-driven
    transforms and effects instead of new character poses.
@@ -75,24 +81,24 @@ on every frame and does not replace an Android device test.
 - CI runs the builder tests and uploads the review sheets, previews, and report
   as a temporary artifact.
 
-## Production manifest verification — 2026-11-20
+## Production candidate verification — 20 November 2026
 
-The current `main` branch manifest still registers each of the 12 hero looks
-with the same four walk columns and one attack column. None of the current hero
-entries registers `attackSheet`, `attackFrames`, `attackImpactFrame`, or
-`heavyImpactFrame`.
+This feature branch introduces the first separately-authored multi-frame hero
+attack for Warrior Starter. It does not replace or modify the legacy walk
+texture:
 
-The loader's ability to parse a separate attack atlas or embedded attack columns
-is therefore **future-facing infrastructure**, not an active multi-frame
-production animation. The file
-`creative/animation/warrior_starter_attack.json` is a review configuration
-pointing to the existing `assets/art/Heroes/warrior_starter.png`; it is not the
-missing `assets/art/Heroes/warrior_starter_attack.png` image.
+- Twelve individual transparent PNG frame files: four frames for each of
+  down, up and side.
+- Every file is exactly 160 × 156 px and is loaded as a standalone Texture2D.
+- Playback is 24 FPS, one-shot; the contact frame is zero-based index 2.
+- The source atlas supplied by the owner was split into individual frames and
+  aligned to a shared baseline. The assets are a first candidate and still
+  require Godot CI, visual review at phone scale and physical-device acceptance.
+- Provenance is recorded as owner-supplied/ChatGPT Images 2.6 per owner report;
+  commercial-use rights remain `UNVERIFIED`.
 
-The isolated review scene also reads the existing five-column sheet. It shows
-the single attack pose with a Godot-drawn slash arc; that arc is a preview effect,
-not additional character animation frames. The production combat hit remains
-immediate while the hero's current attack metadata defaults to impact frame 0.
+The other eleven hero appearances retain their one-frame attacks. No final
+approval or release rights are inferred from successful import or test results.
 
 ## Impact-frame authoring contract
 
@@ -108,12 +114,11 @@ duration, target reach, and damage timing have been tested together.
 
 ## Scope boundary
 
-**No new production animation art is added by this update.** The current
-`warrior_starter.png` remains the source of the preview and stays unchanged.
-The one-frame attack is still one frame in the playable game. The new loader is
-infrastructure for adding reviewed multi-frame art later; it does not create
-new poses from nothing and does not make the current game animation richer by
-itself.
+**This feature branch includes one production animation candidate:**
+the four-frame Warrior Starter attack in three directions, loaded as separate
+PNG textures by the normal character runtime. It has not been merged into
+`main` or visually signed off on a physical Android device. Dedicated
+idle, hurt, block, dodge and death clips remain outstanding.
 
 The preview artifact is a technical review aid, not a replacement APK or a
 human visual approval. No commercial-use rights are inferred from a successful

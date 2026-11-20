@@ -1,12 +1,12 @@
 # Character animation production plan
 
-**Scope:** actual, distinct production poses for Warrior, Mage, Rogue, and Paladin. This is an authoring and integration contract; it does not claim that new sprite art has already been drawn.
+**Scope:** actual, distinct production poses for Warrior, Mage, Rogue, and Paladin. The first candidate asset—Warrior Starter attack—is now supplied on a feature branch; review and the remaining production clips are still tracked here.
 
 ## Verified current state
 
 The current manifest contains 12 hero appearance sheets: four classes, each with starter, mid-tier, and endgame looks. Each existing sheet is 800 × 468 pixels, arranged as 5 columns × 3 facing rows, with 160 × 156 pixel cells. The four first columns are walk poses; the fifth column is one attack pose. The runtime uses the first walk pose for idle and adds some visual motion procedurally.
 
-The code can load future multi-frame attack data and can delay combat impact to a configured frame. The current production manifest does not activate a new attack atlas or non-zero impact frames. The isolated Warrior review scene is a read-only preview of the existing one-frame attack pose with a drawn slash effect.
+The runtime now supports separate frame files and data-driven impact timing. This branch activates four attack frames per direction for Warrior Starter only, at 24 FPS with contact on zero-based frame 2. The legacy walk sheet is unchanged; the other 11 hero appearances still use one attack pose per direction.
 
 ## Non-negotiable production rule
 
@@ -58,6 +58,15 @@ Do not reuse Warrior poses with palette swaps. Each class needs its own authored
 4. Test all four classes and all three gear tiers before marking the batch complete.
 5. Run the animation builder tests, manifest checks, full Godot test suite, Android export, and physical-device gameplay review.
 
-## Current blocker
+## Current status and remaining work
 
-No new production animation PNG/atlas is part of this plan. Image generation is not being used for this update. Until distinct source frames are authored and reviewed, the playable game still has one attack pose per direction for each current hero sheet.
+- [x] Receive a 4 × 3 Warrior Starter attack source sheet with front, back and side poses.
+- [x] Extract twelve transparent 160 × 156 RGBA PNG frames with a common foot baseline.
+- [x] Register the four-frame attack for each direction without replacing the walk atlas.
+- [ ] Pass the updated Godot animation regression test and full CI on the feature branch.
+- [ ] Review every frame at native phone scale and verify attack timing, hit registration and left/right mirroring on Android.
+- [ ] Verify asset provenance and commercial-use evidence; the rights register remains UNVERIFIED.
+- [ ] Produce unique attacks for Warrior Mid/Endgame and the other three classes.
+- [ ] Produce distinct idle, hit/stagger, block/parry, dodge, ultimate and death clips.
+
+This is a first production candidate, not a complete character animation package or release approval.

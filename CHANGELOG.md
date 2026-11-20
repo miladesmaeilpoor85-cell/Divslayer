@@ -5,6 +5,12 @@
 - Fog banks receive the same subtle wind variation, making regional weather feel less static while preserving gameplay visibility.
 - Added regression checks for normalized particle directions, distinct rain/snow profiles and live rain-gust response.
 
+## Animation production — Warrior Starter attack candidate
+- Add twelve separate transparent 160 × 156 PNG attack frames for down, up and side directions.
+- Preserve the legacy walk atlas; configure a four-frame, 24 FPS one-shot attack with contact on frame 2.
+- Extend the Godot animation loader and regression coverage for individually loaded frame textures.
+- Record every supplied frame with commercial-use status UNVERIFIED pending owner-held proof and review.
+
 ## Visual polish — directional dodge trails
 - Dodge rolls now leave a short, tapered wind-cut energy trail aligned with the actual dash direction.
 - The effect uses lightweight draw geometry and the character's existing trail tint; no new art textures or gameplay timings are introduced.
