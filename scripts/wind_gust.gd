@@ -60,6 +60,8 @@ func configure(options: Dictionary = {}) -> void:
 		var vector: Vector2 = requested_direction
 		if vector.length_squared() > 0.0001:
 			direction = vector.normalized()
+		else:
+			direction = Vector2.RIGHT
 	else:
 		direction = Vector2.RIGHT
 
