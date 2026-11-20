@@ -293,7 +293,8 @@ func _physics_process(dt: float) -> void:
 		move_and_collide(dash_v * step)
 		velocity = Vector2.ZERO
 	else:
-		velocity = dir * spd
+		var wind_drift: Vector2 = world.wind_drift(global_position, caster.busy())
+		velocity = dir * spd + wind_drift
 		move_and_slide()
 	global_position = global_position.clamp(Vector2(13, 34), world.size - Vector2(13, 0))
 	moving = dir.length() > 0.1
@@ -919,6 +920,8 @@ func take_hit(raw: float, from_status := false) -> void:
 	if Game.hp <= 0 and _revive_item():
 		return
 	if Game.hp <= 0:
+		if world and world.has_method("reset_wind"):
+			world.reset_wind()
 		_cancel_pending_attack()
 		dead = true
 		charging = false
@@ -958,6 +961,8 @@ func revive() -> void:
 	stamina = 100.0
 	invuln = 1.5
 	statuses.clear()
+	if world and world.has_method("reset_wind"):
+		world.reset_wind()
 	Game.stats_changed.emit()
 
 
