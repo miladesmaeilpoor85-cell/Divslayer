@@ -1,6 +1,6 @@
 # Chapter IV wind-gust controller
 
-**Status:** the deterministic phase controller and automated unit-style tests are implemented. The controller is not yet connected to a production map or player movement.
+**Status (2026-11-20):** the deterministic phase controller, World/Player movement integration, procedural telegraph visuals, and a first playable Alborz pass prototype are implemented and covered by the headless test suite. The Alborz ground image and scout look are temporary reused assets; this is not final chapter content.
 
 ## Runtime contract
 
@@ -39,7 +39,7 @@ Call advance(delta) once per physics frame. The phases cycle in this order:
 2. active: drift_velocity() returns a bounded velocity contribution.
 3. rest: no movement force; the next warning begins after the rest interval.
 
-The controller preserves unused frame time when a large delta crosses more than one phase. warning_progress() exposes a 0..1 value for later visual/audio telegraph work.
+The controller preserves unused frame time when a large delta crosses more than one phase. warning_progress() exposes a 0..1 value. The current map's procedural WindVisual draws moving streaks during warning/active phases and outlines shelter rectangles.
 
 ## Safety rules enforced by the controller
 
@@ -55,7 +55,24 @@ The controller preserves unused frame time when a large delta crosses more than 
 
 tests/windgusttest.gd is included in tools/run_all_tests.sh. It checks initial warning, warning progress, phase transitions, shelter reduction, dodge priority, no accumulation, reset behavior, negative delta handling, large-delta phase carry-over, zero-direction fallback, and all configuration bounds.
 
-## Explicit integration boundary
+## Current World/Player integration
 
-This is a tested gameplay building block with generic World/Player integration. World reads optional windGusts zone definitions from map data, advances the phase controllers, checks shelter rectangles, and returns a drift contribution. Player adds that contribution only during normal move_and_slide(); the existing dash branch remains separate, and death/revive reset the zones. Maps without windGusts retain their existing movement. This is not a playable Chapter IV implementation: no alborz map, ground art, placed zones, scout rescue, or Div-e Gerdbad boss is added here. The next step is to author and test actual zone placement, wall/map-edge cases, all four classes, persistence/restart, and Android touch controls.
+- `scripts/world.gd` reads optional `data.windGusts` definitions during map build, creates a controller per valid zone, advances each controller in `_physics_process`, checks its shelter rectangles, and returns the drift contribution for a feet position.
+- `scripts/player.gd` adds that contribution only to ordinary movement through `move_and_slide()`. The dash path remains independent. Death and revive reset the zone phases.
+- `scripts/fx/wind_visual.gd` adds directional procedural streaks and shelter outlines using existing drawing primitives; no imported textures or new generated assets are required.
+- Maps without `windGusts` keep their current movement and visual behavior.
+
+## Alborz vertical-slice implementation
+
+`data/Maps/alborz.json` now defines a 1400 × 1100 prototype map. It is connected from the north edge of Ashen Peaks; the player enters Alborz from its south edge and returns to Peaks through a south-side exit so the route is traversed rather than immediately backtracked. The pass includes one timed eastward gust zone, two shelter rectangles, and collision walls at the shelter edges. Three existing serpent guards protect an interactable scout. The save-backed chapter flow is Zal briefing → pass entry → clear guards → rescue scout → return to Zal.
+
+The route is gated until Chapter III has reached `done` and Zal has introduced Chapter IV. Entering the Alborz map advances the objective to the scout rescue. The scout cannot be rescued while either `serpentguard` or `serpentarcher` remains alive in that map. Rescue advances the saved objective to return to Zal and the epilogue completion grants 180 gold.
+
+The map intentionally reuses `frostvale_ground.jpg`, Hesk's existing NPC look, existing rock/spire props, and the Peaks music track alias. These are temporary compatibility placeholders, not final art or a claim that a dedicated Alborz soundtrack exists. The prototype has no optional eyrie route, dedicated wind boss, final Alborz terrain, unique scout portrait, polished ambient recording, or full chapter epilogue.
+
+## Regression coverage and verification
+
+`tests/chapter4test.gd` is included in `tools/run_all_tests.sh`. On 2026-11-20, the full Godot 4.7.2 CI completed with 37 suites, 1,575 assertions passed, no failures/crashes/parser errors. The Chapter IV slice contributed 28/28 passing checks. Android QA exported and debug-signed the APK, installed and launched it in the API 35 emulator, and verified it remained the resumed foreground app. The captured screenshot is the title screen, not a gameplay visual sign-off; user playtesting of the new chapter is still required.
+
+The next production tasks are final Alborz ground/prop art, a dedicated scout portrait, environmental wind audio, optional eyrie content, a dedicated wind boss and full combat/encounter balance.
 
