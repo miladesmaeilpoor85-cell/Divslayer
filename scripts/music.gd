@@ -24,7 +24,7 @@ const TRACK_DB := {"boss": 0.5, "dungeon": 0.0, "shrine": 0.0}
 ## crypt's, Zahhak the Dragon's battle theme
 const TRACK_ALIAS := {
 	# (v0.31) the second take of the battle theme for the bosses of chapters 2 and 3 (the first take stays with chapter 1)
-	"boss_arbiter": "boss_b", "boss_glaciertitan": "boss_b", "boss_ignarok": "boss_b", "boss_anvilward": "boss_b", "boss_kondrow": "boss_b"}
+	"boss_arbiter": "boss_b", "boss_glaciertitan": "boss_b", "boss_ignarok": "boss_b", "boss_anvilward": "boss_b", "boss_kondrow": "boss_b", "alborz": "peaks"}
 const AMB_KEYS := ["rain", "wind", "crickets", "birds", "fire", "cave", "water"]
 ## each loop's level: the recorded loops, and the synthesised ones (rain; wind and crickets when their files are missing)
 const AMB_DB_FILE := {"wind": -3.0, "crickets": -4.0, "birds": -2.0, "fire": -2.0, "cave": 0.0, "water": -3.0}
