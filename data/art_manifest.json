@@ -959,7 +959,30 @@
    ],
    "flipSideForLeft": true,
    "weaponTier": 1,
-   "armorTier": 0
+   "armorTier": 0,
+   "attackFrameFiles": [
+    [
+     "warrior_starter_attack/down_0.png",
+     "warrior_starter_attack/down_1.png",
+     "warrior_starter_attack/down_2.png",
+     "warrior_starter_attack/down_3.png"
+    ],
+    [
+     "warrior_starter_attack/up_0.png",
+     "warrior_starter_attack/up_1.png",
+     "warrior_starter_attack/up_2.png",
+     "warrior_starter_attack/up_3.png"
+    ],
+    [
+     "warrior_starter_attack/side_0.png",
+     "warrior_starter_attack/side_1.png",
+     "warrior_starter_attack/side_2.png",
+     "warrior_starter_attack/side_3.png"
+    ]
+   ],
+   "attackFrames": 4,
+   "attackFps": 24,
+   "attackImpactFrame": 2
   },
   "warrior_mid": {
    "cellW": 160,

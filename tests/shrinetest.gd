@@ -113,7 +113,8 @@ func _embers() -> void:
 	main.player.facing = "up"
 	main.player.atk_cd = 0.0
 	main.player.attack()
-	await frames(2)
+	# The flame is ignited when the Warrior Starter's contact frame executes.
+	await frames(7)
 	check("eternal_flame_lights_the_blade", sh.fire_t > 8.0, sh.fire_t)
 	hit(sh, f0)
 	check("burning_blade_lights_brazier", f0["lit"])
