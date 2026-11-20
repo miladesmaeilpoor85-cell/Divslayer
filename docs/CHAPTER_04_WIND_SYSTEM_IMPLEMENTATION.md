@@ -18,6 +18,21 @@ Example:
         "shelter_multiplier": 0.1,
     })
 
+A map can opt in by adding a top-level windGusts array inside its data object. Rectangles and directions are stored as numeric arrays:
+
+    "windGusts": [
+        {
+            "rect": [300, 240, 220, 180],
+            "direction": [1, 0],
+            "warning_seconds": 0.95,
+            "active_seconds": 1.6,
+            "rest_seconds": 1.9,
+            "drift_speed": 45,
+            "shelter_multiplier": 0.1,
+            "shelters": [[340, 280, 70, 65]]
+        }
+    ]
+
 Call advance(delta) once per physics frame. The phases cycle in this order:
 
 1. warning: a readable telegraph; no movement force is returned.
