@@ -250,7 +250,7 @@ func run(m: Node) -> void:
 			var class_arc: Dictionary = main.world.fx.swings.back()
 			class_swings[hero_class] = class_arc["col"]
 			check("swing_records_" + hero_class + "_identity", str(class_arc.get("class", "")) == hero_class)
-			var ring_count := main.world.fx.rings.size()
+			var ring_count: int = main.world.fx.rings.size()
 			main.world.fx.class_impact(e2.center(), Vector2.RIGHT, hero_class, false)
 			check("impact_fx_has_" + hero_class + "_response", main.world.fx.rings.size() > ring_count)
 		Game.cls = previous_class
