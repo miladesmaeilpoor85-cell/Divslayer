@@ -72,6 +72,7 @@ func dummy(feet: Vector2, type := "skeleton", hp := 5000.0) -> Node:
 	e.spd = 0.0
 	e.dmg = 0.0
 	e.hit_cd = 9999.0
+	e.calm = 2.0 # Test dummies stay unaware unless the test explicitly alerts them.
 	return e
 
 func clear_foes() -> void:

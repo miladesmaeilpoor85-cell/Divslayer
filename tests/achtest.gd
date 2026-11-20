@@ -116,6 +116,7 @@ func run(m: Node) -> void:
 	e2.hp = 99999.0
 	e2.max_hp = 99999.0
 	e2.spd = 0.0
+	e2.calm = 2.0 # The target remains unaware throughout the short attack wind-up.
 	e2.global_position = p.global_position + Vector2(0, 22)
 	e2.alert = false
 	p.facing = "down"
