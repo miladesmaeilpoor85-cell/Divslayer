@@ -279,11 +279,9 @@ def review_sheets(
                         if len(attack_frames) > 1:
                             attack_preview = f"hero-{key}-{direction}-attack.gif"
                             _save_animation(attack_frames, output_dir / attack_preview, attack_fps)
-                            attack_status = "multi_frame_attack_preview"
                         else:
                             attack_preview = f"hero-{key}-{direction}-attack.png"
                             _save_still(attack_frames[0], output_dir / attack_preview)
-                            attack_status = "single_frame_attack_placeholder"
                         previews_for_sheet.append(attack_preview)
                 else:
                     variants = _positive_int(
