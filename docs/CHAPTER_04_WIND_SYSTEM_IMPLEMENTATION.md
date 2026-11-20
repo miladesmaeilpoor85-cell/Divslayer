@@ -55,7 +55,7 @@ Safety constraints enforced by the controller:
 
 The PR also adds `scripts/fx/wind_visual.gd`, a procedural visual telegraph using Godot draw calls. That visual is not a dedicated texture or final environmental art.
 
-The source PR reports a 37-suite / 1,575-check Godot run, 28/28 Chapter IV checks, plus Android emulator install/launch validation. The integration branch now includes the Alborz map, chapter flow, wind visuals, and the Chapter IV test in its test runner; the combined branch still requires a fresh CI run. The latest PR head also has successful Godot, lint, artwork/map, audio, creative-tool, and Android QA checks. The emulator capture described in the PR is the title screen, not a gameplay visual sign-off; a physical-device playthrough of the new Alborz objectives is still required.
+The source PR reports a 37-suite / 1,575-check Godot run, 28/28 Chapter IV checks, plus Android emulator install/launch validation. The combined integration head `0cba9c963c460d2ed19f2d35bd77e1b6fed33677` includes the Alborz map, chapter flow, wind visuals, and Chapter IV regression test. Its four Godot shards passed; the Chapter IV 28-check, wind 31-check, FX 38-check and Thornwood 60-check suites passed. The latest Android QA export/emulator workflow and creative-app smoke test were still in progress at the last check. The latest PR head also has successful Godot, lint, artwork/map, audio, creative-tool, and Android QA checks. The emulator capture described in the PR is the title screen, not a gameplay visual sign-off; a physical-device playthrough of the new Alborz objectives is still required.
 
 ## Temporary assets and remaining work
 
@@ -68,7 +68,7 @@ Remaining validation before promoting the slice:
 - Confirm map exits and return spawn coordinates in both directions.
 - Replace reused ground, scout, and props with dedicated art and add an authored wind ambience track.
 - Add the optional eyrie route and dedicated wind encounter only after the core pass is stable and readable.
-- Re-run the full Godot, creative-tool, asset-integrity, and Android QA workflows after integration.
+- Combined Godot, GDScript/Python lint, artwork/map and audio checks have passed on the integration head. Finish the pending creative-app smoke test and Android QA export/emulator workflow, then complete the physical-phone playthrough.
 
 ## Automated coverage
 
