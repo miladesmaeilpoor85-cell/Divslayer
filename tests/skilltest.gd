@@ -251,7 +251,8 @@ func run(m: Node) -> void:
 	Game.state["ult"] = 0.0
 	var t1 = dummy(Vector2(480, 520))
 	p.attack()
-	await frames(2)
+	# The hit meter fills on contact, not on the wind-up frames.
+	await frames(7)
 	check("ult_fills_on_hits", Game.ult() > 0.0, Game.ult())
 	main.hud.notify.clear()
 	var u_before: float = Game.ult()

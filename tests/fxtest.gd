@@ -220,7 +220,8 @@ func run(m: Node) -> void:
 		main.player.global_position = e2.global_position + Vector2(-30, 2)
 		await frames(3)
 		main.player.attack()
-		await get_tree().process_frame
+		# The slash and hit sparks are emitted at the configured contact frame.
+		await frames(7)
 		var sparks := false
 		for p in main.world.fx.pools["spark"]:
 			if p.emitting:

@@ -210,7 +210,8 @@ func run(m: Node) -> void:
 	p.facing = "right"
 	p.atk_cd = 0.0
 	p.attack()
-	await frames(4)
+	# Let the Warrior Starter contact frame resolve before measuring the heal.
+	await frames(7)
 	check("stat_lifesteal", Game.hp > 5.0, Game.hp)
 	bare(); wear(item("amulet", "hpRegen", 5.0))
 	Game.hp = 5.0

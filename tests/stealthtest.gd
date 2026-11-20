@@ -280,6 +280,7 @@ func run(m: Node) -> void:
 	p.atk_cd = 0.0
 	p.combo_t = 0.0
 	p.attack()
+	await frames(7)
 	var stab: float = 5000.0 - a.hp
 	check("backstab_counted", p.backstabs == 1)
 	check("sneak_ends_on_attack", not p.sneaking)
@@ -290,6 +291,7 @@ func run(m: Node) -> void:
 	p.atk_cd = 0.0
 	p.combo_t = 0.0
 	p.attack()
+	await frames(7)
 	var plain: float = 5000.0 - b.hp
 	check("backstab_is_triple", plain > 0.0 and absf(stab / plain - 3.0) < 0.15, [stab, plain])
 	await frames(30)
@@ -300,6 +302,7 @@ func run(m: Node) -> void:
 	p.atk_cd = 0.0
 	p.combo_t = 0.0
 	p.attack()
+	await frames(7)
 	var spotted: float = 5000.0 - c.hp
 	check("no_backstab_on_alert_foe", absf(spotted / plain - 1.0) < 0.15, [spotted, plain])
 	check("sneak_ends_after_any_swing", not p.sneaking)

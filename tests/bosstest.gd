@@ -510,6 +510,7 @@ func mechanics() -> void:
 	main.player.atk_cd = 0.0
 	h0 = dg.hp
 	main.player.attack()
+	await frames(7)
 	check("aim_assist_diagonal", dg.hp < h0 and main.player.facing != "up", {"facing": main.player.facing})
 
 	printerr("STEP: frame-timed impact applies damage only when the configured attack frame begins")
@@ -545,7 +546,9 @@ func mechanics() -> void:
 		not main.player._pending_attack.is_empty() and is_equal_approx(delayed_enemy.hp, delayed_hp)
 		and main.player.hits_landed == delayed_hits)
 	check("impact_frame_restarts_attack_clip",
-		main.player.anim.animation == "attack_down" and main.player.anim.frame == 0 and main.player.anim.is_playing())
+		main.player.anim.animation == "attack_down" and main.player.anim.frame == 0 and main.player.anim.is_playing(),
+		{"animation": main.player.anim.animation, "frame": main.player.anim.frame,
+			"playing": main.player.anim.is_playing(), "pending": not main.player._pending_attack.is_empty()})
 	await frames(4)
 	check("impact_frame_does_not_hit_early",
 		is_equal_approx(delayed_enemy.hp, delayed_hp) and main.player.hits_landed == delayed_hits)
