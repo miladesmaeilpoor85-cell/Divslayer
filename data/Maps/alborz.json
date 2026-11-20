@@ -1,0 +1,194 @@
+{
+  "groundFile": "frostvale_ground.jpg",
+  "groundScale": 2,
+  "data": {
+    "name": "Alborz Pass — prototype ground",
+    "w": 1400,
+    "h": 1100,
+    "bg": "#253341",
+    "walls": [
+      {
+        "x": 1110,
+        "y": 410,
+        "w": 160,
+        "h": 50,
+        "color": "#34414b"
+      },
+      {
+        "x": 1110,
+        "y": 640,
+        "w": 160,
+        "h": 50,
+        "color": "#34414b"
+      },
+      {
+        "x": 842,
+        "y": 470,
+        "w": 34,
+        "h": 118,
+        "color": "#34414b"
+      },
+      {
+        "x": 575,
+        "y": 610,
+        "w": 34,
+        "h": 112,
+        "color": "#34414b"
+      },
+      {
+        "x": 380,
+        "y": 365,
+        "w": 110,
+        "h": 42,
+        "color": "#34414b"
+      },
+      {
+        "x": 300,
+        "y": 760,
+        "w": 130,
+        "h": 42,
+        "color": "#34414b"
+      },
+      {
+        "x": 70,
+        "y": 365,
+        "w": 42,
+        "h": 155,
+        "color": "#34414b"
+      }
+    ],
+    "exits": [
+      {
+        "x": 1380,
+        "y": 500,
+        "w": 20,
+        "h": 120,
+        "to": "peaks",
+        "spawnX": 980,
+        "spawnY": 90,
+        "dir": "right"
+      }
+    ],
+    "hazards": [],
+    "windGusts": [
+      {
+        "rect": [
+          360,
+          350,
+          840,
+          440
+        ],
+        "direction": [
+          1,
+          0
+        ],
+        "warning_seconds": 0.95,
+        "active_seconds": 1.6,
+        "rest_seconds": 1.9,
+        "drift_speed": 44,
+        "shelter_multiplier": 0.1,
+        "shelters": [
+          [
+            885,
+            500,
+            110,
+            100
+          ],
+          [
+            620,
+            650,
+            100,
+            85
+          ]
+        ]
+      }
+    ],
+    "npcs": [
+      {
+        "id": "alborz_scout",
+        "look": "hesk",
+        "x": 226,
+        "y": 520,
+        "w": 26,
+        "h": 34,
+        "color": "#c9b48d",
+        "name": "Alborz Scout",
+        "_en": "Alborz Scout"
+      }
+    ],
+    "enemySpawns": [
+      {
+        "type": "serpentguard",
+        "x": 1010,
+        "y": 525
+      },
+      {
+        "type": "serpentarcher",
+        "x": 735,
+        "y": 520
+      },
+      {
+        "type": "serpentguard",
+        "x": 520,
+        "y": 660
+      }
+    ],
+    "items": [],
+    "playerStart": {
+      "x": 1260,
+      "y": 520
+    }
+  },
+  "objects": [
+    {
+      "sprite": "boulders_86",
+      "x": 868,
+      "y": 560,
+      "sort": 560,
+      "kind": "boulders",
+      "isWall": true,
+      "animated": false,
+      "smoke": null
+    },
+    {
+      "sprite": "spire_69",
+      "x": 648,
+      "y": 706,
+      "sort": 706,
+      "kind": "spire",
+      "isWall": true,
+      "animated": false,
+      "smoke": null
+    },
+    {
+      "sprite": "rock_74",
+      "x": 440,
+      "y": 432,
+      "sort": 432,
+      "kind": "rock",
+      "isWall": false,
+      "animated": false,
+      "smoke": null
+    },
+    {
+      "sprite": "deadtree_75",
+      "x": 118,
+      "y": 860,
+      "sort": 860,
+      "kind": "deadtree",
+      "isWall": false,
+      "animated": false,
+      "smoke": null
+    },
+    {
+      "sprite": "rock_72",
+      "x": 1280,
+      "y": 220,
+      "sort": 220,
+      "kind": "rock",
+      "isWall": false,
+      "animated": false,
+      "smoke": null
+    }
+  ]
+}
