@@ -148,6 +148,9 @@ func run(m: Node) -> void:
 		controller.is_active() and open_drift.is_equal_approx(Vector2.RIGHT * 44.0), open_drift)
 	check("shelter_reduces_wind_by_ninety_percent",
 		shelter_drift.is_equal_approx(Vector2.RIGHT * 4.4), shelter_drift)
+	check("stone_shelter_has_real_collision_and_safe_floor",
+		w.wall_hit(Rect2(990.0, 540.0, 12.0, 24.0))
+		and not w.wall_hit(Rect2(920.0, 530.0, 20.0, 24.0)))
 	check("dodge_ignores_wind_and_outside_zone_is_clear",
 		w.wind_drift(Vector2(800, 520), true) == Vector2.ZERO
 		and w.wind_drift(Vector2(1300, 820)) == Vector2.ZERO)
