@@ -472,7 +472,7 @@ func _dance(dt: float) -> void:
 			break
 	var to: Vector2 = tgt.center() - (player.global_position + Vector2(0, -17))
 	if w.fx:
-		var dash_dir := player.global_position - from
+		var dash_dir: Vector2 = player.global_position - from
 		if dash_dir.length_squared() < 0.0001:
 			dash_dir = -to.normalized()
 		w.fx.ghost(player.anim, Color(0.55, 0.8, 1.0, 0.6), 0.35)
