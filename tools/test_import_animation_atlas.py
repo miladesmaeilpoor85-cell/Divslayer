@@ -54,6 +54,14 @@ class AnimationAtlasImportTests(unittest.TestCase):
         self.assertEqual(report["status"], "passed_with_warnings")
         self.assertTrue(any(report["duplicate_pairs"][direction] for direction in ("down", "up", "side")))
 
+    def test_rejects_unsafe_output_prefix(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "mage.png"
+            self.make_atlas(source)
+            with self.assertRaisesRegex(ValueError, "prefix may contain only"):
+                import_atlas(source, root / "out", prefix="../escape")
+
     def test_rejects_wrong_grid_dimensions(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

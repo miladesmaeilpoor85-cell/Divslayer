@@ -103,6 +103,8 @@ def import_atlas(
     """Split a generated atlas, remove edge-connected chroma key, and align all feet."""
     if not source.is_file():
         raise FileNotFoundError(source)
+    if not prefix or any(not (char.isalnum() or char in "_-") for char in prefix):
+        raise ValueError("prefix may contain only letters, numbers, underscores and hyphens")
     if not 0 <= tolerance <= 255 or cell_width < 16 or cell_height < 16:
         raise ValueError("invalid key tolerance or output cell dimensions")
     if not 0 <= bottom_padding < cell_height or max_content_width < 1:
