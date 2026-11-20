@@ -410,7 +410,7 @@ func _draw_apron(ap: Node2D, tex: Texture2D, gs: float) -> void:
 func _npc(n: Dictionary) -> void:
 	var id := str(n.get("id", ""))
 	var requested_look := str(n.get("look", id if id in NPC_LOOKS else "merchant"))
-	var look: String = requested_look if requested_look in NPC_LOOKS else "merchant
+	var look: String = requested_look if requested_look in NPC_LOOKS else "merchant"
 	var feet := Vector2(float(n["x"]) + float(n.get("w", 26)) * 0.5, float(n["y"]) + float(n.get("h", 34)))
 	var node := Node2D.new()
 	node.position = feet
