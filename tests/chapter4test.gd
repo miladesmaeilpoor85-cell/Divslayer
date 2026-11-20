@@ -213,7 +213,7 @@ func run(m: Node) -> void:
 		eyrie_world.key == "alborz_eyrie" and gale_warden != null
 		and eyrie_world.wind_zones.size() == 1 and eyrie_world.wind_visual != null)
 	if gale_warden != null:
-		main.player.global_position = gale_warden.global_position + Vector2(0, -185)
+		main.player.global_position = gale_warden.global_position + Vector2(0, -220)
 		gale_warden.gcd = 0.0
 		await frames(8)
 		check("gale_warden_uses_three_separate_telegraphed_lanes",
