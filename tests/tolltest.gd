@@ -283,17 +283,47 @@ func run(m: Node) -> void:
 	await frames(5)
 	check("ledger_stays_gone", npc_named("ledger") == null)
 
-	# ---- fight: the old way. Ashkbus falls, the quest remembers it, the camp scatters
-	await camp_ready("warrior", "active")
+	# ---- fight: choosing it must permanently resolve the parley, even while Ashkbus is nearby
+	p = await camp_ready("warrior", "active")
+	var captain: Node = main.world.varga()
+	p.global_position = captain.global_position + Vector2(32, 0)
+	var parley_starts := [0]
+	main.world.parley_started.connect(func(): parley_starts[0] += 1)
 	main.world.on_notice(main.world.camp_foes()[0])
 	await frames(2)
 	await finish_dialogue()
-	main._parley_resolve("fight")
+	var fight_index: int = ids(main._parley_opts).find("fight")
+	check("fight_choice_available", fight_index >= 0, ids(main._parley_opts))
+	main.hud.dialogue._block_until = 0
+	if fight_index >= 0:
+		main.hud.dialogue._pick(fight_index)
+	else:
+		main._parley_resolve("fight") # continue the regression after recording the missing choice failure
+	check("fight_choice_commits_combat", bool(Game.toll().get("fight_started", false)), Game.toll())
 	await finish_dialogue()
+	await frames(3) # let the proximity-based camp tick run after the fight reply closes
+	check("fight_choice_does_not_repeat_parley",
+		not main.world.parleying and not main.hud.dialogue.visible and parley_starts[0] == 1,
+		{"parley_starts": parley_starts[0], "parleying": main.world.parleying, "dialogue_visible": main.hud.dialogue.visible})
 	var wake := []
 	for e in main.world.camp_foes():
 		wake.append([e.type, e.parley, e.rally])
 	check("fight_wakes_camp", main.world.camp_foes().all(func(e): return not e.parley and e.rally), wake)
+
+	# Combat state must survive a map transition and restore hostile enemies without a new parley.
+	Game.save_game()
+	main.goto_map("village", Vector2(300, 260))
+	await frames(4)
+	main.goto_map("camp", Vector2(120, 60))
+	await frames(6)
+	p = main.player
+	captain = main.world.varga()
+	p.global_position = captain.global_position + Vector2(32, 0)
+	await frames(3)
+	check("fight_state_survives_camp_reentry",
+		bool(Game.toll().get("fight_started", false)) and not main.world.parleying
+		and main.world.camp_foes().all(func(e): return e.alert and e.rally and not e.parley),
+		{"fight_started": Game.toll().get("fight_started", false), "parleying": main.world.parleying, "foes": main.world.camp_foes().size()})
 	var v = main.world.varga()
 	v.hp = 1.0
 	v.hurt(500.0, false, Vector2.RIGHT)

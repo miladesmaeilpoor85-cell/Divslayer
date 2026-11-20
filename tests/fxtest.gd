@@ -176,6 +176,14 @@ func run(m: Node) -> void:
 	var p0: Vector2 = main.player.global_position
 	main.player.dodge()
 	var spun: bool = main.player.roll_t > 0.0
+	# The signal fires before physics callbacks. Wait across two ticks so the
+	# player's _physics_process -> _feel has emitted the first directional trail.
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var dash_fx: Dictionary = main.world.fx.dashes.back() if not main.world.fx.dashes.is_empty() else {}
+	check("dodge_has_directional_energy_trail",
+		not dash_fx.is_empty() and dash_fx["dir"].dot(main.player.dash_v.normalized()) > 0.99 and float(dash_fx["length"]) >= 30.0,
+		dash_fx)
 	for i in 15:
 		await get_tree().physics_frame
 	check("dodge_dash", absf(main.player.global_position.distance_to(p0) - 95.0) < 12.0 and spun, main.player.global_position.distance_to(p0))

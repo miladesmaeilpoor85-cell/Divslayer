@@ -876,6 +876,9 @@ func _parley_resolve(id: String) -> void:
 		Game.state["gold"] = int(Game.state.get("gold", 0)) + gain
 	if id != "fight":
 		Game.toll()["how"] = id
+	else:
+		# Choosing to fight resolves the parley permanently, even before Ashkbus falls.
+		Game.toll()["fight_started"] = true
 	Game.save_game()
 	world.parley_done(id)
 	hud.dialogue.open(who, lines, "")

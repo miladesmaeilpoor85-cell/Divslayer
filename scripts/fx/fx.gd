@@ -30,6 +30,7 @@ var texts: Node2D
 var pools := {}
 var _next := {}
 var rings: Array = []          # {pos, col, r, t, life}
+var dashes: Array = []         # short directional energy trails from dodge rolls
 var swings: Array = []         # {who, ang, t, dur, r, col, heavy}
 var lights: Array = []         # timed light flashes read by the lighting pass: {pos, r, i, c, t, life}
 var quality := 1               # 0 low (fewer particles) / 1 high
@@ -187,6 +188,14 @@ func ghost(spr: AnimatedSprite2D, tint := Color(0.62, 0.86, 1.0, 0.5), life := 0
 	tw.tween_property(g, "modulate:a", 0.0, life)
 	tw.tween_callback(g.queue_free)
 
+## a short directional wind-cut trail emitted along a dodge roll; kept as lightweight draw data.
+func dash_trail(pos: Vector2, dir: Vector2, col: Color, life := 0.18, length := 38.0) -> void:
+	if dir.length_squared() < 0.0001 or life <= 0.0:
+		return
+	dashes.append({"pos": pos, "dir": dir.normalized(), "col": col, "t": life, "life": life, "length": length})
+	if dashes.size() > 14:
+		dashes.pop_front()
+
 ## a soft contact shadow under `node` (VIS.shadow): an ellipse w×h·0.32, drawn under every character
 static func shadow_for(node: Node2D, w: float, h: float, alpha := 0.34) -> Sprite2D:
 	var s := Sprite2D.new()
@@ -223,15 +232,30 @@ func _process(dt: float) -> void:
 	for l in lights:
 		l["t"] = float(l["t"]) - dt
 	lights = lights.filter(func(l): return float(l["t"]) > 0.0)
-	if not rings.is_empty() or not swings.is_empty() or _drew:
+	for d in dashes:
+		d["t"] = float(d["t"]) - dt
+	dashes = dashes.filter(func(d): return float(d["t"]) > 0.0)
+	if not rings.is_empty() or not swings.is_empty() or not dashes.is_empty() or _drew:
 		arcs.queue_redraw()
-	_drew = not rings.is_empty() or not swings.is_empty()
+	_drew = not rings.is_empty() or not swings.is_empty() or not dashes.is_empty()
 
 func _draw_arcs() -> void:
 	for r in rings:
 		var k: float = float(r["t"]) / float(r["life"])
 		var c: Color = r["col"]
 		arcs.draw_arc(r["pos"], float(r["r"]) * (1.6 - k * 0.6), 0, TAU, 40, Color(c, 0.6 * k), 1.0 + 3.0 * k, true)
+	for d in dashes:
+		var k: float = clampf(float(d["t"]) / float(d["life"]), 0.0, 1.0)
+		var dir: Vector2 = d["dir"]
+		var side := dir.orthogonal()
+		var at: Vector2 = d["pos"]
+		var tail: Vector2 = at - dir * float(d["length"]) * (0.45 + 0.55 * k)
+		var head: Vector2 = at + dir * 7.0 * (1.0 - k)
+		var col: Color = d["col"]
+		var fade: float = k * k
+		arcs.draw_line(tail, head, Color(col, 0.2 * fade), 7.0 * fade + 0.5, true)
+		arcs.draw_line(tail + side * 4.0, head + side * 2.0, Color(col, 0.34 * fade), 1.8 * fade + 0.4, true)
+		arcs.draw_line(tail - side * 4.0, head - side * 2.0, Color(col, 0.34 * fade), 1.8 * fade + 0.4, true)
 	for s in swings:
 		_draw_swing(s)
 

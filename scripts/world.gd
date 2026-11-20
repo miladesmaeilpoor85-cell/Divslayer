@@ -913,9 +913,13 @@ func _camp_setup() -> void:
 		if kind == "ledger" and bool(Game.toll().get("ledger", false)):
 			continue
 		_pickup(kind, it)
-	# a deal that was struck holds while the hero is in the camp; a dragon or a dead chief has emptied it
+	# A committed fight survives leaving and re-entering the camp; restore hostility, not another parley.
 	var how := str(Game.toll().get("how", ""))
-	if Game.toll_st() == "active" and bool(Game.toll().get("truce", false)):
+	var fight_started := bool(Game.toll().get("fight_started", false))
+	if fight_started:
+		camp_noticed = true
+		raise_alarm()
+	elif Game.toll_st() == "active" and bool(Game.toll().get("truce", false)):
 		_set_truce(true)
 	if how == "dragon" or how == "fight" or Game.is_defeated("captain") or Game.toll_st() == "done":
 		scatter(false)
@@ -976,7 +980,7 @@ func on_notice(source: Node) -> void:
 	if key != "camp":
 		return
 	camp_noticed = true
-	if Game.toll_st() == "active" and not truce and not parleying and varga() != null and str(Game.toll().get("how", "")) == "":
+	if Game.toll_st() == "active" and not truce and not parleying and not bool(Game.toll().get("fight_started", false)) and varga() != null and str(Game.toll().get("how", "")) == "":
 		_start_parley()
 
 
@@ -1015,7 +1019,7 @@ func _order_flankers(shooter: Node) -> void:
 		side *= -1.0
 
 func _camp_tick() -> void:
-	if key != "camp" or parleying or truce or Game.toll_st() != "active" or str(Game.toll().get("how", "")) != "":
+	if key != "camp" or parleying or truce or bool(Game.toll().get("fight_started", false)) or Game.toll_st() != "active" or str(Game.toll().get("how", "")) != "":
 		return
 	var v = varga()
 	var p = get_tree().get_first_node_in_group("player")
@@ -1049,6 +1053,9 @@ func truce_broken() -> void:
 	Game.toll()["truce"] = false
 	if Game.toll_st() == "active":
 		Game.toll()["how"] = ""
+		# Violence breaks the deal into combat; do not invite Ashkbus to parley again.
+		Game.toll()["fight_started"] = true
+		Game.save_game()
 	for e in camp_foes():
 		e.parley = false
 		e.alert = true
