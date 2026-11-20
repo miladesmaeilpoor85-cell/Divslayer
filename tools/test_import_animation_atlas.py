@@ -6,9 +6,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from PIL import Image, ImageDraw
-
 from import_animation_atlas import import_atlas
+
+from PIL import Image, ImageDraw
 
 
 class AnimationAtlasImportTests(unittest.TestCase):
