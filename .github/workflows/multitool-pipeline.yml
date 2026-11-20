@@ -22,7 +22,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: multitool-pipeline-\${{ github.ref }}
+  group: multitool-pipeline-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
