@@ -94,6 +94,45 @@ the single attack pose with a Godot-drawn slash arc; that arc is a preview effec
 not additional character animation frames. The production combat hit remains
 immediate while the hero's current attack metadata defaults to impact frame 0.
 
+## Quantitative frame-quality audit — 2026-11-20
+
+The CI artwork job now runs `tools/animation_quality_audit.py` after generating
+the visual previews. It writes
+`artifacts/animation-review/animation-quality-report.json` and does not edit
+source art, manifests, runtime scripts, pivots, or import settings.
+
+For each registered hero walk/attack clip and enemy variant, the report records:
+
+- frame count and count of unique frames;
+- exact duplicate frame pairs, comparing frames composited over a neutral
+  background so hidden RGB values under fully transparent pixels do not cause
+  false differences;
+- adjacent changed-pixel ratios using a conservative per-pixel threshold;
+- visible-alpha ratio and visible-foot-baseline variation;
+- review flags for single-pose attacks, two-frame loops, duplicate frames,
+  very low pixel motion, and hero baseline drift.
+
+The current inventory has 12 hero appearance sheets, each with three walk
+directions and one attack pose per direction. Unless a separate attack atlas is
+registered, this means 36 hero attack clips with one authored pose each. The
+enemy manifest contains 41 sprite-backed entries; the existing inventory is
+32 four-frame, five two-frame, and four one-frame sheets, while Wisp is
+procedural. The report re-measures these facts from the actual sheets rather
+than assuming the manifest is correct.
+
+Interpretation limits: pixel-difference scores are triage signals, not an
+artistic quality score. Low movement may be correct for a hovering creature,
+and two frames can be enough for a simple wing beat. Likewise, a high changed
+pixel ratio can indicate jitter or inconsistent registration rather than good
+animation. The flags must be checked against the GIF/PNG previews and gameplay
+silhouette before an asset is labelled defective.
+
+The audit recognises a separate hero attack atlas when `attackSheet` and
+`attackFrames` are present in the manifest. Its expected layout is one
+horizontal frame strip with one row per `rows` direction, matching the
+existing loader contract. The report is quality-assurance evidence only; it
+does not create new animation or change combat timing.
+
 ## Impact-frame authoring contract
 
 For a reviewed multi-frame attack, add `attackImpactFrame` to that hero's entry
