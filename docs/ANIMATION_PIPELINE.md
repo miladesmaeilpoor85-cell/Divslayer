@@ -139,3 +139,14 @@ at the real Android display scale before being promoted.
 ## Separate per-frame attack files
 
 A class entry may define `attackFrameFiles` as a three-row array in the canonical `down`, `up`, `side` order. Each row contains `attackFrames` relative PNG paths under `assets/art/Heroes/`. Every texture must exactly match `cellW × cellH`. The loader validates row count, frame count, resource type and dimensions before creating a one-shot `attack_<direction>` clip. `attackFps` controls playback and `attackImpactFrame` is a zero-based contact frame; damage, impact FX and environmental interactions are resolved on that frame. Leave these fields absent on legacy sheets to preserve their current immediate-hit behaviour.
+
+## Class-specific melee presentation — 20 November 2026
+
+The runtime now gives the shared melee contact event a class-specific visual response without changing the combat contract:
+
+- **Warrior:** grounded bronze/steel arc, contact sparks and a short dust response.
+- **Mage:** lapis/turquoise arc, small star-map ticks, arcane motes and a restrained contact light.
+- **Rogue:** narrow green-tinted paired cuts with a second dagger filament and directional sparks.
+- **Paladin:** broader solar-gold arc, short rays, concentric contact rings and a brief warm light.
+
+These are procedural presentation layers on top of the existing character animation. They do not replace the still-needed unique animation frames for Mage, Rogue or Paladin, and they do not change hitboxes, damage, reach, stamina, cooldowns or impact-frame timing. The FX regression test checks that each class's swing metadata and contact response are registered.

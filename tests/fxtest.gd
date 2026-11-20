@@ -241,6 +241,24 @@ func run(m: Node) -> void:
 		check("heavy_swing_uses_enhanced_trail",
 			bool(heavy_arc["heavy"]) and float(heavy_arc["dur"]) > 0.22 and float(heavy_arc["r"]) > 48.0,
 			heavy_arc)
+		# Class-specific attack language stays cosmetic and distinct while using the same hit geometry.
+		var previous_class := str(Game.cls)
+		var class_swings := {}
+		for hero_class in ["warrior", "mage", "rogue", "paladin"]:
+			Game.cls = hero_class
+			main.world.fx.swing(main.player, Vector2.RIGHT, 42.0, false, 1)
+			var class_arc: Dictionary = main.world.fx.swings.back()
+			class_swings[hero_class] = class_arc["col"]
+			check("swing_records_" + hero_class + "_identity", str(class_arc.get("class", "")) == hero_class)
+			var ring_count: int = main.world.fx.rings.size()
+			main.world.fx.class_impact(e2.center(), Vector2.RIGHT, hero_class, false)
+			check("impact_fx_has_" + hero_class + "_response", main.world.fx.rings.size() > ring_count)
+		Game.cls = previous_class
+		check("class_swing_palettes_are_distinct",
+			class_swings.size() == 4
+			and class_swings["mage"] != class_swings["rogue"]
+			and class_swings["mage"] != class_swings["paladin"]
+			and class_swings["rogue"] != class_swings["paladin"], class_swings)
 		e2.make_elite("fire")
 		var orbit_a: PackedVector2Array = e2._elite_orbit_points(0.0, 24.0)
 		var orbit_b: PackedVector2Array = e2._elite_orbit_points(0.5, 24.0)

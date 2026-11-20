@@ -669,6 +669,7 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 	var landed := false
 	var any_crit := false
 	var stabbed := false
+	var impact_pos := body_c + fv * (reach * 0.72)
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e.dead or not e.targetable():
 			continue
@@ -682,6 +683,7 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 				stabbed = true
 				world.float_text(e.global_position + Vector2(0, -e.box.y - 22), Game.t("Backstab!", "ضربهٔ از پشت!"), Color(1, 0.55, 0.35), true)
 			e.hurt(dmg, crit, fv * (2.2 if heavy else 1.0), heavy)
+			impact_pos = e.center()
 			if crit:
 				Game.Ach.add("crits")
 			var steal := Gear.sum("lifesteal")
@@ -695,6 +697,8 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 		Game.add_ult(4.0)
 	if landed:
 		hits_landed += 1
+		if world.fx:
+			world.fx.class_impact(impact_pos, fv, str(Game.cls), heavy)
 		Game.mp = min(Game.max_mp(), Game.mp + Game.Skills.MP_PER_HIT)
 		Game.add_ult(3.0 + (2.0 if heavy else 0.0) + (2.0 if any_crit else 0.0))
 		Sfx.play("crit" if any_crit else "hit")

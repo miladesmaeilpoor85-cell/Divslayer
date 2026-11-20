@@ -81,3 +81,13 @@ This is a starter-tier visual pilot only. It does not provide separate heavy att
 - [ ] Verify the source image provider terms; asset rights remain `UNVERIFIED` pending owner-side evidence and review.
 
 This is an animation improvement for Warrior Starter only; Mid/Endgame Warrior and the Mage, Rogue and Paladin attack atlases are still unchanged.
+
+## Combat VFX integration — 20 November 2026
+
+- [x] Distinguish the existing melee arc and successful-hit response for Warrior, Mage, Rogue and Paladin with lightweight class-specific procedural effects.
+- [x] Keep the effect bound to the existing confirmed hit location and contact frame; no damage or hitbox changes.
+- [x] Add regression assertions for class tags, distinct palettes and a contact response for all four classes.
+- [ ] Produce and integrate unique attack-frame art for Mage, Rogue and Paladin; image-generation uploads are currently blocked by the connected Fal account's empty credit balance.
+- [ ] Review the visual result at native Android scale and on a physical device after a new APK is built.
+
+The procedural effects in this step are a presentation improvement, not a substitute for the missing class-specific sprite poses.
