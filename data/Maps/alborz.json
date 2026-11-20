@@ -81,6 +81,16 @@
         "spawnX": 930,
         "spawnY": 30,
         "dir": "down"
+      },
+      {
+        "x": 1380,
+        "y": 470,
+        "w": 20,
+        "h": 120,
+        "to": "alborz_eyrie",
+        "spawnX": 48,
+        "spawnY": 550,
+        "dir": "right"
       }
     ],
     "hazards": [],
