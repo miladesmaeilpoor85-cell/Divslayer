@@ -8,6 +8,47 @@ The current manifest contains 12 hero appearance sheets: four classes, each with
 
 The code can load future multi-frame attack data and can delay combat impact to a configured frame. The current production manifest does not activate a new attack atlas or non-zero impact frames. The isolated Warrior review scene is a read-only preview of the existing one-frame attack pose with a drawn slash effect.
 
+## Measured baseline — 2026-11-20
+
+The new CI pixel audit processed 126 clips with no missing-sheet or dimension
+errors: 36 hero walk clips, 36 hero attack clips, and 54 enemy variant clips.
+Wisp is excluded because it is drawn procedurally rather than from a sprite
+sheet.
+
+Measured review candidates:
+
+- All 36 current hero attack clips contain one authored pose.
+- All 12 side-facing hero walk clips have an exact duplicate between frame
+  indices 1 and 3. Confirm whether this symmetry is intentional before changing
+  the cycle; do not replace frames automatically.
+- Wraith and Rimewraith each have one duplicated pair (indices 1 and 3).
+- Eight enemy variants use two-frame cycles: Bat, Bellow Drone, three Ignarok
+  variants, two Matriarch variants, and Mosquito.
+- Four enemy sheets have one frame: Bog Egg, Grave Pillar, Iceling, and
+  Molten Core. Review whether each is meant to be animated or is intentionally
+  static before adding frames.
+
+These are measured inventory findings, not automatic art defects. Pixel
+variation cannot judge acting, silhouette appeal, timing, or artistic quality.
+The bottom-of-silhouette range is retained as information only because normal
+walking lifts a foot.
+
+## Data-driven production order
+
+1. Author genuine 4–6-pose light-attack clips for the four starter looks
+   (Warrior, Mage, Rogue, Paladin), across down/up/side. Start with the Warrior
+   starter as the integration pilot, then validate the same loader contract for
+   the other classes.
+2. Review the repeated side-walk frames across all 12 looks. Correct them only
+   where the repeated pose is visibly harming cadence; some repetition can be
+   deliberate.
+3. Review enemy two-frame cycles and the Wraith/Rimewraith duplicates against
+   their preview loops and in-game behaviour. Keep simple wing beats and
+   hovering cycles short when that is the intended motion.
+4. After attacks are integrated and verified, add class-specific hit, block,
+   dodge, heavy-attack, and death clips; then extend action clips to important
+   enemies and bosses.
+
 ## Non-negotiable production rule
 
 A real frame must show a new pose: changed limb positions, weapon/shield/staff orientation, torso balance, cloth motion, and/or contact posture. Translating, rotating, recolouring, scaling, or squashing one still image does not count as a new authored frame.
