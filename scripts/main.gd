@@ -439,6 +439,9 @@ func _on_interact(npc: Node) -> void:
 			_talk_hesk(who)
 		"qaren":
 			_talk_qaren(who)
+		"alborz_scout":
+			hud.dialogue.open(who, Game.Ch4.scout_lines(world), "hesk")
+			hud.dialogue.finished.connect(_after_alborz_scout.bind(world), CONNECT_ONE_SHOT)
 		"rostam":
 			_talk_rostam(who)
 		"siavash":
@@ -477,6 +480,16 @@ func _on_interact(npc: Node) -> void:
 			hud.dialogue.open(who, lines, id if id in World.NPC_LOOKS else "merchant")
 
 ## (v0.18) a shrine's altar: its gold and treasure, then the Shrine Sigil — the hero chooses its gift
+func _after_alborz_scout(active_world: Node) -> void:
+	if world == null or active_world != world or not is_instance_valid(active_world):
+		return
+	var msg := Game.Ch4.scout_done(active_world)
+	if msg != "":
+		hud.toast(msg, "check", UI.GOLD_HI)
+		Sfx.play("quest", -2.0)
+	hud.refresh()
+
+
 func _shrine_altar() -> void:
 	var sh = world.get("shrine") if world else null
 	if sh == null:
@@ -550,6 +563,10 @@ func _after_elder() -> void:
 			_chapter_end()
 	if Game.Ch3.elder_done() == "end":
 		_chapter_end(3)
+	var c4_message := Game.Ch4.elder_done()
+	if c4_message != "":
+		hud.toast(c4_message, "feather", UI.GOLD_HI)
+		Sfx.play("quest", -2.0)
 	hud.refresh()
 
 # ---------------------------------------------------------------- chapter 2: The Sleeper Beneath (v0.19)
