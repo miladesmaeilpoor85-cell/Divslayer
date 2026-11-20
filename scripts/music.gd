@@ -1,6 +1,6 @@
 extends Node
 ## Music and ambience (autoload "Music").
-## Since v0.17 every region has a recorded CC0 track (assets/audio/music/<region>.ogg — see assets/audio/CREDITS.md):
+## Since v0.17 regions use recorded tracks where available (assets/audio/music/); soundtrack commercial-use rights remain unverified — see assets/audio/CREDITS.md.
 ## a change of region or a boss fight crossfades between them, a track you left a moment ago picks up where it was,
 ## and each track starts over a few seconds before its end, crossfading into itself, so no loop point is ever heard.
 ## Ambience loops (assets/audio/amb/): crickets, wind, birds, fire, cave and water; rain is synthesised.
