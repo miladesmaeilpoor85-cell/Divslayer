@@ -38,6 +38,7 @@ var fog_k := 0.0
 var _night_state := -1
 var forced := ""               # tests can force a weather
 var calm := false              # the title screen: no weather
+var wind_clock := 0.0           # slow phase for continuous, weather-aware gusts
 
 func setup(w: Node) -> void:
 	world = w
@@ -136,6 +137,9 @@ func _process(dt: float) -> void:
 	timer -= dt
 	if timer <= 0.0:
 		_roll()
+	wind_clock += dt
+	var gust := sin(wind_clock * 0.63) * 0.65 + sin(wind_clock * 1.37 + 0.8) * 0.35
+	_apply_wind(gust)
 	var vp := get_viewport()
 	var vis := vp.get_visible_rect().size
 	var inv := vp.get_canvas_transform().affine_inverse()
@@ -159,7 +163,7 @@ func _process(dt: float) -> void:
 	var want_fog := 1.0 if weather == "fog" else 0.0
 	fog_k = move_toward(fog_k, want_fog, dt * 0.25)
 	for c in clouds:
-		c.position += Vector2(c.get_meta("v")) * dt
+		c.position += Vector2(c.get_meta("v")) * dt + Vector2(gust * 3.0, gust * 0.8) * dt
 		var rel: Vector2 = c.position - center
 		var lim := half + Vector2(260, 200)
 		if rel.x > lim.x:
@@ -180,6 +184,35 @@ func _process(dt: float) -> void:
 		hc = Color(0.63, 0.63, 0.67, 0.09 * fog_k)
 	haze.color = haze.color.lerp(hc, min(1.0, dt * 1.5))
 	haze.visible = haze.color.a > 0.005
+
+## Return a gentle horizontal force for the current weather and gust phase.
+func _wind_force(weather_type: String, gust: float) -> float:
+	var strength := 0.06
+	match weather_type:
+		"rain": strength = 0.32
+		"snow": strength = 0.22
+		"ash": strength = 0.55
+		"fog": strength = 0.12
+	return clampf(gust, -1.0, 1.0) * strength
+
+## Keep each particle family readable while letting new particles follow the changing wind.
+func wind_direction_for(preset: String, weather_type: String, gust: float) -> Vector2:
+	var force := _wind_force(weather_type, gust)
+	match preset:
+		"rain": return Vector2(-0.22 + force * 0.9, 1.0).normalized()
+		"snow": return Vector2(0.15 + force, 1.0).normalized()
+		"ash_storm": return Vector2(1.0, 0.35 + force * 0.45).normalized()
+		"leaves", "leaves_few": return Vector2(0.45 + force * 1.8, 1.0).normalized()
+		"ash_flecks": return Vector2(0.60 + force * 1.8, 1.0).normalized()
+		"embers", "embers_few", "heat": return Vector2(force * 1.5, -1.0).normalized()
+		"spores": return Vector2(force * 0.9, -1.0).normalized()
+		_: return Vector2(force * 0.35, -1.0).normalized()
+
+func _apply_wind(gust: float) -> void:
+	for k in emitters:
+		var e: CPUParticles2D = emitters[k]
+		if k in ["rain", "snow", "ash_storm", "leaves", "leaves_few", "ash_flecks", "embers", "embers_few", "heat", "spores", "motes", "glints", "fireflies", "pollen"]:
+			e.direction = wind_direction_for(str(k), weather, gust)
 
 func _make_clouds() -> void:
 	var vp := get_viewport()
