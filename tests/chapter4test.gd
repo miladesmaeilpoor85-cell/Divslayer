@@ -116,6 +116,11 @@ func run(m: Node) -> void:
 		and data.get("npcs", []).any(func(n): return str(n.get("id", "")) == "alborz_scout")
 		and data.get("enemySpawns", []).size() == 3,
 		[data.get("windGusts", []).size(), data.get("enemySpawns", []).size()])
+	check("entry_and_return_are_on_opposite_edges",
+		Vector2(float(data.get("playerStart", {}).get("x", 0)), float(data.get("playerStart", {}).get("y", 0))).y > 900.0
+		and data.get("exits", []).size() == 1
+		and float(data["exits"][0].get("y", 0)) > 1000.0
+		and float(data["exits"][0].get("spawnY", 9999)) < 100.0)
 	check("map_uses_existing_ground_placeholder",
 		str(map_data.get("groundFile", "")) == "frostvale_ground.jpg"
 		and ResourceLoader.exists("res://assets/art/Maps/frostvale_ground.jpg"))
@@ -128,7 +133,7 @@ func run(m: Node) -> void:
 	check("peaks_exit_opens_after_zal", exit_try("alborz") == "left")
 
 	# Enter the Alborz prototype; the map entry advances the quest and builds its wind controller and visual cues.
-	main.goto_map("alborz", Vector2(1260, 554))
+	main.goto_map("alborz", Vector2(880, 1030))
 	await frames(10)
 	main.player.invuln = 99999.0
 	var w = main.world
