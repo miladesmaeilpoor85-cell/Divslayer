@@ -85,6 +85,25 @@ func run(m: Node) -> void:
 	await frames(2)
 	check("rain_stops", not main.world.atmos.emitters["rain"].emitting and not Music._amb_want["rain"])
 
+	# ---- weather and regional ambience now share a slow, readable gust cycle
+	var atmos = main.world.atmos
+	var calm_leaf: Vector2 = atmos.wind_direction_for("leaves", "", 0.0)
+	var ash_gust_leaf: Vector2 = atmos.wind_direction_for("leaves", "ash", 1.0)
+	var snow_gust: Vector2 = atmos.wind_direction_for("snow", "snow", 1.0)
+	var rain_gust: Vector2 = atmos.wind_direction_for("rain", "rain", 1.0)
+	check("wind_gust_directions_are_normalized",
+		absf(ash_gust_leaf.length() - 1.0) < 0.001 and absf(snow_gust.length() - 1.0) < 0.001
+		and absf(rain_gust.length() - 1.0) < 0.001)
+	check("wind_gust_changes_leaf_drift", ash_gust_leaf.x > calm_leaf.x)
+	check("snow_and_rain_have_distinct_wind_profiles", snow_gust.x > rain_gust.x)
+	atmos.set_weather("rain")
+	atmos._apply_wind(-1.0)
+	var rain_lull: Vector2 = atmos.emitters["rain"].direction
+	atmos._apply_wind(1.0)
+	var rain_peak: Vector2 = atmos.emitters["rain"].direction
+	check("rain_particles_respond_to_live_gusts", rain_peak.x > rain_lull.x)
+	atmos.set_weather("")
+
 	# ---- footfalls carry a subtle palette from the ground beneath the hero
 	main.goto_map("sanctum", Vector2(450, 470))
 	var snow_dust: Color = main.player._footstep_dust_color()

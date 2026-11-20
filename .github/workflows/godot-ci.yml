@@ -10,14 +10,28 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: godot-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   headless-tests:
-    name: Godot 4.7.2 headless tests
+    name: Godot 4.7.2 headless tests (shard ${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    env:
+      GODOT_TEST_SHARD_INDEX: ${{ matrix.shard }}
+      GODOT_TEST_SHARD_COUNT: 4
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Validate headless test runner syntax
+        run: bash -n tools/run_all_tests.sh
 
       - name: Download and verify Godot 4.7.2
         shell: bash
@@ -71,4 +85,4 @@ jobs:
           exit "$status"
 
       - name: Run complete headless test suite
-        run: bash tools/run_all_tests.sh ci
+        run: bash tools/run_all_tests.sh ci-shard-${{ matrix.shard }}
