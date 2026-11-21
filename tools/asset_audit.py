@@ -7,7 +7,9 @@ ownership, copyright, or commercial-use rights.
 from __future__ import annotations
 
 import argparse
+import base64
 import csv
+import re
 import hashlib
 import json
 import struct
@@ -20,6 +22,7 @@ IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
 AUDIO_EXTENSIONS = {".ogg", ".wav", ".mp3", ".flac"}
 AUDIO_ROOT = Path("assets/audio")
 REGISTER = Path("docs/ASSET_RIGHTS_REGISTER.csv")
+ATLAS_PAYLOAD_ROOT = Path("assets/art/Heroes/attack_atlas_data")
 LARGE_FILE_BYTES = 8 * 1024 * 1024
 LARGE_IMAGE_PIXELS = 64_000_000
 
@@ -141,6 +144,49 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def audit_atlas_payloads(root: Path) -> tuple[list[Path], int, list[str]]:
+    """Validate ordered Base64 PNG parts used by metadata-driven attack atlases."""
+    payload_root = root / ATLAS_PAYLOAD_ROOT
+    if not payload_root.is_dir():
+        return [], 0, []
+    payload_files = sorted(path for path in payload_root.rglob("*.b64") if path.is_file())
+    groups: dict[str, list[Path]] = defaultdict(list)
+    for path in payload_files:
+        groups[path.parent.relative_to(root).as_posix()].append(path)
+
+    errors: list[str] = []
+    checked = 0
+    for group, paths in sorted(groups.items()):
+        indexed: list[tuple[int, Path]] = []
+        for path in paths:
+            match = re.fullmatch(r"part_(\d{2})\.b64", path.name)
+            if match is None:
+                errors.append(f"invalid atlas payload part name: {path.relative_to(root).as_posix()}")
+                continue
+            indexed.append((int(match.group(1)), path))
+        indexed.sort(key=lambda item: item[0])
+        actual_indices = [index for index, _ in indexed]
+        if actual_indices != list(range(len(indexed))):
+            errors.append(f"atlas payload parts are missing or out of order in {group}: {actual_indices}")
+            continue
+        try:
+            encoded = "".join(path.read_text(encoding="ascii").strip() for _, path in indexed)
+            decoded = base64.b64decode(encoded, validate=True)
+        except (OSError, UnicodeError, ValueError) as exc:
+            errors.append(f"invalid Base64 atlas payload in {group}: {exc}")
+            continue
+        if (len(decoded) < 45 or decoded[:8] != b"\x89PNG\r\n\x1a\n"
+                or decoded[12:16] != b"IHDR" or decoded[-8:-4] != b"IEND"):
+            errors.append(f"atlas payload does not reassemble into a complete PNG: {group}")
+            continue
+        width, height = struct.unpack(">II", decoded[16:24])
+        if (width, height) != (640, 468):
+            errors.append(f"atlas payload has unexpected dimensions {width}x{height} in {group}; expected 640x468")
+            continue
+        checked += 1
+    return payload_files, checked, errors
 
 
 def audit_repository(root: Path) -> dict[str, Any]:
