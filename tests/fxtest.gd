@@ -268,9 +268,18 @@ func run(m: Node) -> void:
 		var heavy_windup: Dictionary = main.world.fx.windups.back()
 		check("heavy_attack_windup_has_longer_readability_window",
 			float(heavy_windup.get("dur", 0.0)) > 0.17, heavy_windup)
+		var player_windups_before_cancel := 0
+		for prep in main.world.fx.windups:
+			if prep.get("who") == main.player:
+				player_windups_before_cancel += 1
 		main.world.fx.cancel_attack_windup(main.player)
+		var player_windups_after_cancel := 0
+		for prep in main.world.fx.windups:
+			if prep.get("who") == main.player:
+				player_windups_after_cancel += 1
 		check("attack_windups_clear_when_actor_is_interrupted",
-			main.world.fx.windups.size() == windups_before, main.world.fx.windups.size())
+			player_windups_before_cancel >= 5 and player_windups_after_cancel == 0,
+			[player_windups_before_cancel, player_windups_after_cancel])
 		e2.make_elite("fire")
 		var orbit_a: PackedVector2Array = e2._elite_orbit_points(0.0, 24.0)
 		var orbit_b: PackedVector2Array = e2._elite_orbit_points(0.5, 24.0)
