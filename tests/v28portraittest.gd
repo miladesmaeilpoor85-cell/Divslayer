@@ -139,7 +139,7 @@ func run(m: Node) -> void:
 			bad_land.append(tp)
 	check("green_region_painted", bad_land.is_empty(), bad_land)
 
-	# ---- every speaker of the game shows his painting
+	# ---- every speaker of the game shows his painted portrait or approved atlas region
 	Game.new_game("warrior")
 	if main.hud == null:
 		main.start_world()
@@ -152,9 +152,17 @@ func run(m: Node) -> void:
 	for s in sheets:
 		dl.open("x", ["..."], s)
 		await frames(2)
-		var want: String = Portrait.ART[Portrait.art_key(s)][0]
-		if p.art_facing == 0 or not str(p._tex.resource_path).ends_with(want + ".webp") or p.face.material != null:
-			wrong.append([s, p.art_facing, p._tex.resource_path if p._tex else null])
+		var key := Portrait.art_key(s)
+		var user_portrait := Portrait.USER_ART.has(key)
+		var wrong_source := false
+		if user_portrait:
+			var spec: Array = Portrait.USER_ART[key]
+			wrong_source = p._tex != Portrait.USER_ART_ATLAS or p._src != Rect2(spec[0], Vector2(192, 192))
+		else:
+			var want: String = Portrait.ART[key][0]
+			wrong_source = p._tex == null or not str(p._tex.resource_path).ends_with(want + ".webp")
+		if p.art_facing == 0 or wrong_source or p.face.material != null:
+			wrong.append([s, p.art_facing, p._tex.resource_path if p._tex else null, p._src])
 		dl.visible = false
 		get_tree().paused = false
 	check("every_speaker_painted", wrong.is_empty(), wrong)
