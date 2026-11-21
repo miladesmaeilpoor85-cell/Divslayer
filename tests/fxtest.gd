@@ -253,8 +253,8 @@ func run(m: Node) -> void:
 			var ring_count: int = main.world.fx.rings.size()
 			main.world.fx.class_impact(e2.center(), Vector2.RIGHT, hero_class, false)
 			check("impact_fx_has_" + hero_class + "_response", main.world.fx.rings.size() > ring_count)
-			var windup_rings_before := main.world.fx.rings.size()
-			var windup_dashes_before := main.world.fx.dashes.size()
+			var windup_rings_before: int = main.world.fx.rings.size()
+			var windup_dashes_before: int = main.world.fx.dashes.size()
 			main.world.fx.attack_windup(main.player, Vector2.RIGHT, hero_class, false)
 			var windup: Dictionary = main.world.fx.windups.back()
 			check("attack_windup_records_" + hero_class + "_identity",
