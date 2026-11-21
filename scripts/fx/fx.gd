@@ -37,6 +37,7 @@ var _next := {}
 var rings: Array = []          # {pos, col, r, t, life}
 var dashes: Array = []         # short directional energy trails from dodge rolls
 var swings: Array = []         # {who, ang, t, dur, r, col, heavy}
+var windups: Array = []        # short, class-specific pre-contact cues: {who, dir, class, t, dur, heavy}
 var lights: Array = []         # timed light flashes read by the lighting pass: {pos, r, i, c, t, life}
 var quality := 1               # 0 low (fewer particles) / 1 high
 var _drew := false
@@ -168,6 +169,48 @@ func swing(who: Node2D, dir: Vector2, reach: float, heavy := false, tier := 1) -
 	if swings.size() > 4:
 		swings.pop_front()
 
+## A brief anticipation cue, played at attack start before the contact-frame hit is resolved.
+## It only draws presentation effects; it never changes attack reach, damage, or timing.
+func attack_windup(who: Node2D, dir: Vector2, hero_class: String, heavy := false) -> void:
+	if not is_instance_valid(who) or dir.length_squared() < 0.0001:
+		return
+	var forward := dir.normalized()
+	var side := forward.orthogonal()
+	var duration := 0.17 if heavy else 0.12
+	windups.append({
+		"who": who,
+		"dir": forward,
+		"class": hero_class,
+		"t": 0.0,
+		"dur": duration,
+		"heavy": heavy,
+	})
+	if windups.size() > 8:
+		windups.pop_front()
+	var anchor := who.global_position + Vector2(0, -17) + forward * (10.0 if heavy else 7.0)
+	match hero_class:
+		"mage":
+			var col := Color(0.30, 0.84, 0.96)
+			ring(anchor, col, 12.0 if heavy else 8.0, duration + 0.04)
+			emit("shine", anchor, 5 if heavy else 3, col, forward, 42.0, 58.0, 0.55)
+		"rogue":
+			var col := Color(0.48, 0.84, 0.57, 0.78)
+			dash_trail(anchor + side * 4.0, forward, col, duration, 30.0 if heavy else 22.0)
+			dash_trail(anchor - side * 4.0, forward, col, duration, 30.0 if heavy else 22.0)
+		"paladin":
+			var col := Color(1.0, 0.82, 0.38)
+			ring(anchor, col, 14.0 if heavy else 10.0, duration + 0.06)
+			emit("shine", anchor, 5 if heavy else 3, col, Vector2.UP, 32.0, 62.0, 0.6)
+		_:
+			dust(anchor, 3 if heavy else 2, -forward, Color(0.62, 0.49, 0.34, 0.55))
+	arcs.queue_redraw()
+
+## Remove a still-active anticipation cue when the owning attack is interrupted.
+func cancel_attack_windup(who: Node2D) -> void:
+	windups = windups.filter(func(p): return is_instance_valid(p.get("who")) and p.get("who") != who)
+	if is_instance_valid(arcs):
+		arcs.queue_redraw()
+
 ## A small, class-specific contact response. Pure presentation: it never changes damage or hit geometry.
 func class_impact(pos: Vector2, dir: Vector2, hero_class: String, heavy := false) -> void:
 	var forward := dir.normalized() if dir.length_squared() > 0.0001 else Vector2.RIGHT
@@ -263,21 +306,26 @@ func _process(dt: float) -> void:
 	for s in swings:
 		s["t"] = float(s["t"]) + dt
 	swings = swings.filter(func(s): return float(s["t"]) < float(s["dur"]) and is_instance_valid(s["who"]))
+	for p in windups:
+		p["t"] = float(p["t"]) + dt
+	windups = windups.filter(func(p): return float(p["t"]) < float(p["dur"]) and is_instance_valid(p["who"]))
 	for l in lights:
 		l["t"] = float(l["t"]) - dt
 	lights = lights.filter(func(l): return float(l["t"]) > 0.0)
 	for d in dashes:
 		d["t"] = float(d["t"]) - dt
 	dashes = dashes.filter(func(d): return float(d["t"]) > 0.0)
-	if not rings.is_empty() or not swings.is_empty() or not dashes.is_empty() or _drew:
+	if not rings.is_empty() or not swings.is_empty() or not windups.is_empty() or not dashes.is_empty() or _drew:
 		arcs.queue_redraw()
-	_drew = not rings.is_empty() or not swings.is_empty() or not dashes.is_empty()
+	_drew = not rings.is_empty() or not swings.is_empty() or not windups.is_empty() or not dashes.is_empty()
 
 func _draw_arcs() -> void:
 	for r in rings:
 		var k: float = float(r["t"]) / float(r["life"])
 		var c: Color = r["col"]
 		arcs.draw_arc(r["pos"], float(r["r"]) * (1.6 - k * 0.6), 0, TAU, 40, Color(c, 0.6 * k), 1.0 + 3.0 * k, true)
+	for prep in windups:
+		_draw_attack_windup(prep)
 	for d in dashes:
 		var k: float = clampf(float(d["t"]) / float(d["life"]), 0.0, 1.0)
 		var dir: Vector2 = d["dir"]
@@ -292,6 +340,54 @@ func _draw_arcs() -> void:
 		arcs.draw_line(tail - side * 4.0, head - side * 2.0, Color(col, 0.34 * fade), 1.8 * fade + 0.4, true)
 	for s in swings:
 		_draw_swing(s)
+
+## A small telegraph drawn just ahead of the hero's weapon hand.
+## The three classes get deliberately different silhouettes, even before their contact effects.
+func _draw_attack_windup(prep: Dictionary) -> void:
+	var who: Node2D = prep.get("who")
+	if not is_instance_valid(who):
+		return
+	var duration := maxf(float(prep.get("dur", 0.12)), 0.001)
+	var progress := clampf(float(prep.get("t", 0.0)) / duration, 0.0, 1.0)
+	var fade := 1.0 - progress
+	var dir: Vector2 = prep.get("dir", Vector2.RIGHT)
+	var side := dir.orthogonal()
+	var heavy := bool(prep.get("heavy", false))
+	var hero_class := str(prep.get("class", "warrior"))
+	var anchor := who.global_position + Vector2(0, -17) + dir * (10.0 if heavy else 7.0)
+	var col := Color(0.86, 0.63, 0.36)
+	match hero_class:
+		"mage":
+			col = Color(0.30, 0.84, 0.96)
+			var phase := progress * TAU
+			var radius := 5.0 + progress * (4.0 if heavy else 2.0)
+			arcs.draw_arc(anchor, radius, dir.angle() - 0.95, dir.angle() + 0.95, 16,
+				Color(col, 0.68 * fade), 1.6 if heavy else 1.2, true)
+			for rune in range(3):
+				var angle := phase + TAU * float(rune) / 3.0
+				var rune_pos := anchor + Vector2.from_angle(angle) * (radius + 2.0)
+				arcs.draw_circle(rune_pos, 1.35, Color(0.84, 0.98, 1.0, 0.82 * fade))
+		"rogue":
+			col = Color(0.48, 0.84, 0.57)
+			for hand in [-1.0, 1.0]:
+				var start := anchor + side * hand * 3.5 - dir * (5.0 + progress * 3.0)
+				var finish := anchor + side * hand * (5.5 + progress * 1.5) + dir * (8.0 + progress * 11.0)
+				arcs.draw_line(start, finish, Color(col, 0.82 * fade), 2.0 if heavy else 1.25, true)
+				arcs.draw_line(start + side * hand * 2.0, finish + side * hand * 2.0,
+					Color(col, 0.28 * fade), 0.8, true)
+		"paladin":
+			col = Color(1.0, 0.82, 0.38)
+			var radius := 10.0 + progress * (5.0 if heavy else 3.0)
+			arcs.draw_arc(anchor, radius, dir.angle() - 0.92, dir.angle() + 0.92, 20,
+				Color(col, 0.74 * fade), 2.0 if heavy else 1.4, true)
+			for ray in range(3):
+				var angle := dir.angle() + (float(ray) - 1.0) * 0.38
+				var ray_dir := Vector2.from_angle(angle)
+				arcs.draw_line(anchor + ray_dir * radius,
+					anchor + ray_dir * (radius + 4.0 * fade), Color(1.0, 0.95, 0.70, 0.72 * fade), 1.2, true)
+		_:
+			arcs.draw_arc(anchor, 6.0 + progress * 3.0, dir.angle() - 0.7, dir.angle() + 0.7, 14,
+				Color(col, 0.52 * fade), 1.1, true)
 
 ## a crescent that sweeps 115° across the facing direction, thick and bright at its head (VIS.drawSwings)
 func _draw_swing(s: Dictionary) -> void:
