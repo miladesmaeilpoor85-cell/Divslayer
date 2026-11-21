@@ -120,7 +120,7 @@ func run(m: Node) -> void:
 	# (v0.28+) his painted portrait now comes from the owner-supplied Rostam atlas cell;
 	# the sprite in his colours stays the fallback when the painting is missing.
 	var dp = main.hud.dialogue.portrait
-	var user_rostam_portrait := dp._tex != null and dp.art_facing != 0 \
+	var user_rostam_portrait: bool = dp._tex != null and dp.art_facing != 0 \
 		and str(dp._tex.resource_path).ends_with("character_portraits_2026.webp") \
 		and dp._src == Rect2(Vector2.ZERO, Vector2(192, 192))
 	check("rostam_portrait_in_his_colours", user_rostam_portrait
