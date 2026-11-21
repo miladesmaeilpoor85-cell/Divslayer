@@ -7,6 +7,31 @@ const WarriorStarterArt = preload("res://scripts/generated/warrior_starter_art.g
 
 static var _cache := {}
 
+## Load a PNG atlas stored as text-safe Base64 resource parts.
+## This lets the same transparent atlas data ship in desktop and Android exports.
+static func _load_base64_attack_sheet(folder: String, parts: Array) -> Texture2D:
+	var encoded := ""
+	for relative_path in parts:
+		var path := Game.ART + folder + "/" + str(relative_path)
+		var source := FileAccess.open(path, FileAccess.READ)
+		if source == null:
+			push_error("base64 attack atlas part missing from the build: " + path)
+			return null
+		encoded += source.get_as_text().strip_edges()
+	if encoded.is_empty():
+		push_error("base64 attack atlas has no encoded data")
+		return null
+	var bytes := Marshalls.base64_to_raw(encoded)
+	if bytes.is_empty():
+		push_error("base64 attack atlas could not be decoded")
+		return null
+	var image := Image.new()
+	var error := image.load_png_from_buffer(bytes)
+	if error != OK:
+		push_error("base64 attack atlas is not a valid PNG (error " + str(error) + ")")
+		return null
+	return ImageTexture.create_from_image(image)
+
 static func _atlas(tex: Texture2D, x: float, y: float, w: float, h: float) -> AtlasTexture:
 	var a := AtlasTexture.new()
 	a.atlas = tex
@@ -148,7 +173,9 @@ static func character(group: String, sheet: String) -> Dictionary:
 	if tex == null:
 		tex = load(Game.ART + folder + "/" + sheet + ".png")
 	var attack_texture: Texture2D = null
-	if meta.has("attackSheet"):
+	if meta.has("attackSheetBase64Parts"):
+		attack_texture = _load_base64_attack_sheet(folder, meta["attackSheetBase64Parts"])
+	elif meta.has("attackSheet"):
 		attack_texture = load(Game.ART + folder + "/" + str(meta["attackSheet"]))
 		if attack_texture == null:
 			push_error("separate attack sheet missing from the build: " + str(meta["attackSheet"]))
