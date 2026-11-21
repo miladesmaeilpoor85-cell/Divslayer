@@ -2,7 +2,7 @@ extends Node
 ## Android-only QA scene. The workflow temporarily selects this scene as the APK entrypoint.
 ## It exercises the real Mage Starter spell -> cast_done -> Player.cast_front path.
 
-const MainScript = preload("res://scripts/main.gd")
+const MainScript = preload("res://tests/mage_cast_runtime_main.gd")
 
 func _ready() -> void:
 	call_deferred("_run")
@@ -15,23 +15,11 @@ func _fail(reason: String) -> void:
 	push_error("MAGE_CAST_FRONT_RUNTIME_FAIL: " + reason)
 
 func _run() -> void:
+	Game.new_game("mage")
+	Game.state["slots"] = ["bolt", "nova"]
 	var main = MainScript.new()
 	add_child(main)
 	await get_tree().process_frame
-
-	# Main normally creates the title menu first. Remove only that temporary backdrop
-	# so this QA scene can start a fresh Mage game without user input.
-	if main.menu != null and is_instance_valid(main.menu):
-		var menu_layer: Node = main.menu.get_parent()
-		main.menu = null
-		if is_instance_valid(menu_layer):
-			menu_layer.queue_free()
-	if main.menu_bg != null and is_instance_valid(main.menu_bg):
-		main.menu_bg.queue_free()
-		main.menu_bg = null
-
-	Game.new_game("mage")
-	Game.state["slots"] = ["bolt", "nova"]
 	Game.mp = Game.max_mp()
 	main.start_world()
 	await _physics_frames(8)
