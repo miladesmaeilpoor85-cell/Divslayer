@@ -1685,9 +1685,6 @@ func quest_target() -> Dictionary:
 		return {"map": "village", "pos": _v(g.get("village", {}).get("npcs", {}).get("merchant", [313, 214])), "kind": "npc"}
 	if not c3t.is_empty():
 		return c3t
-	var c4t: Dictionary = Ch4.target()
-	if not c4t.is_empty():
-		return c4t
 	return shrine_target()
 
 static func _v(a) -> Vector2:
