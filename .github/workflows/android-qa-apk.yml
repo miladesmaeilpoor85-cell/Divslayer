@@ -253,6 +253,8 @@ jobs:
             timeout 30s adb logcat -d -v time > build/android/emulator-game-logcat.txt;
             if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' build/android/emulator-game-logcat.txt; then echo 'Playable Android QA app reported a fatal or Godot script error.'; exit 1; fi;
             grep -F 'OnGodotSetupCompleted' build/android/emulator-game-logcat.txt;
+            if grep -Fq 'DIVSLAYER_TITLE_MENU_FAIL' build/android/emulator-game-logcat.txt; then echo 'The playable app failed its in-game title-menu readiness assertion.'; exit 1; fi;
+            grep -F 'DIVSLAYER_TITLE_MENU_READY title=true new_game=true background=true' build/android/emulator-game-logcat.txt;
             timeout 30s adb shell dumpsys activity activities > build/android/emulator-game-activity.txt;
             game_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-game-activity.txt | grep -F 'com.example.divslayer.qa/' )";
             test -n "$game_foreground";
