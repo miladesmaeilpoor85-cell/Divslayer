@@ -56,7 +56,7 @@ See [Alborz art production brief](docs/ALBORZ_ART_PRODUCTION_BRIEF.md).
 
 - [x] Isolated Android QA export and signature-verification workflow.
 - [x] Export, package identity, and APK signature verification succeeded for the latest main QA build; the emulator installed the APK and left the Godot activity in the foreground.
-- [ ] Pass the corrected Godot 4.7.2 emulator startup assertion in PR #56 and publish a complete QA artifact with diagnostics and checksum.
+- [x] Pass the corrected Godot 4.7.2 emulator startup assertion in PR #56; run 202 succeeded and published installable QA artifact 14707328088 with SHA-256. PR #56 remains open pending review/merge.
 - [ ] Verify production package ID and export settings from the owner's private export preset.
 - [ ] Generate a new production signing/upload key locally and keep two secure offline backups.
 - [ ] Decide on Google Play App Signing and preserve package/update continuity if already distributed.
