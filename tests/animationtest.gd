@@ -3,6 +3,9 @@ extends Node
 
 const Sheets = preload("res://scripts/sheets.gd")
 const PlayerCombat = preload("res://scripts/player.gd")
+const ClassCardArt = preload("res://scripts/ui/class_card_art.gd")
+const UserArtAtlas = preload("res://scripts/ui/user_art_atlas.gd")
+const Portrait = preload("res://scripts/ui/portrait.gd")
 var results := {}
 var fails: Array = []
 
@@ -24,6 +27,32 @@ func make_test_sheet(columns: int) -> Texture2D:
 
 func run(_main: Node) -> void:
 	await get_tree().process_frame
+
+	# User-supplied 2026 art: verify atlas decoding, four six-pose card clips,
+	# and the four story portraits wired to the supplied turnaround artwork.
+	var class_atlas: Texture2D = UserArtAtlas.load_webp_base64(
+		"assets/art/ClassCards",
+		["class_motion_atlas.part_00.b64", "class_motion_atlas.part_01.b64", "class_motion_atlas.part_02.b64"]
+	)
+	check("user_class_motion_atlas_decodes", class_atlas != null
+		and class_atlas.get_width() == 384 and class_atlas.get_height() == 384)
+	for calling in ["warrior", "mage", "rogue", "paladin"]:
+		var card_frames: Array[Texture2D] = ClassCardArt.frames_for(calling)
+		check("user_%s_class_card_has_six_motion_frames" % calling, card_frames.size() == 6)
+		if card_frames.size() == 6:
+			var first_frame := card_frames[0] as AtlasTexture
+			var last_frame := card_frames[5] as AtlasTexture
+			check("user_%s_class_card_frames_have_expected_cell_size" % calling,
+				first_frame != null and first_frame.get_size() == Vector2(96, 64)
+				and last_frame != null and last_frame.get_size() == Vector2(96, 64))
+	var portrait_atlas: Texture2D = UserArtAtlas.load_webp_base64(
+		"assets/art/Portraits",
+		["character_portraits_2026.part_00.b64", "character_portraits_2026.part_01.b64"]
+	)
+	check("user_story_portrait_atlas_decodes", portrait_atlas != null
+		and portrait_atlas.get_width() == 384 and portrait_atlas.get_height() == 384)
+	for actor in ["npc_rostam", "npc_siavash", "npc_gordafarid", "alchemist"]:
+		check("user_story_portrait_%s_is_registered" % actor, Portrait.has_art(actor))
 
 	var hero_manifest: Dictionary = Game.manifest.get("heroes", {})
 	var hero_names: Array = hero_manifest.keys()
