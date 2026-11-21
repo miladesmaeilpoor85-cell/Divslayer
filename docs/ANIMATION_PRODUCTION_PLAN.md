@@ -78,18 +78,18 @@ This remains a Starter-tier pilot. It does not add separate heavy attack, hurt/s
 - [x] Register the 12 individual transparent 160×156 attack frames in `data/art_manifest.json` using `attackFrameFiles`; playback runs at 24 FPS and contact is frame index 2.
 - [x] Resolve damage and impact effects on the configured contact frame; preserve immediate-hit behaviour for legacy one-frame hero attacks.
 - [x] Keep Rogue sneak active during the attack wind-up and end it on the contact frame.
-- [ ] Verify the updated code and all gameplay regression tests on the current `main` base; the previously passing CI belongs to the earlier feature-branch commit and is not proof for this integration.
+- [x] Verify the integrated attack loader and gameplay regression tests on the current `main` base; Godot CI run 457 passed all four headless shards. The current Android QA emulator completion check is tracked separately in PR #56.
 - [ ] Review the attack poses at native Android scale and confirm hit timing/left-right mirroring on a physical device.
 - [ ] Verify the source image provider terms; asset rights remain `UNVERIFIED` pending owner-side evidence and review.
 
-This is an animation improvement for Warrior Starter only; Mid/Endgame Warrior and the Mage, Rogue and Paladin attack atlases are still unchanged.
+Warrior Starter and Rogue Starter now both have four-frame directional light attacks. Mage Starter, all Paladin looks, and the Mid/Endgame looks for Warrior and Rogue remain on one-pose attacks.
 
 ## Combat VFX integration — 20 November 2026
 
 - [x] Distinguish the existing melee arc and successful-hit response for Warrior, Mage, Rogue and Paladin with lightweight class-specific procedural effects.
 - [x] Keep the effect bound to the existing confirmed hit location and contact frame; no damage or hitbox changes.
 - [x] Add regression assertions for class tags, distinct palettes and a contact response for all four classes.
-- [ ] Produce and integrate unique attack-frame art for Mage, Rogue and Paladin; image-generation uploads are currently blocked by the connected Fal account's empty credit balance.
+- [ ] Produce and integrate unique attack-frame art for Mage Starter and Paladin Starter, then extend the Starter pipeline to the remaining gear tiers. Rogue Starter is already integrated; do not count procedural VFX or menu illustrations as combat animation.
 - [ ] Review the visual result at native Android scale and on a physical device after a new APK is built.
 
 The procedural effects in this step are a presentation improvement, not a substitute for the missing class-specific sprite poses.
@@ -98,7 +98,7 @@ The procedural effects in this step are a presentation improvement, not a substi
 ## Frame-level animation audit — 20 November 2026
 
 - [x] Add a read-only image audit for duplicate frames, adjacent pixel-motion ratios, visible alpha, and bottom-edge drift.
-- [x] Measure both embedded/atlas attack clips and separately registered `attackFrameFiles` (including the Warrior Starter production sequence).
+- [x] Measure separate attack atlases, Base64-backed atlases and per-direction `attackFrameFiles` (including Warrior Starter and Rogue Starter).
 - [x] Report frame counts, FPS, contact-frame index and contact time when the manifest provides them.
 - [x] Run unit tests and publish a JSON quality report from the artwork CI job.
 - [ ] Review the generated report and native-scale contact sheets; pixel-difference metrics identify review candidates but do not grade acting or artistic quality.
