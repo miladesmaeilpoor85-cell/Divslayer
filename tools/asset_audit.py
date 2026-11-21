@@ -9,9 +9,9 @@ from __future__ import annotations
 import argparse
 import base64
 import csv
-import re
 import hashlib
 import json
+import re
 import struct
 import sys
 from collections import Counter, defaultdict
