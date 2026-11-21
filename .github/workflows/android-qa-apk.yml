@@ -214,19 +214,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Upload APK diagnostics if validation fails
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Divslayer-Android-APK-Diagnostics
-          path: |
-            build/android/Divslayer-QA.apk
-            build/android/apk-badging.txt
-            build/android/manifest-xmltree.txt
-            build/android/Divslayer-QA.apk.sha256
-          if-no-files-found: warn
-          retention-days: 7
-
       - name: Enable KVM for Android emulator
         shell: bash
         run: |
