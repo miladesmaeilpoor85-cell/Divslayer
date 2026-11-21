@@ -14,7 +14,7 @@ var world: Node = null
 var anim: AnimatedSprite2D
 var cast_anim: AnimatedSprite2D
 var _mage_cast_front_active := false
-const MAGE_CAST_FRONT_DISPLAY_SCALE := 0.88
+const MAGE_CAST_FRONT_DISPLAY_SCALE := 0.612
 var body: Node2D              # pivot at the body's middle: the roll spins around it
 var shadow: Sprite2D
 var cam: Camera2D

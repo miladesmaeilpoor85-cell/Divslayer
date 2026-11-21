@@ -1,51 +1,26 @@
-# Mage Starter cast-front atlas — technical edge audit
+# Mage Starter cast-front atlas — technical audit
 
-**Status: diagnostic only. The current runtime atlas is not approved as the high-resolution production master.**
+**Status: lossless runtime candidate installed for validation. Visual approval and commercial-use rights remain pending.**
 
 ## Asset inspected
-
 - Runtime file: `assets/art/Heroes/mage_starter_cast_front.webp`
-- Encoded size: 384 × 513 px, RGBA, 123,750 bytes
+- Encoded size: 640 × 855 px, RGBA, 546,846 bytes
 - Layout: 4 columns × 3 rows
-- Cell size: 96 × 171 px (12 frames)
-- Encoding: lossy WebP. The alpha channel is present, but the RGB image data is not a lossless master.
+- Cell size: 160 × 285 px (12 frames)
+- Encoding: lossless WebP VP8L with alpha
+- SHA-256: `85ca84160b6a8b157023759604e0ffa4e0dd34efdf105fbf964430e566e61f60`
 
-## Per-frame alpha bounds
+## Runtime contract
+- 12 temporal samples from source frames 16, 24, 32, 40, 48, 56, 64, 72, 80, 92, 104, 120.
+- 4 columns × 3 rows; each cell 160 × 285 px.
+- 8 FPS; non-looping one-shot.
+- Feet pivot offset: `Vector2(-80, -270)`.
+- Display scale: `0.612`.
 
-Coordinates are local to each cell and use Pillow's half-open bounding-box convention `(left, top, right, bottom)`.
+## Verification status
+The binary is pinned by byte count, WebP signature and SHA-256 in `tools/fetch_mage_cast_front_asset.py`. The original source videos have been uploaded to the repository root, but their frame contents have not yet been independently decoded in this environment. The two PNG uploads likewise require visual inspection at native resolution; filename and file size alone do not establish artistic quality, alpha integrity, or intended use.
 
-| Frame | Alpha bbox | Left margin | Top margin | Right margin | Bottom margin | Alpha on cell edge |
-|---:|---|---:|---:|---:|---:|---|
-| 0 | (9, 4, 89, 168) | 9 | 4 | 7 | 3 | none |
-| 1 | (11, 4, 88, 168) | 11 | 4 | 8 | 3 | none |
-| 2 | (11, 4, 88, 168) | 11 | 4 | 8 | 3 | none |
-| 3 | (11, 4, 89, 168) | 11 | 4 | 7 | 3 | none |
-| 4 | (10, 4, 89, 168) | 10 | 4 | 7 | 3 | none |
-| 5 | (10, 4, 89, 168) | 10 | 4 | 7 | 3 | none |
-| 6 | (9, 4, 89, 168) | 9 | 4 | 7 | 3 | none |
-| 7 | (10, 3, 92, 168) | 10 | 3 | 4 | 3 | none |
-| 8 | (10, 0, 96, 168) | 10 | 0 | 0 | 3 | top: 5 pixels; right: 1 pixel |
-| 9 | (10, 2, 93, 168) | 10 | 2 | 3 | 3 | none |
-| 10 | (10, 3, 89, 168) | 10 | 3 | 7 | 3 | none |
-| 11 | (9, 4, 87, 168) | 9 | 4 | 9 | 3 | none |
+The atlas metadata and sampling contract are carried forward from the local reconstruction audit. CI import/export and Android runtime tests must still validate the actual committed bytes. The PNG/video visual review remains an explicit outstanding item.
 
-## Visual review
-
-Frames 0–7 and 9–11 retain transparent space at every cell edge. Frame 8 visibly brings the staff finial to the top boundary; its alpha bounds confirm that the cutout touches the top edge and has one opaque/partially opaque pixel on the right boundary. This is an actual edge-contact warning, not merely a low margin estimate.
-
-Frame 9 is close to the top and right boundaries (2 px and 3 px respectively), so it also needs a wider crop/padding check against the original frame.
-
-## Rebuild decision
-
-Do **not** upscale the current WebP and call it a higher-quality master. Upscaling cannot recover detail lost by the 96 × 171 px lossy source.
-
-The original Seedance clip used for sampling (reported as 480 × 854 px, 24 FPS, 121 frames) and the lossless 1920 × 2562 PNG master are not present in the current conversation files, the accessible Library listing, or the accessible Higgsfield project workspace. Without the source clip/master, missing pixels at frame 8 cannot be reconstructed faithfully and the original cutout/matte cannot be revalidated.
-
-To complete the rebuild, restore the original MP4 or the lossless master, then:
-1. Re-extract the twelve approved frame indices from the original source.
-2. Preserve the cutout as true RGBA in PNG, not lossy WebP.
-3. Add safe transparent padding and verify all twelve per-cell alpha bounds against the cell edges.
-4. Review frames 8 and 9 at native resolution, then update the cell-size, pivot/offset and runtime import contract together.
-5. Re-run Android QA and inspect the resulting in-game cast at gameplay scale.
-
-**Current decision:** retain the existing runtime file unchanged for diagnostic testing only; do not promote it as a high-resolution, edge-approved atlas.
+## Rights
+The animation derives from user-provided media, but provider/model provenance and applicable commercial-use terms remain unverified. Technical validation does not establish commercial rights.
