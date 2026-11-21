@@ -14,7 +14,7 @@ This is an optional one-shot visual overlay for the Mage Starter calling. It is 
 
 ## Atlas and runtime
 
-- Runtime texture: assets/art/Heroes/mage_starter_cast_front.webp — lossless WebP with alpha.
+- Runtime texture: assets/art/Heroes/mage_starter_cast_front.webp — high-quality WebP with an exact alpha plane (RGB quality 90).
 - Layout: 4 columns × 3 rows; twelve sequential frames, not directional rows.
 - Runtime cell: 160×285 px; atlas: 640×855 px.
 - Playback: 8 FPS, non-looping.
@@ -24,7 +24,7 @@ This is an optional one-shot visual overlay for the Mage Starter calling. It is 
 
 ## Reproducible build input
 
-The lossless WebP source bytes are stored as ASCII base64 in assets/art/Heroes/mage_starter_cast_front_lossless.webp.b64. Run python3 tools/fetch_mage_cast_front_asset.py before opening/importing the project. The script uses only Python's standard library and verifies exact byte count, SHA-256, lossless WebP encoding, alpha presence and image dimensions. Builds no longer download the earlier lossy atlas from an external URL.
+The runtime WebP bytes are stored as ASCII base64 in assets/art/Heroes/mage_cast_front_data/part_00.b64 through part_31.b64. RGB uses WebP quality 90; the decoded alpha plane is pixel-identical to the RGBA PNG runtime source. Run python3 tools/fetch_mage_cast_front_asset.py before opening/importing the project. The script uses only Python's standard library and verifies exact byte count, SHA-256, extended WebP alpha declaration, ALPH/image payload and image dimensions. Builds no longer download the earlier lossy atlas from an external URL.
 
 ## Godot integration
 
