@@ -2,7 +2,13 @@ extends Node
 ## Android-only QA scene. The workflow temporarily selects this scene as the APK entrypoint.
 ## It exercises the real Mage Starter spell -> cast_done -> Player.cast_front path.
 
+signal cast_frame_wait_done
+
 const MainScript = preload("res://tests/mage_cast_runtime_main.gd")
+
+var _cast_frame_anim: AnimatedSprite2D = null
+var _cast_frame_advanced := false
+var _cast_frame_timeout := false
 
 func _ready() -> void:
 	call_deferred("_run")
@@ -11,12 +17,20 @@ func _physics_frames(count: int) -> void:
 	for _i in count:
 		await get_tree().physics_frame
 
-func _process_frames(count: int) -> void:
-	for _i in count:
-		await get_tree().process_frame
-
 func _fail(reason: String) -> void:
 	push_error("MAGE_CAST_FRONT_RUNTIME_FAIL: " + reason)
+
+func _on_cast_frame_changed() -> void:
+	if _cast_frame_advanced or not is_instance_valid(_cast_frame_anim):
+		return
+	if _cast_frame_anim.frame > 0:
+		_cast_frame_advanced = true
+		cast_frame_wait_done.emit()
+
+func _on_cast_frame_wait_timeout() -> void:
+	if not _cast_frame_advanced:
+		_cast_frame_timeout = true
+		cast_frame_wait_done.emit()
 
 func _run() -> void:
 	Game.new_game("mage")
@@ -62,44 +76,46 @@ func _run() -> void:
 		_fail("The spell did not remain front-facing: %s" % player.facing)
 		return
 
+	# Wait for the first real frame-change event, not a fixed number of rendered
+	# frames. Software Android emulators can run slowly enough for the whole
+	# 1.5-second one-shot to finish before a 24-frame sampling loop completes.
 	var anim: AnimatedSprite2D = player.cast_anim
 	var frames: SpriteFrames = anim.sprite_frames
 	var clip_frames := frames.get_frame_count("cast_front") if frames else -1
 	var clip_fps := frames.get_animation_speed("cast_front") if frames else -1.0
-	var start_ms := Time.get_ticks_msec()
-	print("MAGE_CAST_FRONT_DIAG_START playing=%s inside_tree=%s processing=%s process_mode=%d frame_count=%d clip_fps=%.2f speed_scale=%.2f frame=%d progress=%.3f engine_time_scale=%.3f tree_paused=%s" % [
-		anim.is_playing(), anim.is_inside_tree(), anim.is_processing(), anim.process_mode,
-		clip_frames, clip_fps, anim.speed_scale, anim.frame, anim.frame_progress,
+	_cast_frame_anim = anim
+	_cast_frame_advanced = false
+	_cast_frame_timeout = false
+	var frame_callback := Callable(self, "_on_cast_frame_changed")
+	anim.frame_changed.connect(frame_callback)
+	var timeout_timer := get_tree().create_timer(6.0, true, false, true)
+	timeout_timer.timeout.connect(_on_cast_frame_wait_timeout, CONNECT_ONE_SHOT)
+	print("MAGE_CAST_FRONT_DIAG_START playing=%s inside_tree=%s frame_count=%d clip_fps=%.2f speed_scale=%.2f playing_speed=%.2f frame=%d progress=%.3f engine_time_scale=%.3f tree_paused=%s" % [
+		anim.is_playing(), anim.is_inside_tree(), clip_frames, clip_fps,
+		anim.speed_scale, anim.get_playing_speed(), anim.frame, anim.frame_progress,
 		Engine.time_scale, get_tree().paused
 	])
+	await cast_frame_wait_done
+	if anim.frame_changed.is_connected(frame_callback):
+		anim.frame_changed.disconnect(frame_callback)
+	if _cast_frame_timeout:
+		_fail("Timed out waiting for the first advanced frame: frame=%d progress=%.3f playing=%s playing_speed=%.2f engine_time_scale=%.3f tree_paused=%s" % [
+			anim.frame, anim.frame_progress, anim.is_playing(), anim.get_playing_speed(),
+			Engine.time_scale, get_tree().paused
+		])
+		return
 
-	# Exercise both SceneTree time and a known number of idle frames. This avoids
-	# mistaking a timer firing for proof that AnimatedSprite2D has been processed.
-	await get_tree().create_timer(0.40, false, false, true).timeout
-	await _process_frames(24)
-	var elapsed_ms := Time.get_ticks_msec() - start_ms
-	print("MAGE_CAST_FRONT_DIAG_AFTER_WAIT elapsed_ms=%d playing=%s inside_tree=%s processing=%s process_mode=%d frame_count=%d clip_fps=%.2f speed_scale=%.2f frame=%d progress=%.3f engine_time_scale=%.3f tree_paused=%s" % [
-		elapsed_ms, anim.is_playing(), anim.is_inside_tree(), anim.is_processing(), anim.process_mode,
-		clip_frames, clip_fps, anim.speed_scale, anim.frame, anim.frame_progress,
-		Engine.time_scale, get_tree().paused
-	])
-
+	# Capture after the frame containing the frame_changed signal has been drawn.
+	await RenderingServer.frame_post_draw
 	if not player._mage_cast_front_active or not is_instance_valid(anim):
-		_fail("The one-shot ended before the runtime capture")
+		_fail("The one-shot ended before the first advanced frame could be captured")
 		return
 	if not anim.visible or player.anim.visible:
 		_fail("Cast overlay/base sprite visibility state is incorrect")
 		return
 	if anim.animation != "cast_front" or anim.frame <= 0:
-		var frame_before_manual_advance := anim.frame
-		anim.advance(0.50)
-		print("MAGE_CAST_FRONT_DIAG_AFTER_MANUAL_ADVANCE prior_frame=%d frame=%d progress=%.3f playing=%s" % [
-			frame_before_manual_advance, anim.frame, anim.frame_progress, anim.is_playing()
-		])
-		_fail("The cast-front clip did not advance naturally: animation=%s frame=%d frames=%d fps=%.2f playing=%s processing=%s speed_scale=%.2f progress=%.3f elapsed_ms=%d" % [
-			anim.animation, frame_before_manual_advance, clip_frames, clip_fps,
-			anim.is_playing(), anim.is_processing(), anim.speed_scale,
-			anim.frame_progress, elapsed_ms
+		_fail("The cast-front frame changed but was reset before capture: animation=%s frame=%d frames=%d fps=%.2f" % [
+			anim.animation, anim.frame, clip_frames, clip_fps
 		])
 		return
 
@@ -108,8 +124,8 @@ func _run() -> void:
 	if shot == null or shot.save_png(shot_path) != OK:
 		_fail("Could not save the active cast-front screenshot")
 		return
-	print("MAGE_CAST_FRONT_RUNTIME_PASS spell=bolt animation=cast_front frame=%d screenshot=%s" % [
-		anim.frame, ProjectSettings.globalize_path(shot_path)
+	print("MAGE_CAST_FRONT_RUNTIME_PASS spell=bolt animation=cast_front frame=%d frames=%d screenshot=%s" % [
+		anim.frame, clip_frames, ProjectSettings.globalize_path(shot_path)
 	])
 
 	# Movement must cancel the overlay and restore the standard sprite.
