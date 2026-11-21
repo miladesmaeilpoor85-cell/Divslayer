@@ -36,3 +36,17 @@ The importer intentionally does **not** edit \`data/art_manifest.json\`. Once an
 ## First batch
 
 \`creative/animation/hero_starter_attack_batch.json\` records the starter-tier Mage, Rogue and Paladin source paths, output folders and class-specific pose constraints. This is an authoring specification only; it is not proof that these art assets have been generated or accepted.
+
+
+## Special review modes (2026-11-21)
+
+The default importer removes only chroma-key pixels connected to each source cell edge. Use `--global-key` only when the key color also appears as an enclosed matte inside a foreground visual effect. The Rogue attack atlas uses this mode because its pale slash crescents enclose magenta matte-colored fill; the cleanup removes those magenta islands while preserving the pale slash strokes.
+
+Use `--allow-edge-contact` only when source art approaches a cell boundary and a reviewer has confirmed that the visible weapon/effect is not clipped. The importer records `minimum_source_margin_px` per frame and emits a warning for margins under 8 source pixels. This option does not crop or repair art; it only permits a reviewable import to continue.
+
+The three starter atlases in the current integration branch use:
+- Mage: `--tolerance 120 --allow-edge-contact` (edge-adjacent staff/effect poses are flagged for review)
+- Rogue: `--tolerance 120 --global-key --allow-edge-contact`
+- Paladin: `--tolerance 120 --allow-edge-contact`
+
+All outputs are 640x468 transparent atlases with three direction rows and four attack-phase columns; runtime metadata uses 160x156 cells, 24 FPS, and zero-based impact frame 2. No combat timings, damage values, hit counts or ability logic are changed.
