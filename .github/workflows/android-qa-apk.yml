@@ -262,8 +262,7 @@ jobs:
             timeout 30s adb shell dumpsys activity activities > build/android/emulator-game-activity.txt
             game_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-game-activity.txt | grep -F 'com.example.divslayer.qa/' )"
             test -n "$game_foreground"
-            printf '%s
-' "$game_foreground"
+            echo "$game_foreground"
             timeout 30s adb shell screencap -p /sdcard/divslayer-game-launch.png
             timeout 30s adb pull /sdcard/divslayer-game-launch.png build/android/emulator-game-launch.png
             test -s build/android/emulator-game-launch.png
@@ -277,14 +276,10 @@ jobs:
             attempt=0
             while [ "$attempt" -lt 120 ]; do
               current_log="$(timeout 10s adb logcat -d -v time 2>/dev/null || true)"
-              if printf '%s
-' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_ALL_FRAMES_PASS sequence=0,1,2,3,4,5,6,7,8,9,10,11 total=12'                 && printf '%s
-' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_AUTO_FINISH_PASS'                 && printf '%s
-' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_CANCEL_PASS'; then
+              if grep -Fq 'MAGE_CAST_FRONT_ALL_FRAMES_PASS sequence=0,1,2,3,4,5,6,7,8,9,10,11 total=12' <<< "$current_log" && grep -Fq 'MAGE_CAST_FRONT_AUTO_FINISH_PASS' <<< "$current_log" && grep -Fq 'MAGE_CAST_FRONT_CANCEL_PASS' <<< "$current_log"; then
                 break
               fi
-              if printf '%s
-' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_RUNTIME_FAIL'; then
+              if grep -Fq 'MAGE_CAST_FRONT_RUNTIME_FAIL' <<< "$current_log"; then
                 break
               fi
               attempt=$((attempt + 1))
@@ -306,8 +301,7 @@ jobs:
             timeout 30s adb shell dumpsys activity activities > build/android/emulator-magecast-activity.txt
             mage_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-magecast-activity.txt | grep -F 'com.example.divslayer.magecast.qa/' )"
             test -n "$mage_foreground"
-            printf '%s
-' "$mage_foreground"
+            echo "$mage_foreground"
             echo 'Playable game launch and Mage cast animation runtime checks passed.'
       - name: Upload emulator diagnostics if launch validation fails
         if: failure()
