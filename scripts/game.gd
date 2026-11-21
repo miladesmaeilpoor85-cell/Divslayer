@@ -135,6 +135,11 @@ func map_title(key: String) -> String:
 func enemy_name(type: String) -> String:
 	var en: String = enemy_def(type).get("name", type)
 	if lang == "fa":
+		# Boss names are authored as bilingual pairs in BOSS_CFG; do not leave
+		# newly added bosses (such as the Gale Warden) untranslated.
+		var boss_name: Array = BOSS_CFG.get(type, {}).get("name", [])
+		if boss_name.size() > 1:
+			return str(boss_name[1])
 		return table("V12_ENEMY").get(en, strings.get(en, en))
 	return en
 
@@ -237,6 +242,15 @@ const BOSS_CFG := {
 		"rework": true,
 		"rgb": Color8(130, 220, 110),
 		"weak": {"burn": 1.3},
+	},
+	"alborzwarden": {
+		"name": ["The Gale Warden", "دیوِ تندباد"],
+		"title": ["Keeper of the High Eyrie", "نگهبانِ آشیانهٔ بلند"],
+		"mini": true,
+		"rework": true,
+		"phases": [0.66, 0.33],
+		"rgb": Color8(142, 210, 245),
+		"weak": {"freeze": 1.35},
 	},
 	"captain": {
 		"name": ["Ashkbus of Kushan", "اشکبوسِ کشانی"],
@@ -945,6 +959,10 @@ func objective() -> String:
 	var tut := Tut.objective()          # (v0.24) Rostam's training, while it is offered or under way
 	if tut != "":
 		return tut
+	# Chapter IV owns the objective as soon as Chapter III is complete, before the old reward fallback.
+	var c4o: String = Ch4.objective()
+	if c4o != "":
+		return c4o
 	# (v0.24, playtest: after Arzhang the compass sent the hero to Jamshid first) Zal's reward and the tale lead
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
 		return t("Return to Zal", "نزد زال برگرد")
@@ -980,9 +998,6 @@ func objective() -> String:
 		return Toll.line("obj_back")
 	if c3o != "":
 		return c3o
-	var c4o: String = Ch4.objective()
-	if c4o != "":
-		return c4o
 	if shrines_done() < SHRINE_ORDER.size():
 		return t("Seek the ancient shrines — a pillar of light marks each one (%d/%d)" % [shrines_done(), SHRINE_ORDER.size()],
 			"زیارتگاه‌های کهن را پیدا کن — ستونی از نور هر کدام را نشان می‌دهد (%s/%s)" % [num(shrines_done()), num(SHRINE_ORDER.size())])
@@ -1063,6 +1078,8 @@ func region_open(map_key: String) -> bool:
 			return brann_key()
 		"alborz":
 			return Ch4.path_open()
+		"alborz_eyrie":
+			return Ch4.step() in ["return", "done"]
 	return true
 
 ## where the compass points for the shrines: the altar inside an unfinished shrine, else the nearest unfinished
@@ -1632,6 +1649,10 @@ func quest_target() -> Dictionary:
 		return tt
 	if not rush.is_empty():
 		return {}
+	# Chapter IV targets must take priority over legacy chapter reward returns.
+	var c4t: Dictionary = Ch4.target()
+	if not c4t.is_empty():
+		return c4t
 	var g := world_graph()
 	var elder := {"map": "village", "pos": _v(g.get("village", {}).get("npcs", {}).get("elder", [443, 334])), "kind": "npc"}
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
@@ -1664,9 +1685,6 @@ func quest_target() -> Dictionary:
 		return {"map": "village", "pos": _v(g.get("village", {}).get("npcs", {}).get("merchant", [313, 214])), "kind": "npc"}
 	if not c3t.is_empty():
 		return c3t
-	var c4t: Dictionary = Ch4.target()
-	if not c4t.is_empty():
-		return c4t
 	return shrine_target()
 
 static func _v(a) -> Vector2:

@@ -94,6 +94,13 @@ func _after_setup() -> void:
 		cd["erupt"] = 9.0
 	if type == "arbiter":
 		burn_bonus = 1.3
+	if type == "alborzwarden":
+		# Procedural placeholder silhouette until painted encounter art is supplied.
+		if anim != null:
+			anim.visible = false
+		for child in get_children():
+			if child is Polygon2D:
+				child.queue_free()
 
 func targetable() -> bool:
 	return not dead and not cloaked
@@ -374,6 +381,7 @@ func _physics_process(dt: float) -> void:
 		"glaciertitan": _ai_titan(dt, d, to)
 		"ancientwyrm": _ai_wyrm(dt, d, to)
 		"zahhak": _ai_zahhak(dt, d, to)
+		"alborzwarden": _ai_alborz(dt, d, to)
 		_: _ai_generic(dt, d, to)
 	_check_phase()
 	_clamp()
@@ -1409,6 +1417,88 @@ func _ai_generic(dt: float, d: float, to: Vector2) -> void:
 			return
 	_chase(to, d, 1.0, big * 0.6)
 
+
+# ================================================================ chapter IV — the high eyrie
+## Visible wind lanes, a close-range vortex and a final fan. A shared token caps each lane volley at one hit.
+func _ai_alborz(dt: float, d: float, to: Vector2) -> void:
+	if _brain(dt):
+		return
+	var c := center()
+	_face(to.x)
+	if d > 520.0:
+		_chase(to, d, 1.05, 250.0)
+		return
+	if gcd <= 0.0:
+		if ph >= 3 and d > 150.0 and d < 390.0 and _ready_move("gale_fan"):
+			_use("gale_fan", 10.5)
+			busy = 1.15
+			bfx.cone(c, 310.0, to.angle(), 0.55, 0.92, Color8(164, 222, 249), _fire_gale_fan, self)
+			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("HIGH-GALE SWEEP!", "یورشِ تندبادِ بلند!"), Color8(188, 232, 255), true)
+			world.tip("gale_fan", "The Warden sweeps a broad cone of wind. Roll behind it or clear the marked arc.",
+				"دیو قوسی پهن از باد می‌فرستد. پشت سرش جاخالی بده یا از کمانِ مشخص‌شده بیرون برو.")
+			Sfx.play("trap", -4.0)
+			return
+		if d < 175.0 and _ready_move("vortex"):
+			_use("vortex", 6.8)
+			busy = 1.0
+			bfx.circle(c, 148.0, 0.88, Color8(128, 205, 241), _fire_gale_vortex, self)
+			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("EYE OF THE GALE!", "چشمِ تندباد!"), Color8(188, 232, 255), true)
+			world.tip("gale_vortex", "The wind coils around the Warden. Leave the expanding circle before it breaks.",
+				"باد دور دیو حلقه می‌زند. پیش از شکستن حلقه، از دایره بیرون برو.")
+			return
+		if d > 150.0 and d < 445.0 and _ready_move("crosswind"):
+			var axis: Vector2 = to / maxf(d, 1.0)
+			var side: Vector2 = axis.orthogonal()
+			var target: Vector2 = bfx.pc()
+			var volley: Dictionary = bfx.vol()
+			_use("crosswind", 8.2)
+			busy = 1.2
+			for offset in [-96.0, 0.0, 96.0]:
+				var shift: Vector2 = side * float(offset)
+				var lane_a: Vector2 = target - axis * 235.0 + shift
+				var lane_b: Vector2 = target + axis * 235.0 + shift
+				bfx.lane(lane_a, lane_b, 42.0, 0.96, Color8(146, 216, 250), _fire_gale_lane.bind(volley), self)
+			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("CROSSWIND!", "بادِ متقاطع!"), Color8(188, 232, 255), true)
+			world.tip("gale_crosswind", "Three wind lanes are marked. Roll sideways into one of the two clear gaps.",
+				"سه مسیرِ باد مشخص شده‌اند. به پهلو بغلت و وارد یکی از دو شکافِ امن شو.")
+			Sfx.play("trap", -5.0)
+			return
+		if d > 270.0 and d < 480.0 and _ready_move("gust_dash"):
+			var a := to.angle()
+			_use("gust_dash", 5.6)
+			busy = 0.8
+			bfx.lane(c, c + Vector2.from_angle(a) * minf(440.0, d + 110.0), 70.0, 0.74,
+				Color8(164, 222, 249), _fire_charge.bind(a, 6.8, 0.82), self)
+			return
+	_chase(to, d, 1.0, box.x * 1.25)
+
+
+func _fire_gale_lane(t: Dictionary, volley: Dictionary) -> void:
+	if dead or staggered > 0.0 or world == null or bfx == null:
+		return
+	world.burst(t["b"], Color8(173, 226, 250), 7, 94.0)
+	if bfx.in_lane(t):
+		if bfx.hit_v(volley, self, 0.82):
+			bfx.knock((bfx.pc() - center()).normalized() * 38.0)
+
+
+func _fire_gale_vortex(t: Dictionary) -> void:
+	if dead or staggered > 0.0 or world == null or bfx == null:
+		return
+	world.burst(t["pos"], Color8(150, 218, 247), 18, 145.0)
+	world.shake(4.0)
+	if bfx.in_circle(t) and bfx.hit(self, 1.02):
+		bfx.knock((bfx.pc() - center()).normalized() * 48.0)
+
+
+func _fire_gale_fan(t: Dictionary) -> void:
+	if dead or staggered > 0.0 or world == null or bfx == null:
+		return
+	world.burst(t["pos"], Color8(180, 230, 251), 12, 125.0)
+	if bfx.in_cone(t) and bfx.hit(self, 0.92):
+		bfx.knock((bfx.pc() - center()).normalized() * 32.0)
+
+
 ## Each of the Warden's three tracks shares one volley token: at most one lane can damage the hero.
 func _fire_anvil_furrow(t: Dictionary, vol: Dictionary) -> void:
 	if dead or staggered > 0.0 or world == null or bfx == null:
@@ -1474,6 +1564,8 @@ func _draw_over() -> void:
 		_draw_zahhak()
 	var t := Time.get_ticks_msec() / 1000.0
 	var mid := Vector2(0, -box.y * 0.5)
+	if type == "alborzwarden":
+		_draw_alborzwarden(t)
 	if staggered > 0.0:
 		for i in 4:
 			var a := t * 3.85 + i * PI * 0.5
@@ -1497,6 +1589,45 @@ func _draw_over() -> void:
 			over.draw_circle(mid, 6.0, Color(1, 1, 0.86, 0.95))
 		elif armor:
 			_ellipse(over, mid, box.x * 0.8, box.y * 0.66, Color(1, 0.55, 0.2, 0.3 + 0.15 * sin(t * 7.1)), 3.0)
+
+
+## In-engine placeholder silhouette; final painted sprite art is still an explicit art task.
+func _draw_alborzwarden(t: float) -> void:
+	var pulse := 0.82 + 0.12 * sin(t * 4.0)
+	var left_wing := PackedVector2Array([
+		Vector2(-13, -45), Vector2(-34, -61), Vector2(-59, -54), Vector2(-48, -39),
+		Vector2(-66, -30), Vector2(-38, -25), Vector2(-22, -14)
+	])
+	var right_wing := PackedVector2Array([
+		Vector2(13, -45), Vector2(34, -61), Vector2(59, -54), Vector2(48, -39),
+		Vector2(66, -30), Vector2(38, -25), Vector2(22, -14)
+	])
+	over.draw_colored_polygon(left_wing, Color8(42, 73, 98, 235))
+	over.draw_colored_polygon(right_wing, Color8(42, 73, 98, 235))
+	over.draw_polyline(left_wing + PackedVector2Array([left_wing[0]]), Color8(146, 212, 240), 2.0, true)
+	over.draw_polyline(right_wing + PackedVector2Array([right_wing[0]]), Color8(146, 212, 240), 2.0, true)
+	var mantle := PackedVector2Array([
+		Vector2(-22, -46), Vector2(-18, -68), Vector2(-9, -77), Vector2(9, -77),
+		Vector2(18, -68), Vector2(22, -46), Vector2(15, -18), Vector2(0, -10), Vector2(-15, -18)
+	])
+	over.draw_colored_polygon(mantle, Color8(31, 48, 67))
+	over.draw_polyline(mantle + PackedVector2Array([mantle[0]]), Color8(118, 174, 204), 2.0, true)
+	over.draw_colored_polygon(PackedVector2Array([
+		Vector2(-12, -70), Vector2(-9, -84), Vector2(0, -89), Vector2(9, -84),
+		Vector2(12, -70), Vector2(0, -62)
+	]), Color8(180, 207, 219))
+	over.draw_line(Vector2(-7, -83), Vector2(-22, -96), Color8(187, 221, 236), 4.0, true)
+	over.draw_line(Vector2(7, -83), Vector2(22, -96), Color8(187, 221, 236), 4.0, true)
+	over.draw_line(Vector2(-22, -96), Vector2(-29, -90), Color8(100, 148, 175), 2.0, true)
+	over.draw_line(Vector2(22, -96), Vector2(29, -90), Color8(100, 148, 175), 2.0, true)
+	over.draw_circle(Vector2(-5, -75), 2.7, Color8(220, 248, 255))
+	over.draw_circle(Vector2(5, -75), 2.7, Color8(220, 248, 255))
+	over.draw_circle(Vector2(0, -36), 8.0, Color(0.54, 0.83, 0.98, pulse))
+	over.draw_circle(Vector2(0, -36), 3.2, Color(0.92, 0.98, 1.0, pulse))
+	for i in range(3):
+		var radius := 31.0 + float(i) * 8.0 + sin(t * 3.0 + float(i)) * 2.0
+		over.draw_arc(Vector2(0, -44), radius, -2.65, -0.48, 24, Color(0.58, 0.83, 0.98, 0.28 - float(i) * 0.05), 2.0, true)
+		over.draw_arc(Vector2(0, -44), radius, 0.48, 2.65, 24, Color(0.58, 0.83, 0.98, 0.28 - float(i) * 0.05), 2.0, true)
 
 ## called by the telegraph layer (under everything): tethers, the mud shadow, the heat glow
 func draw_ground(cv: CanvasItem) -> void:

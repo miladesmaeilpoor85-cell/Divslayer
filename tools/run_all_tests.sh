@@ -32,36 +32,25 @@ run_godot() {
   fi
 }
 
-# Keep every suite from main, including the Chapter IV wind and animation tests.
-tests=(windgusttest quittest achtest rushtest audiotest shrinetest chapter2test chapter3test chapter4test tutorialtest questpointtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest animationtest warriorreviewtest)
-selected_tests=()
-for i in "${!tests[@]}"; do
-  if (( i % shard_count == shard_index )); then selected_tests+=("${tests[$i]}"); fi
-done
-if (( ${#selected_tests[@]} == 0 )); then
-  echo "No tests assigned to shard $shard_index/$shard_count" >&2
-  exit 2
-fi
-
-printf 'SHARD %s/%s suites=%s autotest=%s\n' "$shard_index" "$shard_count" "${#selected_tests[@]}" "$([[ $shard_index -eq 0 ]] && echo yes || echo no)" | tee -a "$out"
-for test_name in "${selected_tests[@]}"; do
-  test_log="/tmp/ei_tests/${label}.${test_name}.raw.log"
-  started=$SECONDS
-  printf 'START %s\n' "$test_name" | tee -a "$out"
-  run_godot -- --test "res://tests/${test_name}.gd" 2>&1 | tee "$test_log"
-  status=${PIPESTATUS[0]}
-  elapsed=$((SECONDS - started))
-  passes=$(grep -cE '^PASS' "$test_log" || true)
-  fails=$(grep -cE '^FAIL' "$test_log" || true)
-  crashes=$(grep -c 'signal 11' "$test_log" || true)
-  errors=$(grep -Ec 'SCRIPT ERROR|Parse Error' "$test_log" || true)
-  timed_out=0
-  [[ $status -eq 124 || $status -eq 137 ]] && timed_out=1
-  printf '== %s exit=%s elapsed=%ss pass=%s fail=%s crash=%s errors=%s timeout=%s\n' "$test_name" "$status" "$elapsed" "$passes" "$fails" "$crashes" "$errors" "$timed_out" | tee -a "$out"
+test_index=0
+for t in windgusttest quittest achtest rushtest audiotest shrinetest chapter2test chapter3test chapter4test tutorialtest questpointtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest animationtest warriorreviewtest; do
+  current_index=$test_index
+  test_index=$((test_index + 1))
+  if (( current_index % shard_count != shard_index )); then
+    continue
+  fi
+  r=$(run_godot -- --test "res://tests/$t.gd")
+  status=$?
+  passes=$(printf '%s\n' "$r" | grep -cE '^PASS' || true)
+  fails=$(printf '%s\n' "$r" | grep -cE '^FAIL' || true)
+  crashes=$(printf '%s\n' "$r" | grep -c 'signal 11' || true)
+  errors=$(printf '%s\n' "$r" | grep -Ec 'SCRIPT ERROR|Parse Error' || true)
+  printf '== %s exit=%s pass=%s fail=%s crash=%s errors=%s\n' "$t" "$status" "$passes" "$fails" "$crashes" "$errors" >> "$out"
+  printf '%s\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11' | head -10 >> "$out" || true
   if [[ $status -ne 0 || $fails -gt 0 || $crashes -gt 0 || $errors -gt 0 ]]; then
     failed=1
-    grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11|ERROR:' "$test_log" | head -30 | tee -a "$out" || true
-    if [[ ! -s "$test_log" ]]; then echo "No test output was produced before exit." | tee -a "$out"; fi
+    printf '%s\\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11|ERROR:' | head -30 | tee -a "$out" || true
+    if [[ -z "$r" ]]; then echo "No test output was produced before exit." | tee -a "$out"; fi
   fi
 done
 

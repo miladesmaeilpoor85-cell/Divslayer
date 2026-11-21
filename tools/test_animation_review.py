@@ -115,5 +115,54 @@ class AnimationReviewTests(unittest.TestCase):
             )
 
 
+    def test_exports_separate_multi_frame_attack_atlas(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path, output = self._project(root)
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+            payload["heroes"]["warrior_starter"].update({
+                "attackSheet": "warrior_starter_attack.png",
+                "attackFrames": 4,
+                "attackFps": 24,
+            })
+            manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+
+            attack = Image.new("RGBA", (16 * 4, 16 * 3), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(attack)
+            for row in range(3):
+                for frame in range(4):
+                    draw.rectangle(
+                        (frame * 16 + 3, row * 16 + 3, frame * 16 + 12, row * 16 + 14),
+                        fill=(50 + frame * 45, 150, 220 - frame * 35, 255),
+                    )
+            attack.save(root / "assets" / "art" / "Heroes" / "warrior_starter_attack.png")
+
+            report = animation_review.review_sheets(
+                root, Path("data/art_manifest.json"), Path("artifacts/animation-review")
+            )
+            self.assertFalse(report["errors"])
+            self.assertEqual(report["hero_attack_audit"][0]["frame_count"], 4)
+            self.assertEqual(
+                report["hero_attack_audit"][0]["status"], "multi_frame_attack_preview"
+            )
+            attack_preview = output / "hero-warrior_starter-side-attack.gif"
+            self.assertTrue(attack_preview.is_file())
+            with Image.open(attack_preview) as gif:
+                self.assertEqual(gif.n_frames, 4)
+                self.assertEqual(gif.info["duration"], 40)
+
+    def test_single_frame_attacks_are_explicitly_reported_as_placeholders(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, output = self._project(root)
+            report = animation_review.review_sheets(
+                root, Path("data/art_manifest.json"), Path("artifacts/animation-review")
+            )
+            self.assertEqual(
+                report["hero_attack_audit"][0]["status"], "single_frame_attack_placeholder"
+            )
+            self.assertTrue((output / "hero-warrior_starter-side-attack.png").is_file())
+
+
 if __name__ == "__main__":
     unittest.main()

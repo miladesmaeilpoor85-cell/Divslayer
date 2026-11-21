@@ -94,6 +94,23 @@ the single attack pose with a Godot-drawn slash arc; that arc is a preview effec
 not additional character animation frames. The production combat hit remains
 immediate while the hero's current attack metadata defaults to impact frame 0.
 
+
+## Separate attack-atlas preview support — proposed Chapter IV branch
+
+The `tools/animation_review.py` review tool now recognizes the same optional
+`attackSheet` / `attackFrames` / `attackFps` metadata already supported by
+`scripts/sheets.gd`. It validates that a separate PNG atlas has the declared
+three directional rows and exact frame count, then exports a distinct attack GIF
+for each direction. A one-frame embedded attack is exported as a PNG and explicitly
+reported as `single_frame_attack_placeholder`; it is not counted as an
+animated attack. Unit tests use synthetic in-memory artwork to exercise this
+format and do not create production character art.
+
+The project still has no real `warrior_starter_attack.png` atlas. All 12
+production hero appearances remain one-frame attacks until genuinely distinct
+anticipation, contact, and recovery poses are drawn, reviewed, registered with
+rights evidence, and wired into the manifest.
+
 ## Impact-frame authoring contract
 
 For a reviewed multi-frame attack, add `attackImpactFrame` to that hero's entry

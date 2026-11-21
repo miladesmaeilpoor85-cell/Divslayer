@@ -1,6 +1,6 @@
 extends Node
 ## Music and ambience (autoload "Music").
-## Since v0.17 every region has a recorded CC0 track (assets/audio/music/<region>.ogg — see assets/audio/CREDITS.md):
+## Since v0.17 regions use recorded tracks where available (assets/audio/music/); soundtrack commercial-use rights remain unverified — see assets/audio/CREDITS.md.
 ## a change of region or a boss fight crossfades between them, a track you left a moment ago picks up where it was,
 ## and each track starts over a few seconds before its end, crossfading into itself, so no loop point is ever heard.
 ## Ambience loops (assets/audio/amb/): crickets, wind, birds, fire, cave and water; rain is synthesised.
@@ -24,7 +24,7 @@ const TRACK_DB := {"boss": 0.5, "dungeon": 0.0, "shrine": 0.0}
 ## crypt's, Zahhak the Dragon's battle theme
 const TRACK_ALIAS := {
 	# (v0.31) the second take of the battle theme for the bosses of chapters 2 and 3 (the first take stays with chapter 1)
-	"boss_arbiter": "boss_b", "boss_glaciertitan": "boss_b", "boss_ignarok": "boss_b", "boss_anvilward": "boss_b", "boss_kondrow": "boss_b", "alborz": "peaks"}
+	"boss_arbiter": "boss_b", "boss_glaciertitan": "boss_b", "boss_ignarok": "boss_b", "boss_anvilward": "boss_b", "boss_kondrow": "boss_b", "alborz": "peaks", "alborz_eyrie": "peaks"}
 const AMB_KEYS := ["rain", "wind", "crickets", "birds", "fire", "cave", "water"]
 ## each loop's level: the recorded loops, and the synthesised ones (rain; wind and crickets when their files are missing)
 const AMB_DB_FILE := {"wind": -3.0, "crickets": -4.0, "birds": -2.0, "fire": -2.0, "cave": 0.0, "water": -3.0}
