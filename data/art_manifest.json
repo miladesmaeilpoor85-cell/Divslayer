@@ -1060,7 +1060,11 @@
    ],
    "flipSideForLeft": true,
    "weaponTier": 1,
-   "armorTier": 0
+   "armorTier": 0,
+   "attackSheet": "mage_starter_attack_atlas.png",
+   "attackFrames": 4,
+   "attackFps": 24,
+   "attackImpactFrame": 2
   },
   "mage_mid": {
    "cellW": 160,
@@ -1138,7 +1142,11 @@
    ],
    "flipSideForLeft": true,
    "weaponTier": 1,
-   "armorTier": 0
+   "armorTier": 0,
+   "attackSheet": "rogue_starter_attack_atlas.png",
+   "attackFrames": 4,
+   "attackFps": 24,
+   "attackImpactFrame": 2
   },
   "rogue_mid": {
    "cellW": 160,
@@ -1216,7 +1224,11 @@
    ],
    "flipSideForLeft": true,
    "weaponTier": 1,
-   "armorTier": 0
+   "armorTier": 0,
+   "attackSheet": "paladin_starter_attack_atlas.png",
+   "attackFrames": 4,
+   "attackFps": 24,
+   "attackImpactFrame": 2
   },
   "paladin_mid": {
    "cellW": 160,
