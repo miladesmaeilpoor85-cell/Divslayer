@@ -244,8 +244,6 @@ func run(m: Node) -> void:
 		# Class-specific attack language stays cosmetic and distinct while using the same hit geometry.
 		var previous_class := str(Game.cls)
 		var class_swings := {}
-		var windup_rings_before := main.world.fx.rings.size()
-		var windup_dashes_before := main.world.fx.dashes.size()
 		for hero_class in ["warrior", "mage", "rogue", "paladin"]:
 			Game.cls = hero_class
 			main.world.fx.swing(main.player, Vector2.RIGHT, 42.0, false, 1)
@@ -255,14 +253,16 @@ func run(m: Node) -> void:
 			var ring_count: int = main.world.fx.rings.size()
 			main.world.fx.class_impact(e2.center(), Vector2.RIGHT, hero_class, false)
 			check("impact_fx_has_" + hero_class + "_response", main.world.fx.rings.size() > ring_count)
+			var windup_rings_before := main.world.fx.rings.size()
+			var windup_dashes_before := main.world.fx.dashes.size()
 			main.world.fx.attack_windup(main.player, Vector2.RIGHT, hero_class, false)
 			var windup: Dictionary = main.world.fx.windups.back()
 			check("attack_windup_records_" + hero_class + "_identity",
 				str(windup.get("class", "")) == hero_class and float(windup.get("dur", 0.0)) > 0.0)
-		check("attack_windup_has_no_orphan_ring_or_dash",
-			main.world.fx.rings.size() == windup_rings_before + 5
-			and main.world.fx.dashes.size() == windup_dashes_before,
-			[main.world.fx.rings.size(), main.world.fx.dashes.size()])
+			check("attack_windup_has_no_orphan_effects_" + hero_class,
+				main.world.fx.rings.size() == windup_rings_before
+				and main.world.fx.dashes.size() == windup_dashes_before,
+				[main.world.fx.rings.size(), main.world.fx.dashes.size()])
 		main.world.fx.attack_windup(main.player, Vector2.RIGHT, "warrior", false, 0.0833)
 		var contact_windup: Dictionary = main.world.fx.windups.back()
 		check("attack_windup_duration_matches_contact_frame",
