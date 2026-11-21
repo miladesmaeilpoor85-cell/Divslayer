@@ -59,7 +59,8 @@ func run(_main: Node) -> void:
 		check("hero_folio_%s_has_class_art" % calling, showcase.visible and initial_texture != null)
 		check("hero_folio_%s_has_blend_overlay" % calling, overlay != null)
 		showcase._process(0.2)
-		var next_texture: Texture2D = card_frames[1] if calling == "warrior" else ClassCardArt.frames_for(calling)[1]
+		var calling_frames: Array[Texture2D] = ClassCardArt.frames_for(calling)
+		var next_texture: Texture2D = calling_frames[1] if calling_frames.size() == 6 else null
 		check("hero_folio_%s_starts_a_soft_frame_blend" % calling,
 			showcase.texture == initial_texture and overlay != null and overlay.texture == next_texture
 			and overlay.modulate.a > 0.0 and overlay.modulate.a < 1.0)
