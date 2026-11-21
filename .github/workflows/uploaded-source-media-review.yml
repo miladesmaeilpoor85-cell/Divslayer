@@ -24,8 +24,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
           python -m pip install --disable-pip-version-check Pillow==11.1.0 opencv-python-headless==4.10.0.84
+      - name: Stage Warrior source video from main for review
+        run: |
+          git fetch origin main --depth=1
+          mkdir -p artifacts/warrior-source
+          git show origin/main:hoosha-hoosha-1795294926704-1.mp4 > artifacts/warrior-source/hoosha-hoosha-1795294926704-1.mp4
       - name: Inspect uploaded PNG and MP4 source media
         run: python tools/review_uploaded_source_media.py
+      - name: Analyze Warrior video and extract draft transparent frames
+        run: python tools/review_warrior_video.py
       - name: Extract every Mage full-body casting frame and apply draft chroma key
         run: python tools/extract_mage_full_video.py
       - name: Upload source review and full Mage frame extraction
@@ -35,5 +42,6 @@ jobs:
           path: |
             artifacts/source-media-review/
             artifacts/mage-full-video-extraction/
+            artifacts/warrior-video-review/
           if-no-files-found: error
           retention-days: 14
