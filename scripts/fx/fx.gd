@@ -176,7 +176,7 @@ func attack_windup(who: Node2D, dir: Vector2, hero_class: String, heavy := false
 		return
 	var forward := dir.normalized()
 	var side := forward.orthogonal()
-	var duration := 0.17 if heavy else 0.12
+	var duration := 0.20 if heavy else 0.12
 	windups.append({
 		"who": who,
 		"dir": forward,
