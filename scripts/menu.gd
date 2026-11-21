@@ -7,6 +7,7 @@ signal start_game(cls: String, continue_save: bool)
 
 const Bar = preload("res://scripts/ui/bar.gd")
 const Tex = preload("res://scripts/fx/tex.gd")
+const ClassCardArt = preload("res://scripts/ui/class_card_art.gd")
 const ORDER := ["warrior", "mage", "rogue", "paladin"]
 const CLASS_CARD_ART := {
 	"warrior": preload("res://assets/art/ClassCards/warrior.webp"),
@@ -27,6 +28,7 @@ var picked := "warrior"
 var content: Control
 var _embers: CPUParticles2D
 var _logo: Label
+var _card_animations: Array[Dictionary] = []
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -34,6 +36,7 @@ func _ready() -> void:
 	Game.lang_changed.connect(_build)
 
 func _build() -> void:
+	_card_animations.clear()
 	for c in get_children():
 		c.queue_free()
 	layout_direction = Control.LAYOUT_DIRECTION_RTL if Game.lang == "fa" else Control.LAYOUT_DIRECTION_LTR
@@ -261,6 +264,16 @@ func _card(c: String, mx: Dictionary) -> Control:
 	face.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(face)
 	face.texture = CLASS_CARD_ART[c]
+	var motion_frames: Array[Texture2D] = ClassCardArt.frames_for(c)
+	if motion_frames.size() == 6:
+		face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		face.texture = motion_frames[0]
+		_card_animations.append({
+			"face": face,
+			"frames": motion_frames,
+			"frame": 0,
+			"clock": 0.0,
+		})
 	var nh := HBoxContainer.new()
 	nh.alignment = BoxContainer.ALIGNMENT_CENTER
 	nh.add_theme_constant_override("separation", 6)
@@ -335,7 +348,23 @@ func _process(dt: float) -> void:
 		# the title glows like iron in a forge
 		var k := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 900.0)
 		_logo.modulate = Color(1.0 + 0.12 * k, 1.0 + 0.06 * k, 1.0)
-	# Class cards keep the approved Persian-inspired portrait artwork.
+	# (v0.44) The user's six-pose art animates in the class cards only. Combat
+	# sprites keep their directional sheets and hitbox-aligned attack timing.
+	for animation in _card_animations:
+		var face := animation.get("face") as TextureRect
+		if not is_instance_valid(face):
+			continue
+		var elapsed := float(animation.get("clock", 0.0)) + maxf(dt, 0.0)
+		var frame_index := int(animation.get("frame", 0))
+		if elapsed >= 0.18:
+			var steps := int(floor(elapsed / 0.18))
+			elapsed -= float(steps) * 0.18
+			frame_index = (frame_index + steps) % 6
+			var frames: Array = animation.get("frames", [])
+			if frames.size() == 6:
+				face.texture = frames[frame_index]
+		animation["frame"] = frame_index
+		animation["clock"] = elapsed
 
 # ---------------------------------------------------------------- settings
 func _settings() -> void:

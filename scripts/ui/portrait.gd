@@ -4,6 +4,7 @@ extends Control
 
 const Sheets = preload("res://scripts/sheets.gd")
 const Looks = preload("res://scripts/looks.gd")
+const USER_ART_ATLAS: Texture2D = preload("res://assets/art/Portraits/character_portraits_2026.webp")
 const MASK := "shader_type canvas_item;\nuniform vec2 center;\nuniform float radius;\nvarying vec2 lp;\nvoid vertex() { lp = VERTEX; }\nvoid fragment() { if (distance(lp, center) > radius) { discard; } }\n"
 
 var group := "heroes"
@@ -24,6 +25,12 @@ const ART := {
 	"keeper": ["sorush", 1], "hesk": ["hom", 1], "smith": ["kavian", 1], "qaren": ["qaren", 1],
 	"npc_rostam": ["rostam", 1], "npc_siavash": ["siavash", 1], "npc_gordafarid": ["gordafarid", 1]}
 const ART_DIR := "res://assets/art/Portraits/%s.webp"
+const USER_ART := {
+	"npc_rostam": [Vector2(0, 0), 1],
+	"npc_siavash": [Vector2(192, 0), 1],
+	"npc_gordafarid": [Vector2(0, 192), 1],
+	"alchemist": [Vector2(192, 192), -1],
+}
 var art_facing := 0     # 0: no painted portrait on show
 var mirror := false     # set by the dialogue box so the painted face turns toward the text
 
@@ -35,16 +42,30 @@ static func art_key(s: String) -> String:
 	return s
 
 static func has_art(s: String) -> bool:
-	return ART.has(art_key(s)) and ResourceLoader.exists(ART_DIR % ART[art_key(s)][0])
+	var key := art_key(s)
+	if USER_ART.has(key):
+		return USER_ART_ATLAS != null and USER_ART_ATLAS.get_width() == 384 and USER_ART_ATLAS.get_height() == 384
+	return ART.has(key) and ResourceLoader.exists(ART_DIR % ART[key][0])
 
-## shows the painted portrait for this sheet; false (and nothing changed) if there is none
+## Shows the painted portrait for this sheet; false (and nothing changed) if there is none.
 func show_art(s: String) -> bool:
 	if not has_art(s):
 		return false
-	var a: Array = ART[art_key(s)]
-	_tex = load(ART_DIR % a[0])
-	_src = Rect2(Vector2.ZERO, _tex.get_size())
-	art_facing = int(a[1])
+	var key := art_key(s)
+	if USER_ART.has(key):
+		var user_spec: Array = USER_ART[key]
+		_tex = USER_ART_ATLAS
+		if _tex == null or _tex.get_width() != 384 or _tex.get_height() != 384:
+			return false
+		_src = Rect2(user_spec[0], Vector2(192, 192))
+		art_facing = int(user_spec[1])
+	else:
+		var a: Array = ART[key]
+		_tex = load(ART_DIR % a[0])
+		if _tex == null:
+			return false
+		_src = Rect2(Vector2.ZERO, _tex.get_size())
+		art_facing = int(a[1])
 	sheet = s
 	if face:
 		face.material = null

@@ -114,3 +114,16 @@ The procedural effects in this step are a presentation improvement, not a substi
 - [ ] Review all four ultimates at native Android display scale and compare low/high FX settings on a physical device.
 
 These additions are presentation-only; ultimate duration, target rules, damage, stun, healing, invulnerability and meter consumption are unchanged.
+
+
+## 2026-11-21 — User-supplied Shahnameh character art integration
+
+The project owner supplied eight original artwork images for the four class identities and four story-character portraits. The images were cropped and downsampled into two native 384×384 WebP atlas resources.
+
+- The class-selection screen now cycles six supplied action poses for Warrior, Mage, Rogue and Paladin cards at a restrained 0.18-second frame interval. Existing static card art remains the safe fallback if an atlas cannot be loaded.
+- Dialogue portraits now use the supplied Rostam, Siavash, Gordafarid and Rudabeh turnarounds for their corresponding story actor keys. Existing painted portraits remain the fallback for every other actor.
+- The six-pose concept panels are not directional top-down gameplay sprite sheets. They do not provide independent north/south/east/west frames, consistent gameplay pivots or per-frame hitbox alignment. They are therefore not substituted for the live combat SpriteFrames; combat animations, contact timing and hitboxes remain unchanged.
+- Regression coverage checks both imported atlas resources, all four six-frame class clips, their cell dimensions and the four dialogue portrait registrations.
+- Rights register entries identify the owner-supplied source files and the atlas conversion. Commercial-use status remains UNVERIFIED until the source/provider terms are separately confirmed.
+
+The next combat-art milestone is to derive direction-consistent, transparent-background animation sheets with stable feet pivots and frame-level contact annotations from the approved character designs, then validate them at native Android scale before replacing any in-combat sheet.
