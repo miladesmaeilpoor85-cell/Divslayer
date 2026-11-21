@@ -118,15 +118,22 @@ func run(m: Node) -> void:
 	check("world_graph_is_bidirectional", peaks_to_alborz and alborz_to_peaks)
 	var map_data := Game.map_data("alborz")
 	var data: Dictionary = map_data.get("data", {})
+	var scout_entry_found := false
+	for npc_data in data.get("npcs", []):
+		if str(npc_data.get("id", "")) == "alborz_scout":
+			scout_entry_found = true
 	check("map_data_has_wind_scout_and_guards",
 		data.get("windGusts", []).size() == 1
-		and data.get("npcs", []).any(func(n): return str(n.get("id", "")) == "alborz_scout")
+		and scout_entry_found
 		and data.get("enemySpawns", []).size() == 3,
 		[data.get("windGusts", []).size(), data.get("enemySpawns", []).size()])
+	var return_exit_found := false
+	for exit_data in data.get("exits", []):
+		if str(exit_data.get("to", "")) == "peaks" and float(exit_data.get("y", 0)) > 1000.0 and float(exit_data.get("spawnY", 9999)) < 100.0:
+			return_exit_found = true
 	check("entry_and_return_are_on_opposite_edges",
 		Vector2(float(data.get("playerStart", {}).get("x", 0)), float(data.get("playerStart", {}).get("y", 0))).y > 900.0
-		and data.get("exits", []).any(func(exit): return str(exit.get("to", "")) == "peaks" and float(exit.get("y", 0)) > 1000.0
-			and float(exit.get("spawnY", 9999)) < 100.0))
+		and return_exit_found)
 	check("map_uses_existing_ground_placeholder",
 		str(map_data.get("groundFile", "")) == "frostvale_ground.jpg"
 		and ResourceLoader.exists("res://assets/art/Maps/frostvale_ground.jpg"))
@@ -200,9 +207,15 @@ func run(m: Node) -> void:
 		and not C.has_news("elder") and C.target().get("map", "") == "alborz_eyrie", [pages, C.step(), C.target()])
 
 	# The optional eyrie is a real, gated map connection with its own three-phase wind boss.
-	check("high_eyrie_has_bidirectional_world_graph_route",
-		graph.get("alborz", {}).get("exits", []).any(func(e): return str(e.get("to", "")) == "alborz_eyrie")
-		and graph.get("alborz_eyrie", {}).get("exits", []).any(func(e): return str(e.get("to", "")) == "alborz"))
+	var alborz_to_eyrie := false
+	for exit_data in graph.get("alborz", {}).get("exits", []):
+		if str(exit_data.get("to", "")) == "alborz_eyrie":
+			alborz_to_eyrie = true
+	var eyrie_to_alborz := false
+	for exit_data in graph.get("alborz_eyrie", {}).get("exits", []):
+		if str(exit_data.get("to", "")) == "alborz":
+			eyrie_to_alborz = true
+	check("high_eyrie_has_bidirectional_world_graph_route", alborz_to_eyrie and eyrie_to_alborz)
 	check("high_eyrie_is_unlocked_after_scout_report",
 		C.exit_block("alborz_eyrie") == "" and Game.region_open("alborz_eyrie"))
 	main.goto_map("alborz", Vector2(1350, 530))
