@@ -1,4 +1,4 @@
-name: Uploaded source media review
+name: Uploaded source media review and full Mage extraction
 
 on:
   pull_request:
