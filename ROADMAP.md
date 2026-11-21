@@ -58,7 +58,7 @@ See [Alborz art production brief](docs/ALBORZ_ART_PRODUCTION_BRIEF.md).
 - [x] Export, package identity, and APK signature verification succeeded for the latest main QA build; the emulator installed the APK and left the Godot activity in the foreground.
 - [x] Merge the corrected Godot 4.7.2 Android QA startup assertion via PR #56.
 - [x] Verify Android QA on the current `main` commit `6fdc3c5176fbf87b07d59e1910fcdce26ebf4df2`; [run 44906428530](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428530) passed emulator install/launch, setup-marker, foreground, fatal-log and artifact-upload checks. Artifact [14707913866](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428530/artifacts/14707913866) expires 5 December 2026; SHA-256 `2fbddeaff8576041590ce6d9db4d9c67b9b42ed3dcdf29c492df59a1824aa751`.
-- [ ] Complete physical-device testing and obtain external tester reports; emulator success is not device acceptance. PR #56 remains open pending review/merge.
+- [ ] Complete physical-device testing and obtain external tester reports for 0.43.0-qa; emulator success is not device acceptance.
 - [ ] Verify production package ID and export settings from the owner's private export preset.
 - [ ] Generate a new production signing/upload key locally and keep two secure offline backups.
 - [ ] Decide on Google Play App Signing and preserve package/update continuity if already distributed.
