@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
-# Run every headless suite and the autotest. Any failed suite, crash, timeout,
-# parser error, or non-zero process exit makes this script return non-zero.
+# Run the complete Godot suite. CI may distribute suites across independent shards.
 # Usage: tools/run_all_tests.sh <label> [preload.so]
-set -u
-
+set -uo pipefail
 cd "$(dirname "$0")/.."
+
 label=${1:-normal}
 pre=${2:-}
+test_timeout=${GODOT_TEST_TIMEOUT_SECONDS:-400}
+shard_index=${GODOT_TEST_SHARD_INDEX:-0}
+shard_count=${GODOT_TEST_SHARD_COUNT:-1}
+
+if ! [[ "$test_timeout" =~ ^[1-9][0-9]*$ ]]; then
+  echo "GODOT_TEST_TIMEOUT_SECONDS must be a positive integer." >&2
+  exit 2
+fi
+if ! [[ "$shard_index" =~ ^[0-9]+$ && "$shard_count" =~ ^[1-9][0-9]*$ ]] || (( shard_index >= shard_count )); then
+  echo "Invalid Godot test shard: index=$shard_index count=$shard_count" >&2
+  exit 2
+fi
+
 mkdir -p /tmp/ei_tests
 out="/tmp/ei_tests/${label}.log"
 : > "$out"
@@ -14,13 +26,19 @@ failed=0
 
 run_godot() {
   if [[ -n "$pre" ]]; then
-    LD_PRELOAD="$pre" timeout 400 godot --headless --fixed-fps 60 --path . "$@" 2>&1
+    LD_PRELOAD="$pre" timeout --signal=TERM --kill-after=10 "${test_timeout}s" godot --headless --fixed-fps 60 --path . "$@"
   else
-    timeout 400 godot --headless --fixed-fps 60 --path . "$@" 2>&1
+    timeout --signal=TERM --kill-after=10 "${test_timeout}s" godot --headless --fixed-fps 60 --path . "$@"
   fi
 }
 
+test_index=0
 for t in windgusttest quittest achtest rushtest audiotest shrinetest chapter2test chapter3test chapter4test tutorialtest questpointtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest animationtest warriorreviewtest; do
+  current_index=$test_index
+  test_index=$((test_index + 1))
+  if (( current_index % shard_count != shard_index )); then
+    continue
+  fi
   r=$(run_godot -- --test "res://tests/$t.gd")
   status=$?
   passes=$(printf '%s\n' "$r" | grep -cE '^PASS' || true)
@@ -31,27 +49,39 @@ for t in windgusttest quittest achtest rushtest audiotest shrinetest chapter2tes
   printf '%s\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11' | head -10 >> "$out" || true
   if [[ $status -ne 0 || $fails -gt 0 || $crashes -gt 0 || $errors -gt 0 ]]; then
     failed=1
+    printf '%s\\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11|ERROR:' | head -30 | tee -a "$out" || true
+    if [[ -z "$r" ]]; then echo "No test output was produced before exit." | tee -a "$out"; fi
   fi
 done
 
-r=$(run_godot -- --autotest)
-status=$?
-json_count=$(printf '%s\n' "$r" | grep -c 'AUTOTEST_JSON' || true)
-fails=$(printf '%s\n' "$r" | grep -cE '^FAIL' || true)
-crashes=$(printf '%s\n' "$r" | grep -c 'signal 11' || true)
-errors=$(printf '%s\n' "$r" | grep -Ec 'SCRIPT ERROR|Parse Error' || true)
-printf '== autotest exit=%s json=%s fail=%s crash=%s errors=%s\n' "$status" "$json_count" "$fails" "$crashes" "$errors" >> "$out"
-printf '%s\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11' | head -10 >> "$out" || true
-
-if [[ $status -ne 0 || $json_count -eq 0 || $fails -gt 0 || $crashes -gt 0 || $errors -gt 0 ]]; then
-  failed=1
+if (( shard_index == 0 )); then
+  test_log="/tmp/ei_tests/${label}.autotest.raw.log"
+  started=$SECONDS
+  printf 'START autotest\n' | tee -a "$out"
+  run_godot -- --autotest 2>&1 | tee "$test_log"
+  status=${PIPESTATUS[0]}
+  elapsed=$((SECONDS - started))
+  json_count=$(grep -c 'AUTOTEST_JSON' "$test_log" || true)
+  fails=$(grep -cE '^FAIL' "$test_log" || true)
+  crashes=$(grep -c 'signal 11' "$test_log" || true)
+  errors=$(grep -Ec 'SCRIPT ERROR|Parse Error' "$test_log" || true)
+  timed_out=0
+  [[ $status -eq 124 || $status -eq 137 ]] && timed_out=1
+  printf '== autotest exit=%s elapsed=%ss json=%s fail=%s crash=%s errors=%s timeout=%s\n' "$status" "$elapsed" "$json_count" "$fails" "$crashes" "$errors" "$timed_out" | tee -a "$out"
+  if [[ $status -ne 0 || $json_count -eq 0 || $fails -gt 0 || $crashes -gt 0 || $errors -gt 0 ]]; then
+    failed=1
+    grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11|ERROR:' "$test_log" | head -30 | tee -a "$out" || true
+  fi
+else
+  echo "AUTOTEST_ASSIGNED_TO_SHARD_0" | tee -a "$out"
 fi
 
 if [[ $failed -ne 0 ]]; then
-  echo "TESTS_FAILED" >> "$out"
-  cat "$out"
+  echo "TESTS_FAILED shard=$shard_index/$shard_count" | tee -a "$out"
   exit 1
 fi
-
-echo "ALL_TESTS_PASSED" >> "$out"
-cat "$out"
+if (( shard_index == 0 )); then
+  echo "ALL_TESTS_PASSED" | tee -a "$out"
+else
+  echo "SHARD_TESTS_PASSED shard=$shard_index/$shard_count" | tee -a "$out"
+fi

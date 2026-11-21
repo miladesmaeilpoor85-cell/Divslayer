@@ -5,10 +5,15 @@ extends Control
 
 signal start_game(cls: String, continue_save: bool)
 
-const Sheets = preload("res://scripts/sheets.gd")
 const Bar = preload("res://scripts/ui/bar.gd")
 const Tex = preload("res://scripts/fx/tex.gd")
 const ORDER := ["warrior", "mage", "rogue", "paladin"]
+const CLASS_CARD_ART := {
+	"warrior": preload("res://assets/art/ClassCards/warrior.webp"),
+	"mage": preload("res://assets/art/ClassCards/mage.webp"),
+	"rogue": preload("res://assets/art/ClassCards/rogue.webp"),
+	"paladin": preload("res://assets/art/ClassCards/paladin.webp"),
+}
 const CARDS := {
 	# (v0.24) the Ember-bearer's four callings, each the way of one of the Shahnameh's heroes (Game.HEROES)
 	"warrior": ["Pahlavan", "پهلوان", "The way of Rostam: the most health and the hardest blows.", "راهِ رستم: بیشترین جان و سنگین‌ترین ضربه‌ها.", "swords", Color(0.85, 0.36, 0.26)],
@@ -20,8 +25,6 @@ const CARDS := {
 var view := "title"
 var picked := "warrior"
 var content: Control
-var _anim_t := 0.0
-var _card_faces := {}
 var _embers: CPUParticles2D
 var _logo: Label
 
@@ -33,7 +36,6 @@ func _ready() -> void:
 func _build() -> void:
 	for c in get_children():
 		c.queue_free()
-	_card_faces.clear()
 	layout_direction = Control.LAYOUT_DIRECTION_RTL if Game.lang == "fa" else Control.LAYOUT_DIRECTION_LTR
 	# darken the village behind: strongest where the text sits
 	var shade := TextureRect.new()
@@ -254,11 +256,11 @@ func _card(c: String, mx: Dictionary) -> Control:
 	b.add_child(v)
 	var face := TextureRect.new()
 	face.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	face.custom_minimum_size = Vector2(0, 70)
+	face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	face.custom_minimum_size = Vector2(0, 84)
 	face.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(face)
-	_card_faces[c] = face
+	face.texture = CLASS_CARD_ART[c]
 	var nh := HBoxContainer.new()
 	nh.alignment = BoxContainer.ALIGNMENT_CENTER
 	nh.add_theme_constant_override("separation", 6)
@@ -333,17 +335,7 @@ func _process(dt: float) -> void:
 		# the title glows like iron in a forge
 		var k := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 900.0)
 		_logo.modulate = Color(1.0 + 0.12 * k, 1.0 + 0.06 * k, 1.0)
-	if _card_faces.is_empty():
-		return
-	_anim_t += dt
-	for c in _card_faces:
-		var ch: Dictionary = Sheets.character("heroes", c + "_mid")
-		if ch.is_empty():
-			continue
-		var anim := "walk_down" if c == picked else "idle_down"
-		var sf: SpriteFrames = ch["frames"]
-		var n := sf.get_frame_count(anim)
-		_card_faces[c].texture = sf.get_frame_texture(anim, int(_anim_t * 7.0) % max(1, n))
+	# Class cards keep the approved Persian-inspired portrait artwork.
 
 # ---------------------------------------------------------------- settings
 func _settings() -> void:

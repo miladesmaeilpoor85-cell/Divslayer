@@ -21,6 +21,11 @@ const KIND := {
 ## swing trail colours by weapon tier (fists .. Frostreaver)
 const SWING_COL := [Color(1, 0.96, 0.86), Color(1, 0.96, 0.86), Color(0.93, 0.96, 1.0), Color(0.68, 0.94, 1.0),
 	Color(1, 0.74, 0.44), Color(1, 0.56, 0.22), Color(0.62, 0.86, 1.0)]
+const CLASS_SWING_COL := {
+	"mage": Color(0.30, 0.84, 0.96),
+	"rogue": Color(0.48, 0.84, 0.57),
+	"paladin": Color(1.0, 0.82, 0.38),
+}
 
 var world: Node = null
 var overlay: CanvasLayer
@@ -30,6 +35,7 @@ var texts: Node2D
 var pools := {}
 var _next := {}
 var rings: Array = []          # {pos, col, r, t, life}
+var dashes: Array = []         # short directional energy trails from dodge rolls
 var swings: Array = []         # {who, ang, t, dur, r, col, heavy}
 var lights: Array = []         # timed light flashes read by the lighting pass: {pos, r, i, c, t, life}
 var quality := 1               # 0 low (fewer particles) / 1 high
@@ -151,13 +157,42 @@ func ring(pos: Vector2, col: Color, r := 20.0, life := 0.32) -> void:
 
 ## a weapon arc that follows `who` (the hero) for its short life (VIS.drawSwings)
 func swing(who: Node2D, dir: Vector2, reach: float, heavy := false, tier := 1) -> void:
-	var col: Color = SWING_COL[clamp(tier, 0, SWING_COL.size() - 1)]
+	var hero_class := str(Game.cls)
+	var col: Color = SWING_COL[clampi(tier, 0, SWING_COL.size() - 1)]
+	if CLASS_SWING_COL.has(hero_class):
+		col = Color(CLASS_SWING_COL[hero_class]).lerp(col, 0.24)
 	if heavy:
 		col = col.lerp(Color(1, 0.62, 0.3), 0.55)
 	swings.append({"who": who, "ang": dir.angle(), "t": 0.0, "dur": 0.26 if heavy else 0.22,
-		"r": max(36.0, reach + (16.0 if heavy else 10.0)), "col": col, "heavy": heavy})
+		"r": max(36.0, reach + (16.0 if heavy else 10.0)), "col": col, "heavy": heavy, "class": hero_class})
 	if swings.size() > 4:
 		swings.pop_front()
+
+## A small, class-specific contact response. Pure presentation: it never changes damage or hit geometry.
+func class_impact(pos: Vector2, dir: Vector2, hero_class: String, heavy := false) -> void:
+	var forward := dir.normalized() if dir.length_squared() > 0.0001 else Vector2.RIGHT
+	var count := 9 if heavy else 6
+	match hero_class:
+		"mage":
+			var col := Color(0.30, 0.84, 0.96)
+			ring(pos, col, 16.0 if heavy else 11.0, 0.30)
+			emit("shine", pos, count, col, forward, 100.0, 145.0, 0.9 if not heavy else 1.15)
+			flash_light(pos, 64.0 if heavy else 46.0, 0.28 if heavy else 0.20, col, 0.22)
+		"rogue":
+			var col := Color(0.48, 0.84, 0.57)
+			ring(pos, col, 10.0 if heavy else 7.0, 0.19)
+			sparks(pos, count + 1, col, forward)
+		"paladin":
+			var col := Color(1.0, 0.82, 0.38)
+			ring(pos, col, 18.0 if heavy else 13.0, 0.32)
+			ring(pos, Color(1.0, 0.94, 0.68), 30.0 if heavy else 22.0, 0.25)
+			emit("shine", pos, count, col, Vector2.UP, 80.0, 105.0, 1.0 if not heavy else 1.25)
+			flash_light(pos, 76.0 if heavy else 56.0, 0.32 if heavy else 0.22, col, 0.24)
+		_:
+			var col := Color(0.86, 0.63, 0.36)
+			ring(pos, col, 12.0 if heavy else 8.0, 0.22)
+			dust(pos, 5 if heavy else 3, -forward, Color(0.62, 0.49, 0.34, 0.62))
+			sparks(pos, count, col, forward)
 
 ## a light that flares and fades (crits, explosions, level-ups): read by the lighting pass
 func flash_light(pos: Vector2, r: float, i: float, col: Color, life := 0.3) -> void:
@@ -186,6 +221,14 @@ func ghost(spr: AnimatedSprite2D, tint := Color(0.62, 0.86, 1.0, 0.5), life := 0
 	var tw := g.create_tween()
 	tw.tween_property(g, "modulate:a", 0.0, life)
 	tw.tween_callback(g.queue_free)
+
+## a short directional wind-cut trail emitted along a dodge roll; kept as lightweight draw data.
+func dash_trail(pos: Vector2, dir: Vector2, col: Color, life := 0.18, length := 38.0) -> void:
+	if dir.length_squared() < 0.0001 or life <= 0.0:
+		return
+	dashes.append({"pos": pos, "dir": dir.normalized(), "col": col, "t": life, "life": life, "length": length})
+	if dashes.size() > 14:
+		dashes.pop_front()
 
 ## a soft contact shadow under `node` (VIS.shadow): an ellipse w×h·0.32, drawn under every character
 static func shadow_for(node: Node2D, w: float, h: float, alpha := 0.34) -> Sprite2D:
@@ -223,15 +266,30 @@ func _process(dt: float) -> void:
 	for l in lights:
 		l["t"] = float(l["t"]) - dt
 	lights = lights.filter(func(l): return float(l["t"]) > 0.0)
-	if not rings.is_empty() or not swings.is_empty() or _drew:
+	for d in dashes:
+		d["t"] = float(d["t"]) - dt
+	dashes = dashes.filter(func(d): return float(d["t"]) > 0.0)
+	if not rings.is_empty() or not swings.is_empty() or not dashes.is_empty() or _drew:
 		arcs.queue_redraw()
-	_drew = not rings.is_empty() or not swings.is_empty()
+	_drew = not rings.is_empty() or not swings.is_empty() or not dashes.is_empty()
 
 func _draw_arcs() -> void:
 	for r in rings:
 		var k: float = float(r["t"]) / float(r["life"])
 		var c: Color = r["col"]
 		arcs.draw_arc(r["pos"], float(r["r"]) * (1.6 - k * 0.6), 0, TAU, 40, Color(c, 0.6 * k), 1.0 + 3.0 * k, true)
+	for d in dashes:
+		var k: float = clampf(float(d["t"]) / float(d["life"]), 0.0, 1.0)
+		var dir: Vector2 = d["dir"]
+		var side := dir.orthogonal()
+		var at: Vector2 = d["pos"]
+		var tail: Vector2 = at - dir * float(d["length"]) * (0.45 + 0.55 * k)
+		var head: Vector2 = at + dir * 7.0 * (1.0 - k)
+		var col: Color = d["col"]
+		var fade: float = k * k
+		arcs.draw_line(tail, head, Color(col, 0.2 * fade), 7.0 * fade + 0.5, true)
+		arcs.draw_line(tail + side * 4.0, head + side * 2.0, Color(col, 0.34 * fade), 1.8 * fade + 0.4, true)
+		arcs.draw_line(tail - side * 4.0, head - side * 2.0, Color(col, 0.34 * fade), 1.8 * fade + 0.4, true)
 	for s in swings:
 		_draw_swing(s)
 
@@ -240,11 +298,20 @@ func _draw_swing(s: Dictionary) -> void:
 	var who: Node2D = s["who"]
 	var c: Vector2 = who.global_position + Vector2(0, -17)
 	var p: float = float(s["t"]) / float(s["dur"])
+	var hero_class := str(s.get("class", "warrior"))
 	var sweep := 2.0 if not s["heavy"] else 2.6
+	match hero_class:
+		"mage":
+			sweep = 2.35 if not s["heavy"] else 2.75
+		"rogue":
+			sweep = 1.8 if not s["heavy"] else 2.15
+		"paladin":
+			sweep = 2.1 if not s["heavy"] else 2.45
 	var head: float = float(s["ang"]) - sweep * 0.5 + sweep * ease(p, 0.45)
-	var tail: float = head - 1.1
+	var tail: float = head - (1.0 if hero_class == "rogue" else 1.1)
 	var rad: float = float(s["r"])
-	var wmax: float = (17.0 if s["heavy"] else 13.0) * (1.0 - p * 0.6) + 2.0
+	var class_width := 0.72 if hero_class == "rogue" else (1.08 if hero_class == "paladin" else 1.0)
+	var wmax: float = ((17.0 if s["heavy"] else 13.0) * class_width) * (1.0 - p * 0.6) + 2.0
 	var col: Color = s["col"]
 	var a0: float = 0.95 * (1.0 - p * p)
 	var fade := 1.0 - p
@@ -277,7 +344,20 @@ func _draw_swing(s: Dictionary) -> void:
 	# A bright inner filament makes the crescent read as a polished blade, not a flat wedge.
 	arcs.draw_arc(c, rad * 0.84, tail - 0.05, head - 0.08, 24,
 		Color(1.0, 0.94, 0.78, 0.34 * fade), 1.35, true)
-	# The leading glint travels with the arc; heavy swings leave two short hot streaks.
+	# Rogue's paired daggers leave a second, slimmer cut; it stays offset from the first edge.
+	if hero_class == "rogue":
+		arcs.draw_arc(c, rad + 7.0, tail - 0.32, head - 0.24, 20,
+			Color(col, 0.48 * fade), max(1.0, wmax * 0.20), true)
+	# Mage's strike carries five small star-map ticks along the arc, not a full-screen glow.
+	elif hero_class == "mage":
+		for tick in 5:
+			var u := (float(tick) + 1.0) / 6.0
+			var angle: float = lerp(tail, head, u)
+			var radial := Vector2.from_angle(angle)
+			var tangent_tick := radial.orthogonal()
+			var anchor := c + radial * (rad + wmax * 0.22)
+			arcs.draw_line(anchor - tangent_tick * 2.0, anchor + tangent_tick * 2.0,
+				Color(0.78, 0.98, 1.0, 0.5 * fade), 1.0, true)
 	var tip_dir := Vector2.from_angle(head)
 	var tip := c + tip_dir * (rad + wmax * 0.24)
 	var tangent := Vector2(-tip_dir.y, tip_dir.x)
@@ -285,6 +365,14 @@ func _draw_swing(s: Dictionary) -> void:
 	arcs.draw_circle(tip, 2.8 if s["heavy"] else 2.0, Color(1.0, 0.98, 0.86, glint))
 	arcs.draw_line(tip - tangent * (6.0 if s["heavy"] else 4.0),
 		tip + tangent * (6.0 if s["heavy"] else 4.0), Color(1, 1, 1, 0.72 * glint), 1.5, true)
+	if hero_class == "paladin":
+		# A restrained solar flare distinguishes the Farrah-aligned guard class from raw steel.
+		for ray in 5:
+			var angle := head + (float(ray) - 2.0) * 0.16
+			var ray_dir := Vector2.from_angle(angle)
+			var ray_start := c + ray_dir * (rad + wmax * 0.35)
+			arcs.draw_line(ray_start, ray_start + ray_dir * (4.0 + 2.0 * fade),
+				Color(1.0, 0.88, 0.52, 0.48 * fade), 1.2, true)
 	if s["heavy"]:
 		for i in 2:
 			var back := tip - tip_dir * (10.0 + float(i) * 5.0)

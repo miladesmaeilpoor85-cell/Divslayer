@@ -7,9 +7,11 @@ ownership, copyright, or commercial-use rights.
 from __future__ import annotations
 
 import argparse
+import base64
 import csv
 import hashlib
 import json
+import re
 import struct
 import sys
 from collections import Counter, defaultdict
@@ -20,6 +22,7 @@ IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
 AUDIO_EXTENSIONS = {".ogg", ".wav", ".mp3", ".flac"}
 AUDIO_ROOT = Path("assets/audio")
 REGISTER = Path("docs/ASSET_RIGHTS_REGISTER.csv")
+ATLAS_PAYLOAD_ROOT = Path("assets/art/Heroes/attack_atlas_data")
 LARGE_FILE_BYTES = 8 * 1024 * 1024
 LARGE_IMAGE_PIXELS = 64_000_000
 
@@ -143,6 +146,49 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def audit_atlas_payloads(root: Path) -> tuple[list[Path], int, list[str]]:
+    """Validate ordered Base64 PNG parts used by metadata-driven attack atlases."""
+    payload_root = root / ATLAS_PAYLOAD_ROOT
+    if not payload_root.is_dir():
+        return [], 0, []
+    payload_files = sorted(path for path in payload_root.rglob("*.b64") if path.is_file())
+    groups: dict[str, list[Path]] = defaultdict(list)
+    for path in payload_files:
+        groups[path.parent.relative_to(root).as_posix()].append(path)
+
+    errors: list[str] = []
+    checked = 0
+    for group, paths in sorted(groups.items()):
+        indexed: list[tuple[int, Path]] = []
+        for path in paths:
+            match = re.fullmatch(r"part_(\d{2})\.b64", path.name)
+            if match is None:
+                errors.append(f"invalid atlas payload part name: {path.relative_to(root).as_posix()}")
+                continue
+            indexed.append((int(match.group(1)), path))
+        indexed.sort(key=lambda item: item[0])
+        actual_indices = [index for index, _ in indexed]
+        if actual_indices != list(range(len(indexed))):
+            errors.append(f"atlas payload parts are missing or out of order in {group}: {actual_indices}")
+            continue
+        try:
+            encoded = "".join(path.read_text(encoding="ascii").strip() for _, path in indexed)
+            decoded = base64.b64decode(encoded, validate=True)
+        except (OSError, UnicodeError, ValueError) as exc:
+            errors.append(f"invalid Base64 atlas payload in {group}: {exc}")
+            continue
+        if (len(decoded) < 45 or decoded[:8] != b"\x89PNG\r\n\x1a\n"
+                or decoded[12:16] != b"IHDR" or decoded[-8:-4] != b"IEND"):
+            errors.append(f"atlas payload does not reassemble into a complete PNG: {group}")
+            continue
+        width, height = struct.unpack(">II", decoded[16:24])
+        if (width, height) != (640, 468):
+            errors.append(f"atlas payload has unexpected dimensions {width}x{height} in {group}; expected 640x468")
+            continue
+        checked += 1
+    return payload_files, checked, errors
+
+
 def audit_repository(root: Path) -> dict[str, Any]:
     root = root.resolve()
     errors: list[str] = []
@@ -154,6 +200,8 @@ def audit_repository(root: Path) -> dict[str, Any]:
         and p.suffix.lower() in IMAGE_EXTENSIONS
         and not excluded_dirs.intersection(p.relative_to(root).parts)
     )
+    atlas_payload_files, atlas_payloads_checked, atlas_payload_errors = audit_atlas_payloads(root)
+    errors.extend(atlas_payload_errors)
 
     registry_path = root / REGISTER
     rows: dict[str, str] = {}
@@ -192,11 +240,17 @@ def audit_repository(root: Path) -> dict[str, Any]:
         except (OSError, csv.Error, UnicodeError) as exc:
             errors.append(f"could not read rights register: {exc}")
 
-    actual = {p.relative_to(root).as_posix() for p in images}
+    image_paths = {p.relative_to(root).as_posix() for p in images}
+    payload_paths = {p.relative_to(root).as_posix() for p in atlas_payload_files}
+    actual = image_paths | payload_paths
     for rel in sorted(actual - set(rows)):
-        errors.append(f"artwork file is not registered: {rel}")
+        label = "atlas payload part" if rel in payload_paths else "artwork file"
+        errors.append(f"{label} is not registered: {rel}")
     for rel in sorted(set(rows) - actual):
-        errors.append(f"registered artwork is not a supported image file: {rel}")
+        if rel.startswith(ATLAS_PAYLOAD_ROOT.as_posix() + "/"):
+            errors.append(f"registered atlas payload part is missing: {rel}")
+        else:
+            errors.append(f"registered artwork is not a supported image file: {rel}")
 
     unverified = sum(value.upper() == "UNVERIFIED" for value in rows.values())
     blank = rights_counts.get("(blank)", 0)
@@ -237,7 +291,10 @@ def audit_repository(root: Path) -> dict[str, Any]:
 
     return {
         "artwork_files": len(images),
-        "registered_artwork_files": len(rows),
+        "registered_artwork_files": len(set(rows) & image_paths),
+        "atlas_payload_parts": len(atlas_payload_files),
+        "atlas_payloads_checked": atlas_payloads_checked,
+        "registered_atlas_payload_parts": len(set(rows) & payload_paths),
         "artwork_rights_status_counts": dict(sorted(rights_counts.items())),
         "audio_files_checked": len(audio_files),
         "image_dimensions": dimensions,
@@ -257,7 +314,8 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     else:
         print("Divslayer asset audit")
-        print(f"Artwork: {report['artwork_files']} files; {report['registered_artwork_files']} registered")
+        print(f"Artwork: {report['artwork_files']} images; {report['registered_artwork_files']} registered")
+        print(f"Attack atlas payloads: {report['atlas_payloads_checked']} PNGs from {report['atlas_payload_parts']} parts")
         print(f"Audio files checked: {report['audio_files_checked']}")
         print("Rights statuses: " + (", ".join(f"{k}={v}" for k, v in report["artwork_rights_status_counts"].items()) or "no records"))
         print(f"Exact-duplicate image groups: {len(report['identical_image_groups'])}")

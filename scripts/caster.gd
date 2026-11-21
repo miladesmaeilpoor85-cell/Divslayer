@@ -348,6 +348,10 @@ func ultimate() -> bool:
 	var dmg: float = Game.atk() * dmg_mul() * Game.ult_mul()
 	match Game.cls:
 		"warrior":
+			if w.fx:
+				w.fx.ring(c, Color(0.78, 0.53, 0.28), 64.0, 0.42)
+				w.fx.dust(player.global_position, 12, Vector2.ZERO, Color(0.58, 0.46, 0.34, 0.62))
+				w.fx.sparks(c, 8, Color(1.0, 0.72, 0.38))
 			spin_t = 3.0
 			spin_tick = 0.0
 		"mage":
@@ -372,7 +376,9 @@ func ultimate() -> bool:
 			if w.fx:
 				w.fx.ring(c, u["col"], r, 0.6)
 				w.fx.ring(c, Color(1, 1, 1), r * 0.5, 0.45)
+				w.fx.ring(c, Color(1.0, 0.94, 0.68), r * 0.78, 0.52)
 				w.fx.emit("shine", player.global_position, 30, u["col"], Vector2.UP, 25.0, 260.0, 1.2)
+				w.fx.sparks(c, 12, Color(1.0, 0.94, 0.68), Vector2.UP)
 				w.fx.flash_light(c, 340.0, 1.0, u["col"], 0.9)
 			Sfx.play("levelup", -4.0)
 			Sfx.play("nova", -4.0)
@@ -415,9 +421,16 @@ func _tempest(dmg: float) -> void:
 	var sp = spells()
 	if sp == null:
 		return
+	var ritual_origin: Vector2 = player.global_position + Vector2(0, -17)
+	var w = world()
+	if w.fx:
+		var lapis := Color(0.30, 0.84, 0.96)
+		w.fx.ring(ritual_origin, lapis, 58.0, 0.52)
+		w.fx.ring(ritual_origin, Color(0.92, 0.78, 0.42), 36.0, 0.38)
+		w.fx.emit("shine", ritual_origin, 14, lapis, Vector2.UP, 42.0, 132.0, 0.9)
+		w.fx.flash_light(ritual_origin, 190.0, 0.58, lapis, 0.52)
 	# what the camera shows: the view around the hero, held inside the map like the camera itself
 	var sz: Vector2 = player.get_viewport_rect().size / (player.cam.zoom if player.cam else Vector2.ONE)
-	var w = world()
 	var half: Vector2 = sz * 0.5
 	var cen: Vector2 = player.global_position + Vector2(0, -17)
 	cen.x = clamp(cen.x, min(half.x, w.size.x * 0.5), max(w.size.x - half.x, w.size.x * 0.5))
@@ -457,10 +470,14 @@ func _dance(dt: float) -> void:
 		if w.free_spot(feet, Vector2(26, 34)):
 			player.global_position = feet
 			break
-	if w.fx:
-		w.fx.ghost(player.anim, Color(0.55, 0.8, 1.0, 0.6), 0.35)
-		w.fx.emit("shine", from + Vector2(0, -17), 6, Color(0.6, 0.85, 1.0), Vector2.ZERO, 180.0, 80.0)
 	var to: Vector2 = tgt.center() - (player.global_position + Vector2(0, -17))
+	if w.fx:
+		var dash_dir: Vector2 = player.global_position - from
+		if dash_dir.length_squared() < 0.0001:
+			dash_dir = -to.normalized()
+		w.fx.ghost(player.anim, Color(0.55, 0.8, 1.0, 0.6), 0.35)
+		w.fx.dash_trail(from + Vector2(0, -17), dash_dir, Color(0.48, 0.84, 0.57, 0.88), 0.18, 48.0)
+		w.fx.emit("shine", from + Vector2(0, -17), 6, Color(0.48, 0.84, 0.57), Vector2.ZERO, 180.0, 80.0)
 	player.facing = player._dir_name(to)
 	player.attacking = 0.16
 	var dmg: float = Game.atk() * dmg_mul() * Game.ult_mul() * Game.melee_mul() * 1.5 * 2.3
@@ -468,6 +485,7 @@ func _dance(dt: float) -> void:
 	player._procs(tgt)
 	if w.fx:
 		w.fx.swing(player, to.normalized(), 40.0, true, int(Game.state.get("weapon", 1)))
+		w.fx.class_impact(tgt.center(), to.normalized(), "rogue", true)
 	Sfx.play("tp", -8.0, 0.2)
 	Sfx.play("crit", -4.0)
 	w.hitstop(0.04)

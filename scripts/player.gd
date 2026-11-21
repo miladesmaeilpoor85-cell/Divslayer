@@ -425,6 +425,8 @@ func _feel(dir: Vector2) -> void:
 			_ghost_t = 0.05
 			var tc: Color = Game.Looks.trail(look)
 			world.fx.ghost(anim, Color(tc, 0.55) if tc.a > 0.0 else Color(0.62, 0.86, 1.0, 0.5))
+			var dash_col := Color(tc, 0.86) if tc.a > 0.0 else Color(0.62, 0.86, 1.0, 0.86)
+			world.fx.dash_trail(global_position + Vector2(0, -17), dash_v.normalized(), dash_col, 0.18, 38.0)
 	if caster and caster.spin_t > 0.0:
 		rot = caster.spin_ang
 	if _hurt_t > 0.0:
@@ -616,8 +618,6 @@ func attack(heavy := false) -> void:
 	var impact_delay := Sheets.animation_impact_time(anim.sprite_frames, "attack_" + attack_direction, impact_frame, anim.speed_scale)
 
 	var sneak_attack := sneaking
-	if sneak_attack:
-		sneak_end()
 	var attack_data := {
 		"heavy": heavy,
 		"reach": reach,
@@ -648,6 +648,9 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 	var multiplier := float(data.get("multiplier", 1.0))
 	var lv := int(data.get("combo_level", 0))
 	var sneak_attack := bool(data.get("sneak_attack", false))
+	# Keep the hero hidden during the wind-up; the sneak ends on the contact frame.
+	if sneak_attack:
+		sneak_end()
 	var body_c := global_position + Vector2(0, -17)
 	var box := swing_box_for(body_rect(), attack_facing, reach)
 	var tgt: Node = data.get("target")
@@ -666,6 +669,7 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 	var landed := false
 	var any_crit := false
 	var stabbed := false
+	var impact_pos := body_c + fv * (reach * 0.72)
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e.dead or not e.targetable():
 			continue
@@ -679,6 +683,7 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 				stabbed = true
 				world.float_text(e.global_position + Vector2(0, -e.box.y - 22), Game.t("Backstab!", "ضربهٔ از پشت!"), Color(1, 0.55, 0.35), true)
 			e.hurt(dmg, crit, fv * (2.2 if heavy else 1.0), heavy)
+			impact_pos = e.center()
 			if crit:
 				Game.Ach.add("crits")
 			var steal := Gear.sum("lifesteal")
@@ -692,6 +697,8 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 		Game.add_ult(4.0)
 	if landed:
 		hits_landed += 1
+		if world.fx:
+			world.fx.class_impact(impact_pos, fv, str(Game.cls), heavy)
 		Game.mp = min(Game.max_mp(), Game.mp + Game.Skills.MP_PER_HIT)
 		Game.add_ult(3.0 + (2.0 if heavy else 0.0) + (2.0 if any_crit else 0.0))
 		Sfx.play("crit" if any_crit else "hit")

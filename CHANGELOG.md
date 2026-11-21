@@ -1,4 +1,28 @@
+# Unreleased — 2026-11-20
+
+- Warrior Starter now has a four-frame directional attack candidate (down/up/side) at 24 FPS, with gameplay impact on frame 2. Damage and contact effects are synchronized to the authored contact frame; legacy one-frame attacks retain their immediate impact.
+
 # Divslayer / دیوکش (Godot; formerly Ember & Iron) — changes
+
+## Class ultimate visual polish
+- Add a grounded bronze ignition cue to Warrior Whirlwind and a lapis/amber ritual cue to Mage Arcane Tempest.
+- Give Rogue Shadow Dance a directional emerald afterimage and paired-dagger contact response; add a third solar pulse and upward sparks to Paladin Farr Smite.
+- Preserve all ultimate damage, hit counts, timing, target rules, healing, stun and invulnerability values; cover visual cues in the skill regression suite.
+
+## Combat polish — class-specific melee effects
+- Distinguish Mage, Rogue, and Paladin weapon arcs with class-specific palettes and restrained geometry while preserving Warrior's existing steel/bronze treatment.
+- Add contact-frame hit effects per class: arcane motes, paired-dagger sparks, solar rings, and a grounded Warrior impact.
+- Keep damage, hitboxes, reach, cooldowns, contact timing, and mobile controls unchanged; add FX regression coverage for all four classes.
+
+## Unreleased — Wind through the realms (وزش باد در سرزمین‌ها)
+- Ambient particles now respond to a slow, continuous gust cycle: leaves, rain, snow, ash, embers and drifting spores change direction without abrupt jumps.
+- Fog banks receive the same subtle wind variation, making regional weather feel less static while preserving gameplay visibility.
+- Added regression checks for normalized particle directions, distinct rain/snow profiles and live rain-gust response.
+
+## Visual polish — directional dodge trails
+- Dodge rolls now leave a short, tapered wind-cut energy trail aligned with the actual dash direction.
+- The effect uses lightweight draw geometry and the character's existing trail tint; no new art textures or gameplay timings are introduced.
+- Added an FX regression check for trail direction and minimum readable length.
 
 ## 0.43.0 — Ashkbus calls the Turanian arrowfall (باران تیرهای تورانیِ اشکبوس)
 - Ashkbus of Kushan marks three separated landing circles around the hero's last position, then calls down visible arrows.
