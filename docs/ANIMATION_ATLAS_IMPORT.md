@@ -44,8 +44,7 @@ The default importer removes only chroma-key pixels connected to each source cel
 
 Use `--allow-edge-contact` only when source art approaches a cell boundary and a reviewer has confirmed that the visible weapon/effect is not clipped. The importer records `minimum_source_margin_px` per frame and emits a warning for margins under 8 source pixels. This option does not crop or repair art; it only permits a reviewable import to continue.
 
-The three starter atlases in the current integration branch use:
-- Mage: `--tolerance 120 --allow-edge-contact` (edge-adjacent staff/effect poses are flagged for review)
+The atlas QA run covered three starter-class source sheets; only Rogue and Paladin are activated in this branch.
 - Rogue: `--tolerance 120 --global-key --allow-edge-contact`
 - Paladin: `--tolerance 120 --allow-edge-contact`
 
