@@ -616,10 +616,10 @@ func attack(heavy := false) -> void:
 	var hero_meta: Dictionary = Game.manifest.get("heroes", {}).get(sheet, {})
 	var impact_frame := int(hero_meta.get("heavyImpactFrame", hero_meta.get("attackImpactFrame", 0))) if heavy else int(hero_meta.get("attackImpactFrame", 0))
 	var impact_delay := Sheets.animation_impact_time(anim.sprite_frames, "attack_" + attack_direction, impact_frame, anim.speed_scale)
-	# Short class-specific anticipation gives the player a readable lead-in before contact.
-	# The cue is cosmetic and uses the same locked facing as the attack animation.
-	if world != null and world.fx != null:
-		world.fx.attack_windup(self, _facing_vector(facing), str(Game.cls), heavy)
+	# Only show anticipation when this attack has a real delayed contact frame.
+	# Legacy one-pose attacks still hit immediately and must not display a late wind-up cue.
+	if impact_delay > 0.000001 and world != null and world.fx != null:
+		world.fx.attack_windup(self, _facing_vector(facing), str(Game.cls), heavy, impact_delay)
 
 	var sneak_attack := sneaking
 	var attack_data := {
@@ -727,6 +727,8 @@ func _tick_attack_impact(dt: float) -> void:
 		var data := _pending_attack
 		_pending_attack = {}
 		_attack_impact_remaining = 0.0
+		if world != null and world.fx != null:
+			world.fx.cancel_attack_windup(self)
 		_resolve_attack_impact(data)
 
 func _cancel_pending_attack() -> void:
