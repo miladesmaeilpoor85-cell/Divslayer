@@ -4,6 +4,7 @@ extends Node
 const Sheets = preload("res://scripts/sheets.gd")
 const PlayerCombat = preload("res://scripts/player.gd")
 const ClassCardArt = preload("res://scripts/ui/class_card_art.gd")
+const ClassShowcase = preload("res://scripts/ui/class_showcase.gd")
 const USER_CLASS_ATLAS: Texture2D = preload("res://assets/art/ClassCards/class_motion_atlas.webp")
 const USER_PORTRAIT_ATLAS: Texture2D = preload("res://assets/art/Portraits/character_portraits_2026.webp")
 const Portrait = preload("res://scripts/ui/portrait.gd")
@@ -46,6 +47,16 @@ func run(_main: Node) -> void:
 		and USER_PORTRAIT_ATLAS.get_width() == 384 and USER_PORTRAIT_ATLAS.get_height() == 384)
 	for actor in ["npc_rostam", "npc_siavash", "npc_gordafarid", "alchemist"]:
 		check("user_story_portrait_%s_is_registered" % actor, Portrait.has_art(actor))
+	# The in-game Hero folio reuses the same class illustrations. Assert that the
+	# full six-frame loop advances for all four player callings, not just the menu.
+	for calling in ["warrior", "mage", "rogue", "paladin"]:
+		var showcase := ClassShowcase.new()
+		showcase.set_calling(calling)
+		var initial_texture: Texture2D = showcase.texture
+		check("hero_folio_%s_has_class_art" % calling, showcase.visible and initial_texture != null)
+		showcase._process(0.2)
+		check("hero_folio_%s_advances_its_art" % calling, showcase.texture != initial_texture)
+		showcase.free()
 
 	var hero_manifest: Dictionary = Game.manifest.get("heroes", {})
 	var hero_names: Array = hero_manifest.keys()
