@@ -298,6 +298,7 @@ def import_atlas(
         "directions": list(DIRECTIONS), "frames_per_direction": 4,
         "frame_labels": list(LABELS), "common_scale": round(scale, 5),
         "key_color": key_color, "key_tolerance": tolerance,
+        "key_mode": "global" if global_key else "edge_connected",
         "magenta_spill_cleanup": magenta_spill, "top_padding": top_padding,
         "frame_files": frame_files, "duplicate_pairs": duplicates,
         "adjacent_changed_pixel_ratio": motion, "frames": records, "warnings": warnings,
