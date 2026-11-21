@@ -71,6 +71,24 @@ def _key_connected_background(image: Image.Image, key: tuple[int, int, int], tol
     return removed
 
 
+def _key_global_background(image: Image.Image, key: tuple[int, int, int], tolerance: int) -> int:
+    """Clear every key-colored pixel, including isolated islands inside foreground shapes.
+
+    Use only when the same chroma color is intentionally used as an enclosed matte,
+    such as a magenta fill inside a pale Rogue slash effect.
+    """
+    width, height = image.size
+    pixels = image.load()
+    removed = 0
+    for y in range(height):
+        for x in range(width):
+            r, g, b, _ = pixels[x, y]
+            if max(abs((r, g, b)[c] - key[c]) for c in range(3)) <= tolerance:
+                pixels[x, y] = (r, g, b, 0)
+                removed += 1
+    return removed
+
+
 def _visible_bbox(image: Image.Image) -> tuple[int, int, int, int]:
     bbox = image.getchannel("A").point(lambda a: 255 if a >= 16 else 0).getbbox()
     if bbox is None:
@@ -95,6 +113,7 @@ def import_atlas(
     prefix: str,
     key_color: str = "#ff00ff",
     tolerance: int = 72,
+    global_key: bool = False,
     cell_width: int = 160,
     cell_height: int = 156,
     max_content_width: int = 144,
@@ -121,7 +140,7 @@ def import_atlas(
     for row, direction in enumerate(DIRECTIONS):
         for column, label in enumerate(LABELS):
             cell = atlas.crop((column * src_w, row * src_h, (column + 1) * src_w, (row + 1) * src_h))
-            removed = _key_connected_background(cell, key, tolerance)
+            removed = _key_global_background(cell, key, tolerance) if global_key else _key_connected_background(cell, key, tolerance)
             ratio = removed / float(src_w * src_h)
             if ratio < 0.05:
                 raise ValueError(f"{direction}/{label}: only {ratio:.1%} background removed; check key color")
@@ -198,9 +217,10 @@ def main() -> int:
     parser.add_argument("--prefix", required=True)
     parser.add_argument("--key-color", default="#ff00ff")
     parser.add_argument("--tolerance", type=int, default=72)
+    parser.add_argument("--global-key", action="store_true", help="remove enclosed key-colored islands too; use only when key color is also inside a foreground effect")
     args = parser.parse_args()
     try:
-        report = import_atlas(args.source, args.output, prefix=args.prefix, key_color=args.key_color, tolerance=args.tolerance)
+        report = import_atlas(args.source, args.output, prefix=args.prefix, key_color=args.key_color, tolerance=args.tolerance, global_key=args.global_key)
     except (OSError, ValueError) as exc:
         parser.exit(2, f"animation atlas import failed: {exc}\n")
     print(json.dumps(report, indent=2))
