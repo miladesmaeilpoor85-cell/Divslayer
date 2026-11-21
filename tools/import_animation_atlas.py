@@ -114,6 +114,7 @@ def import_atlas(
     key_color: str = "#ff00ff",
     tolerance: int = 72,
     global_key: bool = False,
+    allow_edge_contact: bool = False,
     cell_width: int = 160,
     cell_height: int = 156,
     max_content_width: int = 144,
@@ -145,12 +146,15 @@ def import_atlas(
             if ratio < 0.05:
                 raise ValueError(f"{direction}/{label}: only {ratio:.1%} background removed; check key color")
             bbox = _visible_bbox(cell)
-            if bbox[2] - bbox[0] > src_w * 0.96 or bbox[3] - bbox[1] > src_h * 0.98:
+            edge_margin = min(bbox[0], bbox[1], src_w - bbox[2], src_h - bbox[3])
+            oversized = bbox[2] - bbox[0] > src_w * 0.96 or bbox[3] - bbox[1] > src_h * 0.98
+            if oversized and not allow_edge_contact:
                 raise ValueError(f"{direction}/{label}: character touches the cell bounds")
             extracted.append({
                 "direction": direction, "label": label, "index": column,
                 "image": cell.crop(bbox), "source_bbox": list(bbox),
                 "background_removed_ratio": round(ratio, 5),
+                "edge_margin": edge_margin,
             })
     max_w = max(item["image"].width for item in extracted)
     max_h = max(item["image"].height for item in extracted)
@@ -178,12 +182,19 @@ def import_atlas(
             "direction": item["direction"], "frame": index, "label": item["label"],
             "source_bbox": item["source_bbox"], "output_bbox": list(_visible_bbox(frame)),
             "background_removed_ratio": item["background_removed_ratio"],
+            "minimum_source_margin_px": item["edge_margin"],
         })
     packed_path = output / f"{prefix}_atlas.png"
     packed.save(packed_path, optimize=True)
     duplicates: dict[str, list[list[int]]] = {}
     motion: dict[str, list[float]] = {}
     warnings: list[str] = []
+    for item in extracted:
+        if item["edge_margin"] < 8:
+            warnings.append(
+                f'{item["direction"]}/{item["label"]}: art comes within '
+                f'{item["edge_margin"]} px of source cell edge; inspect for clipping'
+            )
     for direction, frames in by_direction.items():
         pairs = [[i, j] for i in range(4) for j in range(i + 1, 4) if frames[i].tobytes() == frames[j].tobytes()]
         ratios = [round(_motion_ratio(frames[i], frames[i + 1]), 5) for i in range(3)]
@@ -218,9 +229,10 @@ def main() -> int:
     parser.add_argument("--key-color", default="#ff00ff")
     parser.add_argument("--tolerance", type=int, default=72)
     parser.add_argument("--global-key", action="store_true", help="remove enclosed key-colored islands too; use only when key color is also inside a foreground effect")
+    parser.add_argument("--allow-edge-contact", action="store_true", help="keep sprites with near-edge content but record warnings; manually inspect all flagged cells")
     args = parser.parse_args()
     try:
-        report = import_atlas(args.source, args.output, prefix=args.prefix, key_color=args.key_color, tolerance=args.tolerance, global_key=args.global_key)
+        report = import_atlas(args.source, args.output, prefix=args.prefix, key_color=args.key_color, tolerance=args.tolerance, global_key=args.global_key, allow_edge_contact=args.allow_edge_contact)
     except (OSError, ValueError) as exc:
         parser.exit(2, f"animation atlas import failed: {exc}\n")
     print(json.dumps(report, indent=2))
