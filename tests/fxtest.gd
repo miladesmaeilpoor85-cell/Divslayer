@@ -244,6 +244,8 @@ func run(m: Node) -> void:
 		# Class-specific attack language stays cosmetic and distinct while using the same hit geometry.
 		var previous_class := str(Game.cls)
 		var class_swings := {}
+		var windup_rings_before := main.world.fx.rings.size()
+		var windup_dashes_before := main.world.fx.dashes.size()
 		for hero_class in ["warrior", "mage", "rogue", "paladin"]:
 			Game.cls = hero_class
 			main.world.fx.swing(main.player, Vector2.RIGHT, 42.0, false, 1)
@@ -257,6 +259,14 @@ func run(m: Node) -> void:
 			var windup: Dictionary = main.world.fx.windups.back()
 			check("attack_windup_records_" + hero_class + "_identity",
 				str(windup.get("class", "")) == hero_class and float(windup.get("dur", 0.0)) > 0.0)
+		check("attack_windup_has_no_orphan_ring_or_dash",
+			main.world.fx.rings.size() == windup_rings_before + 4
+			and main.world.fx.dashes.size() == windup_dashes_before,
+			[main.world.fx.rings.size(), main.world.fx.dashes.size()])
+		main.world.fx.attack_windup(main.player, Vector2.RIGHT, "warrior", false, 0.0833)
+		var contact_windup: Dictionary = main.world.fx.windups.back()
+		check("attack_windup_duration_matches_contact_frame",
+			absf(float(contact_windup.get("dur", 0.0)) - 0.0833) < 0.0001, contact_windup)
 		Game.cls = previous_class
 		check("class_swing_palettes_are_distinct",
 			class_swings.size() == 4
