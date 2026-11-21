@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ENCODED_PARTS_DIR = ROOT / "assets/art/Heroes/mage_cast_front_data"
-EXPECTED_PARTS = 25
+EXPECTED_PARTS = 30
 TARGET = ROOT / "assets/art/Heroes/mage_starter_cast_front.webp"
 EXPECTED_BYTES = 546846
 EXPECTED_SHA256 = "85ca84160b6a8b157023759604e0ffa4e0dd34efdf105fbf964430e566e61f60"
