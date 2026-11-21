@@ -2,134 +2,127 @@
 # آزمون بیرونی اندروید — دیوکش 0.43.0-qa
 
 **Baseline date / تاریخ مبنا:** 21 November 2026  
-**Status / وضعیت:** installable QA build; not a production release.
+**Source commit / commit سورس:** `6fdc3c5176fbf87b07d59e1910fcdce26ebf4df2`  
+**Status / وضعیت:** verified emulator QA artifact; physical-device tester results still required. This is not a production release.
 
-## Download the baseline APK / دریافت APK مبنا
+## Download / دریافت
 
-- Repository / مخزن: [miladesmaeilpoor85-cell/Divslayer](https://github.com/miladesmaeilpoor85-cell/Divslayer)
-- Source commit / commit سورس: `6fdc3c5176fbf87b07d59e1910fcdce26ebf4df2`
-- Android QA workflow / اجرای ساخت: [run 44906428530](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44323688690)
-- Artifact / فایل فشرده: [Divslayer-Android-QA-APK — artifact 14707913866](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44323688690/artifacts/14435797831)
-- Artifact retention / مهلت نگهداری: **5 December 2026** (GitHub Actions retention).
-- APK filename / نام APK: `Divslayer-QA.apk`
-- Package / شناسه بسته: `com.example.divslayer.qa`
-- Version / نسخه: `0.43.0-qa` (version code 1)
-- Android compatibility / سازگاری: minimum SDK 24; target SDK 36; ARMv7, ARM64, and x86_64.
+- Android QA workflow: [run 44906428530](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428530)
+- Installable artifact: [Divslayer-Android-QA-APK — 14707913866](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428530/artifacts/14707913866)
+- Artifact retention: **5 December 2026, 13:01:04 UTC**
+- APK filename inside ZIP: `Divslayer-QA.apk`
+- Package ID: `com.example.divslayer.qa`
+- Version: `0.43.0-qa` (version code 1)
+- Android manifest: minimum SDK 24; target SDK 36; ABIs ARM64-v8a, ARMv7, x86_64.
 - APK SHA-256: `2fbddeaff8576041590ce6d9db4d9c67b9b42ed3dcdf29c492df59a1824aa751`
 
-The workflow's Android APK signature-verification step passed. The extracted APK manifest reports package `com.example.divslayer.qa`, version `0.43.0-qa` / version code 1, minimum SDK 24, target SDK 36, and ABIs ARM64-v8a, ARMv7, and x86_64. The downloaded APK's SHA-256 was independently recomputed and matched the checksum file in the artifact. The artifact ZIP contains the APK, checksum, APK badging metadata, emulator logcat, and launch screenshot.
+The APK was extracted from the GitHub Actions artifact and its SHA-256 was independently recomputed; it matches the checksum file included in the ZIP. The workflow's package/signature verification step passed. The artifact also includes APK badging metadata, emulator logcat, and a launch screenshot.
 
-این خروجی برای نصب و آزمون بازی روی گوشی اندرویدی ساخته شده است. امضای APK با ابزار رسمی Android بررسی شده؛ فایل فشرده شامل APK، فایل checksum و اطلاعات Manifest است.
+این APK از Artifact واقعی GitHub Actions استخراج و SHA-256 آن دوباره محاسبه شد؛ مقدار با فایل checksum داخل ZIP یکسان است. مرحلهٔ بررسی package و امضای APK در workflow موفق شده است. فایل ZIP علاوه بر APK شامل اطلاعات Manifest، لاگ شبیه‌ساز و تصویر اجرای برنامه است.
 
 ## Installation / نصب
 
-1. Open the artifact link above while signed in to GitHub if GitHub requests authentication, then download the ZIP.
+1. Open the artifact link while signed in to GitHub; download the ZIP.
 2. Extract the ZIP and locate `Divslayer-QA.apk`.
-3. On Android, open the APK and approve installation for the browser/file manager used to open it, if Android asks.
-4. Launch **Divslayer QA**. It installs as a separate QA app; it does not replace an app whose package ID is different.
+3. Open the APK on Android. If prompted, permit installation for the browser or file manager that opened it.
+4. Launch **Divslayer QA** and confirm that the title/menu screen appears.
+5. Keep any production app installed; the QA package is separate and uses `com.example.divslayer.qa`.
 
-۱. پیوند Artifact بالا را باز کن و در صورت درخواست GitHub وارد حساب شو؛ سپس فایل ZIP را دریافت کن.  
-۲. ZIP را استخراج کن و فایل `Divslayer-QA.apk` را پیدا کن.  
-۳. APK را در اندروید باز کن و در صورت درخواست سیستم، اجازه نصب برای همان مرورگر یا فایل‌منیجر را بده.  
-۴. برنامهٔ **Divslayer QA** را اجرا کن. این نسخه جدا از برنامه‌ای با شناسه بسته متفاوت نصب می‌شود.
+۱. لینک Artifact را باز کن و در صورت درخواست، وارد GitHub شو؛ سپس ZIP را دریافت کن.  
+۲. فایل ZIP را استخراج و `Divslayer-QA.apk` را پیدا کن.  
+۳. APK را در اندروید باز کن و در صورت درخواست، اجازهٔ نصب برای همان مرورگر یا فایل‌منیجر را فعال کن.  
+۴. برنامهٔ **Divslayer QA** را اجرا و ظاهرشدن منوی اصلی بازی را بررسی کن.  
+۵. برنامهٔ رسمی را حذف نکن؛ شناسهٔ بستهٔ QA جداست.
 
-### Important signing and save warning / هشدار مهم درباره امضا و ذخیره
+### Important signing/save warning / هشدار مهم امضا و ذخیره
 
-This QA workflow generates a new temporary debug signing key for each run. A later QA artifact may not install as an update over a previous QA build. Before installing a newer QA artifact, uninstall the old **Divslayer QA** app first. **Uninstalling deletes that QA app's local save data.** Back up anything important before uninstalling.
+This workflow generates a new temporary debug signing key for every run. A later QA APK may not install as an update over an earlier QA build. If Android reports a signature conflict, uninstall the older **Divslayer QA** app before installing this build. **Uninstalling deletes the old QA app's local save data.** Back up any important QA save first.
 
-The QA key and QA package are not the production signing identity. Do not use this APK to verify production updates, production save migration, Google Play acceptance, or release-signature continuity. Do not confuse this artifact with an official public release.
+کلید Debug این workflow برای هر اجرا به‌صورت موقت و جدید ساخته می‌شود. ممکن است APK جدید روی نسخهٔ آزمایشی قبلی نصبِ به‌روزرسانی نشود. در صورت خطای تعارض امضا، نسخهٔ قبلی **Divslayer QA** را حذف کن؛ **این کار ذخیره‌های محلی همان برنامهٔ آزمایشی را پاک می‌کند.** پیش از حذف از ذخیرهٔ مهم پشتیبان بگیر.
 
-این گردش‌کار برای هر اجرا یک کلید موقت Debug جدید می‌سازد. بنابراین ممکن است APK جدید روی نسخه QA قبلی به‌روزرسانی نشود. پیش از نصب خروجی جدید، نسخه قبلی **Divslayer QA** را حذف کن؛ **حذف برنامه، ذخیره‌های محلی همان نسخه QA را پاک می‌کند.** اگر اطلاعات مهمی داری، پیش از حذف پشتیبان بگیر.
+This QA APK is not signed with the production key. It must not be used for production update continuity, production save migration, Google Play submission, or as proof of store acceptance. Do not share it as an official public release.
 
-این کلید و شناسه بسته متعلق به نسخه رسمی نیستند. این APK برای بررسی به‌روزرسانی نسخه رسمی، مهاجرت ذخیره‌های رسمی، تأیید Google Play یا تداوم امضای نسخه انتشار مناسب نیست.
+این APK با کلید انتشار رسمی امضا نشده و برای به‌روزرسانی نسخهٔ رسمی، مهاجرت ذخیرهٔ رسمی، ارسال به Google Play یا اثبات پذیرش فروشگاه مناسب نیست. آن را به‌عنوان نسخهٔ رسمی منتشرشده معرفی نکن.
 
 ## Verify the download / بررسی صحت فایل
 
-On a computer with `sha256sum`:
+Linux / Termux:
 
 ```sh
 sha256sum Divslayer-QA.apk
 ```
 
-In Termux on Android, the same command is available after installing the appropriate package. On Windows PowerShell:
+Windows PowerShell:
 
 ```powershell
 Get-FileHash .\Divslayer-QA.apk -Algorithm SHA256
 ```
 
-The result must equal:
+Expected SHA-256:
 
 ```text
-9542ce739b0acae5a45fa0e54d4f02859ae763da0a698353d0ec0d47bc33d885
+2fbddeaff8576041590ce6d9db4d9c67b9b42ed3dcdf29c492df59a1824aa751
 ```
 
-## Test checklist / چک‌لیست آزمایش
+## Physical-device test checklist / چک‌لیست آزمایش روی گوشی واقعی
 
-Please test what you can and report both passes and failures. Do not mark a test as passed if it was not performed.
+Please record only tests you actually performed. Report failures with steps to reproduce; do not mark an untested item as passed.
 
-- [ ] APK installs successfully.
-- [ ] Game launches and reaches the title/menu screen.
-- [ ] Start a new game and enter gameplay.
+- [ ] Clean installation succeeds.
+- [ ] Game reaches the title/menu screen and starts a new game.
 - [ ] Persian and English language selection displays correctly.
-- [ ] Movement, attack, dodge, block/parry, skills, and touch controls respond correctly.
-- [ ] Ashkbus of Kushan's Turanian Arrowfall telegraph appears; gaps can be used to dodge.
-- [ ] The Arrowfall volley does not hit more than once; staggering Ashkbus during the warning cancels the move.
-- [ ] Anvil Warden's Forge Furrows move still behaves correctly.
-- [ ] Pause/resume and Android Back behavior work as expected.
-- [ ] Save, fully close the app, relaunch, and verify the save is still present.
+- [ ] Movement, light/heavy attack, dodge, block/parry, skills, and simultaneous touch work correctly.
+- [ ] Ashkbus of Kushan's Turanian Arrowfall warning, dodge gaps, one-hit-per-volley protection, and stagger cancellation behave correctly.
+- [ ] Anvil Warden's Forge Furrows behaves correctly.
+- [ ] Pause/resume, Android Back, background/foreground, and lock/unlock work correctly.
+- [ ] Save, fully close the app, relaunch, and confirm the QA save remains.
 - [ ] Audio, music, and volume settings work.
-- [ ] Play for 20–30 minutes and note crashes, freezing, stutter, battery/thermal behavior, and approximate FPS.
-- [ ] Record screen-size/layout issues, cut-outs, or controls hidden by system UI.
+- [ ] Check display cut-outs, touch target size, HUD overlap, and landscape layout.
+- [ ] Play for 20–30 minutes; note approximate FPS, stutter, crashes, battery use, and heating.
+- [ ] Test boss-phase changes and confirm old projectiles/pools do not keep damaging the player.
 
-### Tester report template / قالب گزارش آزمایش
+## Tester report / قالب گزارش
 
 ```text
 Divslayer QA version: 0.43.0-qa
-Source commit: 5a024af9b659cec3f1c73fd610d660cefdaa78c3
+Source commit: 6fdc3c5176fbf87b07d59e1910fcdce26ebf4df2
 Device model:
 Android version:
 RAM / storage (if known):
 Display resolution (if known):
 Install result:
+Title/menu reached:
 Language tested:
-Gameplay / controls:
+Movement / combat / touch:
 Ashkbus Arrowfall:
 Anvil Warden:
+Boss phase cleanup:
 Save / relaunch:
 Audio:
 Session duration:
-Approximate FPS (if known):
+Approximate FPS / frame-time (if measured):
+Battery / thermal observations:
 Crashes / bugs:
 Steps to reproduce:
-Screenshots or screen recording:
+Screenshots / screen recording:
 ```
 
-Share bug reports through [GitHub Issues](https://github.com/miladesmaeilpoor85-cell/Divslayer/issues). Include the APK version and device details, but do not include passwords, private files, account information, or personal data in public issues.
+Share bug reports through [GitHub Issues](https://github.com/miladesmaeilpoor85-cell/Divslayer/issues). Include the APK version and device model, but do not publish passwords, signing files, private account data, or personal information.
 
-گزارش باگ را از طریق [GitHub Issues](https://github.com/miladesmaeilpoor85-cell/Divslayer/issues) ارسال کن. نسخه APK و مشخصات دستگاه را بنویس، اما رمز عبور، فایل خصوصی، اطلاعات حساب یا داده شخصی را در Issue عمومی قرار نده.
+گزارش باگ را در [GitHub Issues](https://github.com/miladesmaeilpoor85-cell/Divslayer/issues) ثبت کن. نسخهٔ APK و مدل دستگاه را بنویس؛ اما رمز عبور، فایل امضا، اطلاعات خصوصی حساب یا اطلاعات شخصی را در Issue عمومی قرار نده.
 
-## What this baseline proves — and does not prove / این نسخه چه چیزی را ثابت می‌کند؟
+## What the automated run proves / نتیجهٔ تست خودکار
 
-The matching main-branch Godot CI run [44906428789](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428789) passed all four Godot 4.7.2 headless test shards. Android QA run [44906428530](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428530) completed successfully on `6fdc3c5176fbf87b07d59e1910fcdce26ebf4df2`: it exported the APK, checked package/signature, installed and launched it in an emulator, observed `OnGodotSetupCompleted`, confirmed the game Activity stayed in the foreground, passed the fatal/script-error/ANR scan, and uploaded the installable artifact. Its screenshot shows the Godot splash screen; testers must still confirm the title menu and gameplay on a physical device.
+- Godot 4.7.2 CI [run 44906428789](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428789) passed all four headless test shards.
+- Android QA [run 44906428530](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428530) completed successfully on `main` commit `6fdc3c5176fbf87b07d59e1910fcdce26ebf4df2`.
+- The workflow exported and package/signature-checked the APK, installed/launched it in the Android emulator, detected `OnGodotSetupCompleted`, confirmed the game Activity remained in the foreground, scanned logs for fatal/script errors and ANR, and uploaded the installable artifact.
+- The captured emulator screenshot shows the **Godot splash screen**, not the title menu or gameplay. A tester must confirm those screens on a physical device.
+- This does not establish compatibility with every Android device, completion of the gameplay checklist, production signing, Google Play approval, or commercial asset clearance.
 
-These are automated build and test results. They do not establish compatibility with every Android device, complete gameplay acceptance, production signing, store approval, commercial asset clearance, or legal readiness. The game is still under development.
+آزمون Godot 4.7.2 در اجرای بالا هر چهار بخش headless را گذرانده است. اجرای Android QA نیز ساخت APK، بررسی package و امضا، نصب و اجرای شبیه‌ساز، ثبت نشانگر راه‌اندازی Godot، باقی‌ماندن Activity در پیش‌زمینه و بررسی لاگ‌های خطا را با موفقیت گذرانده است. تصویر ذخیره‌شده صفحهٔ آغاز Godot است، نه منوی اصلی یا گیم‌پلی؛ تأیید این بخش‌ها به آزمایش واقعی روی گوشی نیاز دارد.
 
-اجرای متناظر CI شاخه اصلی، شماره 44323688776، شامل **۱٬۱۶۵ بررسی در ۳۲ مجموعه تست** به‌علاوه autotest بود و موفق شد. اجرای ساخت اندروید شماره 44323688690 نیز APK را ساخت، اطلاعات بسته را بررسی کرد و امضای APK را تأیید کرد.
+## Physical testing still outstanding / آزمایش فیزیکی باقی‌مانده
 
-این نتایج، موفقیت ساخت و تست خودکار را نشان می‌دهند؛ اما سازگاری با همه گوشی‌ها، تأیید کامل گیم‌پلی، امضای تولیدی، تأیید فروشگاه، مجوز تجاری دارایی‌ها یا آمادگی حقوقی را ثابت نمی‌کنند. بازی همچنان در حال توسعه است.
+The previous device reports in `ANDROID_DEVICE_QA.md` refer to older QA versions and must not be counted as tests of this 0.43.0-qa artifact. Record a fresh report for this build before treating external QA as complete.
 
-
-## Verified main-branch baseline — 21 November 2026
-
-- Main commit: `6fdc3c5176fbf87b07d59e1910fcdce26ebf4df2`.
-- Godot CI: [run 44906428789](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428789); all four headless shards passed.
-- Android QA: [run 44906428530](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428530); workflow completed successfully on `main`.
-- Artifact: [14707913866 — Divslayer-Android-QA-APK](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44906428530/artifacts/14707913866); retention expires **5 December 2026, 13:01:04 UTC**.
-- APK SHA-256: `2fbddeaff8576041590ce6d9db4d9c67b9b42ed3dcdf29c492df59a1824aa751`.
-- Manifest identity: `com.example.divslayer.qa`, version `0.43.0-qa`, version code 1, min SDK 24, target SDK 36, ARM64-v8a / ARMv7 / x86_64.
-- The workflow installed/launched the APK in an Android emulator, detected `OnGodotSetupCompleted`, confirmed the activity remained in foreground, scanned logs for fatal/script errors and ANR, and uploaded the APK plus diagnostics.
-- The captured emulator screenshot is the Godot splash screen. It is not a claim that the title menu or a gameplay session was verified by CI.
-
-The QA workflow generates a temporary debug signing key for each run. Uninstalling an earlier QA install may be necessary before installing this build; doing so removes the old QA app's local save. Keep any production app installed and backed up.
-
-**Physical-device testing remains outstanding for this build.** The test plan contains historical user-reported device observations for older versions; do not treat those as a test report for this 0.43.0-qa artifact.
+گزارش‌های قدیمی‌تر ثبت‌شده در `ANDROID_DEVICE_QA.md` مربوط به نسخه‌های قبلی QA هستند و نباید به‌عنوان آزمایش این APK جدید محسوب شوند. پیش از تکمیل مرحلهٔ QA بیرونی، گزارش تازه‌ای برای همین نسخه ثبت کن.
