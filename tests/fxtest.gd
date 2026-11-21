@@ -244,7 +244,7 @@ func run(m: Node) -> void:
 		# Class-specific attack language stays cosmetic and distinct while using the same hit geometry.
 		var previous_class := str(Game.cls)
 		var class_swings := {}
-		var windups_before := main.world.fx.windups.size()
+		var windups_before: int = main.world.fx.windups.size()
 		for hero_class in ["warrior", "mage", "rogue", "paladin"]:
 			Game.cls = hero_class
 			main.world.fx.swing(main.player, Vector2.RIGHT, 42.0, false, 1)
