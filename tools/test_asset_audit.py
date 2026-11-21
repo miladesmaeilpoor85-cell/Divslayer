@@ -1,3 +1,4 @@
+import base64
 import csv
 import struct
 import tempfile
@@ -96,6 +97,45 @@ class AssetAuditTests(unittest.TestCase):
         report = audit_repository(root)
         self.assertEqual(report["errors"], [])
         self.assertEqual(report["artwork_files"], 1)
+
+    def test_base64_attack_atlas_parts_reassemble_and_are_registered(self):
+        root = self.make_repo()
+        payload_dir = root / "assets/art/Heroes/attack_atlas_data/rogue"
+        payload_dir.mkdir(parents=True)
+        encoded = base64.b64encode(png_bytes(640, 468)).decode("ascii")
+        split = len(encoded) // 2
+        split -= split % 4
+        parts = [encoded[:split], encoded[split:]]
+        paths = []
+        for index, part in enumerate(parts):
+            rel = f"assets/art/Heroes/attack_atlas_data/rogue/part_{index:02d}.b64"
+            (root / rel).write_text(part, encoding="ascii")
+            paths.append({"asset_path": rel, "commercial_use_status": "UNVERIFIED"})
+        self.write_registry(root, paths)
+
+        report = audit_repository(root)
+        self.assertEqual(report["errors"], [])
+        self.assertEqual(report["atlas_payload_parts"], 2)
+        self.assertEqual(report["atlas_payloads_checked"], 1)
+        self.assertEqual(report["registered_atlas_payload_parts"], 2)
+
+    def test_base64_attack_atlas_missing_part_fails(self):
+        root = self.make_repo()
+        payload_dir = root / "assets/art/Heroes/attack_atlas_data/rogue"
+        payload_dir.mkdir(parents=True)
+        encoded = base64.b64encode(png_bytes(640, 468)).decode("ascii")
+        split = len(encoded) // 2
+        split -= split % 4
+        parts = [encoded[:split], encoded[split:]]
+        paths = []
+        for index, part in ((0, parts[0]), (2, parts[1])):
+            rel = f"assets/art/Heroes/attack_atlas_data/rogue/part_{index:02d}.b64"
+            (root / rel).write_text(part, encoding="ascii")
+            paths.append({"asset_path": rel, "commercial_use_status": "UNVERIFIED"})
+        self.write_registry(root, paths)
+
+        report = audit_repository(root)
+        self.assertTrue(any("missing or out of order" in error for error in report["errors"]))
 
     def test_path_traversal_is_rejected(self):
         root = self.make_repo()
