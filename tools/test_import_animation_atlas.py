@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from import_animation_atlas import import_atlas
+from import_animation_atlas import _key_connected_background, _key_global_background, import_atlas
 from PIL import Image, ImageDraw
 
 
@@ -43,6 +43,29 @@ class AnimationAtlasImportTests(unittest.TestCase):
                 self.assertEqual(atlas.size, (640, 468))
             saved = json.loads((output / "mage_starter_attack_import_report.json").read_text())
             self.assertEqual(saved["output_sha256"], report["output_sha256"])
+
+    def test_global_key_removes_enclosed_chroma_islands_but_default_preserves_them(self) -> None:
+        background = Image.new("RGBA", (20, 20), (255, 0, 255, 255))
+        draw = ImageDraw.Draw(background)
+        draw.rectangle((5, 5, 14, 14), outline=(255, 255, 255, 255), width=2)
+
+        edge_connected = background.copy()
+        _key_connected_background(edge_connected, (255, 0, 255), 72)
+        self.assertEqual(edge_connected.getpixel((9, 9))[3], 255)
+
+        global_key = background.copy()
+        removed = _key_global_background(global_key, (255, 0, 255), 72)
+        self.assertGreater(removed, 0)
+        self.assertEqual(global_key.getpixel((9, 9))[3], 0)
+        self.assertEqual(global_key.getpixel((5, 5))[3], 255)
+
+    def test_global_key_mode_is_recorded_in_import_report(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output = root / "rogue.png", root / "out"
+            self.make_atlas(source)
+            report = import_atlas(source, output, prefix="rogue_starter_attack", global_key=True)
+        self.assertEqual(report["key_mode"], "global")
 
     def test_detects_duplicates_without_silently_promoting_them(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
