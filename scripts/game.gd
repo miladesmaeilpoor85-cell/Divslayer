@@ -135,6 +135,11 @@ func map_title(key: String) -> String:
 func enemy_name(type: String) -> String:
 	var en: String = enemy_def(type).get("name", type)
 	if lang == "fa":
+		# Boss names are authored as bilingual pairs in BOSS_CFG; do not leave
+		# newly added bosses (such as the Gale Warden) untranslated.
+		var boss_name: Array = BOSS_CFG.get(type, {}).get("name", [])
+		if boss_name.size() > 1:
+			return str(boss_name[1])
 		return table("V12_ENEMY").get(en, strings.get(en, en))
 	return en
 
