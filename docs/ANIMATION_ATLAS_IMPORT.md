@@ -36,3 +36,22 @@ The importer intentionally does **not** edit \`data/art_manifest.json\`. Once an
 ## First batch
 
 \`creative/animation/hero_starter_attack_batch.json\` records the starter-tier Mage, Rogue and Paladin source paths, output folders and class-specific pose constraints. This is an authoring specification only; it is not proof that these art assets have been generated or accepted.
+
+
+## Magenta spill cleanup and top padding
+
+For magenta-background art with no intentional violet details, `--magenta-spill` removes magenta-biased antialias pixels connected to the cell edge (or all matching islands when combined with `--global-key`), uses premultiplied-alpha resampling, and suppresses residual matte color. Do not enable this option for a sprite that intentionally uses purple hues. The importer leaves a fixed 8 px vertical top margin by default and keeps the shared foot baseline at the same row.
+
+Example for the Rogue source atlas:
+
+```bash
+python tools/import_animation_atlas.py rogue_source.png --output /tmp/rogue_attack --prefix rogue_starter_attack --global-key --magenta-spill --top-padding 8 --allow-edge-contact
+```
+
+Example for the Paladin source atlas:
+
+```bash
+python tools/import_animation_atlas.py paladin_source.png --output /tmp/paladin_attack --prefix paladin_starter_attack --magenta-spill --top-padding 8 --allow-edge-contact
+```
+
+`--allow-edge-contact` only permits a flagged source cell to proceed to review; it does not claim the pose is uncut. The per-frame source margin remains in the JSON report and source margins below 8 px remain warnings.
