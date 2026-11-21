@@ -1,6 +1,6 @@
 # Release readiness | آمادگی انتشار
 
-**Status checked: 20 November 2026 · Main-branch baseline: 0.43.0; proposed Chapter IV completion: 0.44.0 pending CI and review**
+**Status checked: 21 November 2026 · Main-branch baseline: 0.43.0 · Latest recorded main commit: 7decddb22cf4ab4b55da9347e7d6a82a5e72eb6b**
 
 This file separates verified engineering status from items that still require the project owner's private files, evidence, device testing, or legal review. A passing CI run is not a release approval.
 
@@ -12,17 +12,24 @@ This file separates verified engineering status from items that still require th
 
 - Public source repository: `miladesmaeilpoor85-cell/Divslayer`, default branch `main`.
 - Godot project main scene: `res://scenes/main.tscn`.
-- The latest recorded Godot 4.7.2 validation for the 0.43.0 work completed successfully in [GitHub Actions run 44301894793](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44301894793): **1,165 checks across 32 test suites**, plus the autotest, with zero failures. The dedicated Ashkbus Arrowfall suite passed all 7 checks. This is automated/headless evidence, not a complete physical-device or store-release pass.
-- The 0.43.0 Android QA APK was exported and signature-verified in [run 44301894537](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44301894537), artifact ID `14426177656`. Its QA package is `com.example.divslayer.qa`, version `0.43.0-qa`; the APK manifest was verified with min SDK 24 and target SDK 36. It is not a production-signed release.
+- The latest recorded main-branch Godot 4.7.2 validation completed successfully in [Godot CI run 457](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44904064171): all four headless test shards passed. The latest [multi-tool run 348](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44904064227) also passed GDScript lint, Python/Ruff lint, artwork decode/map previews, and audio decode/metadata checks. These are automated checks, not a complete physical-device or store-release pass.
+- The latest 0.43.0 Android QA APK was exported, package-checked, and signature-verified in [Android QA run 201](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44904064251). Its isolated QA package is `com.example.divslayer.qa`, version `0.43.0-qa`; it is not a production-signed release. The emulator installed it and left the Godot activity in the foreground, but the workflow failed its final log assertion because it searched for `OnGodotMainLoopStarted`, while the captured Godot 4.7.2 log recorded `OnGodotSetupCompleted`. The fatal/script-error scan found no matching runtime errors. [PR #56](https://github.com/miladesmaeilpoor85-cell/Divslayer/pull/56) changes the assertion and its Android QA rerun must pass before this build is accepted as a complete QA artifact. The run's [diagnostics artifact 14707650812](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/44904064251/artifacts/14707650812) contains the APK and emulator logs; it is not the normal successful QA artifact.
 - The QA build added Ashkbus of Kushan's exclusive Turanian Arrowfall attack: three separated warning zones, falling arrows, dodgeable gaps, one-hit-per-volley protection, and cancellation when Ashkbus is staggered during the warning.
 - The CI workflow downloads Godot 4.7.2 and verifies its SHA-256 before importing the project and running the headless suite. The asset pipeline in [ASSET_PIPELINE.md](ASSET_PIPELINE.md) adds dependency-free artwork/audio integrity checks and exact coverage validation against the artwork rights register.
 - The production Android export preset, production package identity, and production signing configuration remain private and must be verified separately. QA manifest values must not be treated as proof of production release readiness.
 - The `main` branch history was rewritten on 18 November 2026. Anyone holding an older clone must create a fresh clone; do not merge or push old history back into `main`.
 
-## Proposed Chapter IV completion | تکمیل پیشنهادی فصل چهارم
+## Merged Chapter IV work | فصل چهارم ادغام‌شده
 
-- The working branch `feat/chapter4-completion-2026-11-20` adds a gated High Eyrie side-area, a three-phase Gale Warden encounter, and Alborz wind ambience. The boss silhouette is procedural placeholder art, not final character art. The multi-frame Warrior attack atlas is still absent; the animation review tool now accepts a future separate attack atlas and explicitly reports the present one-frame attacks as placeholders.
-- CI now emits a machine-readable commercial-evidence report for artwork and soundtrack entries. That report records missing evidence; it does not infer rights from an AI tool name, provider name, or source URL.
+- PR #38 integrated the coordinated weather, dodge, Thornwood, and Alborz vertical-slice work into `main`; PR #37 subsequently integrated the High Eyrie side-area and three-phase Gale Warden encounter. See [PR #38](https://github.com/miladesmaeilpoor85-cell/Divslayer/pull/38) and [PR #37](https://github.com/miladesmaeilpoor85-cell/Divslayer/pull/37).
+- These integrations do not mean every environment asset is final. Alborz still has temporary/reused ground and character/prop art; the remaining dedicated art and its rights evidence are release tasks.
+- Main now has multi-frame Starter attacks for Warrior and Rogue. Mage Starter and Paladin Starter still need genuine attack poses; the other 30 directional hero attack clips are one-pose clips. See [the animation pipeline audit](ANIMATION_PIPELINE.md).
+
+
+## Latest animation readiness | آمادگی انیمیشن
+
+The production manifest has 36 directional hero attack clips across 12 class/gear appearances. Warrior Starter and Rogue Starter have three four-frame directional clips each (six multi-frame clips total); the other 30 clips remain single-pose attacks. The runtime/asset import path supports reviewed attack atlases and contact-frame timing, but this is not evidence that all four classes or all gear tiers have complete combat animation. Commercial-use evidence for the currently registered attack artwork remains unverified.
+
 
 ## Android release blockers | موارد لازم برای خروجی اندروید
 
