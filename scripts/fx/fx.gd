@@ -370,8 +370,8 @@ func _draw_attack_windup(prep: Dictionary) -> void:
 		"rogue":
 			col = Color(0.48, 0.84, 0.57)
 			for hand in [-1.0, 1.0]:
-				var start := anchor + side * hand * 3.5 - dir * (5.0 + progress * 3.0)
-				var finish := anchor + side * hand * (5.5 + progress * 1.5) + dir * (8.0 + progress * 11.0)
+				var start: Vector2 = anchor + side * hand * 3.5 - dir * (5.0 + progress * 3.0)
+				var finish: Vector2 = anchor + side * hand * (5.5 + progress * 1.5) + dir * (8.0 + progress * 11.0)
 				arcs.draw_line(start, finish, Color(col, 0.82 * fade), 2.0 if heavy else 1.25, true)
 				arcs.draw_line(start + side * hand * 2.0, finish + side * hand * 2.0,
 					Color(col, 0.28 * fade), 0.8, true)
