@@ -4,6 +4,25 @@ This file documents the audio assets currently listed in `data/audio_credits.jso
 
 این فایل دارایی‌های صوتی فعلی را مطابق `data/audio_credits.json` مستند می‌کند و جایگزین فهرست قدیمی موسیقی‌هایی است که دیگر با موسیقی فعلی بازی مطابقت ندارند.
 
+## Rights-policy check — 21 November 2026 / بررسی شرایط حقوق استفاده
+
+Suno's current paid-plan help article (edited 3 September 2026) says commercial-use rights apply to songs **downloaded while subscribed to a paid plan**; it also warns that a commercial-use grant does not guarantee copyright protection. Suno's Terms of Service, revised 10 August and effective 3 September 2026, further limit commercial exploitation to a permitted download within the applicable plan's download allocation and obtained through a Suno-approved download channel. The Terms prohibit obtaining a copy by other means than a download channel made available by Suno. See [Suno paid-plan commercial rights](https://help.suno.com/en/articles/9601665) and [Suno Terms of Service](https://suno.com/terms).
+
+The project metadata says the 30 soundtrack tracks were generated with Suno V6 through the Hoosha API. The public project files do **not** prove that each track was generated/downloaded while an eligible paid subscription was active, counted within the applicable download allowance, or obtained through a Suno-approved channel. No publicly checked document in this repository establishes that the specific Hoosha API route was authorized by Suno for these downloads. A third-party interface advertising access to Suno is not, by itself, proof of authorization under Suno's Terms. Therefore the commercial-use status of all 30 tracks remains **UNVERIFIED** pending owner-side evidence and, where necessary, written confirmation from Suno and Hoosha.
+
+For each track, retain privately: (1) exact filename and original source file; (2) Suno generation/content ID and Hoosha task/request ID; (3) generation and download dates; (4) Suno account plan and billing evidence covering the relevant dates; (5) evidence that the downloaded output was a permitted download within the applicable plan allocation and came through an approved channel; (6) the Hoosha service terms and written confirmation that its integration/route was authorized for the relevant Suno model and commercial use; and (7) a dated copy of the applicable terms. Keep receipts, account identifiers, invoices, API credentials, and contracts in a private archive—not in this public repository, issues, or pull requests. Use only a safe private evidence reference in any future rights-register update.
+
+Until that evidence is assembled and reviewed, do not label the 30 soundtrack tracks commercially cleared, rely on the metadata's commercial-use claim for distribution, or commission further production downloads through the same unverified route.
+
+راهنمای فعلی Suno که در ۳ سپتامبر ۲۰۲۶ ویرایش شده، حق استفادهٔ تجاری را برای آهنگ‌هایی بیان می‌کند که **در زمان داشتن اشتراک پولی دانلود شده باشند**؛ همان صفحه تأکید می‌کند که این مجوز، تضمین حق‌نشر نیست. شرایط Suno که در ۱۰ اوت بازنگری و از ۳ سپتامبر ۲۰۲۶ اجرا شده، استفادهٔ تجاری را به دانلود مجاز در سقف دانلود پلن و از مسیر مورد تأیید Suno محدود می‌کند. دریافت فایل از راهی غیر از کانال دانلودی که Suno فراهم کرده باشد نیز در شرایط فعلی مجاز شمرده نشده است. لینک‌های مرجع بالا هستند.
+
+فرادادهٔ پروژه می‌گوید ۳۰ قطعه با Suno V6 از طریق Hoosha API تولید شده‌اند؛ اما فایل‌های عمومی مخزن ثابت نمی‌کنند که هر قطعه در زمان اشتراک پولی واجد شرایط دانلود شده، در سهمیهٔ مجاز قرار داشته و از کانال دانلود تأییدشدهٔ Suno دریافت شده باشد. مدرک عمومی بررسی‌شده‌ای در این مخزن نداریم که مجازبودن مسیر مشخص Hoosha را از سوی Suno اثبات کند. معرفی دسترسی به Suno توسط یک واسط ثالث به‌تنهایی مدرک مجازبودن آن مسیر بر اساس شرایط Suno نیست. به همین دلیل وضعیت تجاری هر ۳۰ قطعه تا زمان بررسی مدارک مالک و در صورت نیاز تأیید کتبی Suno و Hoosha همچنان **UNVERIFIED** می‌ماند.
+
+برای هر آهنگ، این مدارک را در بایگانی خصوصی نگه دار: نام فایل و فایل اصلی، شناسهٔ تولید/محتوای Suno و شناسهٔ task در Hoosha، تاریخ تولید و دانلود، مدرک پلن و پرداخت Suno در بازهٔ مربوط، مدرک دانلود مجاز در سهمیه و از کانال تأییدشده، شرایط Hoosha و تأیید کتبی مجازبودن مسیر برای مدل Suno و استفادهٔ تجاری، و نسخهٔ تاریخ‌دار شرایط. رسیدها، شناسهٔ حساب، فاکتورها، کلیدهای API و قراردادها را در مخزن عمومی، Issue یا Pull Request قرار نده؛ فقط یک شناسهٔ امن از مدرک خصوصی را در صورت لزوم در ثبت حقوق نگه دار.
+
+تا وقتی مدارک گردآوری و بررسی نشده‌اند، این ۳۰ قطعه را دارای مجوز تجاری قطعی معرفی نکن، برای انتشار به ادعای فراداده تکیه نکن و از مسیر تأییدنشدهٔ فعلی برای سفارش دانلودهای تولیدی بیشتر استفاده نکن.
+
+
 ## Original soundtrack / موسیقی ساخته‌شده برای بازی
 
 The repository's production notes identify the 30 instrumental soundtrack takes below as generated for Divslayer with Suno V6 through the Hoosha API. **These tracks are not CC0.** The metadata records a commercial-use claim, but the repository does not contain the account receipts, generation records, API authorization, or contract needed to independently verify that claim.
