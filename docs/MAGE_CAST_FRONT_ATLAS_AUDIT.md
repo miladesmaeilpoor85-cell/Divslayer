@@ -18,12 +18,12 @@ The selected samples preserve the front-facing cast sequence: idle/anticipation,
 
 | Asset | Dimensions | Format | Purpose |
 |---|---:|---|---|
-| Runtime atlas | 640×855 | Lossless WebP RGBA | Godot texture, 4×3 cells |
+| Runtime atlas | 640×855 | WebP RGB quality 90 + exact alpha plane | Godot texture, 4×3 cells |
 | Runtime cell | 160×285 | Lossless WebP RGBA | One frame per cell |
 | Full source master | 2112×2706 | PNG RGBA | 4×3 native-resolution samples, 528×902 cells |
 | Runtime PNG copy | 640×855 | PNG RGBA | Standalone preview/inspection copy |
 
-- Runtime WebP: 546,846 bytes; SHA-256 85ca84160b6a8b157023759604e0ffa4e0dd34efdf105fbf964430e566e61f60
+- Runtime WebP: 215,480 bytes; RGB quality 90, alpha plane pixel-identical to the PNG source; SHA-256 3f2b1fd3084b5c8344c113ae125a5bd151f90d14553bab820eb4ca67d28cbf60
 - Runtime PNG: 729,619 bytes; SHA-256 faf038963ca2068edb3bbaeabddbe4af9f12ffd607dd4aee9e6a38af9fb47ff1
 - Full master PNG: 650,557 bytes; SHA-256 522c573b4e02fb9288eb7866a5ed613b2731ba6be52a39386683b574d1c43ee8
 
@@ -65,7 +65,7 @@ All twelve runtime frames have fully transparent outer cell edges. The minimum m
 - Foot pivot offset: (-80, -270)
 - Player display scale: 0.612
 
-The embedded lossless WebP is materialized by tools/fetch_mage_cast_front_asset.py. Godot import and Android emulator QA must pass before the rebuilt atlas is accepted in-game.
+The embedded high-quality WebP is materialized by tools/fetch_mage_cast_front_asset.py. The extracted alpha plane is pixel-identical to the PNG runtime atlas; RGB uses quality 90 compression. Godot import and Android emulator QA must pass before the rebuilt atlas is accepted in-game.
 
 ## Rights
 
