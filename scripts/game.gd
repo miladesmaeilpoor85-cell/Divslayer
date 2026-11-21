@@ -998,9 +998,6 @@ func objective() -> String:
 		return Toll.line("obj_back")
 	if c3o != "":
 		return c3o
-	var c4o: String = Ch4.objective()
-	if c4o != "":
-		return c4o
 	if shrines_done() < SHRINE_ORDER.size():
 		return t("Seek the ancient shrines — a pillar of light marks each one (%d/%d)" % [shrines_done(), SHRINE_ORDER.size()],
 			"زیارتگاه‌های کهن را پیدا کن — ستونی از نور هر کدام را نشان می‌دهد (%s/%s)" % [num(shrines_done()), num(SHRINE_ORDER.size())])
