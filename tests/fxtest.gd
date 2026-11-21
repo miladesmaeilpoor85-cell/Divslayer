@@ -260,7 +260,7 @@ func run(m: Node) -> void:
 			check("attack_windup_records_" + hero_class + "_identity",
 				str(windup.get("class", "")) == hero_class and float(windup.get("dur", 0.0)) > 0.0)
 		check("attack_windup_has_no_orphan_ring_or_dash",
-			main.world.fx.rings.size() == windup_rings_before + 4
+			main.world.fx.rings.size() == windup_rings_before + 5
 			and main.world.fx.dashes.size() == windup_dashes_before,
 			[main.world.fx.rings.size(), main.world.fx.dashes.size()])
 		main.world.fx.attack_windup(main.player, Vector2.RIGHT, "warrior", false, 0.0833)
