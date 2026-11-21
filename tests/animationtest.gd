@@ -82,11 +82,11 @@ func run(_main: Node) -> void:
 			and not mage_cast_front.get_animation_loop("cast_front"))
 		var mage_cast_first := mage_cast_front.get_frame_texture("cast_front", 0) as AtlasTexture
 		var mage_cast_last := mage_cast_front.get_frame_texture("cast_front", 11) as AtlasTexture
-		check("mage_starter_cast_front_cells_are_96x171",
-			mage_cast_first != null and mage_cast_first.get_size() == Vector2(96, 171)
+		check("mage_starter_cast_front_cells_are_160x285",
+			mage_cast_first != null and mage_cast_first.get_size() == Vector2(160, 285)
 			and mage_cast_last != null and mage_cast_last.get_size() == Vector2(96, 171))
 	check("mage_starter_cast_front_feet_pivot_is_centered",
-		Sheets.mage_starter_cast_front_offset() == Vector2(-48, -168))
+		Sheets.mage_starter_cast_front_offset() == Vector2(-80, -270))
 
 	var hero_manifest: Dictionary = Game.manifest.get("heroes", {})
 	var hero_names: Array = hero_manifest.keys()
