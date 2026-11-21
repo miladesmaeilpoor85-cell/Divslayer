@@ -117,9 +117,13 @@ func run(m: Node) -> void:
 	var pf = main.hud.dialogue.portrait.face
 	check("rostam_introduces_himself", pages.size() == 1 and str(pages[0]).find("رستم") >= 0 and main.hud.dialogue.choosing()
 		and str(main.hud.dialogue.text_l.text) == T.line("r2"), pages)
-	# (v0.28) his painted portrait now; the sprite in his colours stays the fallback when the painting is missing
+	# (v0.28+) his painted portrait now comes from the owner-supplied Rostam atlas cell;
+	# the sprite in his colours stays the fallback when the painting is missing.
 	var dp = main.hud.dialogue.portrait
-	check("rostam_portrait_in_his_colours", (dp.art_facing != 0 and str(dp._tex.resource_path).ends_with("rostam.webp"))
+	var user_rostam_portrait := dp._tex != null and dp.art_facing != 0 \
+		and str(dp._tex.resource_path).ends_with("character_portraits_2026.webp") \
+		and dp._src == Rect2(Vector2.ZERO, Vector2(192, 192))
+	check("rostam_portrait_in_his_colours", user_rostam_portrait
 		or (pf.material != null and dp.sheet == "warrior_endgame"), dp._tex.resource_path if dp._tex else null)
 	await pick(0)
 	check("training_starts", T.step() == "strike" and Game.objective() == T.fmt("o_strike", [0, T.STRIKES]), [T.step(), Game.objective()])
