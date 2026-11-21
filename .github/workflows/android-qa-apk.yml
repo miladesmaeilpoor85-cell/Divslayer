@@ -238,71 +238,50 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           disable-linux-hw-accel: false
-          script: |
-            set -euo pipefail
-            trap 'timeout 20s adb logcat -d -v time > build/android/emulator-magecast-logcat.txt 2>&1 || true; timeout 20s adb shell dumpsys activity activities > build/android/emulator-activity.txt 2>&1 || true; timeout 15s adb shell screencap -p /sdcard/divslayer-qa-failure.png && timeout 15s adb pull /sdcard/divslayer-qa-failure.png build/android/emulator-failure.png || true' EXIT
-
-            adb shell settings put system accelerometer_rotation 0
-            adb shell settings put system user_rotation 1
-            sleep 3
-            adb shell settings put secure immersive_mode_confirmations confirmed || true
-
-            # Validate the actual game entry scene first, without the developer QA scene.
-            adb logcat -c
-            timeout 240s adb install -r build/android/Divslayer-QA.apk
-            adb shell pm path com.example.divslayer.qa | grep -F 'package:'
-            timeout 30s adb shell monkey -p com.example.divslayer.qa 1
-            sleep 20
-            timeout 30s adb logcat -d -v time > build/android/emulator-game-logcat.txt
-            if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' build/android/emulator-game-logcat.txt; then
-              echo "::error::Playable Android QA app reported a fatal or Godot script error."
-              exit 1
-            fi
-            grep -F 'OnGodotSetupCompleted' build/android/emulator-game-logcat.txt
-            timeout 30s adb shell dumpsys activity activities > build/android/emulator-game-activity.txt
-            game_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-game-activity.txt | grep -F 'com.example.divslayer.qa/' )"
-            test -n "$game_foreground"
-            echo "$game_foreground"
-            timeout 30s adb shell screencap -p /sdcard/divslayer-game-launch.png
-            timeout 30s adb pull /sdcard/divslayer-game-launch.png build/android/emulator-game-launch.png
-            test -s build/android/emulator-game-launch.png
-
-            # Run the isolated Mage animation harness under a second package ID.
-            adb logcat -c
-            timeout 240s adb install -r build/android/Divslayer-MageCast-QA.apk
-            adb shell pm path com.example.divslayer.magecast.qa | grep -F 'package:'
-            timeout 30s adb shell monkey -p com.example.divslayer.magecast.qa 1
-            echo "Waiting up to 120 seconds for Mage animation runtime markers"
-            attempt=0
-            while [ "$attempt" -lt 120 ]; do
-              current_log="$(timeout 10s adb logcat -d -v time 2>/dev/null || true)"
-              if grep -Fq 'MAGE_CAST_FRONT_ALL_FRAMES_PASS sequence=0,1,2,3,4,5,6,7,8,9,10,11 total=12' <<< "$current_log" && grep -Fq 'MAGE_CAST_FRONT_AUTO_FINISH_PASS' <<< "$current_log" && grep -Fq 'MAGE_CAST_FRONT_CANCEL_PASS' <<< "$current_log"; then
-                break
-              fi
-              if grep -Fq 'MAGE_CAST_FRONT_RUNTIME_FAIL' <<< "$current_log"; then
-                break
-              fi
-              attempt=$((attempt + 1))
-              sleep 1
-            done
-            timeout 30s adb logcat -d -v time > build/android/emulator-magecast-logcat.txt
-            if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|MAGE_CAST_FRONT_RUNTIME_FAIL' build/android/emulator-magecast-logcat.txt; then
-              echo "::error::Mage animation QA reported a fatal, script, or runtime assertion failure."
-              exit 1
-            fi
-            grep -F 'OnGodotSetupCompleted' build/android/emulator-magecast-logcat.txt
-            grep -F 'OnGodotMainLoopStarted' build/android/emulator-magecast-logcat.txt
-            grep -F 'MAGE_CAST_FRONT_ALL_FRAMES_PASS sequence=0,1,2,3,4,5,6,7,8,9,10,11 total=12' build/android/emulator-magecast-logcat.txt
-            grep -F 'MAGE_CAST_FRONT_AUTO_FINISH_PASS' build/android/emulator-magecast-logcat.txt
-            grep -F 'MAGE_CAST_FRONT_CANCEL_PASS' build/android/emulator-magecast-logcat.txt
-            timeout 30s adb shell run-as com.example.divslayer.magecast.qa ls -l files/mage-cast-front-active.png
-            timeout 30s adb exec-out run-as com.example.divslayer.magecast.qa cat files/mage-cast-front-active.png > build/android/mage-cast-front-active.png
-            test -s build/android/mage-cast-front-active.png
-            timeout 30s adb shell dumpsys activity activities > build/android/emulator-magecast-activity.txt
-            mage_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-magecast-activity.txt | grep -F 'com.example.divslayer.magecast.qa/' )"
-            test -n "$mage_foreground"
-            echo "$mage_foreground"
-            echo 'Playable game launch and Mage cast animation runtime checks passed.'
+          script: >-
+            set -eu;
+            trap 'timeout 20s adb logcat -d -v time > build/android/emulator-magecast-logcat.txt 2>&1 || true; timeout 20s adb shell dumpsys activity activities > build/android/emulator-activity.txt 2>&1 || true; timeout 15s adb shell screencap -p /sdcard/divslayer-qa-failure.png && timeout 15s adb pull /sdcard/divslayer-qa-failure.png build/android/emulator-failure.png || true' EXIT;
+            adb shell settings put system accelerometer_rotation 0;
+            adb shell settings put system user_rotation 1;
+            sleep 3;
+            adb shell settings put secure immersive_mode_confirmations confirmed || true;
+            adb logcat -c;
+            timeout 240s adb install -r build/android/Divslayer-QA.apk;
+            adb shell pm path com.example.divslayer.qa | grep -F 'package:';
+            timeout 30s adb shell monkey -p com.example.divslayer.qa 1;
+            sleep 20;
+            timeout 30s adb logcat -d -v time > build/android/emulator-game-logcat.txt;
+            if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' build/android/emulator-game-logcat.txt; then echo 'Playable Android QA app reported a fatal or Godot script error.'; exit 1; fi;
+            grep -F 'OnGodotSetupCompleted' build/android/emulator-game-logcat.txt;
+            timeout 30s adb shell dumpsys activity activities > build/android/emulator-game-activity.txt;
+            game_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-game-activity.txt | grep -F 'com.example.divslayer.qa/' )";
+            test -n "$game_foreground";
+            echo "$game_foreground";
+            timeout 30s adb shell screencap -p /sdcard/divslayer-game-launch.png;
+            timeout 30s adb pull /sdcard/divslayer-game-launch.png build/android/emulator-game-launch.png;
+            test -s build/android/emulator-game-launch.png;
+            adb logcat -c;
+            timeout 240s adb install -r build/android/Divslayer-MageCast-QA.apk;
+            adb shell pm path com.example.divslayer.magecast.qa | grep -F 'package:';
+            timeout 30s adb shell monkey -p com.example.divslayer.magecast.qa 1;
+            echo 'Waiting up to 120 seconds for Mage animation runtime markers';
+            attempt=0;
+            while [ "$attempt" -lt 120 ]; do current_log="$(timeout 10s adb logcat -d -v time 2>/dev/null || true)"; if printf '%s\n' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_ALL_FRAMES_PASS sequence=0,1,2,3,4,5,6,7,8,9,10,11 total=12' && printf '%s\n' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_AUTO_FINISH_PASS' && printf '%s\n' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_CANCEL_PASS'; then break; fi; if printf '%s\n' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_RUNTIME_FAIL'; then break; fi; attempt=$((attempt + 1)); sleep 1; done;
+            timeout 30s adb logcat -d -v time > build/android/emulator-magecast-logcat.txt;
+            if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|MAGE_CAST_FRONT_RUNTIME_FAIL' build/android/emulator-magecast-logcat.txt; then echo 'Mage animation QA reported a fatal, script, or runtime assertion failure.'; exit 1; fi;
+            grep -F 'OnGodotSetupCompleted' build/android/emulator-magecast-logcat.txt;
+            grep -F 'OnGodotMainLoopStarted' build/android/emulator-magecast-logcat.txt;
+            grep -F 'MAGE_CAST_FRONT_ALL_FRAMES_PASS sequence=0,1,2,3,4,5,6,7,8,9,10,11 total=12' build/android/emulator-magecast-logcat.txt;
+            grep -F 'MAGE_CAST_FRONT_AUTO_FINISH_PASS' build/android/emulator-magecast-logcat.txt;
+            grep -F 'MAGE_CAST_FRONT_CANCEL_PASS' build/android/emulator-magecast-logcat.txt;
+            timeout 30s adb shell run-as com.example.divslayer.magecast.qa ls -l files/mage-cast-front-active.png;
+            timeout 30s adb exec-out run-as com.example.divslayer.magecast.qa cat files/mage-cast-front-active.png > build/android/mage-cast-front-active.png;
+            test -s build/android/mage-cast-front-active.png;
+            timeout 30s adb shell dumpsys activity activities > build/android/emulator-magecast-activity.txt;
+            mage_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-magecast-activity.txt | grep -F 'com.example.divslayer.magecast.qa/' )";
+            test -n "$mage_foreground";
+            echo "$mage_foreground";
+            echo 'Playable game launch and Mage cast animation runtime checks passed.';
       - name: Upload emulator diagnostics if launch validation fails
         if: failure()
         uses: actions/upload-artifact@v4
