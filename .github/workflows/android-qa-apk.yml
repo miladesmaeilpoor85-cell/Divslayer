@@ -15,6 +15,7 @@ on:
       - "data/**"
       - "scenes/**"
       - "scripts/**"
+      - "tests/**"
   pull_request:
     branches:
       - "main"
@@ -27,6 +28,7 @@ on:
       - "data/**"
       - "scenes/**"
       - "scripts/**"
+      - "tests/**"
   workflow_dispatch:
 
 permissions:
@@ -49,6 +51,9 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Fetch pinned Mage casting atlas
+        run: python3 tools/fetch_mage_cast_front_asset.py
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
@@ -121,7 +126,7 @@ jobs:
           test ! -e signing
           test -s export_presets.cfg
 
-      - name: Import project and export debug APK
+      - name: Import and export playable game QA APK plus Mage animation QA APK
         shell: bash
         run: |
           set -euo pipefail
@@ -141,28 +146,56 @@ jobs:
             fi
             return "$status"
           }
-          run_godot_checked import godot --headless --editor --path . --quit
-          run_godot_checked export godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
+
+          # First export the normal game entry scene. This is the APK intended
+          # for physical gameplay smoke tests; it must never be replaced by the
+          # developer-only animation test scene.
+          grep -F 'run/main_scene="res://scenes/main.tscn"' project.godot
+          grep -F 'package/unique_name="com.example.divslayer.qa"' export_presets.cfg
+          run_godot_checked import_game godot --headless --editor --path . --quit
+          run_godot_checked export_game godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
           test -s build/android/Divslayer-QA.apk
 
-      - name: Verify APK package and signature
+          # Create a second, separately named test app so the runtime animation
+          # assertions do not alter the playable QA APK or its launcher scene.
+          sed -i 's#run/main_scene="res://scenes/main.tscn"#run/main_scene="res://scenes/dev/mage_cast_runtime_qa.tscn"#' project.godot
+          sed -i 's#export_path="build/android/Divslayer-QA.apk"#export_path="build/android/Divslayer-MageCast-QA.apk"#' export_presets.cfg
+          sed -i 's#package/unique_name="com.example.divslayer.qa"#package/unique_name="com.example.divslayer.magecast.qa"#' export_presets.cfg
+          sed -i 's#package/name="Divslayer QA"#package/name="Divslayer Mage Cast QA"#' export_presets.cfg
+          grep -F 'run/main_scene="res://scenes/dev/mage_cast_runtime_qa.tscn"' project.godot
+          grep -F 'package/unique_name="com.example.divslayer.magecast.qa"' export_presets.cfg
+          grep -F 'export_path="build/android/Divslayer-MageCast-QA.apk"' export_presets.cfg
+          test -s tests/mage_cast_runtime_qa.gd
+          test -s scenes/dev/mage_cast_runtime_qa.tscn
+          run_godot_checked import_mage_cast_qa godot --headless --editor --path . --quit
+          run_godot_checked export_mage_cast_qa godot --headless --path . --export-debug "Android QA" build/android/Divslayer-MageCast-QA.apk
+          test -s build/android/Divslayer-MageCast-QA.apk
+      - name: Verify both APK package identities and signatures
         shell: bash
         run: |
           set -euo pipefail
           apksigner="$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS/apksigner"
           aapt="$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS/aapt"
+
           "$apksigner" verify --verbose build/android/Divslayer-QA.apk
-          "$aapt" dump badging build/android/Divslayer-QA.apk | tee build/android/apk-badging.txt
-          "$aapt" dump xmltree build/android/Divslayer-QA.apk AndroidManifest.xml | tee build/android/manifest-xmltree.txt
-          grep -F "package: name='com.example.divslayer.qa'" build/android/apk-badging.txt
-          # Godot uses an exported activity-alias; validate the actual binary manifest
-          # rather than relying on aapt dump badging to resolve activity aliases.
-          grep -F 'com.godot.game.GodotAppLauncher' build/android/manifest-xmltree.txt
-          grep -F 'android.intent.action.MAIN' build/android/manifest-xmltree.txt
-          grep -F 'android.intent.category.LAUNCHER' build/android/manifest-xmltree.txt
-          grep -F 'android:exported(0x01010010)=(type 0x12)0xffffffff' build/android/manifest-xmltree.txt
-          grep -F "native-code: 'arm64-v8a'" build/android/apk-badging.txt
+          "$aapt" dump badging build/android/Divslayer-QA.apk | tee build/android/game-apk-badging.txt
+          "$aapt" dump xmltree build/android/Divslayer-QA.apk AndroidManifest.xml | tee build/android/game-manifest-xmltree.txt
+          grep -F "package: name='com.example.divslayer.qa'" build/android/game-apk-badging.txt
+          grep -F 'com.godot.game.GodotAppLauncher' build/android/game-manifest-xmltree.txt
+          grep -F 'android.intent.action.MAIN' build/android/game-manifest-xmltree.txt
+          grep -F 'android.intent.category.LAUNCHER' build/android/game-manifest-xmltree.txt
+          grep -F 'android:exported(0x01010010)=(type 0x12)0xffffffff' build/android/game-manifest-xmltree.txt
           sha256sum build/android/Divslayer-QA.apk | tee build/android/Divslayer-QA.apk.sha256
+
+          "$apksigner" verify --verbose build/android/Divslayer-MageCast-QA.apk
+          "$aapt" dump badging build/android/Divslayer-MageCast-QA.apk | tee build/android/mage-cast-apk-badging.txt
+          "$aapt" dump xmltree build/android/Divslayer-MageCast-QA.apk AndroidManifest.xml | tee build/android/mage-cast-manifest-xmltree.txt
+          grep -F "package: name='com.example.divslayer.magecast.qa'" build/android/mage-cast-apk-badging.txt
+          grep -F 'com.godot.game.GodotAppLauncher' build/android/mage-cast-manifest-xmltree.txt
+          grep -F 'android.intent.action.MAIN' build/android/mage-cast-manifest-xmltree.txt
+          grep -F 'android.intent.category.LAUNCHER' build/android/mage-cast-manifest-xmltree.txt
+          grep -F 'android:exported(0x01010010)=(type 0x12)0xffffffff' build/android/mage-cast-manifest-xmltree.txt
+          sha256sum build/android/Divslayer-MageCast-QA.apk | tee build/android/Divslayer-MageCast-QA.apk.sha256
 
       - name: Upload APK diagnostics if validation fails
         if: failure()
@@ -171,9 +204,13 @@ jobs:
           name: Divslayer-Android-APK-Diagnostics
           path: |
             build/android/Divslayer-QA.apk
-            build/android/apk-badging.txt
-            build/android/manifest-xmltree.txt
+            build/android/Divslayer-MageCast-QA.apk
+            build/android/game-apk-badging.txt
+            build/android/mage-cast-apk-badging.txt
+            build/android/game-manifest-xmltree.txt
+            build/android/mage-cast-manifest-xmltree.txt
             build/android/Divslayer-QA.apk.sha256
+            build/android/Divslayer-MageCast-QA.apk.sha256
           if-no-files-found: warn
           retention-days: 7
 
@@ -188,7 +225,7 @@ jobs:
           sudo chmod 666 /dev/kvm
           ls -l /dev/kvm
 
-      - name: Install and launch APK in Android emulator
+      - name: Install and test both APKs in Android emulator
         timeout-minutes: 20
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -202,8 +239,51 @@ jobs:
           disable-spellchecker: true
           disable-linux-hw-accel: false
           script: >-
-            set -eu; trap 'timeout 20s adb logcat -d -v time > build/android/emulator-logcat.txt 2>&1 || true; timeout 20s adb shell dumpsys activity activities > build/android/emulator-activity.txt 2>&1 || true' EXIT; echo "Installing Divslayer QA APK"; adb shell settings put secure immersive_mode_confirmations confirmed || true; adb logcat -c; timeout 240s adb install -r build/android/Divslayer-QA.apk; adb shell pm path com.example.divslayer.qa | grep -F 'package:'; launcher="$(timeout 30s adb shell cmd package resolve-activity --brief --user 0 -a android.intent.action.MAIN -c android.intent.category.LAUNCHER com.example.divslayer.qa | tr -d '\r')"; printf '%s\n' "$launcher"; printf '%s\n' "$launcher" | grep -F 'com.example.divslayer.qa/'; timeout 60s adb shell monkey -p com.example.divslayer.qa 1; sleep 20; timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt; if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' build/android/emulator-logcat.txt; then echo "::error::Android runtime reported a fatal or Godot script error."; exit 1; fi; grep -F 'OnGodotSetupCompleted' build/android/emulator-logcat.txt; timeout 30s adb shell dumpsys activity activities > build/android/emulator-activity.txt; foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-activity.txt | grep -F 'com.example.divslayer.qa/' )"; test -n "$foreground"; printf '%s\n' "$foreground"; if timeout 30s adb shell screencap -p /sdcard/divslayer-qa-launch.png && timeout 30s adb pull /sdcard/divslayer-qa-launch.png build/android/emulator-launch.png && test -s build/android/emulator-launch.png; then echo "Captured Android QA launch screenshot."; else echo "::warning::Screenshot capture unavailable; app launch and foreground checks passed."; fi; echo 'Divslayer Godot setup completed and the QA app remained in the foreground.'
-
+            set -eu;
+            trap 'timeout 20s adb logcat -d -v time > build/android/emulator-magecast-logcat.txt 2>&1 || true; timeout 20s adb shell dumpsys activity activities > build/android/emulator-activity.txt 2>&1 || true; timeout 15s adb shell screencap -p /sdcard/divslayer-qa-failure.png && timeout 15s adb pull /sdcard/divslayer-qa-failure.png build/android/emulator-failure.png || true' EXIT;
+            adb shell settings put system accelerometer_rotation 0;
+            adb shell settings put system user_rotation 1;
+            sleep 3;
+            adb shell settings put secure immersive_mode_confirmations confirmed || true;
+            adb logcat -c;
+            timeout 240s adb install -r build/android/Divslayer-QA.apk;
+            adb shell pm path com.example.divslayer.qa | grep -F 'package:';
+            timeout 30s adb shell monkey -p com.example.divslayer.qa 1;
+            sleep 20;
+            timeout 30s adb logcat -d -v time > build/android/emulator-game-logcat.txt;
+            if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' build/android/emulator-game-logcat.txt; then echo 'Playable Android QA app reported a fatal or Godot script error.'; exit 1; fi;
+            grep -F 'OnGodotSetupCompleted' build/android/emulator-game-logcat.txt;
+            if grep -Fq 'DIVSLAYER_TITLE_MENU_FAIL' build/android/emulator-game-logcat.txt; then echo 'The playable app failed its in-game title-menu readiness assertion.'; exit 1; fi;
+            grep -F 'DIVSLAYER_TITLE_MENU_READY title=true new_game=true background=true' build/android/emulator-game-logcat.txt;
+            timeout 30s adb shell dumpsys activity activities > build/android/emulator-game-activity.txt;
+            game_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-game-activity.txt | grep -F 'com.example.divslayer.qa/' )";
+            test -n "$game_foreground";
+            echo "$game_foreground";
+            timeout 30s adb shell screencap -p /sdcard/divslayer-game-launch.png;
+            timeout 30s adb pull /sdcard/divslayer-game-launch.png build/android/emulator-game-launch.png;
+            test -s build/android/emulator-game-launch.png;
+            adb logcat -c;
+            timeout 240s adb install -r build/android/Divslayer-MageCast-QA.apk;
+            adb shell pm path com.example.divslayer.magecast.qa | grep -F 'package:';
+            timeout 30s adb shell monkey -p com.example.divslayer.magecast.qa 1;
+            echo 'Waiting up to 120 seconds for Mage animation runtime markers';
+            attempt=0;
+            while [ "$attempt" -lt 120 ]; do current_log="$(timeout 10s adb logcat -d -v time 2>/dev/null || true)"; if printf '%s\n' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_ALL_FRAMES_PASS sequence=0,1,2,3,4,5,6,7,8,9,10,11 total=12' && printf '%s\n' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_AUTO_FINISH_PASS' && printf '%s\n' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_CANCEL_PASS'; then break; fi; if printf '%s\n' "$current_log" | grep -Fq 'MAGE_CAST_FRONT_RUNTIME_FAIL'; then break; fi; attempt=$((attempt + 1)); sleep 1; done;
+            timeout 30s adb logcat -d -v time > build/android/emulator-magecast-logcat.txt;
+            if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|MAGE_CAST_FRONT_RUNTIME_FAIL' build/android/emulator-magecast-logcat.txt; then echo 'Mage animation QA reported a fatal, script, or runtime assertion failure.'; exit 1; fi;
+            grep -F 'OnGodotSetupCompleted' build/android/emulator-magecast-logcat.txt;
+            grep -F 'OnGodotMainLoopStarted' build/android/emulator-magecast-logcat.txt;
+            grep -F 'MAGE_CAST_FRONT_ALL_FRAMES_PASS sequence=0,1,2,3,4,5,6,7,8,9,10,11 total=12' build/android/emulator-magecast-logcat.txt;
+            grep -F 'MAGE_CAST_FRONT_AUTO_FINISH_PASS' build/android/emulator-magecast-logcat.txt;
+            grep -F 'MAGE_CAST_FRONT_CANCEL_PASS' build/android/emulator-magecast-logcat.txt;
+            timeout 30s adb shell run-as com.example.divslayer.magecast.qa ls -l files/mage-cast-front-active.png;
+            timeout 30s adb exec-out run-as com.example.divslayer.magecast.qa cat files/mage-cast-front-active.png > build/android/mage-cast-front-active.png;
+            test -s build/android/mage-cast-front-active.png;
+            timeout 30s adb shell dumpsys activity activities > build/android/emulator-magecast-activity.txt;
+            mage_foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-magecast-activity.txt | grep -F 'com.example.divslayer.magecast.qa/' )";
+            test -n "$mage_foreground";
+            echo "$mage_foreground";
+            echo 'Playable game launch and Mage cast animation runtime checks passed.';
       - name: Upload emulator diagnostics if launch validation fails
         if: failure()
         uses: actions/upload-artifact@v4
@@ -211,20 +291,29 @@ jobs:
           name: Divslayer-Android-Emulator-Diagnostics
           path: |
             build/android/Divslayer-QA.apk
-            build/android/emulator-logcat.txt
-            build/android/emulator-activity.txt
+            build/android/Divslayer-MageCast-QA.apk
+            build/android/emulator-game-logcat.txt
+            build/android/emulator-magecast-logcat.txt
+            build/android/emulator-game-activity.txt
+            build/android/emulator-magecast-activity.txt
+            build/android/emulator-failure.png
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Upload installable QA APK
+      - name: Upload installable QA APKs and runtime evidence
         uses: actions/upload-artifact@v4
         with:
-          name: Divslayer-Android-QA-APK
+          name: Divslayer-Android-QA-APKs
           path: |
             build/android/Divslayer-QA.apk
             build/android/Divslayer-QA.apk.sha256
-            build/android/apk-badging.txt
-            build/android/emulator-logcat.txt
-            build/android/emulator-launch.png
-          if-no-files-found: warn
+            build/android/Divslayer-MageCast-QA.apk
+            build/android/Divslayer-MageCast-QA.apk.sha256
+            build/android/game-apk-badging.txt
+            build/android/mage-cast-apk-badging.txt
+            build/android/emulator-game-logcat.txt
+            build/android/emulator-magecast-logcat.txt
+            build/android/emulator-game-launch.png
+            build/android/mage-cast-front-active.png
+          if-no-files-found: error
           retention-days: 14

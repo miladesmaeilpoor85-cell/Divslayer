@@ -54,6 +54,32 @@ func show_menu() -> void:
 	menu = Menu.new()
 	layer.add_child(menu)
 	menu.start_game.connect(_on_start)
+	# A debug-only readiness probe prevents Android QA from mistaking the native
+	# Godot splash screen for a successfully rendered game title screen.
+	if OS.is_debug_build():
+		call_deferred("_qa_validate_title_menu")
+
+func _qa_validate_title_menu() -> void:
+	await get_tree().process_frame
+	if menu == null or not is_instance_valid(menu):
+		push_error("DIVSLAYER_TITLE_MENU_FAIL: menu node was not created")
+		return
+	var logo_found := false
+	var labels: Array[Node] = menu.find_children("*", "Label", true, false)
+	for candidate in labels:
+		var label := candidate as Label
+		if label != null and label.text.strip_edges() in ["Divslayer", "دیوکُش"]:
+			logo_found = true
+			break
+	var new_game := menu.find_child("NewGame", true, false) as Button
+	var new_game_ready := new_game != null and new_game.is_visible_in_tree()
+	var background_ready := menu_bg != null and is_instance_valid(menu_bg) and menu_bg.get_child_count() > 0
+	if not logo_found or not new_game_ready or not background_ready:
+		push_error("DIVSLAYER_TITLE_MENU_FAIL: logo=%s new_game=%s village_background=%s" % [
+			logo_found, new_game_ready, background_ready
+		])
+		return
+	print("DIVSLAYER_TITLE_MENU_READY title=true new_game=true background=true")
 
 ## the title screen sits over the living village: a camera drifts slowly across it
 func _menu_backdrop() -> void:
