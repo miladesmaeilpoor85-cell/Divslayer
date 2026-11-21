@@ -253,12 +253,42 @@ func run(m: Node) -> void:
 			var ring_count: int = main.world.fx.rings.size()
 			main.world.fx.class_impact(e2.center(), Vector2.RIGHT, hero_class, false)
 			check("impact_fx_has_" + hero_class + "_response", main.world.fx.rings.size() > ring_count)
+			var windup_rings_before: int = main.world.fx.rings.size()
+			var windup_dashes_before: int = main.world.fx.dashes.size()
+			main.world.fx.attack_windup(main.player, Vector2.RIGHT, hero_class, false)
+			var windup: Dictionary = main.world.fx.windups.back()
+			check("attack_windup_records_" + hero_class + "_identity",
+				str(windup.get("class", "")) == hero_class and float(windup.get("dur", 0.0)) > 0.0)
+			check("attack_windup_has_no_orphan_effects_" + hero_class,
+				main.world.fx.rings.size() == windup_rings_before
+				and main.world.fx.dashes.size() == windup_dashes_before,
+				[main.world.fx.rings.size(), main.world.fx.dashes.size()])
+		main.world.fx.attack_windup(main.player, Vector2.RIGHT, "warrior", false, 0.0833)
+		var contact_windup: Dictionary = main.world.fx.windups.back()
+		check("attack_windup_duration_matches_contact_frame",
+			absf(float(contact_windup.get("dur", 0.0)) - 0.0833) < 0.0001, contact_windup)
 		Game.cls = previous_class
 		check("class_swing_palettes_are_distinct",
 			class_swings.size() == 4
 			and class_swings["mage"] != class_swings["rogue"]
 			and class_swings["mage"] != class_swings["paladin"]
 			and class_swings["rogue"] != class_swings["paladin"], class_swings)
+		main.world.fx.attack_windup(main.player, Vector2.UP, "paladin", true)
+		var heavy_windup: Dictionary = main.world.fx.windups.back()
+		check("heavy_attack_windup_has_longer_readability_window",
+			float(heavy_windup.get("dur", 0.0)) > 0.17, heavy_windup)
+		var player_windups_before_cancel := 0
+		for prep in main.world.fx.windups:
+			if prep.get("who") == main.player:
+				player_windups_before_cancel += 1
+		main.world.fx.cancel_attack_windup(main.player)
+		var player_windups_after_cancel := 0
+		for prep in main.world.fx.windups:
+			if prep.get("who") == main.player:
+				player_windups_after_cancel += 1
+		check("attack_windups_clear_when_actor_is_interrupted",
+			player_windups_before_cancel >= 5 and player_windups_after_cancel == 0,
+			[player_windups_before_cancel, player_windups_after_cancel])
 		e2.make_elite("fire")
 		var orbit_a: PackedVector2Array = e2._elite_orbit_points(0.0, 24.0)
 		var orbit_b: PackedVector2Array = e2._elite_orbit_points(0.5, 24.0)

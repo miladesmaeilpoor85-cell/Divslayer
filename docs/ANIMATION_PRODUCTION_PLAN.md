@@ -4,9 +4,11 @@
 
 ## Verified current state
 
-The current manifest contains 12 hero appearance sheets: four classes, each with starter, mid-tier, and endgame looks. Each existing sheet is 800 × 468 pixels, arranged as 5 columns × 3 facing rows, with 160 × 156 pixel cells. The four first columns are walk poses; the fifth column is one attack pose. The runtime uses the first walk pose for idle and adds some visual motion procedurally.
+The current manifest contains 12 hero appearance sheets: four classes, each with starter, mid-tier, and endgame looks. Each base sheet is 800 × 468 pixels, arranged as 5 columns × 3 facing rows, with 160 × 156 pixel cells. The four first columns are walk poses; the fifth column is the legacy attack pose. The runtime uses the first walk pose for idle and adds restrained procedural motion.
 
-The code can load future multi-frame attack data and can delay combat impact to a configured frame. The current production manifest does not activate a new attack atlas or non-zero impact frames. The isolated Warrior review scene is a read-only preview of the existing one-frame attack pose with a drawn slash effect.
+Two Starter appearances now have separate four-frame, three-direction light-attack sequences: Warrior Starter uses 12 transparent PNGs registered through `attackFrameFiles`, and Rogue Starter uses a four-frame attack atlas assembled from base64 parts. Both play at 24 FPS and use contact frame index 2. The other 30 of the 36 registered directional attack clips remain single-pose. Mage Starter/Mid/Endgame, Rogue Mid/Endgame, Paladin Starter/Mid/Endgame, and Warrior Mid/Endgame still need authored multi-frame attack art.
+
+The runtime can delay gameplay contact until a configured frame while preserving immediate-hit behaviour for legacy one-frame clips. The isolated Warrior review scene is a read-only art preview; it does not replace the live gameplay sprites.
 
 ## Non-negotiable production rule
 
@@ -58,9 +60,9 @@ Do not reuse Warrior poses with palette swaps. Each class needs its own authored
 4. Test all four classes and all three gear tiers before marking the batch complete.
 5. Run the animation builder tests, manifest checks, full Godot test suite, Android export, and physical-device gameplay review.
 
-## Current status — Warrior starter sprite pilot
+## Current status — Warrior Starter sprite pilot
 
-The branch `art/warrior-starter-sprite-pilot` contains a first runtime integration proposal for the Warrior starter appearance. It does not replace the original PNG and is not merged to `main`.
+The original Warrior Starter pilot is now integrated into `main`. It preserves the original PNG as a safe fallback while loading the generated runtime atlas when the source assets are available.
 
 - Source atlas: `assets/art/Heroes/warrior_starter_source.webp` (160 × 93 px, transparent).
 - The source atlas stores 15 cells in five columns by three directional rows. Each cell is 32 × 31 pixels and is expanded independently to 160 × 156 with nearest-neighbour sampling at runtime.
@@ -68,7 +70,7 @@ The branch `art/warrior-starter-sprite-pilot` contains a first runtime integrati
 - `scripts/generated/warrior_starter_art.gd` builds and caches the runtime `ImageTexture`; `scripts/sheets.gd` uses it only for `heroes/warrior_starter` and retains the old PNG fallback.
 - `assets/art/Heroes/warrior_starter_mask.png` is a compact 160×93 one-bit greyscale cloth mask aligned to the source atlas; its shader luminance key is recorded as 0.237 in `data/hero_masks.json`.
 
-This is a starter-tier visual pilot only. It does not provide separate heavy attack, hurt/stagger, block, dodge, death, or other combat clips. There remains one attack frame per direction. The new walk cycle and combat pose must pass Godot import, full CI, wardrobe recolour, actual-scale gameplay, Android QA export/emulator launch, and manual physical-device review before merge. Other Warrior gear tiers and the Mage, Rogue, and Paladin gameplay atlases remain unchanged.
+This remains a Starter-tier pilot. It does not add separate heavy attack, hurt/stagger, block, dodge, or death clips. A four-frame light-attack sequence per direction was integrated separately below; Mid/Endgame Warrior and the Mage, Rogue, and Paladin gameplay atlases still need their own class- and gear-specific animation batches. Physical-device review and source/provider rights verification remain required.
 
 ## Warrior Starter multi-frame attack — integration candidate
 
@@ -101,7 +103,7 @@ The procedural effects in this step are a presentation improvement, not a substi
 - [x] Run unit tests and publish a JSON quality report from the artwork CI job.
 - [ ] Review the generated report and native-scale contact sheets; pixel-difference metrics identify review candidates but do not grade acting or artistic quality.
 
-**Manifest-based baseline:** 12 hero looks create 36 directional attack clips. Warrior Starter now has three four-frame directional attack clips; the other 33 hero attack clips still use one pose each. This count describes registered clip/frame data, not a visual quality score.
+**Manifest-based baseline:** 12 hero looks create 36 directional attack clips. Warrior Starter and Rogue Starter each have three four-frame directional attack clips (six multi-frame clips total); the other 30 clips still use one pose each. This count describes registered frame data, not an artistic quality score.
 
 
 ## Ultimate VFX pass — 20 November 2026
@@ -127,3 +129,14 @@ The project owner supplied eight original artwork images for the four class iden
 - Rights register entries identify the owner-supplied source files and the atlas conversion. Commercial-use status remains UNVERIFIED until the source/provider terms are separately confirmed.
 
 The next combat-art milestone is to derive direction-consistent, transparent-background animation sheets with stable feet pivots and frame-level contact annotations from the approved character designs, then validate them at native Android scale before replacing any in-combat sheet.
+
+
+## Class-specific attack anticipation — 21 November 2026
+
+- [x] Add a short pre-contact cue when the hero begins an attack, using the same locked facing direction as the attack animation.
+- [x] Give Mage an arcane focus orbit, Rogue paired dagger streaks, and Paladin a compact solar guard arc.
+- [x] Give heavy attacks a longer anticipation window than light attacks.
+- [x] Cancel the cue when the attack is interrupted by dodge, guard, map transition, or another pending-attack cancellation.
+- [x] Keep the cue strictly cosmetic: the existing damage calculation, reach, hitbox, contact-frame scheduling, and hit-stop are unchanged.
+- [ ] Produce and integrate real directional attack sprite frames for Mage, Rogue Mid/Endgame, Paladin, and the remaining Warrior gear tiers. Procedural anticipation and contact effects are not substitutes for authored poses.
+- [ ] Review the result at native Android scale and on a physical device after the new APK passes emulator QA.
