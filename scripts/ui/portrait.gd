@@ -4,7 +4,7 @@ extends Control
 
 const Sheets = preload("res://scripts/sheets.gd")
 const Looks = preload("res://scripts/looks.gd")
-const UserArtAtlas = preload("res://scripts/ui/user_art_atlas.gd")
+const USER_ART_ATLAS: Texture2D = preload("res://assets/art/Portraits/character_portraits_2026.webp")
 const MASK := "shader_type canvas_item;\nuniform vec2 center;\nuniform float radius;\nvarying vec2 lp;\nvoid vertex() { lp = VERTEX; }\nvoid fragment() { if (distance(lp, center) > radius) { discard; } }\n"
 
 var group := "heroes"
@@ -25,11 +25,6 @@ const ART := {
 	"keeper": ["sorush", 1], "hesk": ["hom", 1], "smith": ["kavian", 1], "qaren": ["qaren", 1],
 	"npc_rostam": ["rostam", 1], "npc_siavash": ["siavash", 1], "npc_gordafarid": ["gordafarid", 1]}
 const ART_DIR := "res://assets/art/Portraits/%s.webp"
-const USER_ART_FOLDER := "assets/art/Portraits"
-const USER_ART_PARTS: Array[String] = [
-	"character_portraits_2026.part_00.b64",
-	"character_portraits_2026.part_01.b64",
-]
 const USER_ART := {
 	"npc_rostam": [Vector2(0, 0), 1],
 	"npc_siavash": [Vector2(192, 0), 1],
@@ -49,7 +44,7 @@ static func art_key(s: String) -> String:
 static func has_art(s: String) -> bool:
 	var key := art_key(s)
 	if USER_ART.has(key):
-		return UserArtAtlas.has_parts(USER_ART_FOLDER, USER_ART_PARTS)
+		return USER_ART_ATLAS != null and USER_ART_ATLAS.get_width() == 384 and USER_ART_ATLAS.get_height() == 384
 	return ART.has(key) and ResourceLoader.exists(ART_DIR % ART[key][0])
 
 ## Shows the painted portrait for this sheet; false (and nothing changed) if there is none.
@@ -59,7 +54,7 @@ func show_art(s: String) -> bool:
 	var key := art_key(s)
 	if USER_ART.has(key):
 		var user_spec: Array = USER_ART[key]
-		_tex = UserArtAtlas.load_webp_base64(USER_ART_FOLDER, USER_ART_PARTS)
+		_tex = USER_ART_ATLAS
 		if _tex == null or _tex.get_width() != 384 or _tex.get_height() != 384:
 			return false
 		_src = Rect2(user_spec[0], Vector2(192, 192))
