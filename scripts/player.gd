@@ -12,6 +12,9 @@ const Caster = preload("res://scripts/caster.gd")
 
 var world: Node = null
 var anim: AnimatedSprite2D
+var cast_anim: AnimatedSprite2D
+var _mage_cast_front_active := false
+const MAGE_CAST_FRONT_DISPLAY_SCALE := 0.88
 var body: Node2D              # pivot at the body's middle: the roll spins around it
 var shadow: Sprite2D
 var cam: Camera2D
@@ -119,6 +122,8 @@ func setup() -> void:
 	caster = Caster.new()
 	caster.setup(self)
 	add_child(caster)
+	if not caster.cast_done.is_connected(_on_spell_cast):
+		caster.cast_done.connect(_on_spell_cast)
 
 ## pick the gear look that matches weapon/armour tiers, painted in the hero look worn (v0.20)
 func refresh_look() -> void:
@@ -134,6 +139,7 @@ func refresh_look() -> void:
 	if s == sheet and lk == look:
 		return
 	if s != sheet:
+		_stop_mage_cast_front()
 		_cancel_pending_attack()
 		sheet = s
 		var ch: Dictionary = Sheets.character("heroes", s)
@@ -212,6 +218,7 @@ func _look_tick(dt: float) -> void:
 		world.fx.emit("shine", global_position + Vector2(randf_range(-6, 6), -6), 1, Color(tc, 0.85), -facing_vec(), 40.0, 26.0, 0.8)
 
 func enter_world(w: Node, feet: Vector2) -> void:
+	_stop_mage_cast_front()
 	_cancel_pending_attack()
 	world = w
 	global_position = feet
@@ -241,6 +248,7 @@ func facing_vec() -> Vector2:
 
 func _physics_process(dt: float) -> void:
 	if dead or world == null:
+		_stop_mage_cast_front()
 		return
 	atk_cd = max(0.0, atk_cd - dt)
 	attacking = max(0.0, attacking - dt)
@@ -252,9 +260,11 @@ func _physics_process(dt: float) -> void:
 	_sig_step(dt)
 	_statuses(dt)
 	if dead:
+		_stop_mage_cast_front()
 		return
 	_tick_attack_impact(dt)
 	if dead:
+		_stop_mage_cast_front()
 		return
 	combo_t = max(0.0, combo_t - dt)
 	stamina = min(Game.max_stamina(), stamina + (9.0 if blocking else 28.0) * dt)
@@ -364,6 +374,13 @@ func _over_bosses() -> void:
 		z_index = over
 
 func _animate(dir: Vector2) -> void:
+	if _mage_cast_front_active:
+		var can_continue_cast := Game.cls == "mage" and sheet == "mage_starter" \
+			and facing == "down" and dir.length() <= 0.1 and move_dir.length() <= 0.1 \
+			and attacking <= 0.0 and not blocking and roll_t <= 0.0 and dash_t <= 0.0 \
+			and not sneaking and not dead
+		if not can_continue_cast:
+			_stop_mage_cast_front()
 	var visual_facing := _attack_visual_facing if attacking > 0.0 and _attack_visual_facing != "" else facing
 	var d := "side" if visual_facing == "left" or visual_facing == "right" else visual_facing
 	anim.flip_h = visual_facing == "left"
@@ -390,6 +407,57 @@ func _animate(dir: Vector2) -> void:
 		tint.a = min(tint.a, 0.55 if world.in_grass(global_position) else 0.78)
 	anim.modulate = tint
 	_feel(dir)
+	if _mage_cast_front_active and is_instance_valid(cast_anim):
+		cast_anim.position = anim.position
+		cast_anim.scale = anim.scale * MAGE_CAST_FRONT_DISPLAY_SCALE
+		cast_anim.modulate = anim.modulate
+
+
+## Play the separately authored front-facing Mage casting clip after a successful spell.
+## It is a visual one-shot only; spell damage, cooldowns and existing movement clips stay unchanged.
+func _on_spell_cast(_spell_id: String) -> void:
+	if _mage_cast_front_active or dead or Game.cls != "mage" or sheet != "mage_starter":
+		return
+	if facing != "down" or moving or move_dir.length() > 0.1 or blocking or sneaking:
+		return
+	if attacking > 0.0 or roll_t > 0.0 or dash_t > 0.0:
+		return
+	var frames := Sheets.mage_starter_cast_front_frames()
+	if frames == null or not frames.has_animation("cast_front"):
+		return
+	if cast_anim == null:
+		cast_anim = AnimatedSprite2D.new()
+		cast_anim.name = "MageCastFront"
+		cast_anim.centered = false
+		cast_anim.sprite_frames = frames
+		cast_anim.offset = Sheets.mage_starter_cast_front_offset()
+		cast_anim.position = anim.position
+		cast_anim.scale = anim.scale * MAGE_CAST_FRONT_DISPLAY_SCALE
+		cast_anim.z_index = anim.z_index + 1
+		cast_anim.animation_finished.connect(_on_mage_cast_front_finished)
+		body.add_child(cast_anim)
+	else:
+		cast_anim.sprite_frames = frames
+	cast_anim.frame = 0
+	cast_anim.flip_h = false
+	cast_anim.modulate = anim.modulate
+	cast_anim.visible = true
+	anim.visible = false
+	_mage_cast_front_active = true
+	cast_anim.play("cast_front")
+
+func _on_mage_cast_front_finished() -> void:
+	_stop_mage_cast_front()
+
+func _stop_mage_cast_front() -> void:
+	if not _mage_cast_front_active and cast_anim == null:
+		return
+	_mage_cast_front_active = false
+	if is_instance_valid(cast_anim):
+		cast_anim.stop()
+		cast_anim.visible = false
+	if is_instance_valid(anim):
+		anim.visible = true
 
 ## squash, bob, breathing, the roll's spin and hop, footfall dust (VIS player animation)
 func _feel(dir: Vector2) -> void:

@@ -1,0 +1,48 @@
+{
+  "asset": "assets/art/Heroes/mage_starter_cast_front.webp",
+  "class": "mage",
+  "tier": "starter",
+  "animation": "cast_front",
+  "scope": "front/down-facing one-shot overlay after successful spell cast while stationary",
+  "sourceVideo": {
+    "resolution": "480x854",
+    "fps": 24,
+    "durationSeconds": 5.056,
+    "frameCount": 121
+  },
+  "selectedSourceFrames": [
+    16,
+    24,
+    32,
+    40,
+    48,
+    56,
+    64,
+    72,
+    80,
+    92,
+    104,
+    120
+  ],
+  "processing": "edge-connected chroma-green removal; conservative despill; premultiplied-alpha resize",
+  "atlas": {
+    "format": "webp",
+    "width": 384,
+    "height": 513,
+    "columns": 4,
+    "rows": 3,
+    "cellWidth": 96,
+    "cellHeight": 171,
+    "frameCount": 12,
+    "fps": 8,
+    "loop": false
+  },
+  "sourceAssetUrl": "https://d2ol7oe51mr4n9.cloudfront.net/user_3MQ8TO8qFTeYUMz2ubrOoeLu1S0/40f6cdaa-2637-42f5-a2e1-eadda77d2a89.webp",
+  "sha256": "0935ef2c14ad89b12c8ee0a9417e1e464021e81d54c0f00b62f3a0e9ce314518",
+  "bytes": 123750,
+  "rights": "UNVERIFIED",
+  "notes": [
+    "This is one front-facing spell-casting clip, not a three-direction movement set.",
+    "Commercial rights and provider terms have not yet been verified."
+  ]
+}

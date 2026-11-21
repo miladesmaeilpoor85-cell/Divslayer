@@ -32,11 +32,52 @@ static func _load_base64_attack_sheet(folder: String, parts: Array) -> Texture2D
 		return null
 	return ImageTexture.create_from_image(image)
 
+const MAGE_STARTER_CAST_ATLAS := "res://assets/art/Heroes/mage_starter_cast_front.webp"
+const MAGE_STARTER_CAST_CELL := Vector2i(96, 171)
+const MAGE_STARTER_CAST_FRAMES := 12
+const MAGE_STARTER_CAST_COLUMNS := 4
+const MAGE_STARTER_CAST_FPS := 8.0
+static var _mage_starter_cast_front_cache: SpriteFrames
+
 static func _atlas(tex: Texture2D, x: float, y: float, w: float, h: float) -> AtlasTexture:
 	var a := AtlasTexture.new()
 	a.atlas = tex
 	a.region = Rect2(x, y, w, h)
 	return a
+
+## One-shot front-facing Mage Starter spell animation. This atlas is intentionally
+## separate from the three-direction walk/idle/attack sheet.
+static func mage_starter_cast_front_frames() -> SpriteFrames:
+	if _mage_starter_cast_front_cache != null:
+		return _mage_starter_cast_front_cache
+	var tex := load(MAGE_STARTER_CAST_ATLAS) as Texture2D
+	if tex == null:
+		push_error("Mage Starter cast-front atlas is missing: " + MAGE_STARTER_CAST_ATLAS)
+		return null
+	var expected_size := Vector2i(MAGE_STARTER_CAST_CELL.x * MAGE_STARTER_CAST_COLUMNS, MAGE_STARTER_CAST_CELL.y * 3)
+	if Vector2i(tex.get_width(), tex.get_height()) != expected_size:
+		push_error("Mage Starter cast-front atlas dimensions do not match the 4x3 frame contract")
+		return null
+	var sf := SpriteFrames.new()
+	sf.add_animation("cast_front")
+	sf.set_animation_speed("cast_front", MAGE_STARTER_CAST_FPS)
+	sf.set_animation_loop("cast_front", false)
+	for frame_index in range(MAGE_STARTER_CAST_FRAMES):
+		var column := frame_index % MAGE_STARTER_CAST_COLUMNS
+		var row := frame_index / MAGE_STARTER_CAST_COLUMNS
+		sf.add_frame("cast_front", _atlas(
+			tex,
+			float(column * MAGE_STARTER_CAST_CELL.x),
+			float(row * MAGE_STARTER_CAST_CELL.y),
+			float(MAGE_STARTER_CAST_CELL.x),
+			float(MAGE_STARTER_CAST_CELL.y)
+		))
+	_mage_starter_cast_front_cache = sf
+	return sf
+
+## The extracted frames keep a 3px transparent top-to-foot pivot margin.
+static func mage_starter_cast_front_offset() -> Vector2:
+	return Vector2(-48.0, -168.0)
 
 ## offset that puts the sprite's pivot (bottom-centre of the feet) on the node origin
 static func pivot_offset(meta: Dictionary) -> Vector2:
