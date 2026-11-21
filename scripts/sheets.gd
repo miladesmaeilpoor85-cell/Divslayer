@@ -33,7 +33,7 @@ static func _load_base64_attack_sheet(folder: String, parts: Array) -> Texture2D
 	return ImageTexture.create_from_image(image)
 
 const MAGE_STARTER_CAST_ATLAS := "res://assets/art/Heroes/mage_starter_cast_front.webp"
-const MAGE_STARTER_CAST_CELL := Vector2i(96, 171)
+const MAGE_STARTER_CAST_CELL := Vector2i(160, 285)
 const MAGE_STARTER_CAST_FRAMES := 12
 const MAGE_STARTER_CAST_COLUMNS := 4
 const MAGE_STARTER_CAST_FPS := 8.0
@@ -77,7 +77,8 @@ static func mage_starter_cast_front_frames() -> SpriteFrames:
 
 ## The extracted frames keep a 3px transparent top-to-foot pivot margin.
 static func mage_starter_cast_front_offset() -> Vector2:
-	return Vector2(-48.0, -168.0)
+	# The sampled feet land on row 270 in each 160x285 cell.
+	return Vector2(-80.0, -270.0)
 
 ## offset that puts the sprite's pivot (bottom-centre of the feet) on the node origin
 static func pivot_offset(meta: Dictionary) -> Vector2:
