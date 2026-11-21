@@ -1,6 +1,6 @@
 {
   "asset": "assets/art/Heroes/mage_starter_cast_front.webp",
-  "assetSource": "assets/art/Heroes/mage_starter_cast_front_lossless.webp.b64",
+  "assetSource": "assets/art/Heroes/mage_cast_front_data/part_*.b64",
   "class": "mage",
   "tier": "starter",
   "animation": "cast_front",
@@ -31,7 +31,9 @@
   "processing": "edge-connected green chroma removal; frame-border screen colour sampling; semi-transparent edge unmixing; 48px source-boundary fade for the flare; premultiplied-alpha downsampling",
   "atlas": {
     "format": "webp",
-    "lossless": true,
+    "losslessRGB": false,
+    "rgbQuality": 90,
+    "alphaPlane": "pixel-identical-to-PNG-source",
     "alpha": true,
     "width": 640,
     "height": 855,
@@ -57,8 +59,8 @@
     "offset": [-80, -270],
     "displayScale": 0.612
   },
-  "sha256": "85ca84160b6a8b157023759604e0ffa4e0dd34efdf105fbf964430e566e61f60",
-  "bytes": 546846,
+  "sha256": "3f2b1fd3084b5c8344c113ae125a5bd151f90d14553bab820eb4ca67d28cbf60",
+  "bytes": 215480,
   "rights": "UNVERIFIED",
   "notes": [
     "This is one front-facing spell-casting clip, not a three-direction movement set.",
