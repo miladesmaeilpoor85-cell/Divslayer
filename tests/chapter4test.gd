@@ -107,8 +107,15 @@ func run(m: Node) -> void:
 
 	# World graph and map data must describe a connected, bounded, data-driven map.
 	var graph := Game.world_graph()
-	check("world_graph_is_bidirectional", graph.get("peaks", {}).get("exits", []).any(func(e): return str(e.get("to", "")) == "alborz")
-		and graph.get("alborz", {}).get("exits", []).any(func(e): return str(e.get("to", "")) == "peaks"))
+	var peaks_to_alborz := false
+	for exit_data in graph.get("peaks", {}).get("exits", []):
+		if str(exit_data.get("to", "")) == "alborz":
+			peaks_to_alborz = true
+	var alborz_to_peaks := false
+	for exit_data in graph.get("alborz", {}).get("exits", []):
+		if str(exit_data.get("to", "")) == "peaks":
+			alborz_to_peaks = true
+	check("world_graph_is_bidirectional", peaks_to_alborz and alborz_to_peaks)
 	var map_data := Game.map_data("alborz")
 	var data: Dictionary = map_data.get("data", {})
 	check("map_data_has_wind_scout_and_guards",
