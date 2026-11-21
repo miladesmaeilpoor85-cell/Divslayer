@@ -1231,30 +1231,7 @@
    ],
    "flipSideForLeft": true,
    "weaponTier": 1,
-   "armorTier": 0,
-   "attackSheetBase64Parts": [
-    "attack_atlas_data/paladin/part_00.b64",
-    "attack_atlas_data/paladin/part_01.b64",
-    "attack_atlas_data/paladin/part_02.b64",
-    "attack_atlas_data/paladin/part_03.b64",
-    "attack_atlas_data/paladin/part_04.b64",
-    "attack_atlas_data/paladin/part_05.b64",
-    "attack_atlas_data/paladin/part_06.b64",
-    "attack_atlas_data/paladin/part_07.b64",
-    "attack_atlas_data/paladin/part_08.b64",
-    "attack_atlas_data/paladin/part_09.b64",
-    "attack_atlas_data/paladin/part_10.b64",
-    "attack_atlas_data/paladin/part_11.b64",
-    "attack_atlas_data/paladin/part_12.b64",
-    "attack_atlas_data/paladin/part_13.b64",
-    "attack_atlas_data/paladin/part_14.b64",
-    "attack_atlas_data/paladin/part_15.b64",
-    "attack_atlas_data/paladin/part_16.b64",
-    "attack_atlas_data/paladin/part_17.b64"
-   ],
-   "attackFrames": 4,
-   "attackFps": 24,
-   "attackImpactFrame": 2
+   "armorTier": 0
   },
   "paladin_mid": {
    "cellW": 160,
