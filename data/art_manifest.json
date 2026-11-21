@@ -1060,11 +1060,7 @@
    ],
    "flipSideForLeft": true,
    "weaponTier": 1,
-   "armorTier": 0,
-   "attackSheet": "mage_starter_attack_atlas.png",
-   "attackFrames": 4,
-   "attackFps": 24,
-   "attackImpactFrame": 2
+   "armorTier": 0
   },
   "mage_mid": {
    "cellW": 160,
