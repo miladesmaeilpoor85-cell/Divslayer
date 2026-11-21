@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from import_animation_atlas import import_atlas
+from import_animation_atlas import _key_connected_background, _key_global_background, import_atlas
 from PIL import Image, ImageDraw
 
 
@@ -44,6 +44,29 @@ class AnimationAtlasImportTests(unittest.TestCase):
             saved = json.loads((output / "mage_starter_attack_import_report.json").read_text())
             self.assertEqual(saved["output_sha256"], report["output_sha256"])
 
+    def test_global_key_removes_enclosed_chroma_islands_but_default_preserves_them(self) -> None:
+        background = Image.new("RGBA", (20, 20), (255, 0, 255, 255))
+        draw = ImageDraw.Draw(background)
+        draw.rectangle((5, 5, 14, 14), outline=(255, 255, 255, 255), width=2)
+
+        edge_connected = background.copy()
+        _key_connected_background(edge_connected, (255, 0, 255), 72)
+        self.assertEqual(edge_connected.getpixel((9, 9))[3], 255)
+
+        global_key = background.copy()
+        removed = _key_global_background(global_key, (255, 0, 255), 72)
+        self.assertGreater(removed, 0)
+        self.assertEqual(global_key.getpixel((9, 9))[3], 0)
+        self.assertEqual(global_key.getpixel((5, 5))[3], 255)
+
+    def test_global_key_mode_is_recorded_in_import_report(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output = root / "rogue.png", root / "out"
+            self.make_atlas(source)
+            report = import_atlas(source, output, prefix="rogue_starter_attack", global_key=True)
+        self.assertEqual(report["key_mode"], "global")
+
     def test_detects_duplicates_without_silently_promoting_them(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -52,6 +75,56 @@ class AnimationAtlasImportTests(unittest.TestCase):
             report = import_atlas(source, root / "out", prefix="rogue_starter_attack")
         self.assertEqual(report["status"], "passed_with_warnings")
         self.assertTrue(any(report["duplicate_pairs"][direction] for direction in ("down", "up", "side")))
+
+    def test_edge_contact_requires_opt_in_and_is_reported_as_warning(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "edge.png"
+            self.make_atlas(source)
+            with Image.open(source) as opened:
+                image = opened.convert("RGBA")
+            ImageDraw.Draw(image).line((0, 150, 255, 150), fill=(250, 220, 90, 255), width=2)
+            image.save(source)
+            with self.assertRaisesRegex(ValueError, "touches the cell bounds"):
+                import_atlas(source, root / "strict", prefix="edge_attack")
+            report = import_atlas(
+                source, root / "review", prefix="edge_attack", allow_edge_contact=True
+            )
+        self.assertTrue(any("inspect for clipping" in warning for warning in report["warnings"]))
+        self.assertTrue(any(frame["minimum_source_margin_px"] == 0 for frame in report["frames"]))
+
+
+    def test_magenta_spill_cleanup_removes_connected_matting(self) -> None:
+        from import_animation_atlas import _key_magenta_spill
+
+        image = Image.new("RGBA", (20, 20), (255, 0, 255, 255))
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((6, 6, 13, 13), fill=(80, 120, 45, 255))
+        draw.line((0, 10, 5, 10), fill=(180, 30, 150, 255), width=1)
+        removed = _key_magenta_spill(image, global_mode=False)
+        self.assertGreater(removed, 0)
+        self.assertEqual(image.getpixel((3, 10))[3], 0)
+        self.assertEqual(image.getpixel((9, 9))[3], 255)
+
+    def test_imported_frames_keep_safe_top_padding(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "mage.png"
+            self.make_atlas(source)
+            report = import_atlas(source, root / "out", prefix="mage_attack", top_padding=8)
+        self.assertTrue(all(frame["output_bbox"][1] >= 8 for frame in report["frames"]))
+        self.assertEqual(report["top_padding"], 8)
+
+    def test_magenta_spill_mode_is_recorded(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "rogue.png"
+            self.make_atlas(source)
+            report = import_atlas(
+                source, root / "out", prefix="rogue_attack",
+                global_key=True, magenta_spill=True,
+            )
+        self.assertTrue(report["magenta_spill_cleanup"])
 
     def test_rejects_unsafe_output_prefix(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
