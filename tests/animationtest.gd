@@ -4,6 +4,7 @@ extends Node
 const Sheets = preload("res://scripts/sheets.gd")
 const PlayerCombat = preload("res://scripts/player.gd")
 const ClassCardArt = preload("res://scripts/ui/class_card_art.gd")
+const ClassShowcase = preload("res://scripts/ui/class_showcase.gd")
 const USER_CLASS_ATLAS: Texture2D = preload("res://assets/art/ClassCards/class_motion_atlas.webp")
 const USER_PORTRAIT_ATLAS: Texture2D = preload("res://assets/art/Portraits/character_portraits_2026.webp")
 const Portrait = preload("res://scripts/ui/portrait.gd")
@@ -46,6 +47,27 @@ func run(_main: Node) -> void:
 		and USER_PORTRAIT_ATLAS.get_width() == 384 and USER_PORTRAIT_ATLAS.get_height() == 384)
 	for actor in ["npc_rostam", "npc_siavash", "npc_gordafarid", "alchemist"]:
 		check("user_story_portrait_%s_is_registered" % actor, Portrait.has_art(actor))
+	# The in-game Hero folio reuses the same class illustrations. Verify that
+	# each calling advances through a short crossfade rather than a hard swap.
+	for calling in ["warrior", "mage", "rogue", "paladin"]:
+		var showcase := ClassShowcase.new()
+		showcase.name = "HeroFolio_%s" % calling
+		_main.add_child(showcase)
+		showcase.set_calling(calling)
+		var initial_texture: Texture2D = showcase.texture
+		var overlay := showcase.get_node_or_null("FrameBlendOverlay") as TextureRect
+		check("hero_folio_%s_has_class_art" % calling, showcase.visible and initial_texture != null)
+		check("hero_folio_%s_has_blend_overlay" % calling, overlay != null)
+		showcase._process(0.2)
+		var calling_frames: Array[Texture2D] = ClassCardArt.frames_for(calling)
+		var next_texture: Texture2D = calling_frames[1] if calling_frames.size() == 6 else null
+		check("hero_folio_%s_starts_a_soft_frame_blend" % calling,
+			showcase.texture == initial_texture and overlay != null and overlay.texture == next_texture
+			and overlay.modulate.a > 0.0 and overlay.modulate.a < 1.0)
+		showcase._process(0.1)
+		check("hero_folio_%s_finishes_the_frame_blend" % calling,
+			showcase.texture == next_texture and overlay != null and overlay.texture == null)
+		showcase.free()
 
 	var hero_manifest: Dictionary = Game.manifest.get("heroes", {})
 	var hero_names: Array = hero_manifest.keys()

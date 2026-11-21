@@ -16,6 +16,7 @@ const Minimap = preload("res://scripts/ui/minimap.gd")
 const Sheets = preload("res://scripts/sheets.gd")
 const Tex = preload("res://scripts/fx/tex.gd")
 const Skills = preload("res://scripts/skills.gd")
+const ClassShowcase = preload("res://scripts/ui/class_showcase.gd")
 
 var hud: Node = null
 var panel: PanelContainer
@@ -197,8 +198,40 @@ func _hero() -> void:
 		_:
 			_hero_sheet()
 
+## A motion folio ties the selected calling to the new owner-supplied character artwork.
+## The actual equipped pixel-art hero remains visible on the pedestal beside the stats.
+func _class_folio() -> Control:
+	var folio := PanelContainer.new()
+	folio.name = "ClassFolio"
+	folio.add_theme_stylebox_override("panel", UI.box(Color(UI.INK2, 0.94), UI.GOLD_DIM, 1, 12, 8, 3))
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 5)
+	folio.add_child(content)
+	var heading := HBoxContainer.new()
+	heading.alignment = BoxContainer.ALIGNMENT_CENTER
+	heading.add_theme_constant_override("separation", 7)
+	content.add_child(heading)
+	var sig: Dictionary = Skills.SIG.get(Game.cls, Skills.SIG["warrior"])
+	heading.add_child(UI.icon_rect(str(sig.get("icon", "sparkles")), 16, sig.get("col", UI.GOLD)))
+	var name := UI.title(Game.hero_role(), 18)
+	heading.add_child(name)
+	var showcase := ClassShowcase.new()
+	showcase.name = "AnimatedClassArt"
+	showcase.custom_minimum_size = Vector2(0, 108)
+	showcase.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	showcase.set_calling(Game.cls)
+	content.add_child(showcase)
+	var caption := UI.label(
+		Game.t("Your calling, caught in a moment of motion.", "راه پهلوانی‌ات در یک لحظه از جنبش."),
+		10, UI.MUTED
+	)
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(caption)
+	return folio
+
 func _hero_sheet() -> void:
 	var fa := Game.lang == "fa"
+	body.add_child(_class_folio())
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 14)
 	body.add_child(top)
