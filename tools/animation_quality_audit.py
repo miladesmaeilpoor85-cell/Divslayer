@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import io
 import json
 import sys
 from collections import Counter
@@ -139,6 +141,38 @@ def _load_separate_attack_frames(
     return loaded_rows
 
 
+
+def _load_base64_attack_sheet(
+    root: Path,
+    hero_directory: Path,
+    parts: Any,
+    asset_id: str,
+) -> Image.Image:
+    if not isinstance(parts, list) or not parts:
+        raise ValueError(f"{asset_id}.attackSheetBase64Parts must be a non-empty list")
+    safe_directory = hero_directory.resolve()
+    encoded_parts: list[str] = []
+    for raw_path in parts:
+        if not isinstance(raw_path, str) or not raw_path.strip():
+            raise ValueError(f"{asset_id}.attackSheetBase64Parts contains an empty path")
+        relative_path = Path(raw_path)
+        if relative_path.is_absolute():
+            raise ValueError(f"{asset_id}.attackSheetBase64Parts paths must be relative")
+        part_path = (safe_directory / relative_path).resolve()
+        if not part_path.is_relative_to(safe_directory):
+            raise ValueError(f"{asset_id}.attackSheetBase64Parts path escapes the hero asset directory")
+        if not part_path.is_file():
+            raise ValueError(f"missing attack atlas payload: {part_path.relative_to(root).as_posix()}")
+        encoded_parts.append(part_path.read_text(encoding="ascii").strip())
+    try:
+        payload = base64.b64decode("".join(encoded_parts), validate=True)
+    except (ValueError, UnicodeError) as exc:
+        raise ValueError(f"{asset_id}.attackSheetBase64Parts is not valid Base64: {exc}") from exc
+    with Image.open(io.BytesIO(payload)) as opened:
+        opened.load()
+        return opened.convert("RGBA")
+
+
 def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> dict[str, Any]:
     root = root.resolve()
     manifest_file = manifest_file if manifest_file.is_absolute() else root / manifest_file
@@ -188,8 +222,11 @@ def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> d
                         raise ValueError(f"{asset_id} has no walk columns")
 
                     has_frame_files = "attackFrameFiles" in meta
-                    if has_frame_files and meta.get("attackSheet"):
-                        raise ValueError(f"{asset_id} cannot declare both attackFrameFiles and attackSheet")
+                    has_base64_sheet = "attackSheetBase64Parts" in meta
+                    if has_frame_files and (meta.get("attackSheet") or has_base64_sheet):
+                        raise ValueError(f"{asset_id} cannot declare attackFrameFiles with an attack atlas")
+                    if has_base64_sheet and meta.get("attackSheet"):
+                        raise ValueError(f"{asset_id} cannot declare both attackSheet and attackSheetBase64Parts")
                     separate_rows: list[list[Image.Image]] | None = None
                     if has_frame_files:
                         declared = meta.get("attackFrames")
@@ -208,7 +245,6 @@ def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> d
                         )
 
                     attack_sheet = None
-                    attack_path = None
                     attack_count = 0
                     if meta.get("attackSheet"):
                         attack_path = root / "assets" / "art" / folder / str(meta["attackSheet"])
@@ -217,11 +253,17 @@ def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> d
                         with Image.open(attack_path) as opened:
                             opened.load()
                             attack_sheet = opened.convert("RGBA")
+                    elif has_base64_sheet:
+                        attack_sheet = _load_base64_attack_sheet(
+                            root, root / "assets" / "art" / folder,
+                            meta["attackSheetBase64Parts"], asset_id,
+                        )
+                    if attack_sheet is not None:
                         attack_count = positive_int(meta.get("attackFrames"), f"{asset_id}.attackFrames")
                         attack_expected = (width * attack_count, height * len(rows))
                         if attack_sheet.size != attack_expected:
                             raise ValueError(
-                                f"{meta['attackSheet']} is {attack_sheet.size}; expected {attack_expected}"
+                                f"separate attack atlas is {attack_sheet.size}; expected {attack_expected}"
                             )
 
                     for row, direction in enumerate(rows):
