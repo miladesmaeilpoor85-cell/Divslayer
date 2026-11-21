@@ -6,7 +6,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from import_animation_atlas import _key_connected_background, _key_global_background, import_atlas
+from import_animation_atlas import (
+    _key_connected_background,
+    _key_global_background,
+    import_atlas,
+)
 from PIL import Image, ImageDraw
 
 
