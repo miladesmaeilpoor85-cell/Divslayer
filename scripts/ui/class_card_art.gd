@@ -1,13 +1,7 @@
 extends RefCounted
 ## Six-pose animated illustrations for the four class-selection cards.
 
-const UserArtAtlas = preload("res://scripts/ui/user_art_atlas.gd")
-const FOLDER := "assets/art/ClassCards"
-const PARTS: Array[String] = [
-	"class_motion_atlas.part_00.b64",
-	"class_motion_atlas.part_01.b64",
-	"class_motion_atlas.part_02.b64",
-]
+const ATLAS: Texture2D = preload("res://assets/art/ClassCards/class_motion_atlas.webp")
 const ORIGINS := {
 	"warrior": Vector2i(0, 0),
 	"mage": Vector2i(192, 0),
@@ -16,22 +10,21 @@ const ORIGINS := {
 }
 static var _frame_cache: Dictionary = {}
 
-static func frames_for(class_name: String) -> Array[Texture2D]:
-	if _frame_cache.has(class_name):
-		return _frame_cache[class_name] as Array[Texture2D]
-	if not ORIGINS.has(class_name):
+static func frames_for(calling_name: String) -> Array[Texture2D]:
+	if _frame_cache.has(calling_name):
+		return _frame_cache[calling_name]
+	if not ORIGINS.has(calling_name) or ATLAS == null:
 		return []
-	var atlas: Texture2D = UserArtAtlas.load_webp_base64(FOLDER, PARTS)
-	if atlas == null or atlas.get_width() != 384 or atlas.get_height() != 384:
+	if ATLAS.get_width() != 384 or ATLAS.get_height() != 384:
 		return []
 
-	var origin: Vector2i = ORIGINS[class_name]
+	var origin: Vector2i = ORIGINS[calling_name]
 	var frames: Array[Texture2D] = []
 	for frame in range(6):
 		var frame_texture := AtlasTexture.new()
-		frame_texture.atlas = atlas
+		frame_texture.atlas = ATLAS
 		var cell := Vector2i((frame % 2) * 96, int(frame / 2) * 64)
 		frame_texture.region = Rect2(Vector2(origin + cell), Vector2(96, 64))
 		frames.append(frame_texture)
-	_frame_cache[class_name] = frames
+	_frame_cache[calling_name] = frames
 	return frames
