@@ -1061,7 +1061,7 @@
    "flipSideForLeft": true,
    "weaponTier": 1,
    "armorTier": 0,
-   "attackSheet": "mage_starter_attack_atlas.webp",
+   "attackSheet": "mage_starter_attack_atlas.png",
    "attackFrames": 4,
    "attackFps": 24,
    "attackImpactFrame": 2
@@ -1143,7 +1143,7 @@
    "flipSideForLeft": true,
    "weaponTier": 1,
    "armorTier": 0,
-   "attackSheet": "rogue_starter_attack_atlas.webp",
+   "attackSheet": "rogue_starter_attack_atlas.png",
    "attackFrames": 4,
    "attackFps": 24,
    "attackImpactFrame": 2
@@ -1225,7 +1225,7 @@
    "flipSideForLeft": true,
    "weaponTier": 1,
    "armorTier": 0,
-   "attackSheet": "paladin_starter_attack_atlas.webp",
+   "attackSheet": "paladin_starter_attack_atlas.png",
    "attackFrames": 4,
    "attackFps": 24,
    "attackImpactFrame": 2
