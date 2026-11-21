@@ -1,0 +1,31 @@
+name: Uploaded source media review
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review-source-media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install FFmpeg and Pillow
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --disable-pip-version-check Pillow==11.1.0
+      - name: Inspect uploaded PNG and MP4 source media
+        run: python tools/review_uploaded_source_media.py
+      - name: Upload contact sheets and metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Uploaded-Source-Media-Review
+          path: artifacts/source-media-review/
+          if-no-files-found: error
+          retention-days: 14
