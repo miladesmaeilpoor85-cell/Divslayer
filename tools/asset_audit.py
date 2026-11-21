@@ -200,6 +200,8 @@ def audit_repository(root: Path) -> dict[str, Any]:
         and p.suffix.lower() in IMAGE_EXTENSIONS
         and not excluded_dirs.intersection(p.relative_to(root).parts)
     )
+    atlas_payload_files, atlas_payloads_checked, atlas_payload_errors = audit_atlas_payloads(root)
+    errors.extend(atlas_payload_errors)
 
     registry_path = root / REGISTER
     rows: dict[str, str] = {}
@@ -238,11 +240,17 @@ def audit_repository(root: Path) -> dict[str, Any]:
         except (OSError, csv.Error, UnicodeError) as exc:
             errors.append(f"could not read rights register: {exc}")
 
-    actual = {p.relative_to(root).as_posix() for p in images}
+    image_paths = {p.relative_to(root).as_posix() for p in images}
+    payload_paths = {p.relative_to(root).as_posix() for p in atlas_payload_files}
+    actual = image_paths | payload_paths
     for rel in sorted(actual - set(rows)):
-        errors.append(f"artwork file is not registered: {rel}")
+        label = "atlas payload part" if rel in payload_paths else "artwork file"
+        errors.append(f"{label} is not registered: {rel}")
     for rel in sorted(set(rows) - actual):
-        errors.append(f"registered artwork is not a supported image file: {rel}")
+        if rel.startswith(ATLAS_PAYLOAD_ROOT.as_posix() + "/"):
+            errors.append(f"registered atlas payload part is missing: {rel}")
+        else:
+            errors.append(f"registered artwork is not a supported image file: {rel}")
 
     unverified = sum(value.upper() == "UNVERIFIED" for value in rows.values())
     blank = rights_counts.get("(blank)", 0)
@@ -283,7 +291,10 @@ def audit_repository(root: Path) -> dict[str, Any]:
 
     return {
         "artwork_files": len(images),
-        "registered_artwork_files": len(rows),
+        "registered_artwork_files": len(set(rows) & image_paths),
+        "atlas_payload_parts": len(atlas_payload_files),
+        "atlas_payloads_checked": atlas_payloads_checked,
+        "registered_atlas_payload_parts": len(set(rows) & payload_paths),
         "artwork_rights_status_counts": dict(sorted(rights_counts.items())),
         "audio_files_checked": len(audio_files),
         "image_dimensions": dimensions,
@@ -303,7 +314,8 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     else:
         print("Divslayer asset audit")
-        print(f"Artwork: {report['artwork_files']} files; {report['registered_artwork_files']} registered")
+        print(f"Artwork: {report['artwork_files']} images; {report['registered_artwork_files']} registered")
+        print(f"Attack atlas payloads: {report['atlas_payloads_checked']} PNGs from {report['atlas_payload_parts']} parts")
         print(f"Audio files checked: {report['audio_files_checked']}")
         print("Rights statuses: " + (", ".join(f"{k}={v}" for k, v in report["artwork_rights_status_counts"].items()) or "no records"))
         print(f"Exact-duplicate image groups: {len(report['identical_image_groups'])}")
