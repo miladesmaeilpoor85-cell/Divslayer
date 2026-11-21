@@ -30,6 +30,10 @@ On 18 November 2026, the `main` branch history was rewritten to remove an old sa
 - [Multi-tool production pipeline](docs/MULTITOOL_PIPELINE.md) — GDScript/Python analysis, FFmpeg audio checks, image inspection, and map-layout previews.
 - [Creative applications workflow](docs/CREATIVE_TOOLS.md) — Krita, Audacity, LMMS, and Blender smoke tests and source-project handling.
 
+See [Gemini Omni video generation](docs/GEMINI_OMNI_VIDEO_SETUP.md) for the secure, manual GitHub Actions workflow that creates reviewable cinematic clips using a Gemini API key stored as a repository secret.
+
+برای اتصال امن Gemini Omni و ساخت کلیپ سینمایی از طریق GitHub Actions، [راهنمای تولید ویدئو](docs/GEMINI_OMNI_VIDEO_SETUP.md) را ببینید.
+
 ## Goals / اهداف
 
 - Share project progress and receive feedback from the community.
