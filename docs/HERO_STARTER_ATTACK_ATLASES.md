@@ -2,7 +2,7 @@
 
 ## Runtime integration
 
-This branch adds four-frame starter attacks for Rogue and Paladin only. Each 640 × 468 PNG atlas contains a 4 × 3 grid of 160 × 156 cells. Rows are `down`, `up`, and `side`; columns are `anticipation`, `windup`, `contact`, and `recovery`. Both entries use 24 FPS and zero-based impact frame 2.
+This branch adds the four-frame starter attack for Rogue only. Paladin remains on its existing attack until its binary atlas has been transferred and checksum-verified. Each 640 × 468 PNG atlas contains a 4 × 3 grid of 160 × 156 cells. Rows are `down`, `up`, and `side`; columns are `anticipation`, `windup`, `contact`, and `recovery`. The Rogue entry uses 24 FPS and zero-based impact frame 2.
 
 To keep the binary assets export-safe through the existing repository workflow, each PNG is stored as ordered text-safe Base64 parts under `assets/art/Heroes/attack_atlas_data/{rogue,paladin}/`. `scripts/sheets.gd` concatenates the declared parts, decodes the PNG at runtime, and creates the existing `SpriteFrames`. The Android QA export preset includes `*.b64` in the PCK. The source PNG is 128-colour indexed with retained per-pixel alpha.
 
@@ -12,27 +12,25 @@ The imported source sheets were user-supplied in this conversation:
 - Rogue: `1000078728.png`
 - Paladin: `1000078727.png`
 
-Both source sheets were 1536 × 1147 px and were padded to 1536 × 1152 px (five rows added at the bottom; no source art was cropped). The importer extracted 24 separate frames total, aligned their feet, used premultiplied-alpha resizing, removed magenta matte spill, and set an 8 px minimum top margin.
+The Rogue source sheet was 1536 × 1147 px and was padded to 1536 × 1152 px (five rows added at the bottom; no source art was cropped). The importer extracted 12 frames, aligned their feet, used premultiplied-alpha resizing, removed magenta matte spill, and set an 8 px minimum top margin.
 
-No exact duplicate frames were found. All adjacent frame changes exceed the 2.5% low-motion threshold. The following source-edge review warnings are retained rather than hidden:
+No exact duplicate Rogue frames were found. All adjacent frame changes exceed the 2.5% low-motion threshold. The following source-edge review warnings are retained rather than hidden:
 
 | Class | Direction / phase | Minimum source margin |
 |---|---|---:|
 | Rogue | down / contact | 2 px |
 | Rogue | up / contact | 7 px |
 | Rogue | side / recovery | 7 px |
-| Paladin | side / windup | 7 px |
-| Paladin | side / contact | 1 px |
-| Paladin | side / recovery | 2 px |
 
 These are review warnings, not proof of cropping. The final output gives each pose an 8 px top margin and a common bottom/foot baseline. Review the GIF previews and screenshots in the CI artifact before merging.
 
 ## Scope and limitations
 
 - Mage remains on its existing attack until its staff/effect edge warnings are corrected.
+- Paladin remains on its existing attack because its 18-part image payload has not yet passed transfer verification.
 - Warrior is unchanged; its existing four-frame Starter sequence remains registered.
 - This change does not alter damage, hit count, attack cooldown, stun, invulnerability, or ultimate logic.
-- The two new images remain `UNVERIFIED` for commercial use. The source creator/provider and license evidence were not independently recorded, so technical integration is not legal clearance.
+- The new Rogue atlas remains `UNVERIFIED` for commercial use. The source creator/provider and license evidence were not independently recorded, so technical integration is not legal clearance.
 
 ## Test requirements
 
