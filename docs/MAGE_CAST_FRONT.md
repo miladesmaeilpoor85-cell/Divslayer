@@ -1,20 +1,35 @@
 # Mage Starter front casting animation
 
 ## Scope
+
 This is an optional one-shot visual overlay for the Mage Starter calling. It is not a replacement for the shared three-direction hero sheet. The overlay plays only after a successful spell cast while the Mage is stationary and facing down/front. Movement, attacks, blocking, dodging, stealth, death, or a change of hero tier cancels the overlay and restores the existing animation.
 
-## Processing pipeline
-- Source: user-provided Mage casting video, 480×854, 24 FPS, 5.056 seconds.
-- Twelve temporal samples: source frames 16, 24, 32, 40, 48, 56, 64, 72, 80, 92, 104, 120.
-- Background processing: edge-connected green-key removal with conservative green despill, followed by premultiplied-alpha resizing.
-- Atlas: `assets/art/Heroes/mage_starter_cast_front.webp`, 4 columns × 3 rows, 96×171 pixels per cell, 8 FPS, one-shot.
-- The 12 frames represent consecutive temporal samples from a single front-facing casting sequence. Atlas rows are not down/up/side directions.
+## Source and extraction
 
-## Build dependency
-The atlas is hosted in the owner's Higgsfield workspace and is fetched by `python3 tools/fetch_mage_cast_front_asset.py` before Godot import/export in CI. The script verifies the exact byte count, WebP signature, and SHA-256 and fails closed if the hosted asset disappears or changes. Run the same command before opening/importing the project locally. This remote-host dependency is intentional for this PR because the original binary was produced outside the game engine and could not be committed directly through the available repository file channel.
+- Source: MP4 supplied by the project owner in this conversation; H.264, 480×854, 24 FPS, 121 frames, 5.041667 s video stream.
+- Twelve temporal samples at 8 FPS: source frames 16, 24, 32, 40, 48, 56, 64, 72, 80, 92, 104, 120.
+- Green-screen removal uses an edge-connected chroma mask. Cyan/blue magical light is preserved; semi-transparent boundary pixels are unmixed against the sampled screen colour to reduce green spill.
+- The magical flare in samples 64–104 reaches the source-video border. A 48 px edge fade makes those flare boundaries transition to transparency rather than leaving a hard rectangular cut. This does not synthesize missing off-frame pixels.
+- The whole source frame is fitted into each output cell. All cells keep consistent feet alignment and transparent safety margins.
+
+## Atlas and runtime
+
+- Runtime texture: assets/art/Heroes/mage_starter_cast_front.webp — lossless WebP with alpha.
+- Layout: 4 columns × 3 rows; twelve sequential frames, not directional rows.
+- Runtime cell: 160×285 px; atlas: 640×855 px.
+- Playback: 8 FPS, non-looping.
+- Godot pivot: Vector2(-80, -270).
+- Display scale: 0.612, selected to retain the previous on-screen size while using the higher-resolution cells.
+- Full sampled-resolution RGBA PNG master: 2112×2706 px, with 528×902 px cells and 24 px external transparent padding. It is delivered separately from the runtime asset.
+
+## Reproducible build input
+
+The lossless WebP source bytes are stored as ASCII base64 in assets/art/Heroes/mage_starter_cast_front_lossless.webp.b64. Run python3 tools/fetch_mage_cast_front_asset.py before opening/importing the project. The script uses only Python's standard library and verifies exact byte count, SHA-256, lossless WebP encoding, alpha presence and image dimensions. Builds no longer download the earlier lossy atlas from an external URL.
 
 ## Godot integration
-`scripts/sheets.gd` builds a separate non-looping `cast_front` SpriteFrames resource. `scripts/player.gd` displays it as a temporary overlay after `caster.cast_done` for Mage Starter only. Existing walk, idle, attack, damage, cooldown and spell logic remain unchanged.
+
+scripts/sheets.gd builds a separate non-looping cast_front SpriteFrames resource. scripts/player.gd displays it as a temporary overlay after caster.cast_done for Mage Starter only. Existing walk, idle, attack, damage, cooldown and spell logic remain unchanged.
 
 ## Rights
-The animation derives from user-provided media, but the applicable video-generation provider terms and commercial-use evidence have not been independently verified. The new atlas remains `UNVERIFIED` in the asset rights register. Do not treat a successful technical import as rights clearance.
+
+The video is the file supplied by the project owner. The generation provider/model and associated commercial-use terms were not independently verified. The asset therefore remains UNVERIFIED in the asset rights register. Technical processing and successful Android tests do not constitute commercial-rights clearance.
