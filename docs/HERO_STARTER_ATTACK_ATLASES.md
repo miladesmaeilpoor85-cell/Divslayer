@@ -10,9 +10,9 @@ All three entries use `attackFrames: 4`, `attackFps: 24`, and `attackImpactFrame
 
 ## Import and review notes
 
-The uploaded source sheets were split using proportional row boundaries because their source canvas is 1536 × 1147 px, rather than an exact multiple of three rows. Magenta backgrounds were removed on Mage, Rogue and Paladin; Rogue used global magenta matte cleanup because magenta-colored matte islands were enclosed by the pale slash effects. Warrior's embedded neutral checkerboard was removed as a separate review-only alternative atlas.
+The uploaded source sheets were padded to 1536 × 1152 px without cropping any source row, then split using the repository's 4×3 atlas importer. The importer writes the final 640 × 468 transparent packed atlases and 160 × 156 output frames. Magenta backgrounds were removed on Mage, Rogue and Paladin; Rogue used the importer's explicit `--global-key` mode because magenta-colored matte islands were enclosed by the pale slash effects. Warrior's embedded neutral checkerboard was removed as a separate review-only alternative atlas.
 
-Exact duplicate detection found no duplicate frame pairs across the four reviewed source atlases. All adjacent frame pixel-change ratios exceeded the review threshold of 2.5%. Some source poses approach their cell edges; these are documented in the QA report. The art is retained without silently cropping or inventing replacement poses. The Warrior review atlas is not runtime-registered.
+Exact duplicate detection found no duplicate frame pairs across the four reviewed source atlases. All adjacent frame pixel-change ratios exceeded the review threshold of 2.5%. Some source poses approach their cell edges; the importer records exact per-frame source margins and emits warnings under 8 px. These flagged frames require visual QA and have not been silently cropped or reconstructed. The art is retained without silently cropping or inventing replacement poses. The Warrior review atlas is not runtime-registered.
 
 ## Rights status
 
