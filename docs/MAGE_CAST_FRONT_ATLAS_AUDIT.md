@@ -1,72 +1,51 @@
-# Mage Starter cast-front atlas — source rebuild audit
+# Mage Starter cast-front atlas — technical edge audit
 
-**Status: lossless source rebuild completed; visual in-game acceptance is still pending.**
+**Status: diagnostic only. The current runtime atlas is not approved as the high-resolution production master.**
 
-## Source inspected
+## Asset inspected
 
-- Uploaded video: 1000078750.mp4
-- Video codec: H.264 / MP4
-- Resolution: 480×854
-- Frame rate: 24 FPS
-- Video stream: 121 frames, 5.041667 seconds
-- Container duration: 5.056 seconds
-- Chosen frame indices: 16, 24, 32, 40, 48, 56, 64, 72, 80, 92, 104, 120
+- Runtime file: `assets/art/Heroes/mage_starter_cast_front.webp`
+- Encoded size: 384 × 513 px, RGBA, 123,750 bytes
+- Layout: 4 columns × 3 rows
+- Cell size: 96 × 171 px (12 frames)
+- Encoding: lossy WebP. The alpha channel is present, but the RGB image data is not a lossless master.
 
-The selected samples preserve the front-facing cast sequence: idle/anticipation, staff and free-hand movement, channeling with the cyan magical glow, then recovery.
+## Per-frame alpha bounds
 
-## Output assets
+Coordinates are local to each cell and use Pillow's half-open bounding-box convention `(left, top, right, bottom)`.
 
-| Asset | Dimensions | Format | Purpose |
-|---|---:|---|---|
-| Runtime atlas | 640×855 | WebP RGB quality 90 + exact alpha plane | Godot texture, 4×3 cells |
-| Runtime cell | 160×285 | Lossless WebP RGBA | One frame per cell |
-| Full source master | 2112×2706 | PNG RGBA | 4×3 native-resolution samples, 528×902 cells |
-| Runtime PNG copy | 640×855 | PNG RGBA | Standalone preview/inspection copy |
+| Frame | Alpha bbox | Left margin | Top margin | Right margin | Bottom margin | Alpha on cell edge |
+|---:|---|---:|---:|---:|---:|---|
+| 0 | (9, 4, 89, 168) | 9 | 4 | 7 | 3 | none |
+| 1 | (11, 4, 88, 168) | 11 | 4 | 8 | 3 | none |
+| 2 | (11, 4, 88, 168) | 11 | 4 | 8 | 3 | none |
+| 3 | (11, 4, 89, 168) | 11 | 4 | 7 | 3 | none |
+| 4 | (10, 4, 89, 168) | 10 | 4 | 7 | 3 | none |
+| 5 | (10, 4, 89, 168) | 10 | 4 | 7 | 3 | none |
+| 6 | (9, 4, 89, 168) | 9 | 4 | 7 | 3 | none |
+| 7 | (10, 3, 92, 168) | 10 | 3 | 4 | 3 | none |
+| 8 | (10, 0, 96, 168) | 10 | 0 | 0 | 3 | top: 5 pixels; right: 1 pixel |
+| 9 | (10, 2, 93, 168) | 10 | 2 | 3 | 3 | none |
+| 10 | (10, 3, 89, 168) | 10 | 3 | 7 | 3 | none |
+| 11 | (9, 4, 87, 168) | 9 | 4 | 9 | 3 | none |
 
-- Runtime WebP: 215,480 bytes; RGB quality 90, alpha plane pixel-identical to the PNG source; SHA-256 3f2b1fd3084b5c8344c113ae125a5bd151f90d14553bab820eb4ca67d28cbf60
-- Runtime PNG: 729,619 bytes; SHA-256 faf038963ca2068edb3bbaeabddbe4af9f12ffd607dd4aee9e6a38af9fb47ff1
-- Full master PNG: 650,557 bytes; SHA-256 522c573b4e02fb9288eb7866a5ed613b2731ba6be52a39386683b574d1c43ee8
+## Visual review
 
-## Alpha-bound audit
+Frames 0–7 and 9–11 retain transparent space at every cell edge. Frame 8 visibly brings the staff finial to the top boundary; its alpha bounds confirm that the cutout touches the top edge and has one opaque/partially opaque pixel on the right boundary. This is an actual edge-contact warning, not merely a low margin estimate.
 
-Margins are measured on the 160×285 runtime cell after background extraction, edge fade and downsampling. Bounding boxes use half-open coordinates.
+Frame 9 is close to the top and right boundaries (2 px and 3 px respectively), so it also needs a wider crop/padding check against the original frame.
 
-| Atlas frame | Source frame | Left | Top | Right | Bottom | Opaque pixels on cell edge |
-|---:|---:|---:|---:|---:|---:|---|
-| 0 | 16 | 27 | 39 | 24 | 15 | none |
-| 1 | 24 | 29 | 39 | 25 | 15 | none |
-| 2 | 32 | 29 | 38 | 24 | 15 | none |
-| 3 | 40 | 29 | 39 | 24 | 15 | none |
-| 4 | 48 | 28 | 39 | 24 | 15 | none |
-| 5 | 56 | 28 | 39 | 24 | 15 | none |
-| 6 | 64 | 27 | 33 | 13 | 15 | none |
-| 7 | 72 | 25 | 32 | 12 | 15 | none |
-| 8 | 80 | 18 | 31 | 11 | 15 | none |
-| 9 | 92 | 16 | 32 | 12 | 15 | none |
-| 10 | 104 | 27 | 32 | 12 | 15 | none |
-| 11 | 120 | 27 | 38 | 23 | 15 | none |
+## Rebuild decision
 
-All twelve runtime frames have fully transparent outer cell edges. The minimum measured margin is 11 px on the right of frame 8; the staff crystal remains inside the frame. Feet remain aligned at the same baseline (row 270).
+Do **not** upscale the current WebP and call it a higher-quality master. Upscaling cannot recover detail lost by the 96 × 171 px lossy source.
 
-## Matte and edge treatment
+The original Seedance clip used for sampling (reported as 480 × 854 px, 24 FPS, 121 frames) and the lossless 1920 × 2562 PNG master are not present in the current conversation files, the accessible Library listing, or the accessible Higgsfield project workspace. Without the source clip/master, missing pixels at frame 8 cannot be reconstructed faithfully and the original cutout/matte cannot be revalidated.
 
-- Green removal is limited to saturated green pixels connected to the video-frame exterior, with a two-pixel anti-aliased fringe.
-- The background colour is sampled from the frame border, rather than assuming a fixed chroma RGB value.
-- Semi-transparent edge pixels are unmixed against the sampled green screen to reduce green spill on hair, cape and trousers.
-- The cyan magical flare reaches source-image edges in frames 7–10. A 48 px boundary fade removes abrupt rectangular edge contact while retaining the interior glow. No off-frame image content is invented or reconstructed.
+To complete the rebuild, restore the original MP4 or the lossless master, then:
+1. Re-extract the twelve approved frame indices from the original source.
+2. Preserve the cutout as true RGBA in PNG, not lossy WebP.
+3. Add safe transparent padding and verify all twelve per-cell alpha bounds against the cell edges.
+4. Review frames 8 and 9 at native resolution, then update the cell-size, pivot/offset and runtime import contract together.
+5. Re-run Android QA and inspect the resulting in-game cast at gameplay scale.
 
-## Runtime contract updated together
-
-- Atlas: 4 columns × 3 rows
-- Cell: 160×285
-- Frames: 12
-- FPS: 8
-- Loop: false
-- Foot pivot offset: (-80, -270)
-- Player display scale: 0.612
-
-The embedded high-quality WebP is materialized by tools/fetch_mage_cast_front_asset.py. The extracted alpha plane is pixel-identical to the PNG runtime atlas; RGB uses quality 90 compression. Godot import and Android emulator QA must pass before the rebuilt atlas is accepted in-game.
-
-## Rights
-
-The MP4 was supplied by the project owner. The model/provider provenance and applicable commercial-use terms were not independently established, so the asset remains UNVERIFIED. A successful extraction, build or emulator test is not rights clearance.
+**Current decision:** retain the existing runtime file unchanged for diagnostic testing only; do not promote it as a high-resolution, edge-approved atlas.
