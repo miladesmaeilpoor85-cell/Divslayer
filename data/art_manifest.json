@@ -1145,7 +1145,11 @@
     "attack_atlas_data/rogue/part_02.b64",
     "attack_atlas_data/rogue/part_03.b64",
     "attack_atlas_data/rogue/part_04.b64",
-    "attack_atlas_data/rogue/part_05.b64"
+    "attack_atlas_data/rogue/part_05.b64",
+    "attack_atlas_data/rogue/part_06.b64",
+    "attack_atlas_data/rogue/part_07.b64",
+    "attack_atlas_data/rogue/part_08.b64",
+    "attack_atlas_data/rogue/part_09.b64"
    ],
    "attackFrames": 4,
    "attackFps": 24,
@@ -1235,7 +1239,18 @@
     "attack_atlas_data/paladin/part_03.b64",
     "attack_atlas_data/paladin/part_04.b64",
     "attack_atlas_data/paladin/part_05.b64",
-    "attack_atlas_data/paladin/part_06.b64"
+    "attack_atlas_data/paladin/part_06.b64",
+    "attack_atlas_data/paladin/part_07.b64",
+    "attack_atlas_data/paladin/part_08.b64",
+    "attack_atlas_data/paladin/part_09.b64",
+    "attack_atlas_data/paladin/part_10.b64",
+    "attack_atlas_data/paladin/part_11.b64",
+    "attack_atlas_data/paladin/part_12.b64",
+    "attack_atlas_data/paladin/part_13.b64",
+    "attack_atlas_data/paladin/part_14.b64",
+    "attack_atlas_data/paladin/part_15.b64",
+    "attack_atlas_data/paladin/part_16.b64",
+    "attack_atlas_data/paladin/part_17.b64"
    ],
    "attackFrames": 4,
    "attackFps": 24,
