@@ -171,12 +171,16 @@ func swing(who: Node2D, dir: Vector2, reach: float, heavy := false, tier := 1) -
 
 ## A brief anticipation cue, played at attack start before the contact-frame hit is resolved.
 ## It only draws presentation effects; it never changes attack reach, damage, or timing.
-func attack_windup(who: Node2D, dir: Vector2, hero_class: String, heavy := false) -> void:
+func attack_windup(who: Node2D, dir: Vector2, hero_class: String, heavy := false, requested_duration := -1.0) -> void:
 	if not is_instance_valid(who) or dir.length_squared() < 0.0001:
 		return
 	var forward := dir.normalized()
-	var side := forward.orthogonal()
-	var duration := 0.20 if heavy else 0.12
+	var duration := requested_duration
+	if duration < 0.0:
+		duration = 0.20 if heavy else 0.12
+	# Keep the cue alive only until the configured contact frame. The class-specific
+	# drawing is handled by _draw_attack_windup, so cancellation removes it completely.
+	duration = clampf(duration, 0.001, 0.25)
 	windups.append({
 		"who": who,
 		"dir": forward,
@@ -187,22 +191,6 @@ func attack_windup(who: Node2D, dir: Vector2, hero_class: String, heavy := false
 	})
 	if windups.size() > 8:
 		windups.pop_front()
-	var anchor := who.global_position + Vector2(0, -17) + forward * (10.0 if heavy else 7.0)
-	match hero_class:
-		"mage":
-			var col := Color(0.30, 0.84, 0.96)
-			ring(anchor, col, 12.0 if heavy else 8.0, duration + 0.04)
-			emit("shine", anchor, 5 if heavy else 3, col, forward, 42.0, 58.0, 0.55)
-		"rogue":
-			var col := Color(0.48, 0.84, 0.57, 0.78)
-			dash_trail(anchor + side * 4.0, forward, col, duration, 30.0 if heavy else 22.0)
-			dash_trail(anchor - side * 4.0, forward, col, duration, 30.0 if heavy else 22.0)
-		"paladin":
-			var col := Color(1.0, 0.82, 0.38)
-			ring(anchor, col, 14.0 if heavy else 10.0, duration + 0.06)
-			emit("shine", anchor, 5 if heavy else 3, col, Vector2.UP, 32.0, 62.0, 0.6)
-		_:
-			dust(anchor, 3 if heavy else 2, -forward, Color(0.62, 0.49, 0.34, 0.55))
 	arcs.queue_redraw()
 
 ## Remove a still-active anticipation cue when the owning attack is interrupted.
