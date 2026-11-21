@@ -244,6 +244,7 @@ func run(m: Node) -> void:
 		# Class-specific attack language stays cosmetic and distinct while using the same hit geometry.
 		var previous_class := str(Game.cls)
 		var class_swings := {}
+		var windups_before := main.world.fx.windups.size()
 		for hero_class in ["warrior", "mage", "rogue", "paladin"]:
 			Game.cls = hero_class
 			main.world.fx.swing(main.player, Vector2.RIGHT, 42.0, false, 1)
@@ -253,12 +254,23 @@ func run(m: Node) -> void:
 			var ring_count: int = main.world.fx.rings.size()
 			main.world.fx.class_impact(e2.center(), Vector2.RIGHT, hero_class, false)
 			check("impact_fx_has_" + hero_class + "_response", main.world.fx.rings.size() > ring_count)
+			main.world.fx.attack_windup(main.player, Vector2.RIGHT, hero_class, false)
+			var windup: Dictionary = main.world.fx.windups.back()
+			check("attack_windup_records_" + hero_class + "_identity",
+				str(windup.get("class", "")) == hero_class and float(windup.get("dur", 0.0)) > 0.0)
 		Game.cls = previous_class
 		check("class_swing_palettes_are_distinct",
 			class_swings.size() == 4
 			and class_swings["mage"] != class_swings["rogue"]
 			and class_swings["mage"] != class_swings["paladin"]
 			and class_swings["rogue"] != class_swings["paladin"], class_swings)
+		main.world.fx.attack_windup(main.player, Vector2.UP, "paladin", true)
+		var heavy_windup: Dictionary = main.world.fx.windups.back()
+		check("heavy_attack_windup_has_longer_readability_window",
+			float(heavy_windup.get("dur", 0.0)) > 0.17, heavy_windup)
+		main.world.fx.cancel_attack_windup(main.player)
+		check("attack_windups_clear_when_actor_is_interrupted",
+			main.world.fx.windups.size() == windups_before, main.world.fx.windups.size())
 		e2.make_elite("fire")
 		var orbit_a: PackedVector2Array = e2._elite_orbit_points(0.0, 24.0)
 		var orbit_b: PackedVector2Array = e2._elite_orbit_points(0.5, 24.0)
