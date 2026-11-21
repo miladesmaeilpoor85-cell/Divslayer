@@ -1138,7 +1138,22 @@
    ],
    "flipSideForLeft": true,
    "weaponTier": 1,
-   "armorTier": 0
+   "armorTier": 0,
+   "attackSheetBase64Parts": [
+    "attack_atlas_data/rogue/part_00.b64",
+    "attack_atlas_data/rogue/part_01.b64",
+    "attack_atlas_data/rogue/part_02.b64",
+    "attack_atlas_data/rogue/part_03.b64",
+    "attack_atlas_data/rogue/part_04.b64",
+    "attack_atlas_data/rogue/part_05.b64",
+    "attack_atlas_data/rogue/part_06.b64",
+    "attack_atlas_data/rogue/part_07.b64",
+    "attack_atlas_data/rogue/part_08.b64",
+    "attack_atlas_data/rogue/part_09.b64"
+   ],
+   "attackFrames": 4,
+   "attackFps": 24,
+   "attackImpactFrame": 2
   },
   "rogue_mid": {
    "cellW": 160,

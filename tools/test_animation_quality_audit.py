@@ -1,6 +1,8 @@
 """Unit tests for frame-level sprite animation quality metrics."""
 from __future__ import annotations
 
+import base64
+import io
 import json
 import tempfile
 import unittest
@@ -116,6 +118,47 @@ class AnimationQualityAuditTests(unittest.TestCase):
         attack_clips = [clip for clip in report["clips"] if clip["clip"].startswith("attack_")]
         self.assertTrue(all(clip["fps"] == 24.0 and clip["impact_frame"] == 2 for clip in attack_clips))
         self.assertTrue(all(clip["impact_time_ms"] == 83.33 for clip in attack_clips))
+
+    def test_reads_packed_base64_attack_atlas(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.make_project(root)
+            manifest_path = root / "data/art_manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            hero = manifest["heroes"]["warrior_starter"]
+
+            atlas = Image.new("RGBA", (64, 48), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(atlas)
+            for row in range(3):
+                for column in range(4):
+                    draw.rectangle(
+                        (column * 16 + 3 + column, row * 16 + 2, column * 16 + 9 + column, row * 16 + 13),
+                        fill=(220, 110 + column * 8, 50, 255),
+                    )
+            image_buffer = io.BytesIO()
+            atlas.save(image_buffer, format="PNG")
+            encoded = base64.b64encode(image_buffer.getvalue()).decode("ascii")
+            split = (len(encoded) // 2) - (len(encoded) // 2) % 4
+            payload_dir = root / "assets/art/Heroes/attack_atlas_data/warrior"
+            payload_dir.mkdir(parents=True)
+            paths = []
+            for index, part in enumerate((encoded[:split], encoded[split:])):
+                relative = f"attack_atlas_data/warrior/part_{index:02d}.b64"
+                (payload_dir / f"part_{index:02d}.b64").write_text(part, encoding="ascii")
+                paths.append(relative)
+            hero["attackSheetBase64Parts"] = paths
+            hero["attackFrames"] = 4
+            hero["attackFps"] = 24
+            hero["attackImpactFrame"] = 2
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            report = audit(root)
+
+        self.assertFalse(report["errors"], report["errors"])
+        self.assertEqual(report["hero_attack_frame_counts"], {4: 3})
+        self.assertEqual(report["hero_attack_multiframe_clips"], 3)
+        attack_clips = [clip for clip in report["clips"] if clip["clip"].startswith("attack_")]
+        self.assertTrue(all(clip["fps"] == 24.0 and clip["impact_frame"] == 2 for clip in attack_clips))
 
     def test_rejects_attack_frame_with_wrong_cell_dimensions(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
