@@ -11,6 +11,10 @@ func _physics_frames(count: int) -> void:
 	for _i in count:
 		await get_tree().physics_frame
 
+func _process_frames(count: int) -> void:
+	for _i in count:
+		await get_tree().process_frame
+
 func _fail(reason: String) -> void:
 	push_error("MAGE_CAST_FRONT_RUNTIME_FAIL: " + reason)
 
@@ -58,17 +62,44 @@ func _run() -> void:
 		_fail("The spell did not remain front-facing: %s" % player.facing)
 		return
 
-	# Wait into the one-shot so the capture is not just its first frame.
+	var anim: AnimatedSprite2D = player.cast_anim
+	var frames: SpriteFrames = anim.sprite_frames
+	var clip_frames := frames.get_frame_count("cast_front") if frames else -1
+	var clip_fps := frames.get_animation_speed("cast_front") if frames else -1.0
+	var start_ms := Time.get_ticks_msec()
+	print("MAGE_CAST_FRONT_DIAG_START playing=%s inside_tree=%s processing=%s process_mode=%d frame_count=%d clip_fps=%.2f speed_scale=%.2f frame=%d progress=%.3f engine_time_scale=%.3f tree_paused=%s" % [
+		anim.is_playing(), anim.is_inside_tree(), anim.is_processing(), anim.process_mode,
+		clip_frames, clip_fps, anim.speed_scale, anim.frame, anim.frame_progress,
+		Engine.time_scale, get_tree().paused
+	])
+
+	# Exercise both SceneTree time and a known number of idle frames. This avoids
+	# mistaking a timer firing for proof that AnimatedSprite2D has been processed.
 	await get_tree().create_timer(0.40, false, false, true).timeout
-	if not player._mage_cast_front_active or not is_instance_valid(player.cast_anim):
+	await _process_frames(24)
+	var elapsed_ms := Time.get_ticks_msec() - start_ms
+	print("MAGE_CAST_FRONT_DIAG_AFTER_WAIT elapsed_ms=%d playing=%s inside_tree=%s processing=%s process_mode=%d frame_count=%d clip_fps=%.2f speed_scale=%.2f frame=%d progress=%.3f engine_time_scale=%.3f tree_paused=%s" % [
+		elapsed_ms, anim.is_playing(), anim.is_inside_tree(), anim.is_processing(), anim.process_mode,
+		clip_frames, clip_fps, anim.speed_scale, anim.frame, anim.frame_progress,
+		Engine.time_scale, get_tree().paused
+	])
+
+	if not player._mage_cast_front_active or not is_instance_valid(anim):
 		_fail("The one-shot ended before the runtime capture")
 		return
-	if not player.cast_anim.visible or player.anim.visible:
+	if not anim.visible or player.anim.visible:
 		_fail("Cast overlay/base sprite visibility state is incorrect")
 		return
-	if player.cast_anim.animation != "cast_front" or player.cast_anim.frame <= 0:
-		_fail("The cast-front clip did not advance: animation=%s frame=%d" % [
-			player.cast_anim.animation, player.cast_anim.frame
+	if anim.animation != "cast_front" or anim.frame <= 0:
+		var frame_before_manual_advance := anim.frame
+		anim.advance(0.50)
+		print("MAGE_CAST_FRONT_DIAG_AFTER_MANUAL_ADVANCE prior_frame=%d frame=%d progress=%.3f playing=%s" % [
+			frame_before_manual_advance, anim.frame, anim.frame_progress, anim.is_playing()
+		])
+		_fail("The cast-front clip did not advance naturally: animation=%s frame=%d frames=%d fps=%.2f playing=%s processing=%s speed_scale=%.2f progress=%.3f elapsed_ms=%d" % [
+			anim.animation, frame_before_manual_advance, clip_frames, clip_fps,
+			anim.is_playing(), anim.is_processing(), anim.speed_scale,
+			anim.frame_progress, elapsed_ms
 		])
 		return
 
@@ -78,7 +109,7 @@ func _run() -> void:
 		_fail("Could not save the active cast-front screenshot")
 		return
 	print("MAGE_CAST_FRONT_RUNTIME_PASS spell=bolt animation=cast_front frame=%d screenshot=%s" % [
-		player.cast_anim.frame, ProjectSettings.globalize_path(shot_path)
+		anim.frame, ProjectSettings.globalize_path(shot_path)
 	])
 
 	# Movement must cancel the overlay and restore the standard sprite.
