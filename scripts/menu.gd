@@ -259,14 +259,16 @@ func _card(c: String, mx: Dictionary) -> Control:
 	b.add_child(v)
 	var face := TextureRect.new()
 	face.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	face.custom_minimum_size = Vector2(0, 84)
 	face.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(face)
 	face.texture = CLASS_CARD_ART[c]
+	# Owner-supplied Mage/Rogue/Paladin artwork is a single class-card portrait,
+	# not a sequence of directional combat frames. Keep those portraits static here;
+	# only Warrior retains the existing six-pose menu-card preview.
 	var motion_frames: Array[Texture2D] = ClassCardArt.frames_for(c)
-	if motion_frames.size() == 6:
-		face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	if c == "warrior" and motion_frames.size() == 6:
 		face.texture = motion_frames[0]
 		_card_animations.append({
 			"face": face,
