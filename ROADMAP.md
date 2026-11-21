@@ -14,24 +14,26 @@ Planning document, not a promise of delivery dates. این سند برنامه�
 ## 2. Gameplay and Chapter IV / گیم‌پلی و فصل چهارم
 
 - [x] Deterministic warning/active/rest wind controller with bounded drift and safe reset.
-- [x] Generic World/Player integration for optional map-defined wind zones.
-- [x] Port weather-aware ambience from PR #25 into the coordinated integration branch; combined FX/Godot CI passed.
-- [x] Port dodge trails and the Thornwood parley state fix from PR #26; combined FX and Toll regressions passed.
-- [x] Combine PRs #25, #26, and #36 on one draft integration branch; all four Godot shards and focused gameplay regressions passed. See [integration review](docs/INTEGRATION_REVIEW_2026-11-20.md).
-- [ ] Complete the Alborz physical-device route: entry/return, gusts, shelters, guards, rescue, save, quit, and reload.
-- [ ] Add the optional eyrie route and dedicated wind boss after the core pass is stable.
-- [ ] Tune wind, collision, damage, and combat readability for all four classes.
+- [x] Weather-aware ambient drift, directional dodge trails, and the Thornwood parley/fight persistence fix integrated into `main` through PR #38.
+- [x] Alborz map, wind shelters, guard encounter, scout rescue, save-backed chapter flow, and return route integrated into `main`.
+- [x] High Eyrie side-area and three-phase Gale Warden encounter integrated through PR #37.
+- [x] Owner-reported physical Android smoke test of the integrated Alborz route recorded in PR #38; repeat the full acceptance route on each release candidate.
+- [ ] Replace temporary/reused Alborz ground, scout visuals, props, route markers, and ambience with dedicated, rights-reviewed production assets.
+- [ ] Tune wind, collision, damage, and combat readability at native mobile scale for all four classes.
 
 ## 3. Character animation / انیمیشن شخصیت‌ها
 
-- [x] Audit the existing hero atlases and identify the one-pose attack limitation.
-- [x] Add future-facing loader/impact-frame and preview infrastructure.
-- [ ] Author and review genuinely distinct Warrior light/heavy attack frames.
-- [ ] Add Warrior hit, block, dodge, idle, and death frames.
-- [ ] Produce class-specific Mage, Rogue, and Paladin sequences; do not recolour/reuse Warrior motion.
-- [ ] Register real frames in the production art manifest and test timing/hit contact at phone scale.
+- [x] Audit all 12 hero appearances and the 36 directional attack clips.
+- [x] Add validated attack-atlas import, runtime loading, frame-level contact timing, and animation review tools.
+- [x] Integrate four-frame, three-direction light attacks for Warrior Starter (12 transparent PNGs).
+- [x] Integrate four-frame, three-direction light attacks for Rogue Starter (separate atlas loaded from Base64 resource parts).
+- [x] Add class-specific melee contact VFX and cancelable attack-anticipation cues; these are presentation effects, not authored sprite frames.
+- [ ] Create and review genuine four-frame attack art for Mage Starter and Paladin Starter.
+- [ ] Extend class-specific light-attack art to Warrior, Mage, Rogue, and Paladin Mid/Endgame looks.
+- [ ] Produce dedicated heavy attack, hit/stagger, block, dodge, and death animation sets for all four classes.
+- [ ] Complete native Android-scale visual review, gameplay timing checks, provenance records, and asset-rights verification for each accepted animation batch.
 
-See [animation production plan](docs/ANIMATION_PRODUCTION_PLAN.md).
+See [animation pipeline](docs/ANIMATION_PIPELINE.md), [production plan](docs/ANIMATION_PRODUCTION_PLAN.md), and [visual upgrade program](docs/VISUAL_UPGRADE_PROGRAM.md).
 
 ## 4. Dedicated environment art / گرافیک اختصاصی محیط
 
@@ -53,7 +55,8 @@ See [Alborz art production brief](docs/ALBORZ_ART_PRODUCTION_BRIEF.md).
 ## 6. Secure Android release / انتشار امن اندروید
 
 - [x] Isolated Android QA export and signature-verification workflow.
-- [x] Latest current-main QA APK exported from commit `0f20e499bf17966a9edb3639a4373205be048edd` (run 44710183868, artifact 14617302636; expires 4 December 2026).
+- [x] Export, package identity, and APK signature verification succeeded for the latest main QA build; the emulator installed the APK and left the Godot activity in the foreground.
+- [x] Pass the corrected Godot 4.7.2 emulator startup assertion in PR #56; run 202 succeeded and published installable QA artifact 14707328088 with SHA-256. PR #56 remains open pending review/merge.
 - [ ] Verify production package ID and export settings from the owner's private export preset.
 - [ ] Generate a new production signing/upload key locally and keep two secure offline backups.
 - [ ] Decide on Google Play App Signing and preserve package/update continuity if already distributed.

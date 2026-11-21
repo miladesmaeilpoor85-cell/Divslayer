@@ -1,169 +1,61 @@
 # Divslayer animation pipeline and audit
 
-## Audit scope
+**Verified against `main` on 21 November 2026.** This is a code/manifest audit, not a visual sign-off for every frame and not a substitute for Android device testing.
 
-This review is based on the current `main` branch source, `data/art_manifest.json`,
-`scripts/sheets.gd`, `scripts/player.gd`, `scripts/enemy.gd`, and
-`tools/sprite_sheet.py`. It is a code/metadata audit; it is not a visual sign-off
-on every frame and does not replace an Android device test.
+## Hero animation inventory
 
-## Current animation inventory
+- The production manifest contains **12 hero appearances**: Warrior, Mage, Rogue, and Paladin, each with Starter, Mid, and Endgame equipment.
+- Each legacy base sheet is **800 × 468 px**, arranged as five columns by three directions, with **160 × 156 px** cells. Its first four columns are walk poses; its fifth column is the legacy single-pose attack.
+- **Two Starter appearances now have real multi-frame light attacks**:
+  - **Warrior Starter:** four authored frames in each of the `down`, `up`, and `side` directions, registered as 12 transparent PNGs through `attackFrameFiles`.
+  - **Rogue Starter:** a separate 4-column × 3-row attack atlas, loaded from ordered Base64 resource parts through `attackSheetBase64Parts`.
+- Both use **24 FPS** and zero-based **contact frame 2**. That is six multi-frame directional clips out of the 36 registered hero attack clips. The other **30 clips remain one-pose attacks**.
+- Mage Starter, all Paladin looks, Rogue Mid/Endgame, and Warrior Mid/Endgame still use the legacy one-pose attack.
 
-- The manifest contains **12 hero appearance sheets**: Warrior, Mage, Rogue, and
-  Paladin, each with starter, mid, and endgame equipment looks.
-- Every current hero sheet uses a **5-column × 3-direction** atlas with
-  **160 × 156 px** cells (800 × 468 px total): four walk poses and one attack
-  pose per direction.
-- The runtime uses the first walk pose as the one-frame idle animation. Breathing,
-  squash, foot dust, dodge spin, and hit tint are added procedurally by the
-  player controller.
-- The enemy manifest contains **41 sprite-backed entries** plus Wisp, which is
-  intentionally drawn procedurally and has no sprite-sheet dimensions. Of the
-  41 sprite-backed entries, 32 declare four frames, five declare two frames,
-  and four declare one frame. One- and two-frame designs need per-creature review;
-  a low frame count is not automatically a defect for static props or wing cycles.
-- Enemies use one looping animation per variant row. Their hit reaction is mainly
-  implemented through flash, squash, knockback, and rotation. Bosses inherit this
-  enemy sprite framework; their move identity is currently communicated largely
-  through attack telegraphs and effects rather than separate attack sprite clips.
+## Runtime behaviour
+
+The attack loader preserves the existing 5 × 3 walk sheet and accepts separately registered attack data. The canonical attack atlas layout is four columns by three rows:
+
+| Direction row | Frame 0 | Frame 1 | Frame 2 | Frame 3 |
+|---|---|---|---|---|
+| 1 | Down — anticipation | Down — windup | Down — contact | Down — recovery |
+| 2 | Up — anticipation | Up — windup | Up — contact | Up — recovery |
+| 3 | Side — anticipation | Side — windup | Side — contact | Side — recovery |
+
+For the two active clips, the player locks the attack direction, plays the separate four-frame sequence, and resolves the hit at the configured contact frame. Missing attack metadata preserves immediate contact for legacy one-pose attacks. Delayed attacks are canceled when interrupted by dodge, guard, death, or map transition.
+
+Main also includes class-specific procedural contact effects and short attack-anticipation cues. These cues differ by class and are canceled when the attack is interrupted. They are **presentation effects**, not additional authored sprite frames and not a substitute for the missing Mage/Paladin animation art. They do not change reach, damage, hitboxes, cooldowns, or contact-frame scheduling.
 
 ## Confirmed limitations
 
-1. **Hero attack coverage is one pose per direction.** There is no multi-frame
-   attack sequence in any of the 12 current hero appearance sheets.
-2. **No dedicated hero hurt, stagger, block, dodge, or death atlas clips are
-   declared.** Several of these states are represented by controller-driven
-   transforms and effects instead of new character poses.
-3. **The still-to-sheet generator is synthetic motion.** `tools/sprite_sheet.py`
-   creates walk cycles by moving, rotating, and squashing a source drawing. It
-   can prepare a sheet quickly, but it cannot invent genuine changes in limb,
-   weapon, or cloth pose. A separate strike drawing improves the attack pose,
-   but still does not supply a full attack sequence.
-4. **Clip timing must match gameplay timing.** The normal player attack window is
-   0.16 s and the heavy window is 0.26 s. Four attack frames at 24 FPS take about
-   0.167 s, so the normal attack's final frame may be cut slightly short unless
-   the gameplay animation window is adjusted. The preview builder now supports
-   independent per-clip FPS values, but this does not change runtime combat timing.
-5. **Impact frames are data-driven and backward compatible.** Hero sheet metadata
-   may define a zero-based `attackImpactFrame` (and optional
-   `heavyImpactFrame`). The player schedules target checks, object strikes,
-   hit-stop and damage for the beginning of that frame. Missing metadata defaults
-   to frame 0, so the current one-frame attacks still hit immediately. A delayed
-   impact is canceled if the player dodges, raises a block, dies, or changes maps.
-   GIF stores frame delays in 10 ms increments, so its reported effective FPS can
-   differ slightly from the requested value (for example, 24 FPS is previewed at
-   25 FPS using a 40 ms frame delay).
+1. **Only Warrior Starter and Rogue Starter have multi-frame gameplay attacks.** Thirty directional attack clips remain one-pose.
+2. The hero manifest does not yet provide dedicated authored multi-frame heavy attack, hit/stagger, block, dodge, or death clips across all four classes. Several reactions are currently represented through controller-driven transforms and effects.
+3. The six-pose character illustrations used in the class cards and hero folio are menu/concept art. They are not directional top-down combat sprite sheets and are not registered as live combat SpriteFrames.
+4. The still-to-sheet helper in `tools/sprite_sheet.py` can arrange and transform source artwork, but moving, rotating, scaling, or squashing one still image does not create genuine new limb, weapon, or cloth poses.
+5. Four frames at 24 FPS occupy about 0.167 seconds. Final per-clip timing must be reviewed against the gameplay attack window, contact index, combo transitions, hit-stop, and interruption rules.
 
-## Changes in this update
+## Audit and import tools
 
-- The character-sheet loader reads named atlas columns from the existing
-  `cols` metadata and supports both embedded multi-frame attack columns and an
-  optional separate attack atlas.
-- The player computes attack duration from the selected clip and schedules combat
-  impact from the optional zero-based `attackImpactFrame` / `heavyImpactFrame`
-  metadata. The active direction is locked through the strike, and the attack clip
-  is explicitly restarted from frame zero even when the same direction is played
-  twice.
-- The Godot animation regression test checks all 12 current hero looks, all
-  sprite-backed enemy atlases/variants, and both future multi-frame attack
-  formats using synthetic in-memory sheets.
-- The animation review tool exports separate directional **walk** and **attack**
-  GIFs, each with its own FPS. The current Warrior review config uses 9 FPS for
-  walk and 24 FPS for attack to match the Godot animation defaults. Configurations
-  without per-clip FPS continue to inherit the global FPS. The current attack
-  preview remains a one-frame, non-looping pose.
-- CI runs the builder tests and uploads the review sheets, previews, and report
-  as a temporary artifact.
+- `tools/animation_quality_audit.py` reads the production manifest and registered artwork. It reports frame counts, duplicate frames, adjacent pixel changes, visible alpha, footline drift, FPS, and contact-frame timing where available.
+- `tools/import_animation_atlas.py` validates an externally authored 4 × 3 atlas, extracts 12 transparent 160 × 156 PNG frames, aligns feet, writes a packed review atlas, and produces a JSON report. It does not generate character poses and does not edit the runtime manifest.
+- `tools/animation_review.py` exports separate directional previews and uses the production frame metadata when available.
+- The animation regression suite validates loader behaviour and attack metadata. A passing automated audit does not grade acting, weapon readability, visual appeal, or commercial rights.
 
-## Production manifest verification — 2026-11-20
-
-The current `main` branch manifest still registers each of the 12 hero looks
-with the same four walk columns and one attack column. None of the current hero
-entries registers `attackSheet`, `attackFrames`, `attackImpactFrame`, or
-`heavyImpactFrame`.
-
-The loader's ability to parse a separate attack atlas or embedded attack columns
-is therefore **future-facing infrastructure**, not an active multi-frame
-production animation. The file
-`creative/animation/warrior_starter_attack.json` is a review configuration
-pointing to the existing `assets/art/Heroes/warrior_starter.png`; it is not the
-missing `assets/art/Heroes/warrior_starter_attack.png` image.
-
-The isolated review scene also reads the existing five-column sheet. It shows
-the single attack pose with a Godot-drawn slash arc; that arc is a preview effect,
-not additional character animation frames. The production combat hit remains
-immediate while the hero's current attack metadata defaults to impact frame 0.
-
-
-## Separate attack-atlas preview support — proposed Chapter IV branch
-
-The `tools/animation_review.py` review tool now recognizes the same optional
-`attackSheet` / `attackFrames` / `attackFps` metadata already supported by
-`scripts/sheets.gd`. It validates that a separate PNG atlas has the declared
-three directional rows and exact frame count, then exports a distinct attack GIF
-for each direction. A one-frame embedded attack is exported as a PNG and explicitly
-reported as `single_frame_attack_placeholder`; it is not counted as an
-animated attack. Unit tests use synthetic in-memory artwork to exercise this
-format and do not create production character art.
-
-The project still has no real `warrior_starter_attack.png` atlas. All 12
-production hero appearances remain one-frame attacks until genuinely distinct
-anticipation, contact, and recovery poses are drawn, reviewed, registered with
-rights evidence, and wired into the manifest.
-
-## Impact-frame authoring contract
-
-For a reviewed multi-frame attack, add `attackImpactFrame` to that hero's entry
-in `data/art_manifest.json`. The index is zero-based and identifies the first
-frame in which the weapon should connect (for example, `2` means the third
-frame). Set `heavyImpactFrame` separately only when the heavy attack has a
-different contact frame. The index is clamped to the available clip range at
-runtime; missing metadata intentionally means immediate contact for legacy
-one-frame sheets. Do not set a non-zero impact frame until the matching
-anticipation/contact/recovery poses have been reviewed and the attack's total
-duration, target reach, and damage timing have been tested together.
-
-## Scope boundary
-
-**No new production animation art is added by this update.** The current
-`warrior_starter.png` remains the source of the preview and stays unchanged.
-The one-frame attack is still one frame in the playable game. The new loader is
-infrastructure for adding reviewed multi-frame art later; it does not create
-new poses from nothing and does not make the current game animation richer by
-itself.
-
-The preview artifact is a technical review aid, not a replacement APK or a
-human visual approval. No commercial-use rights are inferred from a successful
-build or image-generation workflow. Any new art must be provenance-reviewed,
-registered in `docs/ASSET_RIGHTS_REGISTER.csv`, imported in Godot, and tested
-at the real Android display scale before being promoted.
+The accepted import layout is documented in [ANIMATION_ATLAS_IMPORT.md](ANIMATION_ATLAS_IMPORT.md). The current registered counts are also summarized in [ANIMATION_QUALITY_AUDIT.md](ANIMATION_QUALITY_AUDIT.md).
 
 ## Next production stages
 
-1. Create and visually review a genuine multi-frame Warrior attack sequence
-   for all three directions, then test the timing against the 0.16 s normal
-   attack window.
-2. Extend the same production contract to heavy attack, hit/stagger, block,
-   dodge, and death poses.
-3. Produce class-specific sequences for Mage, Rogue, and Paladin rather than
-   recolouring or reusing Warrior motion.
-4. Add enemy/boss-specific attack and recovery clips where they improve combat
-   readability; keep telegraph timing and collision logic independent from
-   decorative animation.
-5. Review the final atlas at native mobile scale and on the target Android
-   device before changing production assets.
+1. Produce and approve genuine four-direction-compatible Starter attack art for **Mage and Paladin**, following the existing down/up/side contract. Rogue Starter and Warrior Starter are already integrated.
+2. Extend class-specific light attacks to the remaining equipment tiers without recolouring or reusing another class's poses.
+3. Add separate heavy attack, hit/stagger, block, dodge, and death animation sets, with frame-level timing and interruption review.
+4. Inspect all accepted frames at native sprite size and actual Android display scale; check weapon/shield orientation, feet baseline, clipping, alpha edges, and hit timing.
+5. Complete provenance and license evidence before registering new art. Current Warrior/Rogue attack-art commercial-use evidence remains unverified in the rights records.
+6. Run importer tests, the animation audit, all Godot CI shards, Android QA export/emulator checks, and physical-device gameplay review before promoting a new batch.
 
-## Separate per-frame attack files
+## Related production references
 
-A class entry may define `attackFrameFiles` as a three-row array in the canonical `down`, `up`, `side` order. Each row contains `attackFrames` relative PNG paths under `assets/art/Heroes/`. Every texture must exactly match `cellW × cellH`. The loader validates row count, frame count, resource type and dimensions before creating a one-shot `attack_<direction>` clip. `attackFps` controls playback and `attackImpactFrame` is a zero-based contact frame; damage, impact FX and environmental interactions are resolved on that frame. Leave these fields absent on legacy sheets to preserve their current immediate-hit behaviour.
-
-## Class-specific melee presentation — 20 November 2026
-
-The runtime now gives the shared melee contact event a class-specific visual response without changing the combat contract:
-
-- **Warrior:** grounded bronze/steel arc, contact sparks and a short dust response.
-- **Mage:** lapis/turquoise arc, small star-map ticks, arcane motes and a restrained contact light.
-- **Rogue:** narrow green-tinted paired cuts with a second dagger filament and directional sparks.
-- **Paladin:** broader solar-gold arc, short rays, concentric contact rings and a brief warm light.
-
-These are procedural presentation layers on top of the existing character animation. They do not replace the still-needed unique animation frames for Mage, Rogue or Paladin, and they do not change hitboxes, damage, reach, stamina, cooldowns or impact-frame timing. The FX regression test checks that each class's swing metadata and contact response are registered.
+- [Character animation production plan](ANIMATION_PRODUCTION_PLAN.md)
+- [Frame-level animation quality audit](ANIMATION_QUALITY_AUDIT.md)
+- [Starter attack-atlas import contract](ANIMATION_ATLAS_IMPORT.md)
+- [Class visual design](CLASS_VISUAL_DESIGN.md)
+- [Artwork rights register](ASSET_RIGHTS_REGISTER.csv)
