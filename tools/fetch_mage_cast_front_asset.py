@@ -13,7 +13,8 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-ENCODED = ROOT / "assets/art/Heroes/mage_starter_cast_front_lossless.webp.b64"
+ENCODED_PARTS_DIR = ROOT / "assets/art/Heroes/mage_cast_front_data"
+EXPECTED_PARTS = 25
 TARGET = ROOT / "assets/art/Heroes/mage_starter_cast_front.webp"
 EXPECTED_BYTES = 546846
 EXPECTED_SHA256 = "85ca84160b6a8b157023759604e0ffa4e0dd34efdf105fbf964430e566e61f60"
@@ -45,9 +46,12 @@ def validate_payload(payload: bytes) -> None:
 
 
 def main() -> None:
-    if not ENCODED.is_file():
-        raise FileNotFoundError(f"Embedded Mage casting atlas is missing: {ENCODED}")
-    text = ENCODED.read_text(encoding="ascii").strip()
+    parts = sorted(ENCODED_PARTS_DIR.glob("part_*.b64"))
+    if len(parts) != EXPECTED_PARTS:
+        raise FileNotFoundError(
+            f"Expected {EXPECTED_PARTS} embedded Mage atlas parts in {ENCODED_PARTS_DIR}, found {len(parts)}"
+        )
+    text = "".join(part.read_text(encoding="ascii").strip() for part in parts)
     try:
         payload = base64.b64decode(text, validate=True)
     except ValueError as exc:
