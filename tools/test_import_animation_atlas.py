@@ -76,6 +76,23 @@ class AnimationAtlasImportTests(unittest.TestCase):
         self.assertEqual(report["status"], "passed_with_warnings")
         self.assertTrue(any(report["duplicate_pairs"][direction] for direction in ("down", "up", "side")))
 
+    def test_edge_contact_requires_opt_in_and_is_reported_as_warning(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "edge.png"
+            self.make_atlas(source)
+            with Image.open(source) as opened:
+                image = opened.convert("RGBA")
+            ImageDraw.Draw(image).line((0, 150, 255, 150), fill=(250, 220, 90, 255), width=2)
+            image.save(source)
+            with self.assertRaisesRegex(ValueError, "touches the cell bounds"):
+                import_atlas(source, root / "strict", prefix="edge_attack")
+            report = import_atlas(
+                source, root / "review", prefix="edge_attack", allow_edge_contact=True
+            )
+        self.assertTrue(any("inspect for clipping" in warning for warning in report["warnings"]))
+        self.assertTrue(any(frame["minimum_source_margin_px"] == 0 for frame in report["frames"]))
+
     def test_rejects_unsafe_output_prefix(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
