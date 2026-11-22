@@ -1,0 +1,153 @@
+name: Gemini Omni video generation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/gemini-omni-video.yml'
+      - 'tools/google_omni_video.py'
+      - 'tools/test_google_omni_video.py'
+      - 'docs/GEMINI_OMNI_VIDEO_SETUP.md'
+      - 'README.md'
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'English video prompt'
+        required: true
+        type: string
+      reference_image:
+        description: 'Repository-relative PNG/JPEG character reference'
+        required: false
+        default: 'assets/art/Heroes/warrior_starter.png'
+        type: string
+      crop_sprite_sheet:
+        description: 'Crop one cell from the default 5x3 warrior sprite sheet'
+        required: true
+        default: true
+        type: boolean
+      sprite_cell:
+        description: 'Warrior sprite cell (0-14, row-major)'
+        required: true
+        default: '0'
+        type: choice
+        options:
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+          - '6'
+          - '7'
+          - '8'
+          - '9'
+          - '10'
+          - '11'
+          - '12'
+          - '13'
+          - '14'
+      duration:
+        description: 'Video duration (longer clips cost more)'
+        required: true
+        default: '6'
+        type: choice
+        options: ['6', '10', '15']
+      aspect_ratio:
+        description: 'Video aspect ratio'
+        required: true
+        default: '16:9'
+        type: choice
+        options: ['16:9', '9:16']
+      resolution:
+        description: 'Video resolution'
+        required: true
+        default: '720p'
+        type: choice
+        options: ['360p', '720p']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gemini-omni-video-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate generator and tests (no API calls)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned image dependency
+        run: python -m pip install --disable-pip-version-check 'Pillow==13.0.0'
+      - name: Compile generator and run unit tests
+        run: |
+          python -m py_compile tools/google_omni_video.py tools/test_google_omni_video.py
+          python -m unittest discover -s tools -p 'test_google_omni_video.py' -v
+
+  generate:
+    name: Generate one Gemini Omni video
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned image dependency
+        run: python -m pip install --disable-pip-version-check 'Pillow==13.0.0'
+      - name: Check secret is configured
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${GEMINI_API_KEY:-}" ]]; then
+            echo '::error::Add GEMINI_API_KEY in repository Settings > Secrets and variables > Actions.'
+            exit 1
+          fi
+      - name: Generate video from prompt and optional reference image
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VIDEO_PROMPT: ${{ inputs.prompt }}
+          REFERENCE_IMAGE: ${{ inputs.reference_image }}
+          CROP_SPRITE_SHEET: ${{ inputs.crop_sprite_sheet }}
+          SPRITE_CELL: ${{ inputs.sprite_cell }}
+          VIDEO_DURATION: ${{ inputs.duration }}
+          VIDEO_ASPECT_RATIO: ${{ inputs.aspect_ratio }}
+          VIDEO_RESOLUTION: ${{ inputs.resolution }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(
+            --prompt "$VIDEO_PROMPT"
+            --duration "$VIDEO_DURATION"
+            --aspect-ratio "$VIDEO_ASPECT_RATIO"
+            --resolution "$VIDEO_RESOLUTION"
+            --output 'artifacts/google-omni-video/divslayer-omni.mp4'
+          )
+          if [[ -n "$REFERENCE_IMAGE" ]]; then
+            args+=(--reference-image "$REFERENCE_IMAGE")
+            if [[ "$CROP_SPRITE_SHEET" == 'true' ]]; then
+              args+=(--sprite-grid '5x3' --sprite-cell "$SPRITE_CELL")
+            fi
+          fi
+          python tools/google_omni_video.py "${args[@]}"
+      - name: Upload generated video and metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Gemini-Omni-Video-${{ github.run_number }}
+          path: artifacts/google-omni-video/
+          if-no-files-found: ignore
+          retention-days: 14
