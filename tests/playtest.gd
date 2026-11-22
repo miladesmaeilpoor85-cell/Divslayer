@@ -54,6 +54,7 @@ var current_action := ""
 var current_step_started_ms := 0
 var active_stage := "startup"
 var stage_started_ms := 0
+var assertion_failures: Array[String] = []
 
 const PRESETS := {
 	# level, weapon, armour, potions, gold
@@ -119,10 +120,54 @@ func _finish() -> void:
 	if stage_started_ms > 0:
 		var stage_elapsed := (Time.get_ticks_msec() - stage_started_ms) / 1000.0
 		_log("STAGE_END %s wall=%.1f s potions_remaining=%d" % [active_stage, stage_elapsed, int(Game.state.get("potions", 0))])
+	if assertion_failures.is_empty():
+		_log("PLAYTEST_ASSERTIONS_PASSED")
+	else:
+		_log("PLAYTEST_ASSERTIONS_FAILED %d" % assertion_failures.size())
+		for failure in assertion_failures:
+			_log("PLAYTEST_ASSERTION: " + failure)
 	_log("PLAYTEST_DONE  %.1f s wall" % ((Time.get_ticks_msec() - t0) / 1000.0))
 	if log_f:
 		log_f.flush()
-	get_tree().quit()
+	get_tree().quit(1 if not assertion_failures.is_empty() else 0)
+
+func _assert_state(s: Dictionary) -> String:
+	var failures: Array[String] = []
+	var snapshot := state()
+	var label := str(s.get("label", "checkpoint"))
+	if s.has("map") and str(snapshot.get("map", "")) != str(s["map"]):
+		failures.append("expected map %s, got %s" % [str(s["map"]), str(snapshot.get("map", ""))])
+	var objective := str(snapshot.get("objective", ""))
+	if s.has("objective_contains") and objective.find(str(s["objective_contains"])) < 0:
+		failures.append("objective did not contain '%s': %s" % [str(s["objective_contains"]), objective])
+	if bool(s.get("player_alive", false)) and bool(snapshot.get("dead", false)):
+		failures.append("player is dead")
+	if bool(s.get("game_unpaused", false)) and get_tree().paused:
+		failures.append("game remained paused")
+	var required_foe := str(s.get("foe_type", ""))
+	if required_foe != "":
+		var found := false
+		for e in get_tree().get_nodes_in_group("enemies"):
+			if e.world != main.world or str(e.type) != required_foe:
+				continue
+			found = true
+			if bool(s.get("foe_must_be_alive", false)) and e.dead:
+				failures.append("%s was already defeated before its combat checkpoint" % required_foe)
+			if s.has("foe_hp_below") and not e.dead:
+				var hp_percent := 100.0 * float(e.hp) / maxf(1.0, float(e.max_hp))
+				if hp_percent >= float(s["foe_hp_below"]):
+					failures.append("%s health did not fall below %.0f%% (currently %.0f%%)" % [required_foe, float(s["foe_hp_below"]), hp_percent])
+		if bool(s.get("foe_must_exist", false)) and not found:
+			failures.append("required foe %s was not present on %s" % [required_foe, str(snapshot.get("map", ""))])
+		if s.has("foe_hp_below") and not found and not bool(s.get("foe_must_exist", false)):
+			_log("ASSERTION_INFO %s: %s is no longer present; treated as defeated" % [label, required_foe])
+	if failures.is_empty():
+		_log("ASSERTION_PASSED %s" % label)
+		return "assertion passed: " + label
+	var message := "ASSERTION_FAILED %s: %s" % [label, "; ".join(failures)]
+	assertion_failures.append(message)
+	_log(message)
+	return message
 
 func _log(s: String) -> void:
 	print(s)
@@ -490,6 +535,10 @@ func fight(sec: float, shots_every: float) -> String:
 	var hp_low := 1.0
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
+	var boss_hp_before := {}
+	for boss in get_tree().get_nodes_in_group("bosses"):
+		if boss.world == main.world:
+			boss_hp_before[str(boss.type)] = 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
 	var ended := "time"
 	var map0: String = main.world.key
 	var last := _feet()
@@ -610,8 +659,26 @@ func fight(sec: float, shots_every: float) -> String:
 		var e = seen[id].get_ref()
 		if e == null or e.dead:
 			kills += 1
-	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · swings %d, hits %d" % [ended, t, kills,
-		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, p.swings - swings0, p.hits_landed - hits0]
+	var boss_report: Array[String] = []
+	var boss_hp_after := {}
+	for boss in get_tree().get_nodes_in_group("bosses"):
+		if boss.world == main.world:
+			boss_hp_after[str(boss.type)] = 0.0 if boss.dead else 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
+	for boss_type in boss_hp_before:
+		var before_percent := float(boss_hp_before[boss_type])
+		var after_percent := float(boss_hp_after.get(boss_type, 0.0))
+		boss_report.append("%s %.0f%%→%.0f%%" % [str(boss_type), before_percent, after_percent])
+	var arena_report: Array[String] = []
+	for arena_obj in get_tree().get_nodes_in_group("arena"):
+		if arena_obj.world == main.world and not arena_obj.dead and str(arena_obj.type) == "gravepillar":
+			arena_report.append("gravepillar %d%%" % int(100.0 * float(arena_obj.hp) / maxf(1.0, float(arena_obj.max_hp))))
+	var detail := ""
+	if not boss_report.is_empty():
+		detail += " · bosses " + ", ".join(boss_report)
+	if not arena_report.is_empty():
+		detail += " · arena " + ", ".join(arena_report)
+	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · swings %d, hits %d%s" % [ended, t, kills,
+		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, p.swings - swings0, p.hits_landed - hits0, detail]
 
 ## the way out of the nearest marked attack that is about to land on the hero (Vector2.ZERO: nothing to dodge)
 
@@ -791,6 +858,8 @@ func _step(s: Dictionary) -> Variant:
 			return await shot(str(s.get("name", "shot")))
 		"burst":
 			return await burst(str(s.get("name", "burst")), clampi(int(s.get("n", 6)), 2, 12), float(s.get("every", 0.2)))
+		"assert_state":
+			return _assert_state(s)
 		"state":
 			return JSON.stringify(state())
 		"ending":  # (test shortcut, v0.29) open a chapter's end card: {"do":"ending","ch":3}
