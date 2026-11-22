@@ -249,9 +249,9 @@ jobs:
             timeout 240s adb install -r build/android/Divslayer-QA.apk;
             adb shell pm path com.example.divslayer.qa | grep -F 'package:';
             timeout 60s adb shell am start -W -n com.example.divslayer.qa/com.godot.game.GodotAppLauncher;
-            echo 'Waiting for Godot to finish startup (up to 120s)';
+            echo 'Waiting for the real title menu to render (up to 120s)';
             attempt=0;
-            while [ "$attempt" -lt 120 ]; do current_log="$(timeout 10s adb logcat -d -v time 2>/dev/null || true)"; if printf '%s\n' "$current_log" | grep -Fq 'OnGodotSetupCompleted'; then break; fi; if printf '%s\n' "$current_log" | grep -Eiq 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:'; then printf '%s\n' "$current_log" | tail -200; exit 1; fi; attempt=$((attempt + 1)); sleep 1; done;
+            while [ "$attempt" -lt 120 ]; do current_log="$(timeout 10s adb logcat -d -v time 2>/dev/null || true)"; if printf '%s\n' "$current_log" | grep -Fq 'DIVSLAYER_TITLE_MENU_READY title=true new_game=true background=true'; then break; fi; if printf '%s\n' "$current_log" | grep -Fq 'DIVSLAYER_TITLE_MENU_FAIL'; then printf '%s\n' "$current_log" | tail -200; exit 1; fi; if printf '%s\n' "$current_log" | grep -Eiq 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script'; then printf '%s\n' "$current_log" | tail -200; exit 1; fi; attempt=$((attempt + 1)); sleep 1; done;
             timeout 30s adb logcat -d -v time > build/android/emulator-game-logcat.txt;
             if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' build/android/emulator-game-logcat.txt; then echo 'Playable Android QA app reported a fatal or Godot script error.'; exit 1; fi;
             grep -F 'OnGodotSetupCompleted' build/android/emulator-game-logcat.txt;
