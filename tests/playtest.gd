@@ -610,6 +610,12 @@ func fight(sec: float, shots_every: float) -> String:
 		var to: Vector2 = tgt.center() - (p.global_position + Vector2(0, -17))
 		if verbose and int(t * 10) % 5 == 0:
 			_log("  t %.1f feet %s joy %s tgt %s at %d reach %d" % [t, str(p.global_position.round()), str(p.joy), tgt.type, int(to.length()), int(46.0 + float(tgt.hit_rect().size.x) * 0.5)])
+		if verbose and tgt.is_in_group("bosses") and int(t * 10) % 5 == 0:
+			_log("BOSS_TARGET type=%s dist=%d hp=%.1f/%.1f targetable=%s hidden=%s inv=%.2f phase=%d busy=%.2f last_move=%s" % [
+				str(tgt.type), int(to.length()), float(tgt.hp), float(tgt.max_hp), tgt.targetable(),
+				bool(tgt.get("cloaked")), float(tgt.get("inv")), int(tgt.get("ph")),
+				float(tgt.get("busy")), str(tgt.get("last_move"))
+			])
 		var reach: float = 46.0 + (float(tgt.hit_rect().size.x) * 0.5 if tgt.has_method("hit_rect") else 12.0)
 		# (v0.23) a marked attack about to land where the hero stands: step or roll out of it, as a player reading the
 		# ground would (about three times in four — nobody reads every one)
