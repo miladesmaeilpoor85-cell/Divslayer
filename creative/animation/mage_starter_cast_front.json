@@ -27,22 +27,23 @@
   "processing": "edge-connected chroma-green removal; conservative despill; premultiplied-alpha resize",
   "atlas": {
     "format": "webp",
-    "width": 384,
-    "height": 513,
+    "width": 640,
+    "height": 855,
     "columns": 4,
     "rows": 3,
-    "cellWidth": 96,
-    "cellHeight": 171,
+    "cellWidth": 160,
+    "cellHeight": 285,
     "frameCount": 12,
     "fps": 8,
     "loop": false
   },
   "sourceAssetUrl": "https://d2ol7oe51mr4n9.cloudfront.net/user_3MQ8TO8qFTeYUMz2ubrOoeLu1S0/40f6cdaa-2637-42f5-a2e1-eadda77d2a89.webp",
-  "sha256": "0935ef2c14ad89b12c8ee0a9417e1e464021e81d54c0f00b62f3a0e9ce314518",
-  "bytes": 123750,
+  "sha256": "85ca84160b6a8b157023759604e0ffa4e0dd34efdf105fbf964430e566e61f60",
+  "bytes": 546846,
   "rights": "UNVERIFIED",
   "notes": [
     "This is one front-facing spell-casting clip, not a three-direction movement set.",
-    "Commercial rights and provider terms have not yet been verified."
+    "Commercial rights and provider terms have not yet been verified.",
+    "Runtime atlas metadata is pinned and checked by tools/fetch_mage_cast_front_asset.py."
   ]
 }
