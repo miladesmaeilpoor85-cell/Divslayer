@@ -11,13 +11,19 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCALE_SPR = 1.0 / 3.0
 
+def ground_image_path(root: str, key: str, map_definition: dict) -> str:
+	"""Resolve the same explicit groundFile override used by the runtime World loader."""
+	ground_file = str(map_definition.get("groundFile") or (key + "_ground.jpg"))
+	return os.path.join(root, "assets", "art", "Maps", ground_file)
+
+
 def main():
 	key, out = sys.argv[1], sys.argv[2]
 	sc = float(sys.argv[sys.argv.index("--scale") + 1]) if "--scale" in sys.argv else 0.5
 	md = json.load(open(os.path.join(ROOT, "data", "Maps", key + ".json")))
 	d = md["data"]
 	W, H = int(d["w"]), int(d["h"])
-	gpath = os.path.join(ROOT, "assets", "art", "Maps", key + "_ground.jpg")
+	gpath = ground_image_path(ROOT, key, md)
 	if os.path.exists(gpath):
 		g = Image.open(gpath).convert("RGBA").resize((int(W * sc), int(H * sc)), Image.LANCZOS)
 	else:
