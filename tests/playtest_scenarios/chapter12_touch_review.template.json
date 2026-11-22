@@ -64,14 +64,14 @@
   },
   {
     "do": "walk_to",
-    "x": 530,
-    "y": 300,
+    "x": 240,
+    "y": 240,
     "max_sec": 25
   },
   {
     "do": "walk_to",
-    "x": 500,
-    "y": 400,
+    "x": 420,
+    "y": 250,
     "max_sec": 25
   },
   {
@@ -88,12 +88,6 @@
     "name": "forest_skirmish_end"
   },
   {
-    "do": "walk_to",
-    "x": 760,
-    "y": 560,
-    "max_sec": 35
-  },
-  {
     "do": "talk"
   },
   {
@@ -107,9 +101,21 @@
   },
   {
     "do": "walk_to",
-    "x": 420,
-    "y": 250,
-    "max_sec": 35
+    "x": 620,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 690,
+    "y": 500,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 760,
+    "y": 560,
+    "max_sec": 25
   },
   {
     "do": "talk"
@@ -122,6 +128,24 @@
   },
   {
     "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 680,
+    "y": 500,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 80,
+    "max_sec": 25
   },
   {
     "do": "walk_to_exit",
@@ -181,7 +205,7 @@
   {
     "do": "fight",
     "sec": 15,
-    "shots_every": 20
+    "shots_every": 5
   },
   {
     "do": "assert_state",
@@ -415,8 +439,9 @@
   },
   {
     "do": "fight",
-    "sec": 15,
-    "shots_every": 20
+    "sec": 45,
+    "shots_every": 5,
+    "verbose": true
   },
   {
     "do": "assert_state",
