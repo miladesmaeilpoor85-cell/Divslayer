@@ -164,7 +164,7 @@ jobs:
           template = Path("tests/playtest_scenarios/chapter12_touch_review.template.json")
           rendered = template.read_text(encoding="utf-8").replace("__CLASS__", hero)
           parsed = json.loads(rendered)
-          assert len([step for step in parsed if step.get("do") == "fight"]) == 7
+          assert len([step for step in parsed if step.get("do") == "fight"]) == 8
           destination.write_text(json.dumps(parsed, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
 
