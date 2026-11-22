@@ -552,7 +552,7 @@ func fight(sec: float, shots_every: float) -> String:
 			for progress_enemy in get_tree().get_nodes_in_group("enemies"):
 				if progress_enemy.world == main.world and not progress_enemy.dead:
 					live_foes += 1
-			_log("FIGHT_PROGRESS elapsed=%.1f/%0.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
+			_log("FIGHT_PROGRESS elapsed=%.1f/%.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
 			last_progress = t
 		hp_low = min(hp_low, Game.hp / Game.max_hp())
 		if Game.hp < 0.35 * Game.max_hp() and int(Game.state.get("potions", 0)) > 0:
