@@ -106,7 +106,7 @@ jobs:
     name: Campaign playtest — ${{ matrix.hero }}
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -178,7 +178,7 @@ jobs:
           profile="$RUNNER_TEMP/gameplay-playtest/profile-$HERO"
           mkdir -p "$output/shots" "$profile"
           set +e
-          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=20 2400s xvfb-run -a -s "-screen 0 1600x720x24" \
+          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=10 900s xvfb-run -a -s "-screen 0 1600x720x24" \
             "$RUNNER_TEMP/godot/godot" --path . --rendering-driver opengl3 --resolution 1600x720 --fixed-fps 60 --audio-driver Dummy \
             -- --test res://tests/playtest.gd --playtest \
             --script "$RUNNER_TEMP/gameplay-playtest/scenario.json" --out "$output" \
@@ -201,6 +201,7 @@ jobs:
           assert "PLAYTEST_ASSERTIONS_PASSED" in log, "Playtest scenario assertions did not all pass"
           assert "ASSERTION_FAILED" not in log, "A campaign path or boss-combat assertion failed"
           assert len(fights) == 7, f"Expected 7 combat samples, found {len(fights)}"
+          assert log.count("ASSERTION_PASSED ") >= 4, "Expected forest/crypt/boss checkpoint assertions to run"
           errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
           assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
           print("PLAYTEST_COMBAT_SAMPLES")
