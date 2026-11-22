@@ -18,7 +18,7 @@ jobs:
   headless-tests:
     name: Godot 4.7.2 headless tests (shard ${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 50
     strategy:
       fail-fast: false
       matrix:
@@ -178,7 +178,7 @@ jobs:
           profile="$RUNNER_TEMP/gameplay-playtest/profile-$HERO"
           mkdir -p "$output/shots" "$profile"
           set +e
-          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=20 3600s xvfb-run -a -s "-screen 0 1600x720x24" \
+          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=20 2400s xvfb-run -a -s "-screen 0 1600x720x24" \
             "$RUNNER_TEMP/godot/godot" --path . --rendering-driver opengl3 --resolution 1600x720 --fixed-fps 60 --audio-driver Dummy \
             -- --test res://tests/playtest.gd --playtest \
             --script "$RUNNER_TEMP/gameplay-playtest/scenario.json" --out "$output" \
