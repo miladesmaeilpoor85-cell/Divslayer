@@ -1,81 +1,382 @@
 [
-  {"do":"lang","v":"fa"},
-  {"do":"new","class":"__CLASS__"},
-  {"do":"shot","name":"zabol_start"},
-  {"do":"walk_to_npc","id":"rostam","max_sec":20},
-  {"do":"talk"},
-  {"do":"tap_text","text":"راه و رسمِ نبرد را می‌دانم","after":0.6},
-  {"do":"dialog_all"},
-  {"do":"walk_to_npc","id":"elder","max_sec":25},
-  {"do":"talk"},
-  {"do":"state"},
-  {"do":"walk_to_exit","to":"forest","max_sec":45},
-  {"do":"state"},
-  {"do":"walk_to","x":760,"y":560,"max_sec":30},
-  {"do":"talk"},
-  {"do":"state"},
-  {"do":"walk_to","x":420,"y":250,"max_sec":30},
-  {"do":"talk"},
-  {"do":"state"},
-  {"do":"fight","sec":25,"shots_every":0},
-  {"do":"walk_to_exit","to":"dungeon","max_sec":45},
-  {"do":"state"},
-  {"do":"fight","sec":25,"shots_every":0},
-  {"do":"walk_to","x":760,"y":540,"max_sec":30},
-  {"do":"talk"},
-  {"do":"state"},
-  {"do":"walk_to","x":874,"y":708,"max_sec":30},
-  {"do":"shot","name":"ch1_arzhang_start"},
-  {"do":"fight","sec":60,"shots_every":20},
-  {"do":"state"},
-
-  {"do":"preset","name":"act2","class":"__CLASS__"},
-  {"do":"set","key":"brann","v":"done"},
-  {"do":"walk_to_exit","to":"forest","max_sec":45},
-  {"do":"walk_to_exit","to":"peaks","max_sec":45},
-  {"do":"state"},
-  {"do":"goto","map":"peaks","x":588,"y":380},
-  {"do":"shot","name":"ch1_king_start"},
-  {"do":"fight","sec":60,"shots_every":20},
-  {"do":"state"},
-
-  {"do":"preset","name":"act3","class":"__CLASS__"},
-  {"do":"walk_to_exit","to":"forest","max_sec":45},
-  {"do":"walk_to_exit","to":"peaks","max_sec":45},
-  {"do":"walk_to_exit","to":"shadowfen","max_sec":45},
-  {"do":"state"},
-  {"do":"goto","map":"shadowfen","x":692,"y":450},
-  {"do":"shot","name":"ch1_sorceress_start"},
-  {"do":"fight","sec":60,"shots_every":20},
-  {"do":"state"},
-
-  {"do":"preset","name":"ch2","class":"__CLASS__"},
-  {"do":"walk_to_npc","id":"elder","max_sec":25},
-  {"do":"talk"},
-  {"do":"state"},
-  {"do":"walk_to_exit","to":"forest","max_sec":45},
-  {"do":"walk_to_exit","to":"peaks","max_sec":45},
-  {"do":"walk_to_exit","to":"sanctum","max_sec":45},
-  {"do":"state"},
-  {"do":"walk_to_npc","id":"keeper","max_sec":30},
-  {"do":"talk"},
-  {"do":"state"},
-  {"do":"goto","map":"sanctum","x":627,"y":480},
-  {"do":"shot","name":"ch2_white_div_start"},
-  {"do":"fight","sec":60,"shots_every":20},
-  {"do":"state"},
-
-  {"do":"preset","name":"ch2","class":"__CLASS__"},
-  {"do":"goto","map":"frostvale","x":900,"y":650},
-  {"do":"state"},
-  {"do":"shot","name":"ch2_akvan_start"},
-  {"do":"fight","sec":60,"shots_every":20},
-  {"do":"state"},
-
-  {"do":"preset","name":"ch2","class":"__CLASS__"},
-  {"do":"goto","map":"wyrmhollow","x":650,"y":650},
-  {"do":"state"},
-  {"do":"shot","name":"ch2_dragon_start"},
-  {"do":"fight","sec":60,"shots_every":20},
-  {"do":"state"}
+  {
+    "do": "lang",
+    "v": "fa"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Village, Rostam, Zal, forest and crypt"
+  },
+  {
+    "do": "new",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "shot",
+    "name": "zabol_start"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "rostam",
+    "max_sec": 20
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "tap_text",
+    "text": "راه و رسمِ نبرد را می‌دانم",
+    "after": 0.6
+  },
+  {
+    "do": "dialog_all"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "elder",
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "forest",
+    "max_sec": 45
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 760,
+    "y": 560,
+    "max_sec": 30
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 420,
+    "y": 250,
+    "max_sec": 30
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "fight",
+    "sec": 25,
+    "shots_every": 0
+  },
+  {
+    "do": "shot",
+    "name": "combat_1_end"
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "dungeon",
+    "max_sec": 45
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "fight",
+    "sec": 25,
+    "shots_every": 0
+  },
+  {
+    "do": "shot",
+    "name": "combat_2_end"
+  },
+  {
+    "do": "walk_to",
+    "x": 760,
+    "y": 540,
+    "max_sec": 30
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 874,
+    "y": 708,
+    "max_sec": 30
+  },
+  {
+    "do": "shot",
+    "name": "ch1_arzhang_start"
+  },
+  {
+    "do": "fight",
+    "sec": 60,
+    "shots_every": 20
+  },
+  {
+    "do": "shot",
+    "name": "combat_3_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — King of Mazandaran"
+  },
+  {
+    "do": "preset",
+    "name": "act2",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "set",
+    "key": "brann",
+    "v": "done"
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "forest",
+    "max_sec": 45
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "peaks",
+    "max_sec": 45
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "goto",
+    "map": "peaks",
+    "x": 588,
+    "y": 380
+  },
+  {
+    "do": "shot",
+    "name": "ch1_king_start"
+  },
+  {
+    "do": "fight",
+    "sec": 60,
+    "shots_every": 20
+  },
+  {
+    "do": "shot",
+    "name": "combat_4_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Sorceress of Shadowfen"
+  },
+  {
+    "do": "preset",
+    "name": "act3",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "forest",
+    "max_sec": 45
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "peaks",
+    "max_sec": 45
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "shadowfen",
+    "max_sec": 45
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "goto",
+    "map": "shadowfen",
+    "x": 692,
+    "y": 450
+  },
+  {
+    "do": "shot",
+    "name": "ch1_sorceress_start"
+  },
+  {
+    "do": "fight",
+    "sec": 60,
+    "shots_every": 20
+  },
+  {
+    "do": "shot",
+    "name": "combat_5_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — White Div of Crystal Sanctum"
+  },
+  {
+    "do": "preset",
+    "name": "ch2",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "elder",
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "forest",
+    "max_sec": 45
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "peaks",
+    "max_sec": 45
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "sanctum",
+    "max_sec": 45
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "keeper",
+    "max_sec": 30
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "goto",
+    "map": "sanctum",
+    "x": 627,
+    "y": 480
+  },
+  {
+    "do": "shot",
+    "name": "ch2_white_div_start"
+  },
+  {
+    "do": "fight",
+    "sec": 60,
+    "shots_every": 20
+  },
+  {
+    "do": "shot",
+    "name": "combat_6_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — White Div of Crystal Sanctum"
+  },
+  {
+    "do": "preset",
+    "name": "ch2",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — Akvan of Hoarfrost Vale"
+  },
+  {
+    "do": "goto",
+    "map": "frostvale",
+    "x": 900,
+    "y": 650
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "shot",
+    "name": "ch2_akvan_start"
+  },
+  {
+    "do": "fight",
+    "sec": 60,
+    "shots_every": 20
+  },
+  {
+    "do": "shot",
+    "name": "combat_7_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — White Div of Crystal Sanctum"
+  },
+  {
+    "do": "preset",
+    "name": "ch2",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — Dragon of Kashaf"
+  },
+  {
+    "do": "goto",
+    "map": "wyrmhollow",
+    "x": 650,
+    "y": 650
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "shot",
+    "name": "ch2_dragon_start"
+  },
+  {
+    "do": "fight",
+    "sec": 60,
+    "shots_every": 20
+  },
+  {
+    "do": "shot",
+    "name": "combat_8_end"
+  },
+  {
+    "do": "state"
+  }
 ]
