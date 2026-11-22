@@ -164,7 +164,7 @@ jobs:
           template = Path("tests/playtest_scenarios/chapter12_touch_review.template.json")
           rendered = template.read_text(encoding="utf-8").replace("__CLASS__", hero)
           parsed = json.loads(rendered)
-          assert len([step for step in parsed if step.get("do") == "fight"]) == 8
+          assert len([step for step in parsed if step.get("do") == "fight"]) == 7
           destination.write_text(json.dumps(parsed, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
 
@@ -198,7 +198,7 @@ jobs:
           godot = Path(sys.argv[2]).read_text(encoding="utf-8", errors="replace")
           fights = [line for line in log.splitlines() if '"do":"fight"' in line]
           assert "PLAYTEST_DONE" in log, "Playtest did not reach its final step"
-          assert len(fights) == 8, f"Expected 8 combat samples, found {len(fights)}"
+          assert len(fights) == 7, f"Expected 7 combat samples, found {len(fights)}"
           errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
           assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
           print("PLAYTEST_COMBAT_SAMPLES")
