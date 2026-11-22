@@ -5,7 +5,7 @@
   },
   {
     "do": "checkpoint",
-    "name": "Chapter I — Village, Rostam, Zal, forest and crypt"
+    "name": "Chapter I — Zabol, Rostam and Zal"
   },
   {
     "do": "new",
@@ -48,13 +48,43 @@
     "max_sec": 45
   },
   {
-    "do": "state"
+    "do": "checkpoint",
+    "name": "Chapter I — Whispering Forest and its clues"
+  },
+  {
+    "do": "shot",
+    "name": "ch1_forest"
+  },
+  {
+    "do": "walk_to",
+    "x": 430,
+    "y": 330,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 500,
+    "y": 400,
+    "max_sec": 25
+  },
+  {
+    "do": "shot",
+    "name": "forest_skirmish_start"
+  },
+  {
+    "do": "fight",
+    "sec": 25,
+    "shots_every": 0
+  },
+  {
+    "do": "shot",
+    "name": "forest_skirmish_end"
   },
   {
     "do": "walk_to",
     "x": 760,
     "y": 560,
-    "max_sec": 30
+    "max_sec": 35
   },
   {
     "do": "talk"
@@ -66,22 +96,13 @@
     "do": "walk_to",
     "x": 420,
     "y": 250,
-    "max_sec": 30
+    "max_sec": 35
   },
   {
     "do": "talk"
   },
   {
     "do": "state"
-  },
-  {
-    "do": "fight",
-    "sec": 25,
-    "shots_every": 0
-  },
-  {
-    "do": "shot",
-    "name": "combat_1_end"
   },
   {
     "do": "walk_to_exit",
@@ -89,22 +110,18 @@
     "max_sec": 45
   },
   {
-    "do": "state"
-  },
-  {
-    "do": "fight",
-    "sec": 25,
-    "shots_every": 0
+    "do": "checkpoint",
+    "name": "Chapter I — Sunken Crypt and Arzhang"
   },
   {
     "do": "shot",
-    "name": "combat_2_end"
+    "name": "ch1_crypt"
   },
   {
     "do": "walk_to",
     "x": 760,
     "y": 540,
-    "max_sec": 30
+    "max_sec": 35
   },
   {
     "do": "talk"
@@ -114,9 +131,9 @@
   },
   {
     "do": "walk_to",
-    "x": 874,
-    "y": 708,
-    "max_sec": 30
+    "x": 800,
+    "y": 600,
+    "max_sec": 25
   },
   {
     "do": "shot",
@@ -129,7 +146,7 @@
   },
   {
     "do": "shot",
-    "name": "combat_3_end"
+    "name": "ch1_arzhang_end"
   },
   {
     "do": "state"
@@ -149,23 +166,10 @@
     "v": "done"
   },
   {
-    "do": "walk_to_exit",
-    "to": "forest",
-    "max_sec": 45
-  },
-  {
-    "do": "walk_to_exit",
-    "to": "peaks",
-    "max_sec": 45
-  },
-  {
-    "do": "state"
-  },
-  {
     "do": "goto",
     "map": "peaks",
-    "x": 588,
-    "y": 380
+    "x": 560,
+    "y": 200
   },
   {
     "do": "shot",
@@ -178,7 +182,7 @@
   },
   {
     "do": "shot",
-    "name": "combat_4_end"
+    "name": "ch1_king_end"
   },
   {
     "do": "state"
@@ -193,28 +197,10 @@
     "class": "__CLASS__"
   },
   {
-    "do": "walk_to_exit",
-    "to": "forest",
-    "max_sec": 45
-  },
-  {
-    "do": "walk_to_exit",
-    "to": "peaks",
-    "max_sec": 45
-  },
-  {
-    "do": "walk_to_exit",
-    "to": "shadowfen",
-    "max_sec": 45
-  },
-  {
-    "do": "state"
-  },
-  {
     "do": "goto",
     "map": "shadowfen",
-    "x": 692,
-    "y": 450
+    "x": 660,
+    "y": 300
   },
   {
     "do": "shot",
@@ -227,14 +213,14 @@
   },
   {
     "do": "shot",
-    "name": "combat_5_end"
+    "name": "ch1_sorceress_end"
   },
   {
     "do": "state"
   },
   {
     "do": "checkpoint",
-    "name": "Chapter II — White Div of Crystal Sanctum"
+    "name": "Chapter II — Zal reveals the seals"
   },
   {
     "do": "preset",
@@ -253,22 +239,17 @@
     "do": "state"
   },
   {
-    "do": "walk_to_exit",
-    "to": "forest",
-    "max_sec": 45
+    "do": "checkpoint",
+    "name": "Chapter II — White Div at Crystal Sanctum"
   },
   {
-    "do": "walk_to_exit",
-    "to": "peaks",
-    "max_sec": 45
+    "do": "goto",
+    "map": "sanctum",
+    "x": 600,
+    "y": 460
   },
   {
-    "do": "walk_to_exit",
-    "to": "sanctum",
-    "max_sec": 45
-  },
-  {
-    "do": "state"
+    "do": "close_intro"
   },
   {
     "do": "walk_to_npc",
@@ -282,12 +263,6 @@
     "do": "state"
   },
   {
-    "do": "goto",
-    "map": "sanctum",
-    "x": 627,
-    "y": 480
-  },
-  {
     "do": "shot",
     "name": "ch2_white_div_start"
   },
@@ -298,14 +273,14 @@
   },
   {
     "do": "shot",
-    "name": "combat_6_end"
+    "name": "ch2_white_div_end"
   },
   {
     "do": "state"
   },
   {
     "do": "checkpoint",
-    "name": "Chapter II — White Div of Crystal Sanctum"
+    "name": "Chapter II — Akvan at Hoarfrost Vale"
   },
   {
     "do": "preset",
@@ -313,17 +288,13 @@
     "class": "__CLASS__"
   },
   {
-    "do": "checkpoint",
-    "name": "Chapter II — Akvan of Hoarfrost Vale"
-  },
-  {
     "do": "goto",
     "map": "frostvale",
-    "x": 900,
+    "x": 950,
     "y": 650
   },
   {
-    "do": "state"
+    "do": "close_intro"
   },
   {
     "do": "shot",
@@ -336,14 +307,14 @@
   },
   {
     "do": "shot",
-    "name": "combat_7_end"
+    "name": "ch2_akvan_end"
   },
   {
     "do": "state"
   },
   {
     "do": "checkpoint",
-    "name": "Chapter II — White Div of Crystal Sanctum"
+    "name": "Chapter II — Dragon of Kashaf"
   },
   {
     "do": "preset",
@@ -351,17 +322,13 @@
     "class": "__CLASS__"
   },
   {
-    "do": "checkpoint",
-    "name": "Chapter II — Dragon of Kashaf"
-  },
-  {
     "do": "goto",
     "map": "wyrmhollow",
-    "x": 650,
-    "y": 650
+    "x": 615,
+    "y": 730
   },
   {
-    "do": "state"
+    "do": "close_intro"
   },
   {
     "do": "shot",
@@ -374,7 +341,7 @@
   },
   {
     "do": "shot",
-    "name": "combat_8_end"
+    "name": "ch2_dragon_end"
   },
   {
     "do": "state"
