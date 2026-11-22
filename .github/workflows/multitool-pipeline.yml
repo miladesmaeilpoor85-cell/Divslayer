@@ -54,7 +54,7 @@ jobs:
       - name: Compile all project Python tools
         run: python -m py_compile tools/*.py tools/creative/*.py
       - name: Lint the maintained pipeline tools
-        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/animation_review.py tools/test_animation_review.py tools/animation_quality_audit.py tools/test_animation_quality_audit.py tools/import_animation_atlas.py tools/test_import_animation_atlas.py tools/creative/*.py
+        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/animation_review.py tools/test_animation_review.py tools/animation_quality_audit.py tools/test_animation_quality_audit.py tools/import_animation_atlas.py tools/test_import_animation_atlas.py tools/map_preview.py tools/test_map_preview.py tools/creative/*.py
 
   audio-quality:
     name: Audio decode and metadata — FFmpeg
@@ -95,6 +95,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Test sprite-sheet transparency handling
         run: python -m unittest discover -s tools -p "test_sprite_sheet.py" -v
+      - name: Test map preview ground-file resolution
+        run: python -m unittest discover -s tools -p "test_map_preview.py" -v
       - name: Test sprite animation review
         run: python -m unittest discover -s tools -p "test_animation_review.py" -v
       - name: Render sprite animation review previews
@@ -107,10 +109,10 @@ jobs:
         run: python tools/animation_quality_audit.py --report artifacts/animation-review/animation-quality-report.json
       - name: Fully decode the game's images and create contact sheets
         run: python tools/artwork_review.py --output artifacts/artwork-review
-      - name: Render every map from map data and object sprites
-        run: python tools/ci_map_previews.py --output artifacts/map-previews --scale 0.25
       - name: Inspect newly uploaded PNG and MP4 source media
         run: python tools/review_uploaded_source_media.py
+      - name: Render every map from map data and object sprites
+        run: python tools/ci_map_previews.py --output artifacts/map-previews --scale 0.25
       - name: Upload art, animation, and map-layout previews
         if: always()
         uses: actions/upload-artifact@v4

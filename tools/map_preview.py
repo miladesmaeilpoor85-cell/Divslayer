@@ -1,28 +1,38 @@
-#!/usr/bin/env python3
 """Draw a map from its data, seen from above, for designing maps (v0.19): the ground, every object sprite at its place,
 walls (red), exits (green, with the map they lead to), hazards (orange), NPCs (yellow), enemy spawns (magenta, bosses
 bigger), items (cyan), the player start (white) and the lights (faint circles).
 
     python3 tools/map_preview.py sanctum out.png [--scale 0.5] [--clean]   (--clean: the ground and the objects only)
 """
-import json, os, sys
-from PIL import Image, ImageDraw, ImageFont
+import json
+import os
+import sys
+
+from PIL import Image, ImageDraw
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCALE_SPR = 1.0 / 3.0
 
+def ground_image_path(root: str, key: str, map_definition: dict) -> str:
+	"""Resolve the same explicit groundFile override used by the runtime World loader."""
+	ground_file = str(map_definition.get("groundFile") or (key + "_ground.jpg"))
+	return os.path.join(root, "assets", "art", "Maps", ground_file)
+
+
 def main():
 	key, out = sys.argv[1], sys.argv[2]
 	sc = float(sys.argv[sys.argv.index("--scale") + 1]) if "--scale" in sys.argv else 0.5
-	md = json.load(open(os.path.join(ROOT, "data", "Maps", key + ".json")))
+	with open(os.path.join(ROOT, "data", "Maps", key + ".json"), encoding="utf-8") as map_file:
+		md = json.load(map_file)
 	d = md["data"]
 	W, H = int(d["w"]), int(d["h"])
-	gpath = os.path.join(ROOT, "assets", "art", "Maps", key + "_ground.jpg")
+	gpath = ground_image_path(ROOT, key, md)
 	if os.path.exists(gpath):
 		g = Image.open(gpath).convert("RGBA").resize((int(W * sc), int(H * sc)), Image.LANCZOS)
 	else:
 		g = Image.new("RGBA", (int(W * sc), int(H * sc)), (40, 40, 48, 255))
-	sprites = json.load(open(os.path.join(ROOT, "data", "map_object_sprites.json")))
+	with open(os.path.join(ROOT, "data", "map_object_sprites.json"), encoding="utf-8") as sprites_file:
+		sprites = json.load(sprites_file)
 	objs = sorted([o for o in md.get("objects", []) if "sprite" in o], key=lambda o: float(o.get("sort", o["y"])))
 	for o in objs:
 		m = sprites.get(o.get("sprite", ""))
@@ -37,7 +47,7 @@ def main():
 		g.alpha_composite(im, (int(x), int(y)))
 	if "--clean" in sys.argv:
 		g.convert("RGB").save(out)
-		print("%s %dx%d -> %s (clean)" % (key, W, H, out))
+		print(f"{key} {W}x{H} -> {out} (clean)")
 		return
 	dr = ImageDraw.Draw(g, "RGBA")
 	R = lambda r: [r["x"] * sc, r["y"] * sc, (r["x"] + r["w"]) * sc, (r["y"] + r["h"]) * sc]
@@ -72,7 +82,7 @@ def main():
 	for y in range(0, H, 100):
 		dr.text((1, y * sc + 1), str(y), fill=(255, 255, 255, 160))
 	g.convert("RGB").save(out)
-	print("%s %dx%d -> %s" % (key, W, H, out))
+	print(f"{key} {W}x{H} -> {out}")
 
 if __name__ == "__main__":
 	main()
