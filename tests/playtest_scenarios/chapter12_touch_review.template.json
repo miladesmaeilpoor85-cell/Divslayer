@@ -205,7 +205,8 @@
   {
     "do": "fight",
     "sec": 15,
-    "shots_every": 5
+    "shots_every": 5,
+    "target_foe": "boss"
   },
   {
     "do": "assert_state",
@@ -249,7 +250,8 @@
   {
     "do": "fight",
     "sec": 15,
-    "shots_every": 20
+    "shots_every": 20,
+    "target_foe": "boss2"
   },
   {
     "do": "assert_state",
@@ -288,7 +290,8 @@
   {
     "do": "fight",
     "sec": 15,
-    "shots_every": 20
+    "shots_every": 20,
+    "target_foe": "matriarch"
   },
   {
     "do": "assert_state",
@@ -356,7 +359,8 @@
   {
     "do": "fight",
     "sec": 15,
-    "shots_every": 20
+    "shots_every": 20,
+    "target_foe": "arbiter"
   },
   {
     "do": "assert_state",
@@ -398,7 +402,8 @@
   {
     "do": "fight",
     "sec": 15,
-    "shots_every": 20
+    "shots_every": 20,
+    "target_foe": "glaciertitan"
   },
   {
     "do": "assert_state",
@@ -441,7 +446,8 @@
     "do": "fight",
     "sec": 45,
     "shots_every": 5,
-    "verbose": true
+    "verbose": true,
+    "target_foe": "ancientwyrm"
   },
   {
     "do": "assert_state",

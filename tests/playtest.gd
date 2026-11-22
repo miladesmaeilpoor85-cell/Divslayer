@@ -479,6 +479,9 @@ func walk_to(goal: Vector2, max_sec: float, near := 14.0) -> String:
 		if detour > 0.0:
 			dir = dir.rotated(side * 1.2)
 			detour -= 0.1
+		# Keep collision detours from taking the touch bot through an unrelated
+		# map exit (notably the hidden shrine entrance in the Whispering Forest).
+		dir = _avoid_exits(dir)
 		await stick(dir)
 		await wait(0.1)
 		t += 0.1
@@ -522,7 +525,7 @@ func dialog_all() -> String:
 	return "read %d pages: %s" % [pages.size(), " // ".join(pages)]
 
 # ---------------------------------------------------------------- the fighting bot (a decent phone player, not a perfect one)
-func fight(sec: float, shots_every: float) -> String:
+func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var p = main.player
 	var t := 0.0
 	var dmg0: float = p.damage_taken
@@ -568,6 +571,7 @@ func fight(sec: float, shots_every: float) -> String:
 			ended = "walked into an exit -> %s" % main.world.key
 			break
 		var tgt: Node = null
+		var focused_tgt: Node = null
 		var bd := INF
 		var any_alive := false
 		for e in get_tree().get_nodes_in_group("enemies"):
@@ -581,11 +585,18 @@ func fight(sec: float, shots_every: float) -> String:
 			any_alive = true
 			if not e.targetable():
 				continue
+			# For boss samples, deliberately pursue the named encounter instead of
+			# spending the short combat window clearing nearby adds.
+			if focus_type != "" and e.is_in_group("bosses") and str(e.type) == focus_type:
+				focused_tgt = e
+				continue
 			if not _clear_line(_feet(), e.global_position):
 				dd += 400.0          # behind a wall: a player picks another foe first
 			if dd < bd:
 				bd = dd
 				tgt = e
+		if focused_tgt != null:
+			tgt = focused_tgt
 		if tgt == null:
 			if any_alive and quiet < 4.0:
 				quiet += 0.2          # a foe out of reach for a moment (a boss between phases, a burrowed thing): wait for it
@@ -856,7 +867,7 @@ func _step(s: Dictionary) -> Variant:
 			return await dialog_all()
 		"fight":
 			verbose = bool(s.get("verbose", false))
-			return await fight(float(s.get("sec", 30.0)), float(s.get("shots_every", 0.0)))
+			return await fight(float(s.get("sec", 30.0)), float(s.get("shots_every", 0.0)), str(s.get("target_foe", "")))
 		"wait":
 			await wait(float(s.get("sec", 1.0)))
 			return "waited"
