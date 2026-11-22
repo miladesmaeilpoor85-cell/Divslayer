@@ -436,7 +436,7 @@
   },
   {
     "do": "fight",
-    "sec": 15,
+    "sec": 30,
     "shots_every": 20,
     "target_foe": "glaciertitan"
   },
@@ -479,7 +479,7 @@
   },
   {
     "do": "fight",
-    "sec": 45,
+    "sec": 60,
     "shots_every": 5,
     "verbose": true,
     "target_foe": "ancientwyrm"
