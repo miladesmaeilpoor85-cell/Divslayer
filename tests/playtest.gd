@@ -49,6 +49,11 @@ var stick_origin := Vector2.ZERO        # window pixels
 var log_f: FileAccess
 var t0 := 0
 var verbose := false
+var current_step := -1
+var current_action := ""
+var current_step_started_ms := 0
+var active_stage := "startup"
+var stage_started_ms := 0
 
 const PRESETS := {
 	# level, weapon, armour, potions, gold
@@ -68,6 +73,7 @@ func _arg(k: String, d: String) -> String:
 func run(m: Node) -> void:
 	main = m
 	t0 = Time.get_ticks_msec()
+	stage_started_ms = t0
 	out = _arg("--out", "user://playtest")
 	DirAccess.make_dir_recursive_absolute(out.path_join("shots"))
 	log_f = FileAccess.open(out.path_join("log.txt"), FileAccess.WRITE)
@@ -79,6 +85,11 @@ func run(m: Node) -> void:
 		_finish()
 		return
 	steps = parsed
+	var heartbeat := Timer.new()
+	heartbeat.wait_time = 20.0
+	heartbeat.timeout.connect(_heartbeat)
+	add_child(heartbeat)
+	heartbeat.start()
 	var vs := get_viewport().get_visible_rect().size
 	var ws := get_tree().root.size
 	_log("PLAYTEST v%s  window %dx%d  layout %dx%d  lang %s  steps %d" % [Game.VERSION, ws.x, ws.y, vs.x, vs.y, Game.lang, steps.size()])
@@ -88,11 +99,26 @@ func run(m: Node) -> void:
 		if typeof(s) != TYPE_DICTIONARY:
 			_log("STEP %d  (not an object) skipped" % i)
 			continue
+		current_step = i
+		current_action = str(s.get("do", ""))
+		current_step_started_ms = Time.get_ticks_msec()
+		_log("STEP_START %d %s" % [i, current_action])
 		var res = await _step(s)
-		_log("STEP %d %s -> %s" % [i, JSON.stringify(s), str(res)])
+		var step_elapsed := (Time.get_ticks_msec() - current_step_started_ms) / 1000.0
+		_log("STEP %d %.2f s %s -> %s" % [i, step_elapsed, JSON.stringify(s), str(res)])
+		current_step = -1
+		current_action = ""
 	_finish()
 
+func _heartbeat() -> void:
+	if current_step >= 0:
+		var elapsed := (Time.get_ticks_msec() - current_step_started_ms) / 1000.0
+		_log("PLAYTEST_HEARTBEAT step=%d action=%s elapsed=%.1f s" % [current_step, current_action, elapsed])
+
 func _finish() -> void:
+	if stage_started_ms > 0:
+		var stage_elapsed := (Time.get_ticks_msec() - stage_started_ms) / 1000.0
+		_log("STAGE_END %s wall=%.1f s potions_remaining=%d" % [active_stage, stage_elapsed, int(Game.state.get("potions", 0))])
 	_log("PLAYTEST_DONE  %.1f s wall" % ((Time.get_ticks_msec() - t0) / 1000.0))
 	if log_f:
 		log_f.flush()
@@ -471,6 +497,7 @@ func fight(sec: float, shots_every: float) -> String:
 	var detour := 0.0
 	var side := 1.0
 	var quiet := 0.0
+	var last_progress := -5.0
 	while t < sec:
 		if p.dead:
 			ended = "the hero fell"
@@ -520,6 +547,13 @@ func fight(sec: float, shots_every: float) -> String:
 			ended = "no foe within reach — the area is clear"
 			break
 		quiet = 0.0
+		if t - last_progress >= 5.0:
+			var live_foes := 0
+			for progress_enemy in get_tree().get_nodes_in_group("enemies"):
+				if progress_enemy.world == main.world and not progress_enemy.dead:
+					live_foes += 1
+			_log("FIGHT_PROGRESS elapsed=%.1f/%0.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
+			last_progress = t
 		hp_low = min(hp_low, Game.hp / Game.max_hp())
 		if Game.hp < 0.35 * Game.max_hp() and int(Game.state.get("potions", 0)) > 0:
 			await press("potion")
@@ -628,6 +662,14 @@ func _avoid_exits(dir: Vector2) -> Vector2:
 func _step(s: Dictionary) -> Variant:
 	var what := str(s.get("do", ""))
 	match what:
+		"checkpoint":
+			var now := Time.get_ticks_msec()
+			var elapsed := (now - stage_started_ms) / 1000.0
+			_log("STAGE_END %s wall=%.1f s potions_remaining=%d" % [active_stage, elapsed, int(Game.state.get("potions", 0))])
+			active_stage = str(s.get("name", "unnamed stage"))
+			stage_started_ms = now
+			_log("STAGE_START %s potions=%d" % [active_stage, int(Game.state.get("potions", 0))])
+			return "stage checkpoint: " + active_stage
 		"menu":
 			if main.menu == null:
 				main.show_menu()
