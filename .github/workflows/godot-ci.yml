@@ -201,7 +201,8 @@ jobs:
           assert "PLAYTEST_ASSERTIONS_PASSED" in log, "Playtest scenario assertions did not all pass"
           assert "ASSERTION_FAILED" not in log, "A campaign path or boss-combat assertion failed"
           assert len(fights) == 7, f"Expected 7 combat samples, found {len(fights)}"
-          assert log.count("ASSERTION_PASSED ") >= 4, "Expected forest/crypt/boss checkpoint assertions to run"
+          passed = log.count("ASSERTION_PASSED ")
+          assert passed >= 11, f"Expected 11 campaign checkpoint assertions, found {passed}"
           errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
           assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
           print("PLAYTEST_COMBAT_SAMPLES")
