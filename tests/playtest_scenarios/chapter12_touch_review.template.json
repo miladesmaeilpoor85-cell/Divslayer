@@ -88,18 +88,6 @@
     "name": "forest_skirmish_end"
   },
   {
-    "do": "talk"
-  },
-  {
-    "do": "assert_state",
-    "label": "first_forest_clue_collected",
-    "map": "forest",
-    "objective_contains": "۱/۲"
-  },
-  {
-    "do": "state"
-  },
-  {
     "do": "walk_to",
     "x": 620,
     "y": 300,
@@ -122,18 +110,46 @@
   },
   {
     "do": "assert_state",
-    "label": "both_forest_clues_collected",
+    "label": "first_forest_clue_collected",
     "map": "forest",
-    "objective_contains": "گذرگاه شمالی جنگل"
+    "objective_contains": "۱/۲"
   },
   {
     "do": "state"
+  },
+  {
+    "do": "button",
+    "id": "potion"
   },
   {
     "do": "walk_to",
     "x": 680,
     "y": 500,
     "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 420,
+    "y": 250,
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "assert_state",
+    "label": "both_forest_clues_collected",
+    "map": "forest",
+    "objective_contains": "گذرگاه شمالی جنگل"
+  },
+  {
+    "do": "state"
   },
   {
     "do": "walk_to",
@@ -165,6 +181,25 @@
   {
     "do": "shot",
     "name": "ch1_crypt"
+  },
+  {
+    "do": "fight",
+    "sec": 25,
+    "shots_every": 5
+  },
+  {
+    "do": "button",
+    "id": "potion"
+  },
+  {
+    "do": "assert_state",
+    "label": "crypt_approach_survived",
+    "map": "dungeon",
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "state"
   },
   {
     "do": "walk_to",
@@ -204,7 +239,7 @@
   },
   {
     "do": "fight",
-    "sec": 15,
+    "sec": 20,
     "shots_every": 5,
     "target_foe": "boss"
   },
