@@ -198,6 +198,8 @@ jobs:
           godot = Path(sys.argv[2]).read_text(encoding="utf-8", errors="replace")
           fights = [line for line in log.splitlines() if '"do":"fight"' in line]
           assert "PLAYTEST_DONE" in log, "Playtest did not reach its final step"
+          assert "PLAYTEST_ASSERTIONS_PASSED" in log, "Playtest scenario assertions did not all pass"
+          assert "ASSERTION_FAILED" not in log, "A campaign path or boss-combat assertion failed"
           assert len(fights) == 7, f"Expected 7 combat samples, found {len(fights)}"
           errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
           assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
