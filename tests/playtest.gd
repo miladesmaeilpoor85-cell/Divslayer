@@ -670,6 +670,12 @@ func _step(s: Dictionary) -> Variant:
 			stage_started_ms = now
 			_log("STAGE_START %s potions=%d" % [active_stage, int(Game.state.get("potions", 0))])
 			return "stage checkpoint: " + active_stage
+		"close_intro":
+			if main.hud.intro.visible:
+				await tap(_win(get_viewport().get_visible_rect().get_center()))
+				await wait(0.6)
+				return "dismissed map intro"
+			return "no map intro"
 		"menu":
 			if main.menu == null:
 				main.show_menu()
