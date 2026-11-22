@@ -80,7 +80,7 @@
   },
   {
     "do": "fight",
-    "sec": 25,
+    "sec": 12,
     "shots_every": 0
   },
   {
@@ -180,7 +180,7 @@
   },
   {
     "do": "fight",
-    "sec": 30,
+    "sec": 15,
     "shots_every": 20
   },
   {
@@ -224,7 +224,7 @@
   },
   {
     "do": "fight",
-    "sec": 30,
+    "sec": 15,
     "shots_every": 20
   },
   {
@@ -263,7 +263,7 @@
   },
   {
     "do": "fight",
-    "sec": 30,
+    "sec": 15,
     "shots_every": 20
   },
   {
@@ -331,7 +331,7 @@
   },
   {
     "do": "fight",
-    "sec": 30,
+    "sec": 15,
     "shots_every": 20
   },
   {
@@ -373,7 +373,7 @@
   },
   {
     "do": "fight",
-    "sec": 30,
+    "sec": 15,
     "shots_every": 20
   },
   {
@@ -415,7 +415,7 @@
   },
   {
     "do": "fight",
-    "sec": 30,
+    "sec": 15,
     "shots_every": 20
   },
   {
