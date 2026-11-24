@@ -751,8 +751,17 @@ func prepare_loadout() -> String:
 	var report: Array[String] = []
 	# The first purse is enough for armour but not both upgrades. A sensible new player
 	# buys protection first and returns for a better weapon after earning more gold.
-	report.append(await visit_shop("smith"))
-	report.append(await visit_shop("merchant"))
+	var smith_result: String = await visit_shop("smith")
+	report.append(smith_result)
+	var hud = driver.main.hud
+	if hud.dialogue.visible or hud.shop.visible or hud.forge.visible:
+		var blocker := "merchant visit skipped because the smith interaction left a modal panel open: dialogue=%s shop=%s forge=%s" % [
+			str(hud.dialogue.visible), str(hud.shop.visible), str(hud.forge.visible)
+		]
+		report.append(blocker)
+		driver._log("PLAYER_AGENT_LOADOUT_MODAL_BLOCK " + blocker)
+	else:
+		report.append(await visit_shop("merchant"))
 	report.append(await spend_talents())
 	var armor_after := int(Game.state.get("armor", 0))
 	var weapon_after := int(Game.state.get("weapon", 1))
