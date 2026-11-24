@@ -94,6 +94,44 @@ class AnimationReviewTests(unittest.TestCase):
                     gif.info["duration"], 120
                 )  # GIF delays use 10 ms units.
 
+
+    def test_exports_multi_frame_svg_enemy_sheet(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path, output = self._project(root)
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+            payload["enemies"]["gale_warden"] = {
+                "cellW": 12,
+                "cellH": 10,
+                "frames": 4,
+                "variants": 1,
+                "pivot": [0.5, 0.1],
+                "timedMs": 160,
+                "file": "gale_warden",
+                "extension": "svg",
+            }
+            manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+            svg = """<svg xmlns="http://www.w3.org/2000/svg" width="48" height="10" viewBox="0 0 48 10">
+            <rect x="1" y="1" width="7" height="8" fill="#d0e0ef"/>
+            <rect x="13" y="1" width="7" height="7" fill="#8bc7df"/>
+            <rect x="25" y="1" width="7" height="6" fill="#6098b5"/>
+            <rect x="37" y="1" width="7" height="5" fill="#426680"/>
+            </svg>"""
+            (root / "assets" / "art" / "Enemies" / "gale_warden.svg").write_text(
+                svg, encoding="utf-8"
+            )
+
+            report = animation_review.review_sheets(
+                root, Path("data/art_manifest.json"), Path("artifacts/animation-review")
+            )
+            self.assertFalse(report["errors"])
+            self.assertEqual(report["valid"], 4)
+            preview = output / "enemy-gale_warden-variant-0-loop.gif"
+            self.assertTrue(preview.is_file())
+            with Image.open(preview) as gif:
+                self.assertEqual(gif.n_frames, 4)
+                self.assertEqual(gif.size, (24, 20))
+
     def test_reports_sheet_dimensions_that_do_not_match_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
