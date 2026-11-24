@@ -2,6 +2,8 @@ name: Real player journey
 run-name: "Real player journey — ${{ github.event.pull_request.title || github.ref_name }}"
 
 on:
+  push:
+    branches: [qa/human-player-agent-v1-20261124]
   pull_request:
     branches: [main]
     paths:
