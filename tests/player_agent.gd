@@ -701,6 +701,13 @@ func follow_objective(max_steps := 8) -> String:
 			goal = candidate.global_position + Vector2(0, 24)
 		var route: String = await driver.walk_to(goal, 32.0, 20.0)
 		await driver.wait(0.25)
+		if driver.main.world == null or str(driver.main.world.key) != current_map:
+			var actual_map := str(driver.main.world.key) if driver.main.world else "none"
+			var route_failure := "objective approach left %s unexpectedly (now %s): %s" % [current_map, actual_map, route]
+			driver.assertion_failures.append(route_failure)
+			driver._log("PLAYER_AGENT_ROUTE_MISROUTED " + route_failure)
+			report.append(route_failure)
+			break
 		if kind == "npc" or kind == "quest_point":
 			if driver.main.player.near_npc != null:
 				await driver.press("talk")
