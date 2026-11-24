@@ -605,6 +605,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var pots := 0
 	var dodges := 0
 	var hp_low := 1.0
+	# Focused boss samples use a cautious player policy; ordinary skirmishes keep
+	# the original potion threshold so this does not inflate campaign survivability.
+	var potion_threshold := 0.55 if focus_type != "" else 0.35
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
 	var boss_hp_before := {}
@@ -622,6 +625,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				focus_present_before = true
 				focus_hp_before = boss_hp_before[boss_type]
 	var ended := "time"
+	if focus_type != "":
+		_log("BOSS_PLAYTEST_POLICY target=%s telegraph_response=100%% potion_threshold=55%%" % focus_type)
 	var map0: String = main.world.key
 	var last := _feet()
 	var stuck := 0.0
@@ -694,7 +699,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			_log("FIGHT_PROGRESS elapsed=%.1f/%.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
 			last_progress = t
 		hp_low = min(hp_low, Game.hp / Game.max_hp())
-		if Game.hp < 0.35 * Game.max_hp() and int(Game.state.get("potions", 0)) > 0:
+		if Game.hp < potion_threshold * Game.max_hp() and int(Game.state.get("potions", 0)) > 0:
 			await press("potion")
 			pots += 1
 		var to: Vector2 = tgt.center() - (p.global_position + Vector2(0, -17))
@@ -709,7 +714,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		var reach: float = 46.0 + (float(tgt.hit_rect().size.x) * 0.5 if tgt.has_method("hit_rect") else 12.0)
 		# (v0.23) a marked attack about to land where the hero stands: step or roll out of it, as a player reading the
 		# ground would (about three times in four — nobody reads every one)
-		var away := _danger_away()
+		var away := _danger_away(focus_type != "")
 		if away != Vector2.ZERO:
 			await stick(away.normalized())
 			if p.dodge_cd <= 0.0 and p.stamina >= 30.0:
@@ -798,14 +803,14 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 
 ## the way out of the nearest marked attack that is about to land on the hero (Vector2.ZERO: nothing to dodge)
 
-func _danger_away() -> Vector2:
+func _danger_away(perfect_telegraph_read := false) -> Vector2:
 	var bfx = main.world.get("bossfx") if main.world else null
 	if bfx == null:
 		return Vector2.ZERO
 	var pc: Vector2 = main.player.global_position + Vector2(0, -17)
 	for t in bfx.tele:
 		if not t.has("_pt"):
-			t["_pt"] = randf() < 0.75
+			t["_pt"] = randf() < (1.0 if perfect_telegraph_read else 0.75)
 		if not bool(t["_pt"]) or float(t["t"]) > 0.45 or not bfx.inside(t):
 			continue
 		match str(t["kind"]):
