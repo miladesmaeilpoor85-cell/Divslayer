@@ -2,7 +2,7 @@ name: Godot CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, qa/human-player-agent-v1-20261124]
   pull_request:
     branches: [main]
   workflow_dispatch:
