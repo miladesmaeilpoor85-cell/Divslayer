@@ -552,6 +552,48 @@ func dialog_all() -> String:
 	return "read %d pages: %s" % [pages.size(), " // ".join(pages)]
 
 # ---------------------------------------------------------------- the fighting bot (a decent phone player, not a perfect one)
+## Test-only staging helper: a direct goto skips the map route, so unrelated roaming
+## foes must not pile into a boss-only combat sample. The boss and its later summons remain.
+func _isolate_boss(target_type: String) -> String:
+	if target_type == "":
+		return "isolate_boss requires target_foe"
+	var targets: Array = []
+	for candidate in get_tree().get_nodes_in_group("bosses"):
+		if candidate.world == main.world and not candidate.dead and str(candidate.type) == target_type:
+			targets.append(candidate)
+	if targets.size() != 1:
+		var failure := "isolate_boss expected exactly one live %s on %s, found %d" % [target_type, str(main.world.key), targets.size()]
+		assertion_failures.append(failure)
+		_log("ASSERTION_FAILED " + failure)
+		return "ASSERTION_FAILED " + failure
+	var target: Node = targets[0]
+	var foes: Array = get_tree().get_nodes_in_group("enemies")
+	for candidate in get_tree().get_nodes_in_group("bosses"):
+		if not foes.has(candidate):
+			foes.append(candidate)
+	var removed := 0
+	for foe in foes:
+		if not is_instance_valid(foe) or foe.world != main.world or foe.dead or foe == target:
+			continue
+		foe.queue_free()
+		removed += 1
+	await frames(2)
+	if not is_instance_valid(target) or target.dead:
+		var failure := "isolate_boss removed or lost the required %s target" % target_type
+		assertion_failures.append(failure)
+		_log("ASSERTION_FAILED " + failure)
+		return "ASSERTION_FAILED " + failure
+	var live_left := 0
+	var remaining: Array = get_tree().get_nodes_in_group("enemies")
+	for candidate in get_tree().get_nodes_in_group("bosses"):
+		if not remaining.has(candidate):
+			remaining.append(candidate)
+	for foe in remaining:
+		if is_instance_valid(foe) and foe.world == main.world and not foe.dead:
+			live_left += 1
+	_log("BOSS_ISOLATION type=%s removed_unrelated=%d live_at_start=%d" % [target_type, removed, live_left])
+	return "isolated %s; removed %d unrelated foes; %d live target(s) remain" % [target_type, removed, live_left]
+
 func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var p = main.player
 	var t := 0.0
@@ -967,6 +1009,8 @@ func _step(s: Dictionary) -> Variant:
 			main.goto_map(str(s.get("map", "village")), Vector2(float(s.get("x", 420)), float(s.get("y", 490))))
 			await wait(1.0)
 			return "on %s" % main.world.key
+		"isolate_boss":
+			return await _isolate_boss(str(s.get("target_foe", "")))
 		"invuln":
 			main.player.invuln = 999999.0 if bool(s.get("v", true)) else 0.0
 			return "invuln %s" % str(bool(s.get("v", true)))
