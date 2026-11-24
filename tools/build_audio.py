@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build assets/audio/ from the downloaded CC0 sources (v0.17).
 
-    python3 tools/build_audio.py --kenney DIR --innworld DIR --frostbound DIR [--q 0]
+    python3 tools/build_audio.py --kenney DIR --innworld DIR --frostbound DIR [--q 10]
 
   --kenney    a checkout of the Kenney packs (kenney_rpgaudio, kenney_impactsounds, kenney_interfacesounds,
               kenney_uiaudio, kenney_musicjingles), each with its own License.txt (CC0)
@@ -9,7 +9,7 @@
               OpenGameArt tracks; every one used here was checked on its OpenGameArt page (see assets/audio/CREDITS.md)
   --frostbound  the audio/music folder of github.com/seskiramadhan/Frostbound (two CC0 OpenGameArt tracks, v0.19)
 
-Every file is re-encoded to Ogg Vorbis, loudness-matched (EBU R128, two passes), trimmed or faded where noted.
+Files are encoded to high-quality Ogg Vorbis, loudness-matched (EBU R128, two passes), and edited only where musically intended. Source channels are preserved unless a deliberate mono treatment is specified.
 Needs ffmpeg with libvorbis. The output is deterministic for the same sources and settings.
 """
 import argparse, json, os, re, shutil, subprocess, sys
@@ -37,18 +37,18 @@ MUSIC = {
 	"boss_ancientwyrm": ("frostbound:boss.mp3", "Boss Battle Music (Epic Boss Battle)", "SubspaceAudio (Juhani Junkala)", "https://opengameart.org/content/boss-battle-music", -17, None),
 }
 
-# loop name -> (source in innworld/ambience, title, author, page, loudness, mono)
+# loop name -> (source in innworld/ambience, title, author, page, loudness, mono-by-design)
 AMBIENCE = {
-	"crickets": ("amb_crickets.ogg", "Crickets Ambient Noise - loopable", "Wolfgang_ (Ted Kerr)", "https://opengameart.org/content/crickets-ambient-noise-loopable", -28, True),
+	"crickets": ("amb_crickets.ogg", "Crickets Ambient Noise - loopable", "Wolfgang_ (Ted Kerr)", "https://opengameart.org/content/crickets-ambient-noise-loopable", -28, False),
 	"wind":     ("amb_wind.ogg", "wind whoosh loop", "SketchMan3", "https://opengameart.org/content/wind-whoosh-loop", -26, False),
-	"birds":    ("amb_birds.ogg", "Ambient Bird Sounds (cut to loop)", "isaiah658", "https://opengameart.org/content/ambient-bird-sounds", -30, True),
-	"fire":     ("amb_fire.ogg", "Fireplace Sound loop (cut to loop)", "PagDev", "https://opengameart.org/content/fireplace-sound-loop", -27, True),
+	"birds":    ("amb_birds.ogg", "Ambient Bird Sounds (cut to loop)", "isaiah658", "https://opengameart.org/content/ambient-bird-sounds", -30, False),
+	"fire":     ("amb_fire.ogg", "Fireplace Sound loop (cut to loop)", "PagDev", "https://opengameart.org/content/fireplace-sound-loop", -27, False),
 	"cave":     ("amb_cave.ogg", "Loopable Dungeon Ambience", "JaggedStone", "https://opengameart.org/content/loopable-dungeon-ambience", -27, False),
-	"water":    ("amb_water.ogg", "loop_water_02 (40 CC0 water / splash / slime SFX)", "rubberduck", "https://opengameart.org/content/40-cc0-water-splash-slime-sfx", -29, True),
+	"water":    ("amb_water.ogg", "loop_water_02 (40 CC0 water / splash / slime SFX)", "rubberduck", "https://opengameart.org/content/40-cc0-water-splash-slime-sfx", -29, False),
 }
 
-# dark drones: mono is enough and halves the size
-MONO_MUSIC = {"dungeon"}
+# Preserve the original channel layout. Mono is allowed only when it is an intentional sound-design choice.
+MONO_MUSIC = set()
 # every ambience loop is re-folded so its end runs into its start without a click: name -> (seconds kept, crossfade).
 # The cave loop is also shortened (94 s -> 48 s); the others keep their length and get a 0.3 s crossfade.
 AMB_FOLD = {"cave": (48.0, 3.0)}
@@ -152,14 +152,14 @@ def fold_loop(src, keep, dst, x=3.0):
 	(fading in, equal power). Playing [0, keep) on repeat then joins without a seam."""
 	import wave, struct
 	tmp = dst + ".raw.wav"
-	run(["ffmpeg", "-hide_banner", "-y", "-i", src, "-t", "%g" % (keep + x), "-ac", "2", "-ar", "44100", "-c:a", "pcm_s16le", tmp])
+	run(["ffmpeg", "-hide_banner", "-y", "-i", src, "-t", "%g" % (keep + x), "-ac", "2", "-ar", "48000", "-c:a", "pcm_s24le", tmp])
 	with wave.open(tmp) as w:
 		n = w.getnframes()
 		raw = w.readframes(n)
 	os.remove(tmp)
 	import array, math
 	a = array.array("h", raw)
-	xs = int(x * 44100)
+	xs = int(x * 48000)
 	keep_n = n - xs
 	out = a[: keep_n * 2]
 	for i in range(xs):
@@ -169,25 +169,25 @@ def fold_loop(src, keep, dst, x=3.0):
 			v = a[i * 2 + c] * fi + a[(keep_n + i) * 2 + c] * fo
 			out[i * 2 + c] = max(-32768, min(32767, int(v)))
 	with wave.open(dst, "wb") as w:
-		w.setnchannels(2); w.setsampwidth(2); w.setframerate(44100)
+		w.setnchannels(2); w.setsampwidth(3); w.setframerate(48000)
 		w.writeframes(out.tobytes())
 	return dst
 
-def trim_silence_encode(src, dst, q=3):
+def trim_silence_encode(src, dst, q=10):
 	"""a one-shot sound: mono, leading/trailing silence cut, peak at -1 dBFS"""
 	r = run(["ffmpeg", "-hide_banner", "-nostats", "-i", src, "-af", "volumedetect", "-f", "null", "-"])
 	mx = float(re.search(r"max_volume: (-?[\d.]+) dB", r.stderr).group(1))
 	gain = -1.0 - mx
-	af = "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.005,areverse,silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.02,areverse,volume=%.2fdB,aresample=44100" % gain
-	run(["ffmpeg", "-hide_banner", "-y", "-i", src, "-af", af, "-ac", "1", "-c:a", "libvorbis", "-q:a", str(q), "-map_metadata", "-1", dst])
+	af = "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.005,areverse,silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.02,areverse,volume=%.2fdB,aresample=48000" % gain
+	run(["ffmpeg", "-hide_banner", "-y", "-i", src, "-af", af, "-c:a", "libvorbis", "-q:a", str(q), "-map_metadata", "-1", dst])
 
 def main():
 	ap = argparse.ArgumentParser()
 	ap.add_argument("--kenney", required=True)
 	ap.add_argument("--innworld", required=True)
 	ap.add_argument("--frostbound", required=True)
-	ap.add_argument("--q", type=float, default=0.0, help="Vorbis quality for music, 0..10 (ffmpeg ignores negative values)")
-	ap.add_argument("--rate", type=int, default=32000, help="music sample rate: at q0 Vorbis cuts the top octave anyway, so 32 kHz costs nothing audible and saves ~15%%")
+	ap.add_argument("--q", type=float, default=10.0, help="Vorbis quality for music, 0..10; default 10 preserves maximum encoder quality")
+	ap.add_argument("--rate", type=int, default=48000, help="music sample rate; quality-first default is 48 kHz (no size-driven downsampling)")
 	a = ap.parse_args()
 	for sub in ("music", "amb", "sfx"):
 		d = os.path.join(OUT, sub)
@@ -205,7 +205,7 @@ def main():
 		src = os.path.join(a.innworld, "ambience", f)
 		keep, xf = AMB_FOLD.get(key, (duration(src) - 0.3, 0.3))
 		folded = fold_loop(src, keep, os.path.join(OUT, "amb", key + "_fold.wav"), xf)
-		encode(folded, os.path.join(OUT, "amb", key + ".ogg"), lufs, 0, mono=mono, rate=44100, tp=-3.0)
+		encode(folded, os.path.join(OUT, "amb", key + ".ogg"), lufs, 10, mono=mono, rate=48000, tp=-3.0)
 		os.remove(folded)
 		credits["ambience"].append({"use": key, "title": title, "author": author, "url": url, "license": "CC0 1.0"})
 	used_packs = set()
