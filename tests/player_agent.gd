@@ -347,6 +347,7 @@ func equip_best_accessory() -> String:
 		var best_index := -1
 		var best_gain := 0.01
 		var bag: Array = Game.Gear.bag()
+		var bag_before_size := bag.size()
 		for i in bag.size():
 			var item: Dictionary = bag[i]
 			var slot := str(item.get("slot", ""))
@@ -370,8 +371,7 @@ func equip_best_accessory() -> String:
 			return "better accessory was not visible or tappable"
 		await driver.wait(0.25)
 		var after: Dictionary = Game.Gear.eq()
-		var slot_after := str(after.keys()[0]) if not after.is_empty() else ""
-		if Game.Gear.bag().size() < bag.size():
+		if Game.Gear.bag().size() < bag_before_size:
 			equipped.append("bag-index-%d" % best_index)
 		else:
 			break
@@ -415,6 +415,10 @@ func bind_adaptive_spells() -> String:
 	if not await _tap_text(Game.t("Skills", "مهارت‌ها")):
 		await _close_pause()
 		return "could not open Skills page"
+	var spells_tab := _named_control("Sub_spells")
+	if spells_tab != null and not await _tap_control(spells_tab):
+		await _close_pause()
+		return "could not open the Spells subpage"
 	var before: Array = Game.slots().duplicate()
 	for slot_index in 2:
 		var id := chosen[slot_index]
@@ -497,6 +501,33 @@ func _choose_dialogue_option() -> String:
 	driver._log("PLAYER_AGENT_DIALOGUE_CHOICE %s" % chosen_text)
 	return "selected dialogue option: " + chosen_text
 
+func recover_from_death() -> String:
+	var death = driver.main.hud.death
+	if death == null or not death.visible:
+		return "no death screen to recover from"
+	var is_boss_fight := not Game.fight.is_empty() and str(Game.fight.get("type", "")) != ""
+	var retries := int(Game.fight.get("retries", 0))
+	var choice: Button = null
+	var action := ""
+	if is_boss_fight:
+		if retries >= 1 and Game.diff() != "story" and death.story_btn.visible:
+			choice = death.story_btn
+			action = "lowered difficulty to Story through the death screen after a second defeat"
+		elif death.re_btn.visible:
+			choice = death.re_btn
+			action = "requested a boss rematch at the current arena"
+	else:
+		choice = death.home_btn
+		action = "respawned in Zabol after a field defeat"
+	if choice == null or not await _tap_control(choice):
+		return "death screen choice was unavailable"
+	await driver.wait(1.2)
+	var recovered := not driver.main.player.dead and not death.visible
+	if recovered:
+		driver._log("PLAYER_AGENT_RECOVERY retries=%d action=%s map=%s hp=%d" % [int(Game.fight.get("retries", 0)), action, str(driver.main.world.key), int(Game.hp)])
+		return action
+	return "recovery choice was tapped but the player did not return to play"
+
 func follow_objective(max_steps := 8) -> String:
 	var report: Array[String] = []
 	for step_index in max_steps:
@@ -528,6 +559,23 @@ func follow_objective(max_steps := 8) -> String:
 			continue
 		var target_pos: Vector2 = target.get("pos", driver._feet())
 		var kind := str(target.get("kind", ""))
+		if kind == "exit":
+			var next_map := ""
+			for exit_data in driver.main.world.data.get("exits", []):
+				var rect := Rect2(float(exit_data.get("x", 0)), float(exit_data.get("y", 0)), float(exit_data.get("w", 0)), float(exit_data.get("h", 0)))
+				if rect.grow(8.0).has_point(target_pos):
+					next_map = str(exit_data.get("to", ""))
+					break
+			if next_map == "":
+				report.append("objective exit has no matching authored map exit")
+				break
+			var exit_route: String = await driver.walk_to(target_pos, 45.0, 6.0, next_map)
+			await driver.wait(0.4)
+			if str(driver.main.world.key) == current_map:
+				report.append("could not cross objective exit to %s: %s" % [next_map, exit_route])
+				break
+			report.append("followed the quest arrow through exit to %s" % str(driver.main.world.key))
+			continue
 		if kind == "boss":
 			var boss: Node = null
 			var nearest_boss := INF
