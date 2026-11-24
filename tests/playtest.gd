@@ -55,6 +55,7 @@ var current_step_started_ms := 0
 var active_stage := "startup"
 var stage_started_ms := 0
 var assertion_failures: Array[String] = []
+var fight_evidence: Dictionary = {}
 
 const PRESETS := {
 	# level, weapon, armour, potions, gold
@@ -154,20 +155,32 @@ func _assert_state(s: Dictionary) -> String:
 	var required_foe := str(s.get("foe_type", ""))
 	if required_foe != "":
 		var found := false
-		for e in get_tree().get_nodes_in_group("enemies"):
+		var foe_candidates: Array = get_tree().get_nodes_in_group("enemies")
+		for boss_candidate in get_tree().get_nodes_in_group("bosses"):
+			if not foe_candidates.has(boss_candidate):
+				foe_candidates.append(boss_candidate)
+		for e in foe_candidates:
 			if e.world != main.world or str(e.type) != required_foe:
 				continue
 			found = true
 			if bool(s.get("foe_must_be_alive", false)) and e.dead:
 				failures.append("%s was already defeated before its combat checkpoint" % required_foe)
-			if s.has("foe_hp_below") and not e.dead:
-				var hp_percent := 100.0 * float(e.hp) / maxf(1.0, float(e.max_hp))
-				if hp_percent >= float(s["foe_hp_below"]):
-					failures.append("%s health did not fall below %.0f%% (currently %.0f%%)" % [required_foe, float(s["foe_hp_below"]), hp_percent])
 		if bool(s.get("foe_must_exist", false)) and not found:
 			failures.append("required foe %s was not present on %s" % [required_foe, str(snapshot.get("map", ""))])
-		if s.has("foe_hp_below") and not found and not bool(s.get("foe_must_exist", false)):
-			_log("ASSERTION_INFO %s: %s is no longer present; treated as defeated" % [label, required_foe])
+		if s.has("foe_hp_below"):
+			# A missing enemy node is not proof of victory: the scene might never have
+			# spawned the boss. Require evidence captured at the start/end of its fight.
+			var evidence: Dictionary = fight_evidence.get(required_foe, {})
+			if evidence.is_empty() or not bool(evidence.get("present_before", false)):
+				failures.append("no verified combat evidence: %s was not present when its fight began" % required_foe)
+			elif bool(evidence.get("defeated", false)):
+				_log("ASSERTION_INFO %s: %s defeat was confirmed by the boss kill counter" % [label, required_foe])
+			elif not bool(evidence.get("present_after", false)):
+				failures.append("%s disappeared during combat without a recorded boss defeat" % required_foe)
+			else:
+				var hp_percent := float(evidence.get("hp_after", 100.0))
+				if hp_percent >= float(s["foe_hp_below"]):
+					failures.append("%s health did not fall below %.0f%% (currently %.0f%%)" % [required_foe, float(s["foe_hp_below"]), hp_percent])
 	if failures.is_empty():
 		_log("ASSERTION_PASSED %s" % label)
 		return "assertion passed: " + label
@@ -553,9 +566,19 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
 	var boss_hp_before := {}
+	var focus_present_before := false
+	var focus_hp_before := 100.0
+	var focus_kills_before := 0
+	if focus_type != "":
+		fight_evidence.erase(focus_type)
+		focus_kills_before = int(Game.v18().get("kills", {}).get(focus_type, 0))
 	for boss in get_tree().get_nodes_in_group("bosses"):
 		if boss.world == main.world:
-			boss_hp_before[str(boss.type)] = 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
+			var boss_type := str(boss.type)
+			boss_hp_before[boss_type] = 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
+			if boss_type == focus_type and not boss.dead:
+				focus_present_before = true
+				focus_hp_before = boss_hp_before[boss_type]
 	var ended := "time"
 	var map0: String = main.world.key
 	var last := _feet()
@@ -699,6 +722,26 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		var before_percent := float(boss_hp_before[boss_type])
 		var after_percent := float(boss_hp_after.get(boss_type, 0.0))
 		boss_report.append("%s %.0f%%→%.0f%%" % [str(boss_type), before_percent, after_percent])
+	if focus_type != "":
+		var focus_present_after := false
+		var focus_hp_after := 0.0
+		for boss in get_tree().get_nodes_in_group("bosses"):
+			if boss.world == main.world and str(boss.type) == focus_type:
+				focus_present_after = true
+				focus_hp_after = 0.0 if boss.dead else 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
+				break
+		var focus_kills_after := int(Game.v18().get("kills", {}).get(focus_type, 0))
+		var focus_defeated := focus_kills_after > focus_kills_before
+		fight_evidence[focus_type] = {
+			"present_before": focus_present_before,
+			"hp_before": focus_hp_before,
+			"present_after": focus_present_after,
+			"hp_after": focus_hp_after,
+			"defeated": focus_defeated
+		}
+		_log("FIGHT_EVIDENCE type=%s present_before=%s hp_before=%.1f present_after=%s hp_after=%.1f defeated=%s" % [
+			focus_type, focus_present_before, focus_hp_before, focus_present_after, focus_hp_after, focus_defeated
+		])
 	var arena_report: Array[String] = []
 	for arena_obj in get_tree().get_nodes_in_group("arena"):
 		if arena_obj.world == main.world and not arena_obj.dead and str(arena_obj.type) == "gravepillar":
