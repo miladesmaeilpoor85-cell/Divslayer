@@ -161,7 +161,26 @@ jobs:
           grep -F 'android.intent.action.MAIN' build/android/manifest-xmltree.txt
           grep -F 'android.intent.category.LAUNCHER' build/android/manifest-xmltree.txt
           grep -F 'android:exported(0x01010010)=(type 0x12)0xffffffff' build/android/manifest-xmltree.txt
-          grep -F "native-code: 'arm64-v8a'" build/android/apk-badging.txt
+          python3 - build/android/apk-badging.txt <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          badging = Path(sys.argv[1]).read_text(encoding="utf-8")
+          native_line = next(
+              (line for line in badging.splitlines() if line.startswith("native-code:")),
+              None,
+          )
+          if native_line is None:
+              raise SystemExit("APK has no native-code ABI metadata")
+          actual = set(re.findall(r"'([^']+)'", native_line))
+          expected = {"arm64-v8a", "x86_64"}
+          if actual != expected:
+              raise SystemExit(
+                  f"QA APK ABI mismatch: expected {sorted(expected)}, got {sorted(actual)}"
+              )
+          print(f"Verified QA APK ABIs: {', '.join(sorted(actual))}")
+          PY
           sha256sum build/android/Divslayer-QA.apk | tee build/android/Divslayer-QA.apk.sha256
 
       - name: Upload APK diagnostics if validation fails
@@ -214,10 +233,16 @@ jobs:
             # exported activity-alias with MAIN + LAUNCHER. Launch that exact component.
             # Passing the package as a bare trailing token to cmd package resolve-activity
             # is parsed inconsistently by Android 16's PackageManager shell.
-            launch_result="$(timeout 60s adb shell am start -W -n com.example.divslayer.qa/com.godot.game.GodotAppLauncher 2>&1 | tr -d '\r')"
-            printf '%s\n' "$launch_result"
-            printf '%s\n' "$launch_result" | grep -F 'Status: ok'
-            printf '%s\n' "$launch_result" | grep -F 'com.example.divslayer.qa/com.godot.game.GodotAppLauncher'
+            # Do not require the text output of am start -W: some Android 16 emulator
+            # boots return an empty response even though the activity launch is dispatched.
+            # Verify the actual app startup and foreground state below instead.
+            launch_result="$(timeout 60s adb shell am start -n com.example.divslayer.qa/com.godot.game.GodotAppLauncher 2>&1 | tr -d '\r')"
+            printf '%s\n' "$launch_result" | tee build/android/launcher-command.txt
+            test -n "$launch_result"
+            if printf '%s\n' "$launch_result" | grep -Eq '(^|[[:space:]])Error:|Exception'; then
+              echo "::error::Android rejected the explicit Godot launcher activity."
+              exit 1
+            fi
             sleep 20
 
             timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt
