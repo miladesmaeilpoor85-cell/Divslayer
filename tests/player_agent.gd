@@ -90,6 +90,17 @@ func _close_pause() -> void:
 			driver._log("PLAYER_AGENT_RESUME_BUTTON_NOT_FOUND")
 		await driver.wait(0.35)
 
+func _training_warning() -> Dictionary:
+	var world = driver.main.world
+	if world == null or world.bossfx == null:
+		return {}
+	# Rostam's warning is drawn as a visible orange circle. Observe the same live
+	# warning a player sees; do not read the tutorial's internal success counters.
+	for warning in world.bossfx.tele:
+		if str(warning.get("kind", "")) == "circle" and str(warning.get("src", "")) == "" and world.bossfx.inside(warning):
+			return warning
+	return {}
+
 func complete_training() -> String:
 	var elapsed := 0.0
 	var attempts := {}
@@ -111,15 +122,47 @@ func complete_training() -> String:
 				await driver.press("attack", 0.85)
 				await driver.wait(0.45)
 			"roll":
-				# Rostam launches repeated marked strikes. Wait for a fresh cue, then try a roll;
-				# imperfect timing is intentional and the drill itself decides whether it counted.
-				await driver.wait(randf_range(0.55, 0.95))
-				await driver.press("dodge")
-				await driver.wait(0.30)
+				# Read the visible ground marker and roll shortly before impact. A fixed blind delay
+				# repeatedly dodged too early; the marker's remaining lifetime is the cue a person sees.
+				var rolls_before := int(Game.Tut.st().get("rolls", 0))
+				var roll_wait := 0.0
+				while Game.Tut.step() == "roll" and int(Game.Tut.st().get("rolls", 0)) == rolls_before and roll_wait < 8.0:
+					var warning := _training_warning()
+					if warning.is_empty():
+						await driver.wait(0.05)
+						roll_wait += 0.05
+						continue
+					var eta := float(warning.get("t", 1.15))
+					if eta > 0.28:
+						var pause := min(eta - 0.28, 0.08)
+						await driver.wait(pause)
+						roll_wait += pause
+						continue
+					await driver.wait(randf_range(0.04, 0.07))
+					await driver.press("dodge")
+					await driver.wait(0.45)
+					actions += 1
+					roll_wait += 0.5
 			"block":
-				await driver.wait(randf_range(0.45, 0.85))
-				await driver.press("block", 0.28)
-				await driver.wait(0.30)
+				# Raise the shield after the blue warning appears and keep it held through impact.
+				var block_wait := 0.0
+				while Game.Tut.step() == "block" and block_wait < 8.0:
+					var warning := _training_warning()
+					if warning.is_empty():
+						await driver.wait(0.05)
+						block_wait += 0.05
+						continue
+					var eta := float(warning.get("t", 1.4))
+					if eta > 0.5:
+						var pause := min(eta - 0.5, 0.08)
+						await driver.wait(pause)
+						block_wait += pause
+						continue
+					await driver.wait(randf_range(0.04, 0.07))
+					await driver.press("block", 0.65)
+					await driver.wait(0.25)
+					actions += 1
+					block_wait += 0.9
 			"spell":
 				await driver.press("skill1")
 				await driver.wait(0.55)
