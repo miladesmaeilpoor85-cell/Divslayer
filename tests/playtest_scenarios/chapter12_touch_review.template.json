@@ -43,6 +43,54 @@
     "do": "state"
   },
   {
+    "do": "checkpoint",
+    "name": "Chapter I — Buy provisions from Sindokht"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "merchant",
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "tap_text",
+    "text": "معجون جان"
+  },
+  {
+    "do": "tap_text",
+    "text": "معجون جان"
+  },
+  {
+    "do": "tap_text",
+    "text": "معجون جان"
+  },
+  {
+    "do": "tap_text",
+    "text": "معجون جان"
+  },
+  {
+    "do": "shot",
+    "name": "merchant_health_potions"
+  },
+  {
+    "do": "tap",
+    "x": 20,
+    "y": 20,
+    "after": 0.5
+  },
+  {
+    "do": "assert_state",
+    "label": "merchant_potions_purchased",
+    "potions_at_least": 6,
+    "game_unpaused": true,
+    "player_alive": true
+  },
+  {
+    "do": "state"
+  },
+  {
     "do": "walk_to_exit",
     "to": "forest",
     "max_sec": 45
