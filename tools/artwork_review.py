@@ -8,9 +8,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from PIL import Image, ImageDraw
-
 from image_assets import open_image
+from PIL import Image, ImageDraw
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
 EXCLUDED_PARTS = {".git", ".godot", ".venv", "build", "dist", "artifacts", "__pycache__"}
