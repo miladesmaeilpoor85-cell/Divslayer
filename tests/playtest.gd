@@ -957,21 +957,33 @@ func _step(s: Dictionary) -> Variant:
 			var chosen := str(s.get("class", "warrior"))
 			if main.menu == null:
 				main.show_menu()
-			var menu_result := str(await _step({"do": "tap_text", "text": Game.t("New game", "بازی تازه"), "after": 0.5}))
-			if menu_result.begins_with("NOT FOUND"):
-				return "real new-game menu unavailable: " + menu_result
-			var class_result := str(await _step({"do": "tap_text", "text": Game.hero_role(chosen), "after": 0.4}))
-			if class_result.begins_with("NOT FOUND"):
-				return "class card was not visible: " + class_result
-			var begin_result := str(await _step({"do": "tap_text", "text": Game.t("Begin the adventure", "آغاز ماجرا"), "after": 0.8}))
-			if begin_result.begins_with("NOT FOUND"):
-				return "begin button was not visible: " + begin_result
-			await wait(0.8)
+			var new_game_button: Control = player_agent._named_control("NewGame")
+			if new_game_button == null or not await player_agent._tap_control(new_game_button):
+				var menu_failure := "could not tap the actual NewGame button on the title screen"
+				assertion_failures.append(menu_failure)
+				return menu_failure
+			await wait(0.5)
+			if main.menu == null or str(main.menu.view) != "classes":
+				var class_page_failure := "NewGame touch did not open class selection"
+				assertion_failures.append(class_page_failure)
+				return class_page_failure
+			var class_card: Control = player_agent._named_control("Card_" + chosen)
+			if class_card == null or not await player_agent._tap_control(class_card):
+				var card_failure := "class card was not visible or tappable: " + chosen
+				assertion_failures.append(card_failure)
+				return card_failure
+			await wait(0.25)
+			var begin_button: Control = player_agent._named_control("Begin")
+			if begin_button == null or not await player_agent._tap_control(begin_button):
+				var begin_failure := "could not tap the actual Begin button for " + chosen
+				assertion_failures.append(begin_failure)
+				return begin_failure
+			await wait(1.0)
 			if Game.cls != chosen or main.world == null:
 				var failure := "real new-game flow did not start %s (class=%s world=%s)" % [chosen, Game.cls, str(main.world != null)]
 				assertion_failures.append(failure)
 				return failure
-			return "started %s through title, class selection and begin buttons" % Game.hero_role()
+			return "started %s through actual title, class card and Begin touch controls" % Game.hero_role()
 		"continue":
 			if not Game.load_game():
 				return "no save"
