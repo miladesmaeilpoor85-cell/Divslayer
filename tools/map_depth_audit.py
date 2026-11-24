@@ -14,7 +14,6 @@ from collections import deque
 from pathlib import Path
 from typing import Any
 
-
 PIXELS_PER_GAME_SPEED_UNIT = 62.5
 
 
