@@ -204,7 +204,7 @@ jobs:
           import sys
           from pathlib import Path
 
-          report_path, shot_dir, hero, log_path = map(Path, sys.argv[1:]) if False else (Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3], Path(sys.argv[4]))
+          report_path = Path(sys.argv[1])\n          shot_dir = Path(sys.argv[2])\n          hero = sys.argv[3]\n          log_path = Path(sys.argv[4])
           report = json.loads(report_path.read_text(encoding="utf-8"))
           assert report.get("hero_class") == hero, f"Report class mismatch: {report.get('hero_class')} != {hero}"
           assert report.get("journey_status") in {"passed", "failed", "incomplete", "not_run"}, "Invalid journey status"
