@@ -68,6 +68,8 @@ jobs:
           set -euo pipefail
           python3 -m unittest discover -s tools -p "test_asset_audit.py" -v
           python3 -m unittest discover -s tools -p "test_release_evidence.py" -v
+          python3 -m py_compile tools/playtest/generate_player_reports.py tools/test_playtest_reports.py
+          python3 -m unittest discover -s tools -p "test_playtest_reports.py" -v
           python3 tools/asset_audit.py
           mkdir -p artifacts
           python3 tools/release_evidence_audit.py --report artifacts/release-evidence-report.json
