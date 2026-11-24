@@ -10,18 +10,21 @@ class PlayerReportTests(unittest.TestCase):
         log = "\n".join([
             "SCREEN 01_real_player_title.png: [شروع بازی]",
             "ASSERTION_PASSED rostam_training_completed",
+            "STAGE_START Chapter I — Whispering Forest and its clues potions=2",
             "PLAYER_AGENT_LOADOUT weapon=1->1 armour=0->1 gold=30",
             'STEP 14 0.40 s {"do":"state"} -> {"map":"forest","objective":"clue 1/2","hp":"90/100"}',
             'STEP 15 3.10 s {"do":"fight","sec":12} -> won locally',
             "PLAYTEST_ASSERTIONS_PASSED",
             "PLAYTEST_DONE  18.4 s wall",
         ])
-        report = build_report("mage", log)
+        report = build_report("mage", log, scenario_steps=[{"do": "checkpoint", "name": "Chapter I — Whispering Forest and its clues"}, {"do": "checkpoint", "name": "Chapter I — Sunken Crypt"}])
         self.assertEqual(report["journey_status"], "passed")
         self.assertEqual(report["map_visits_observed"], ["forest"])
         self.assertFalse(report["full_game_completion"]["confirmed"])
         self.assertIn("dungeon", report["known_maps_not_observed"])
         self.assertEqual(report["combat_samples"], 1)
+        self.assertEqual(report["scenario_checkpoints_planned"], ["Chapter I — Whispering Forest and its clues", "Chapter I — Sunken Crypt"])
+        self.assertEqual(report["scenario_checkpoints_reached"], ["Chapter I — Whispering Forest and its clues"])
 
     def test_assertion_and_engine_errors_become_blocking_findings(self) -> None:
         log = "ASSERTION_FAILED armour_not_purchased\nPLAYTEST_ASSERTIONS_FAILED 1"
