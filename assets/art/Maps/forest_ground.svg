@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1700" viewBox="0 0 1100 850">
+<defs>
+ <linearGradient id="forestFloor" x2=".2" y2="1"><stop stop-color="#314b32"/><stop offset=".48" stop-color="#263f2b"/><stop offset="1" stop-color="#20372a"/></linearGradient>
+ <radialGradient id="clearing"><stop stop-color="#779052" stop-opacity=".35"/><stop offset="1" stop-color="#6e844b" stop-opacity="0"/></radialGradient>
+ <linearGradient id="trail" x2="0" y2="1"><stop stop-color="#9a7950"/><stop offset=".5" stop-color="#795a3d"/><stop offset="1" stop-color="#5c4633"/></linearGradient>
+ <pattern id="leafLitter" width="44" height="38" patternUnits="userSpaceOnUse">
+  <path d="M6 12q-7-8 3-10q8 4-3 10m24 18q-8-8 2-12q9 5-2 12" fill="#82633d" opacity=".5"/>
+  <path d="M16 28l4-7 5 4-7 6zM34 5l4 5-5 3-4-5z" fill="#b07745" opacity=".38"/>
+  <circle cx="12" cy="32" r="1.5" fill="#bac078" opacity=".5"/><circle cx="36" cy="20" r="1.2" fill="#d3c18a" opacity=".55"/>
+ </pattern>
+ <pattern id="moss" width="36" height="31" patternUnits="userSpaceOnUse">
+  <path d="M3 26q3-16 13-10q7 6-2 13m10-25q9 1 8 9q-7 6-11-1" fill="#597847" opacity=".65"/>
+  <circle cx="27" cy="24" r="2" fill="#879c59" opacity=".55"/>
+ </pattern>
+ <pattern id="dirt" width="34" height="27" patternUnits="userSpaceOnUse">
+  <circle cx="7" cy="8" r="1.4" fill="#c4a070" opacity=".5"/><circle cx="25" cy="17" r="1.7" fill="#463d2d" opacity=".45"/>
+  <path d="M12 21l5-2m8-14l4 2" stroke="#d6b27d" stroke-width="1.2" opacity=".38"/>
+ </pattern>
+ <pattern id="ferns" width="70" height="64" patternUnits="userSpaceOnUse">
+  <path d="M12 54q4-30 23-42m-18 32l-9-8m12-3l-9-8m20 0l9-8m-13 25l10-7M54 60q-1-22 9-34m-8 21l-8-7m12-3l8-6" fill="none" stroke="#7e9a58" stroke-width="2" opacity=".5"/>
+ </pattern>
+</defs>
+<rect width="1100" height="850" fill="url(#forestFloor)"/>
+<rect width="1100" height="850" fill="url(#leafLitter)" opacity=".8"/>
+<rect width="1100" height="850" fill="url(#ferns)" opacity=".6"/>
+<ellipse cx="540" cy="430" rx="575" ry="410" fill="url(#clearing)"/>
+<!-- thick shadowed undergrowth at map edges; object sprites remain the readable trunks and boulders -->
+<g fill="#172c21" opacity=".72"><path d="M0 0H1100V90q-120 70-225 10q-100 66-206 6q-120 70-235 8q-110 65-220 5L0 160z"/><path d="M0 850V690q110-90 220-25q110-90 205-22q120-90 235-18q110-85 220-24q115-64 220 5v244z"/><path d="M0 120q80 90 35 180q-30 100 25 170q-70 130-10 240L0 750z"/><path d="M1100 95q-80 80-35 180q30 100-25 170q70 130 10 240l50 40z"/></g>
+<!-- path system: west-village to east-peaks; north crypt and southern camp; short spur to embers shrine -->
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <g stroke="#172a20" stroke-width="62" opacity=".55"><path d="M-20 320C180 340 280 420 520 430S900 420 1120 430"/><path d="M560 -20C550 150 575 275 540 430S590 680 600 870"/><path d="M540 430C440 420 390 410 330 408"/></g>
+ <g stroke="url(#trail)" stroke-width="50"><path d="M-20 320C180 340 280 420 520 430S900 420 1120 430"/><path d="M560 -20C550 150 575 275 540 430S590 680 600 870"/><path d="M540 430C440 420 390 410 330 408"/></g>
+ <g stroke="#c2a274" stroke-width="2.5" stroke-dasharray="3 18" opacity=".55"><path d="M-20 320C180 340 280 420 520 430S900 420 1120 430"/><path d="M560 -20C550 150 575 275 540 430S590 680 600 870"/></g>
+</g>
+<rect width="1100" height="850" fill="url(#dirt)" opacity=".18"/>
+<!-- fern banks, root shelves, damp hollows and patches of old leaves -->
+<g fill="#182d21" opacity=".48"><ellipse cx="170" cy="180" rx="108" ry="58"/><ellipse cx="370" cy="275" rx="92" ry="55"/><ellipse cx="780" cy="180" rx="115" ry="62"/><ellipse cx="900" cy="650" rx="130" ry="75"/><ellipse cx="195" cy="665" rx="120" ry="64"/><ellipse cx="740" cy="735" rx="94" ry="48"/></g>
+<g fill="url(#moss)" opacity=".95"><path d="M40 80q100-45 180 18q40 70-12 132q-120 25-185-55z"/><path d="M780 95q90-40 170 30q30 85-44 132q-100-10-147-83z"/><path d="M110 650q92-48 183 8q39 74-33 116q-92 14-155-51z"/><path d="M850 650q110-35 190 45q12 68-78 105q-104-18-140-91z"/></g>
+<g fill="none" stroke="#a08b58" stroke-width="5" opacity=".35"><path d="M100 130q70 42 120 3t100 12m-130 490q90-45 150 8t95-14M780 165q75-40 130 6t95-2m-90 470q75-35 140 5"/></g>
+<g fill="#a17c49" opacity=".82"><path d="M140 220q-20-15-6-26q18 2 6 26m46 31q-17-11-4-21q15 3 4 21m602-92q-16-14-3-23q16 2 3 23m102 410q-19-14-4-25q16 3 4 25m-662 152q-16-14-4-23q17 3 4 23"/></g>
+<g fill="#8ea25c" opacity=".8"><circle cx="84" cy="490" r="3"/><circle cx="95" cy="495" r="2"/><circle cx="1010" cy="260" r="3"/><circle cx="1018" cy="267" r="2"/><circle cx="730" cy="555" r="3"/><circle cx="740" cy="562" r="2"/><circle cx="245" cy="82" r="2.5"/></g>
+<g fill="#c0a27a" stroke="#514a36" stroke-width="2"><path d="M250 140l15-9 18 7 3 12-17 9-18-8z"/><path d="M420 650l16-8 17 6 2 12-20 9-18-7z"/><path d="M910 350l15-10 18 4 4 13-19 9-17-6z"/><path d="M95 575l12-8 15 5 2 10-15 7-13-5z"/><path d="M960 730l13-8 16 5 3 12-18 7-14-7z"/></g>
+<path d="M0 0H1100V850H0Z" fill="none" stroke="#14291f" stroke-width="24" opacity=".35"/>
+</svg>
