@@ -141,6 +141,7 @@ jobs:
           assert "combat unexpectedly changed map from %s to %s" in playtest_source, "Combat must verify its final map boundary"
           assert "side=opposite_boss" in playtest_source, "The player must flank pillars so the game's own aim assist can select them"
           assert "PLAYER_AGENT_PILLAR_DAMAGED" in playtest_source, "Pillar attack results must be measured from actual HP changes"
+          assert "PLAYER_AGENT_MAGE_EVASION" in playtest_source, "Mage must have a bounded close-range evasion policy"
           agent_source = Path("tests/player_agent.gd").read_text(encoding="utf-8")
           assert "PLAYER_AGENT_PICKUP_SKIPPED_NEAR_EXIT" in agent_source, "Pickup scanning must skip loot in exit safety margins"
           assert "pickup route unexpectedly changed map" in agent_source, "Pickup movement must fail if it leaves the intended map"
@@ -195,6 +196,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 - "$RUNNER_TEMP/real-player-journey/$HERO/log.txt" "$RUNNER_TEMP/real-player-journey/$HERO/godot.txt" <<'PY'
+          import os
           import re
           import sys
           from pathlib import Path
@@ -218,6 +220,8 @@ jobs:
           assert loadout, "Missing verified weapon/armour progression record"
           assert int(loadout.group(4)) >= 1, "The fresh player did not buy the first armour tier"
           assert "PLAYER_AGENT_ACTIONS" in log, "Humanized combat actions were not recorded"
+          if os.environ.get("HERO") == "mage":
+              assert "PLAYER_AGENT_MAGE_EVASION" in log, "Mage did not record a real close-range retreat or dodge response"
           assert "PLAYER_AGENT_SPELL_POLICY" in log, "Class-aware spell policy was not exercised"
           assert "PLAYER_AGENT_OBJECTIVE" in log, "Dynamic objective navigation was not exercised"
           assert "PLAYER_AGENT_PICKUP_SCAN" in log, "Loot scanning was not exercised"

@@ -55,6 +55,16 @@ class PlayerReportTests(unittest.TestCase):
             self.assertIn("defeated=True", player_report)
             self.assertIn("Boss encounter evidence", qa_report)
 
+    def test_mage_evasion_events_are_preserved_as_player_action_evidence(self) -> None:
+        log = "\n".join([
+            "PLAYER_AGENT_MAGE_EVASION kind=retreat distance=108 hp=19/32",
+            "PLAYER_AGENT_MAGE_EVASION kind=dodge distance=91 hp=16/32 stamina=42",
+        ])
+        report = build_report("mage", log)
+        self.assertEqual(report["journey_status"], "incomplete")
+        self.assertEqual(len(report["player_action_evidence"]), 2)
+        self.assertTrue(all("PLAYER_AGENT_MAGE_EVASION" in item for item in report["player_action_evidence"]))
+
     def test_assertion_and_engine_errors_become_blocking_findings(self) -> None:
         log = "ASSERTION_FAILED armour_not_purchased\nPLAYTEST_ASSERTIONS_FAILED 1"
         engine = "SCRIPT ERROR: Parse failed\n"

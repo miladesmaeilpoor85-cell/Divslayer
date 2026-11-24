@@ -665,7 +665,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var hp_low := 1.0
 	# Focused boss samples use a cautious player policy; ordinary skirmishes keep
 	# the original potion threshold so this does not inflate campaign survivability.
-	var potion_threshold := 0.48 if focus_type != "" else 0.38
+	var potion_threshold := 0.64 if Game.cls == "mage" else (0.48 if focus_type != "" else 0.38)
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
 	var boss_hp_before := {}
@@ -696,6 +696,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var last_add_priority_id := 0
 	var last_pillar_priority_id := 0
 	var last_pillar_approach_id := 0
+	var last_mage_threat_id := 0
 	var pillar_damage_events := 0
 	while t < sec:
 		if focus_type != "" and int(Game.v18().get("kills", {}).get(focus_type, 0)) > focus_kills_before:
@@ -896,11 +897,27 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		var preferred_range := reach
 		if Game.cls == "mage" and not target_is_pillar:
 			preferred_range = maxf(reach + 72.0, 122.0)
-		if Game.cls == "mage" and to.length() < 82.0 and away == Vector2.ZERO and not target_is_pillar:
-			# A mage should not stand inside a melee enemy's reach merely to use a staff.
-			# Kiting must still reject unrelated exits; otherwise a retreat can leave the arena.
+		if Game.cls == "mage" and to.length() < 112.0 and away == Vector2.ZERO and not target_is_pillar:
+			# A mage keeps more room against ordinary melee threats; when pressure closes,
+			# retreat through the real movement control and sometimes roll to create space.
+			# The earlier 82 px threshold let several crypt foes overlap the light-armour Mage.
 			var retreat := (-to.normalized() + Vector2(randf_range(-0.18, 0.18), randf_range(-0.18, 0.18))).normalized()
 			await stick(_avoid_exits(retreat))
+			var threat_id := tgt.get_instance_id()
+			if threat_id != last_mage_threat_id:
+				_log("PLAYER_AGENT_MAGE_EVASION kind=retreat distance=%d hp=%d/%d" % [
+					int(to.length()), int(Game.hp), int(Game.max_hp())
+				])
+				last_mage_threat_id = threat_id
+			var should_dodge := p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (
+				to.length() <= 95.0 or Game.hp < Game.max_hp() * 0.62
+			) and (randf() < 0.72 or Game.hp < Game.max_hp() * 0.40)
+			if should_dodge:
+				await press("dodge")
+				dodges += 1
+				_log("PLAYER_AGENT_MAGE_EVASION kind=dodge distance=%d hp=%d/%d stamina=%.0f" % [
+					int(to.length()), int(Game.hp), int(Game.max_hp()), p.stamina
+				])
 			await wait(0.12)
 		elif target_is_pillar and movement_to.length() > 10.0:
 			var flank_dir := _avoid_exits(movement_to.normalized())

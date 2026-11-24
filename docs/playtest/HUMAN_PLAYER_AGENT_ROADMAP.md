@@ -16,7 +16,7 @@ The latest shop-interaction change records visible dialogue/control evidence and
 
 The journey workflow now generates four evidence artifacts per class run: `run-evidence.json`, `player-report.md`, `critic-report.md`, and `qa-report.md`. Reports are deliberately conservative: a passing Chapter I run is not treated as full-game completion, unvisited maps remain `not tested`, and subjective critic/player judgements are left for human review. The report generator has dedicated Python unit tests in `tools/test_playtest_reports.py` and is included in both Godot CI and the class-journey workflow.
 
-The latest four-class run on 24 November 2026 passed the full Chapter I route for Warrior, Rogue, and Paladin. Mage reached Arzhang but ended with the boss at 49.8% HP and two grave pillars still at full health; the victory assertion correctly failed. The next correction makes the agent approach a pillar from the side opposite the boss so the game's native nearest-enemy aim assist selects the pillar, and records actual pillar HP reductions. This is pending a fresh four-class runtime run.
+The 24 November 2026 rerun passed the full Chapter I route for Warrior, Rogue, and Paladin. Its Mage attempt failed earlier, in the Sunken Crypt approach, after 13.5 seconds of ordinary combat: the hero died with the player-alive checkpoint failing. The Mage policy now reserves health potions earlier and uses a wider retreat threshold with stamina-bounded dodges against nearby foes; this is pending a fresh runtime run. The later pillar-flanking policy was independently confirmed in the same run by real HP reductions and successful Arzhang victories for Warrior and Paladin.
 
 ## Target architecture
 

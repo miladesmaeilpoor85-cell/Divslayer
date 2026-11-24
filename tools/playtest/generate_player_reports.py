@@ -115,7 +115,7 @@ def build_report(
     fight_steps = [step for step in steps if step["action"] == "fight"]
     action_events = [
         line for line in lines
-        if re.search(r"PLAYER_AGENT_(?:ACTIONS|POLICY|RECOVERED|RECOVERY|SHOP_PURCHASE_RESULT|PILLAR_PRIORITY|PILLAR_APPROACH|PILLAR_DAMAGED|PILLAR_DESTROYED)", line)
+        if re.search(r"PLAYER_AGENT_(?:ACTIONS|POLICY|RECOVERED|RECOVERY|SHOP_PURCHASE_RESULT|PILLAR_PRIORITY|PILLAR_APPROACH|PILLAR_DAMAGED|PILLAR_DESTROYED|MAGE_EVASION)", line)
         or line.startswith("FIGHT_EVIDENCE ")
     ]
     boss_encounters = [
