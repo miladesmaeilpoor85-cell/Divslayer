@@ -248,25 +248,35 @@ func visit_shop(vendor: String) -> String:
 	await driver.press("talk")
 	await driver.wait(0.5)
 	var shop = driver.main.hud.shop
-	if not shop.visible:
+	# Some vendors have a story-first interaction. Kavian's first conversation advances
+	# his chapter dialogue but does not open the shop; the player must talk to him again
+	# to reach the visible Buy Armour / Forge choice. Sindokht opens her shop after her
+	# introductory conversation. Treat these as separate player interactions rather than
+	# assuming every vendor opens a shop on the first tap.
+	var interaction_pass := 0
+	while not shop.visible and interaction_pass < 3:
+		interaction_pass += 1
 		var dialogue = driver.main.hud.dialogue
 		if dialogue.visible:
 			if dialogue.choosing():
-				# Kavian's real interaction presents a choice before opening the armour shop.
-				# Select the visible "Buy armour" option rather than bypassing the dialogue.
-				var purchase_option := Game.t("Buy armour", "خرید زره") if vendor == "smith" else ""
-				if purchase_option == "" or not await _tap_text(purchase_option):
-					return "vendor %s opened a choice, but its purchase option was not tappable" % vendor
-				await driver.wait(0.35)
+				if vendor == "smith":
+					var purchase_option := Game.t("Buy armour", "خرید زره")
+					if not await _tap_text(purchase_option):
+						return "vendor %s opened a choice, but its purchase option was not tappable" % vendor
+				else:
+					await _choose_dialogue_option()
 			else:
-				# Sindokht and Hesk introduce their services through dialogue; finishing the
-				# conversation opens the actual shop via the game's existing completion signal.
 				await driver.dialog_all()
-				await driver.wait(0.35)
-		if not shop.visible:
-			return "talked to %s but its shop did not open; dialogue_visible=%s choosing=%s" % [
-				vendor, str(dialogue.visible), str(dialogue.choosing())
-			]
+		else:
+			if driver.main.player.near_npc == null:
+				break
+			await driver.press("talk")
+		await driver.wait(0.45)
+	if not shop.visible:
+		var dialogue = driver.main.hud.dialogue
+		return "talked to %s but its shop did not open after %d interaction passes; dialogue_visible=%s choosing=%s" % [
+			vendor, interaction_pass, str(dialogue.visible), str(dialogue.choosing())
+		]
 
 	var catalog: Array = Game.shop_catalog(vendor)
 	var selected: Dictionary = {}
