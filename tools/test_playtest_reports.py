@@ -55,6 +55,11 @@ class PlayerReportTests(unittest.TestCase):
         self.assertEqual(report["journey_status"], "failed")
         self.assertFalse(report["test_run_finished"])
         self.assertTrue(any(
+            item["severity"] == "HIGH" and item["source"] == "playtest summary"
+            for item in report["qa_issues"]
+        ))
+
+        self.assertTrue(any(
             item["severity"] == "BLOCKER" and item["source"] == "Godot engine"
             for item in report["qa_issues"]
         ))
@@ -75,6 +80,29 @@ class PlayerReportTests(unittest.TestCase):
         report = build_report("rogue", "PLAYTEST_ASSERTIONS_PASSED\n")
         self.assertEqual(report["journey_status"], "incomplete")
         self.assertFalse(report["test_run_finished"])
+
+    def test_quality_first_import_audit_failure_is_blocking(self) -> None:
+        engine = (
+            "ERROR: assets/art/ClassCards/mage.webp.import: "
+            "detect_3d/compress_to=1; detected 3D usage must keep Lossless quality\n"
+            "QUALITY_FIRST_IMPORT_AUDIT_FAILED\n"
+        )
+        report = build_report("mage", "", engine)
+        self.assertEqual(report["journey_status"], "failed")
+        self.assertTrue(any(
+            item["severity"] == "BLOCKER"
+            and item["source"] == "Godot engine"
+            and "QUALITY_FIRST_IMPORT_AUDIT_FAILED" in item["detail"]
+            for item in report["qa_issues"]
+        ))
+
+    def test_empty_not_run_report_has_blocking_finding(self) -> None:
+        report = build_report("warrior", "")
+        self.assertEqual(report["journey_status"], "not_run")
+        self.assertTrue(any(
+            item["severity"] == "BLOCKER" and item["source"] == "playtest summary"
+            for item in report["qa_issues"]
+        ))
 
     def test_missing_screenshot_is_not_claimed_as_captured_evidence(self) -> None:
         report = build_report(
