@@ -162,6 +162,10 @@ func run(m: Node) -> void:
 	main.player.invuln = 99999.0
 	var w = main.world
 	check("alborz_world_builds", w.key == "alborz" and w.size == Vector2(1400, 1100), [w.key, w.size])
+	var alborz_ground_node: Sprite2D = w.get_node_or_null("Ground") as Sprite2D
+	check("alborz_dedicated_ground_is_visible_in_runtime",
+		alborz_ground_node != null and alborz_ground_node.visible and alborz_ground_node.texture != null
+		and w.get_node_or_null("Terrain") == null)
 	check("entry_advances_to_scout_rescue", C.step() == "rescue" and Game.objective() == C.line("o_scout"))
 	check("wind_zone_and_visual_load", w.wind_zones.size() == 1 and w.wind_visual != null
 		and w.wind_visual.name == "WindVisual", [w.wind_zones.size(), w.wind_visual])
@@ -251,6 +255,10 @@ func run(m: Node) -> void:
 			eyrie_prop_count += 1
 	check("high_eyrie_uses_dedicated_vector_props", eyrie_prop_count == eyrie_data.get("objects", []).size() and eyrie_prop_count >= 4, eyrie_prop_count)
 	var eyrie_world = main.world
+	var eyrie_ground_node: Sprite2D = eyrie_world.get_node_or_null("Ground") as Sprite2D
+	check("high_eyrie_dedicated_ground_is_visible_in_runtime",
+		eyrie_ground_node != null and eyrie_ground_node.visible and eyrie_ground_node.texture != null
+		and eyrie_world.get_node_or_null("Terrain") == null)
 	var gale_warden: Node = null
 	for enemy in get_tree().get_nodes_in_group("bosses"):
 		if is_instance_valid(enemy) and enemy.world == eyrie_world and enemy.type == "alborzwarden":
