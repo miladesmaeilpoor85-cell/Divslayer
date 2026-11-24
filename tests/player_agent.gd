@@ -267,6 +267,7 @@ func visit_shop(vendor: String) -> String:
 	if driver.main.player.near_npc == null:
 		return "could not reach %s: %s" % [vendor, route]
 
+	await driver.shot("shop_%s_arrival" % vendor)
 	var shop = driver.main.hud.shop
 	# A first conversation with Kaveh may only advance the chapter story. The shop
 	# appears after the dialogue is dismissed and the player talks to him again.
@@ -297,11 +298,19 @@ func visit_shop(vendor: String) -> String:
 				if vendor == "smith":
 					var choice_result := await _tap_dialogue_choice(["Buy armour", "خرید زره"])
 					if not choice_result.begins_with("selected dialogue choice:"):
-						return "smith dialogue choice blocked shop opening: " + choice_result
+						await driver.shot("shop_smith_choice_unavailable")
+						# Do not leave a modal dialogue paused while the next vendor is
+						# approached. Dismiss only through the visible Leave option.
+						var leave_result := await _tap_dialogue_choice(["Leave", "برگشتن"])
+						if not leave_result.begins_with("selected dialogue choice:"):
+							driver._log("PLAYER_AGENT_SHOP_DISMISS_FAILED " + leave_result)
+						return "smith dialogue choice blocked shop opening: %s; cleanup=%s" % [choice_result, leave_result]
 				else:
 					var generic_choice := await _choose_dialogue_option()
 					if generic_choice.find("selected dialogue option:") < 0:
-						return "vendor %s dialogue choice could not be selected: %s" % [vendor, generic_choice]
+						await driver.shot("shop_%s_choice_unavailable" % vendor)
+						var leave_result := await _tap_dialogue_choice(["Leave", "برگشتن"])
+						return "vendor %s dialogue choice could not be selected: %s; cleanup=%s" % [vendor, generic_choice, leave_result]
 			else:
 				var read_result: String = await driver.dialog_all()
 				driver._log("PLAYER_AGENT_SHOP_DIALOGUE vendor=%s result=%s" % [vendor, read_result])
@@ -332,8 +341,17 @@ func visit_shop(vendor: String) -> String:
 			" | ".join(final_texts).substr(0, 420)
 		]
 		driver._log("PLAYER_AGENT_SHOP_FAILED " + failure)
-		return failure
+		await driver.shot("shop_%s_not_open" % vendor)
+		# Release a story/choice modal using its visible Leave action so the next
+		# recovery attempt does not walk while the game remains paused.
+		var cleanup := "no modal cleanup required"
+		if dialogue.visible and dialogue.choosing():
+			cleanup = await _tap_dialogue_choice(["Leave", "برگشتن"])
+		elif dialogue.visible:
+			cleanup = await driver.dialog_all()
+		return failure + "; cleanup=" + cleanup
 
+	await driver.shot("shop_%s_open" % vendor)
 	driver._log("PLAYER_AGENT_SHOP_OPEN vendor=%s passes=%d" % [vendor, interaction_pass])
 	var catalog: Array = Game.shop_catalog(vendor)
 	var selected: Dictionary = {}
