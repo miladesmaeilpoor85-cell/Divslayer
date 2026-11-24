@@ -238,11 +238,11 @@ jobs:
             # Verify the actual app startup and foreground state below instead.
             launch_result="$(timeout 60s adb shell am start -n com.example.divslayer.qa/com.godot.game.GodotAppLauncher 2>&1 | tr -d '\r')"
             printf '%s\n' "$launch_result" | tee build/android/launcher-command.txt
-            test -n "$launch_result"
-            if printf '%s\n' "$launch_result" | grep -Eq '(^|[[:space:]])Error:|Exception'; then
+            if [ -n "$launch_result" ] && printf '%s\n' "$launch_result" | grep -Eq '(^|[[:space:]])Error:|Exception'; then
               echo "::error::Android rejected the explicit Godot launcher activity."
               exit 1
             fi
+            echo "Validating launch through Godot startup log and foreground activity."
             sleep 20
 
             timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt
