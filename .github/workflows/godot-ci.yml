@@ -103,11 +103,11 @@ jobs:
       - name: Run complete headless test suite
         run: bash tools/run_all_tests.sh ci-shard-${{ matrix.shard }}
 
-  # Deterministic touch-input playtests. These run only on pull requests and do not
-  # replace physical Android playtesting; they produce per-class logs and screenshots.
+  # Deterministic touch-input playtests run on pull requests and manual dispatches.
+  # They do not replace physical Android playtesting; they produce per-class logs and screenshots.
   gameplay-touch-playtest:
     name: Campaign playtest — ${{ matrix.hero }}
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
