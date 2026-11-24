@@ -117,22 +117,39 @@ def build_report(
     ]
     screenshots = [s["file"] for s in screens if s["file_present"]]
     done = "PLAYTEST_DONE" in log_text
-    assertions_passed = "PLAYTEST_ASSERTIONS_PASSED" in log_text and not failed
+    failure_summary_present = "PLAYTEST_ASSERTIONS_FAILED" in log_text
+    assertion_failure = bool(failed) or failure_summary_present
+    assertions_passed = (
+        "PLAYTEST_ASSERTIONS_PASSED" in log_text
+        and not assertion_failure
+    )
     true_ending = "PLAYER_AGENT_TRUE_ENDING_CONFIRMED" in log_text
     run_passed = done and assertions_passed and not engine_errors
 
-    if not log_text.strip():
+    # A startup/parse failure is a failed QA run even when the playtest driver
+    # never got far enough to create log.txt. Reserve "not_run" for the absence
+    # of both player evidence and an engine failure.
+    if not log_text.strip() and not engine_errors:
         journey_status = "not_run"
+    elif assertion_failure or engine_errors:
+        journey_status = "failed"
     elif run_passed:
         journey_status = "passed"
-    elif failed or engine_errors or "PLAYTEST_ASSERTIONS_FAILED" in log_text:
-        journey_status = "failed"
     else:
         journey_status = "incomplete"
 
     issues: list[dict[str, str]] = []
     for item in failed:
         issues.append({"severity": "BLOCKER", "source": "playtest assertion", "detail": item})
+    if failure_summary_present and not failed:
+        issues.append({
+            "severity": "BLOCKER",
+            "source": "playtest summary",
+            "detail": (
+                "PLAYTEST_ASSERTIONS_FAILED was emitted without a corresponding "
+                "ASSERTION_FAILED or PLAYTEST_ASSERTION detail line."
+            ),
+        })
     for item in engine_errors:
         issues.append({"severity": "BLOCKER", "source": "Godot engine", "detail": item})
     for marker, severity, label in [
