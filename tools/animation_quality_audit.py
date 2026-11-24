@@ -13,6 +13,8 @@ from typing import Any
 
 from PIL import Image, ImageChops
 
+from image_assets import open_image
+
 ROOT = Path(__file__).resolve().parents[1]
 DIFF_THRESHOLD = 12
 LOW_MOTION_RATIO = 0.02
@@ -129,14 +131,13 @@ def _load_separate_attack_frames(
                 raise ValueError(f"{asset_id}.attackFrameFiles path escapes the hero asset directory")
             if not frame_path.is_file():
                 raise ValueError(f"missing attack frame: {frame_path.relative_to(root).as_posix()}")
-            with Image.open(frame_path) as opened:
-                opened.load()
-                if opened.size != (width, height):
-                    raise ValueError(
-                        f"{frame_path.relative_to(root).as_posix()} is {opened.width}x{opened.height}; "
-                        f"expected {width}x{height}"
-                    )
-                loaded_frames.append(opened.convert("RGBA").copy())
+            frame_image = open_image(frame_path)
+            if frame_image.size != (width, height):
+                raise ValueError(
+                    f"{frame_path.relative_to(root).as_posix()} is {frame_image.width}x{frame_image.height}; "
+                    f"expected {width}x{height}"
+                )
+            loaded_frames.append(frame_image)
         loaded_rows.append(loaded_frames)
     return loaded_rows
 
@@ -193,15 +194,18 @@ def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> d
             if meta.get("error"):
                 skipped.append({"kind": kind, "id": asset_id, "reason": str(meta["error"])})
                 continue
-            source = root / "assets" / "art" / folder / f"{asset_id}.png"
+            source_name = str(meta.get("file", asset_id))
+            extension = str(meta.get("extension", "png")).lower().lstrip(".")
+            if Path(source_name).name != source_name or extension not in {"png", "jpg", "jpeg", "webp", "svg"}:
+                errors.append(f"{asset_id} has an unsafe or unsupported sprite file reference")
+                continue
+            source = root / "assets" / "art" / folder / f"{source_name}.{extension}"
             try:
                 width = positive_int(meta.get("cellW"), f"{asset_id}.cellW")
                 height = positive_int(meta.get("cellH"), f"{asset_id}.cellH")
                 if not source.is_file():
                     raise ValueError(f"missing sprite sheet: {source.relative_to(root).as_posix()}")
-                with Image.open(source) as opened:
-                    opened.load()
-                    sheet = opened.convert("RGBA")
+                sheet = open_image(source)
 
                 if kind == "heroes":
                     rows, columns = meta.get("rows"), meta.get("cols")
@@ -250,9 +254,7 @@ def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> d
                         attack_path = root / "assets" / "art" / folder / str(meta["attackSheet"])
                         if not attack_path.is_file():
                             raise ValueError(f"missing separate attack sheet: {meta['attackSheet']}")
-                        with Image.open(attack_path) as opened:
-                            opened.load()
-                            attack_sheet = opened.convert("RGBA")
+                        attack_sheet = open_image(attack_path)
                     elif has_base64_sheet:
                         attack_sheet = _load_base64_attack_sheet(
                             root, root / "assets" / "art" / folder,
