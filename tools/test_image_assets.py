@@ -5,9 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from PIL import Image
-
 from image_assets import open_image
+from PIL import Image
 
 
 class ImageAssetsTests(unittest.TestCase):
