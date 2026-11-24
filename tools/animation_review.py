@@ -12,9 +12,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from PIL import Image, ImageDraw
-
 from image_assets import open_image
+from PIL import Image, ImageDraw
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
 CHECKER_A = (54, 58, 66, 255)
