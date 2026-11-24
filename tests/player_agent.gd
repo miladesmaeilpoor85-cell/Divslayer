@@ -95,9 +95,9 @@ func _training_warning() -> Dictionary:
 	if world == null or world.bossfx == null:
 		return {}
 	# Rostam's warning is drawn as a visible orange circle. Observe the same live
-	# warning a player sees; do not read the tutorial's internal success counters.
+	# warning a player sees; the tutorial counter is only used to confirm the drill advances.
 	for warning in world.bossfx.tele:
-		if str(warning.get("kind", "")) == "circle" and str(warning.get("src", "")) == "" and world.bossfx.inside(warning):
+		if str(warning.get("kind", "")) == "circle" and world.bossfx.inside(warning):
 			return warning
 	return {}
 
