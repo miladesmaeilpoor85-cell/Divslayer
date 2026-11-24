@@ -14,11 +14,12 @@ import json
 import re
 import struct
 import sys
+import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
 AUDIO_EXTENSIONS = {".ogg", ".wav", ".mp3", ".flac"}
 AUDIO_ROOT = Path("assets/audio")
 REGISTER = Path("docs/ASSET_RIGHTS_REGISTER.csv")
@@ -111,6 +112,42 @@ def _webp_dimensions(path: Path) -> tuple[int, int]:
         return width, height
 
 
+def _svg_dimensions(path: Path) -> tuple[int, int]:
+    """Read a passive SVG canvas size; reject active embedded content."""
+    raw = path.read_text(encoding="utf-8")
+    if "<!DOCTYPE" in raw.upper() or "<!ENTITY" in raw.upper():
+        raise ValueError("SVG document types and entities are not allowed")
+    root = ET.fromstring(raw)
+    if root.tag.split("}")[-1] != "svg":
+        raise ValueError("document root is not an SVG element")
+    for node in root.iter():
+        if node.tag.split("}")[-1] in {"script", "foreignObject"}:
+            raise ValueError("active SVG content is not allowed")
+
+    def dimension(value: str | None) -> int | None:
+        if value is None:
+            return None
+        match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)(?:px)?\s*", value)
+        return int(round(float(match.group(1)))) if match else None
+
+    width = dimension(root.get("width"))
+    height = dimension(root.get("height"))
+    if width is None or height is None:
+        view_box = re.split(r"[\s,]+", (root.get("viewBox") or "").strip())
+        if len(view_box) != 4:
+            raise ValueError("SVG needs numeric width/height or a four-value viewBox")
+        try:
+            view_width = int(round(float(view_box[2])))
+            view_height = int(round(float(view_box[3])))
+        except ValueError as exc:
+            raise ValueError("SVG viewBox dimensions are invalid") from exc
+        width = width or view_width
+        height = height or view_height
+    if width < 1 or height < 1:
+        raise ValueError("SVG has zero dimensions")
+    return width, height
+
+
 def image_dimensions(path: Path) -> tuple[int, int]:
     suffix = path.suffix.lower()
     if suffix == ".png":
@@ -119,6 +156,8 @@ def image_dimensions(path: Path) -> tuple[int, int]:
         return _jpeg_dimensions(path)
     if suffix == ".webp":
         return _webp_dimensions(path)
+    if suffix == ".svg":
+        return _svg_dimensions(path)
     raise ValueError(f"unsupported image extension: {suffix}")
 
 
