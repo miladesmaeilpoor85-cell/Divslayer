@@ -127,6 +127,18 @@ jobs:
           assert actions.count("agent_gear") >= 2, "Expected accessory comparison and equipment management"
           assert actions.count("agent_spells") >= 2, "Expected adaptive spell loadout decisions"
           assert actions.count("fight") == 3, "Expected forest, crypt and Arzhang combat samples"
+          crypt_checkpoint = next(
+              i for i, step in enumerate(scenario)
+              if step.get("do") == "checkpoint" and "Sunken Crypt" in step.get("name", "")
+          )
+          crypt_fight = next(
+              i for i in range(crypt_checkpoint + 1, len(scenario))
+              if scenario[i].get("do") == "fight"
+          )
+          assert not any(
+              step.get("do") == "agent_collect"
+              for step in scenario[crypt_checkpoint + 1:crypt_fight]
+          ), "Fight active Sunken Crypt foes before optional loot scanning"
           destination.write_text(json.dumps(scenario, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
 

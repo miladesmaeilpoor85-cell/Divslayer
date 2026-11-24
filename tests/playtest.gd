@@ -607,6 +607,13 @@ func _isolate_boss(target_type: String) -> String:
 	_log("BOSS_ISOLATION type=%s removed_unrelated=%d live_at_start=%d" % [target_type, removed, live_left])
 	return "isolated %s; removed %d unrelated foes; %d live target(s) remain" % [target_type, removed, live_left]
 
+func _fight_target_is_live(target: Node) -> bool:
+	if target == null or not is_instance_valid(target):
+		return false
+	if target.is_queued_for_deletion():
+		return false
+	return not bool(target.get("dead"))
+
 func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var p = main.player
 	var t := 0.0
@@ -759,7 +766,11 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		if Game.hp < potion_threshold * Game.max_hp() and int(Game.state.get("potions", 0)) > 0:
 			await press("potion")
 			pots += 1
-		var to: Vector2 = tgt.center() - (p.global_position + Vector2(0, -17))
+		if not _fight_target_is_live(tgt):
+			await stick(Vector2.ZERO)
+			continue
+		var target_center: Vector2 = tgt.center()
+		var to: Vector2 = target_center - (p.global_position + Vector2(0, -17))
 		if verbose and int(t * 10) % 5 == 0:
 			_log("  t %.1f feet %s joy %s tgt %s at %d reach %d" % [t, str(p.global_position.round()), str(p.joy), tgt.type, int(to.length()), int(46.0 + float(tgt.hit_rect().size.x) * 0.5)])
 		if verbose and tgt.is_in_group("bosses") and int(t * 10) % 5 == 0:
@@ -794,6 +805,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 					dodges += 1
 				else:
 					await wait(randf_range(0.12, 0.22))
+		if not _fight_target_is_live(tgt):
+			await stick(Vector2.ZERO)
+			continue
 		var preferred_range := reach
 		if Game.cls == "mage":
 			preferred_range = maxf(reach + 72.0, 122.0)
@@ -825,6 +839,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			await stick(to.normalized() * 0.2)
 			await stick(Vector2.ZERO)
 			await press("attack")
+		if not _fight_target_is_live(tgt):
+			await stick(Vector2.ZERO)
+			continue
 		# Use charged heavy blows only after the target commits to an animation, rather than
 		# holding attack continuously and ignoring the fight around the hero.
 		heavy_t -= 0.1
@@ -832,6 +849,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			heavy_t = randf_range(5.0, 8.0)
 			await press("attack", 0.55)
 			heavy_actions += 1
+		if not _fight_target_is_live(tgt):
+			await stick(Vector2.ZERO)
+			continue
 		# Class signature moves have separate stamina/cooldown costs and should be woven
 		# into melee instead of ignored by the old one-button bot.
 		signature_t -= 0.1
@@ -839,6 +859,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			signature_t = randf_range(4.0, 7.0)
 			await press("shove")
 			signature_actions += 1
+		if not _fight_target_is_live(tgt):
+			await stick(Vector2.ZERO)
+			continue
 		# Choose either of the two currently bound spells using the situation, not a fixed
 		# skill-1 spam timer. The mana/cooldown rules remain enforced by the real caster.
 		var enemies_close := 0
@@ -862,11 +885,14 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 					"chain": should_cast = to.length() <= float(spell_data.get("reach", 260.0))
 					"drain": should_cast = to.length() <= float(spell_data.get("reach", 170.0)) and Game.hp < Game.max_hp() * 0.82
 					"blink": should_cast = to.length() > 190.0 and Game.hp < Game.max_hp() * 0.5
-					_: should_cast = to.length() <= float(spell_data.get("range", 420.0)) and _clear_line(_feet(), tgt.center())
+					_: should_cast = to.length() <= float(spell_data.get("range", 420.0)) and _clear_line(_feet(), target_center)
 				if should_cast:
 					await press("skill%d" % (slot_index + 1))
 					spell_actions += 1
 					break
+		if not _fight_target_is_live(tgt):
+			await stick(Vector2.ZERO)
+			continue
 		# Save ultimates for a real threat or a cluster; the Paladin may also spend it to heal.
 		if p.caster.ult_ready() and (tgt.is_in_group("bosses") or enemies_close >= 3 or (Game.cls == "paladin" and Game.hp < Game.max_hp() * 0.72)):
 			await press("ult")

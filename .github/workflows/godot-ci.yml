@@ -88,10 +88,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 tools/enforce_quality_first_imports.py
           log_file="$RUNNER_TEMP/godot-import.log"
+          : > "$log_file"
+          python3 tools/enforce_quality_first_imports.py 2>&1 | tee -a "$log_file"
           set +e
-          godot --headless --editor --path . --quit 2>&1 | tee "$log_file"
+          godot --headless --editor --path . --quit 2>&1 | tee -a "$log_file"
           status=${PIPESTATUS[0]}
           set -e
           if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$log_file"; then
@@ -99,8 +100,21 @@ jobs:
             exit 1
           fi
           if [[ "$status" -ne 0 ]]; then exit "$status"; fi
-          python3 tools/quality_first_audit.py
-          python3 tools/enforce_quality_first_imports.py --check
+
+          # Godot creates some image sidecars during its first import. Normalize
+          # the generated files and re-import so the engine applies Lossless settings.
+          python3 tools/enforce_quality_first_imports.py 2>&1 | tee -a "$log_file"
+          set +e
+          godot --headless --editor --path . --quit 2>&1 | tee -a "$log_file"
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$log_file"; then
+            echo "::error::Godot reported script parse/load errors during the Lossless re-import."
+            exit 1
+          fi
+          if [[ "$status" -ne 0 ]]; then exit "$status"; fi
+          python3 tools/quality_first_audit.py 2>&1 | tee -a "$log_file"
+          python3 tools/enforce_quality_first_imports.py --check 2>&1 | tee -a "$log_file"
 
       - name: Run complete headless test suite
         run: bash tools/run_all_tests.sh ci-shard-${{ matrix.shard }}

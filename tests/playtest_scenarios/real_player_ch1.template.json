@@ -156,13 +156,13 @@
     "name": "ch1_crypt"
   },
   {
-    "do": "agent_collect",
-    "max_items": 5
-  },
-  {
     "do": "fight",
     "sec": 25,
     "shots_every": 5
+  },
+  {
+    "do": "agent_collect",
+    "max_items": 5
   },
   {
     "do": "agent_gear"
