@@ -712,8 +712,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				float(tgt.get("busy")), str(tgt.get("last_move"))
 			])
 		var reach: float = 46.0 + (float(tgt.hit_rect().size.x) * 0.5 if tgt.has_method("hit_rect") else 12.0)
-		# (v0.23) a marked attack about to land where the hero stands: step or roll out of it, as a player reading the
-		# ground would (about three times in four — nobody reads every one)
+		# A boss-only diagnostic sample reacts to every readable telegraph; ordinary
+		# campaign skirmishes preserve the imperfect 75% response of the original bot.
 		var away := _danger_away(focus_type != "")
 		if away != Vector2.ZERO:
 			await stick(away.normalized())
