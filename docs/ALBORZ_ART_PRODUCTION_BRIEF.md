@@ -39,3 +39,9 @@ A tester must be able to read the path, shelters, markers, enemies, and scout at
 ## Status
 
 The assets listed above have not been delivered by this brief. PR #36 remains a prototype using temporary reused assets until its art and physical-device acceptance tests are complete.
+
+## Draft visual implementation — 2026-11-25
+
+A dedicated high-altitude Alborz ground texture, a separate High Eyrie summit-arena ground texture, four Alborz prop assets, one High Eyrie rock-spire asset, and a four-frame Gale Warden sprite have been added as SVG source files on the review branch feat/alborz-warden-dedicated-art-20261125. The map data and runtime loaders now reference these assets, and the Chapter IV test checks the dedicated grounds, props, and animated boss sheet.
+
+This is a first integrated visual pass, not final approval. Godot import/CI, native-size visual inspection, mobile-scale readability, physical Android performance, and owner-side asset-rights review remain required. The Alborz Scout still uses the existing Hesk look; dedicated scout artwork/portrait and wind ambience remain outstanding. All new vector art is registered as UNVERIFIED; no commercial-use clearance is claimed.
