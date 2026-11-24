@@ -1135,7 +1135,7 @@ func _step(s: Dictionary) -> Variant:
 		"agent_collect":
 			return await player_agent.collect_nearby_pickups(clampi(int(s.get("max_items", 8)), 1, 16))
 		"agent_objective":
-			return await player_agent.follow_objective(clampi(int(s.get("max_steps", 1)), 1, 12))
+			return await player_agent.follow_objective(clampi(int(s.get("max_steps", 1)), 1, 12), bool(s.get("stop_after_interaction", false)))
 		"agent_recover":
 			return await player_agent.recover_from_death()
 		"agent_talents":

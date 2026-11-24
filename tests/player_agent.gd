@@ -646,7 +646,7 @@ func recover_from_death() -> String:
 		return action
 	return "recovery choice was tapped but the player did not return to play"
 
-func follow_objective(max_steps := 8) -> String:
+func follow_objective(max_steps := 8, stop_after_interaction := false) -> String:
 	var report: Array[String] = []
 	for step_index in max_steps:
 		var target: Dictionary = Game.quest_target()
@@ -750,6 +750,8 @@ func follow_objective(max_steps := 8) -> String:
 				else:
 					await driver.wait(0.2)
 				report.append("interacted with objective on %s: %s" % [current_map, route])
+				if stop_after_interaction:
+					break
 			else:
 				report.append("objective interaction range not reached: %s" % route)
 				break

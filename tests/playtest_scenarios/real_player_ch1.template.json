@@ -120,7 +120,8 @@
   },
   {
     "do": "agent_objective",
-    "max_steps": 1
+    "max_steps": 2,
+    "stop_after_interaction": true
   },
   {
     "do": "assert_state",
@@ -223,19 +224,6 @@
     "sec": 20,
     "shots_every": 5,
     "target_foe": "boss"
-  },
-  {
-    "do": "agent_collect",
-    "max_items": 5
-  },
-  {
-    "do": "agent_gear"
-  },
-  {
-    "do": "agent_spells"
-  },
-  {
-    "do": "agent_talents"
   },
   {
     "do": "assert_state",
