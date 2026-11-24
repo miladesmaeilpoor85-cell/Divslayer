@@ -1,4 +1,6 @@
 extends Node
+
+const PlayerAgent = preload("res://tests/player_agent.gd")
 ## The playtest runner (v0.23): plays the game the way a phone player does — through touches — from a scenario file,
 ## and writes what the player saw: screenshots, the text on screen, the hero's state, and a log of every step.
 ## Made for the playtest agents (a pro mobile gamer, a mobile-games critic); tools/playtest/play.sh runs it.
@@ -41,6 +43,7 @@ extends Node
 ## The log: DIR/log.txt (also printed). Each step: "STEP n do ... -> result". A failed step is logged, the run goes on.
 
 var main: Node
+var player_agent: RefCounted
 var out := ""
 var steps: Array = []
 var n_shot := 0
@@ -87,6 +90,8 @@ func run(m: Node) -> void:
 		_finish()
 		return
 	steps = parsed
+	player_agent = PlayerAgent.new()
+	player_agent.attach(self)
 	var heartbeat := Timer.new()
 	heartbeat.wait_time = 20.0
 	heartbeat.timeout.connect(_heartbeat)
@@ -601,13 +606,20 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var kills := 0
 	var seen := {}
 	var next_shot := shots_every
-	var spell_t := 2.0
+	var spell_t := 1.8
+	var heavy_t := randf_range(5.0, 8.0)
+	var signature_t := randf_range(3.0, 5.0)
 	var pots := 0
 	var dodges := 0
+	var block_actions := 0
+	var signature_actions := 0
+	var spell_actions := 0
+	var ult_actions := 0
+	var heavy_actions := 0
 	var hp_low := 1.0
 	# Focused boss samples use a cautious player policy; ordinary skirmishes keep
 	# the original potion threshold so this does not inflate campaign survivability.
-	var potion_threshold := 0.55 if focus_type != "" else 0.35
+	var potion_threshold := 0.48 if focus_type != "" else 0.38
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
 	var boss_hp_before := {}
@@ -626,7 +638,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				focus_hp_before = boss_hp_before[boss_type]
 	var ended := "time"
 	if focus_type != "":
-		_log("BOSS_PLAYTEST_POLICY target=%s telegraph_response=100%% potion_threshold=55%%" % focus_type)
+		_log("PLAYER_AGENT_POLICY target=%s telegraph_read=75%% reaction=humanized shield_parry=enabled spells=adaptive" % focus_type)
 	var map0: String = main.world.key
 	var last := _feet()
 	var stuck := 0.0
@@ -714,14 +726,23 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		var reach: float = 46.0 + (float(tgt.hit_rect().size.x) * 0.5 if tgt.has_method("hit_rect") else 12.0)
 		# A boss-only diagnostic sample reacts to every readable telegraph; ordinary
 		# campaign skirmishes preserve the imperfect 75% response of the original bot.
-		var away := _danger_away(focus_type != "")
+		var away := _danger_away(false)
 		if away != Vector2.ZERO:
-			await stick(away.normalized())
-			if p.dodge_cd <= 0.0 and p.stamina >= 30.0:
-				await press("dodge")
-				dodges += 1
+			# A human does not perfectly evade every warning. When the hit is close and the
+			# hero is in melee range, sometimes raise the shield for a parry; otherwise roll
+			# toward open ground and keep a little distance.
+			var parry_attempt := last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < 0.58
+			if parry_attempt:
+				await stick(Vector2.ZERO)
+				await press("block", 0.18)
+				block_actions += 1
 			else:
-				await wait(0.15)
+				await stick(away.normalized())
+				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (last_danger_eta <= 0.34 or Game.hp < Game.max_hp() * 0.55):
+					await press("dodge")
+					dodges += 1
+				else:
+					await wait(randf_range(0.12, 0.22))
 		elif to.length() > reach:
 			var dir := _avoid_exits(to.normalized())
 			if detour > 0.0:
@@ -743,12 +764,52 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			await stick(to.normalized() * 0.2)
 			await stick(Vector2.ZERO)
 			await press("attack")
+		# Use charged heavy blows only after the target commits to an animation, rather than
+		# holding attack continuously and ignoring the fight around the hero.
+		heavy_t -= 0.1
+		if heavy_t <= 0.0 and to.length() <= reach + 12.0 and float(tgt.get("busy")) > 0.25 and away == Vector2.ZERO:
+			heavy_t = randf_range(5.0, 8.0)
+			await press("attack", 0.55)
+			heavy_actions += 1
+		# Class signature moves have separate stamina/cooldown costs and should be woven
+		# into melee instead of ignored by the old one-button bot.
+		signature_t -= 0.1
+		if signature_t <= 0.0 and to.length() <= 235.0 and p.shove_cd <= 0.0 and p.stamina >= 20.0 and away == Vector2.ZERO:
+			signature_t = randf_range(4.0, 7.0)
+			await press("shove")
+			signature_actions += 1
+		# Choose either of the two currently bound spells using the situation, not a fixed
+		# skill-1 spam timer. The mana/cooldown rules remain enforced by the real caster.
 		spell_t -= 0.1
-		if spell_t <= 0.0 and to.length() < 260.0:
-			spell_t = 3.5
-			await press("skill1")
-			if p.caster.ult_ready():
-				await press("ult")
+		if spell_t <= 0.0 and away == Vector2.ZERO:
+			spell_t = randf_range(2.2, 3.4)
+			var slots: Array = Game.slots()
+			var enemies_close := 0
+			for candidate in get_tree().get_nodes_in_group("enemies"):
+				if candidate.world == main.world and not candidate.dead and candidate.targetable() and candidate.center().distance_to(p.global_position + Vector2(0, -17)) <= 145.0:
+					enemies_close += 1
+			for slot_index in 2:
+				var spell_id := str(slots[slot_index])
+				if p.caster.block(spell_id) != "":
+					continue
+				var spell_data: Dictionary = Game.Skills.spell(spell_id)
+				var should_cast := false
+				match spell_id:
+					"mend": should_cast = Game.hp < Game.max_hp() * 0.68
+					"roar": should_cast = float(p.caster.roar_t) <= 0.4 and to.length() <= 230.0
+					"nova", "quake": should_cast = to.length() <= float(spell_data.get("r", 80.0)) + 45.0 or enemies_close >= 2
+					"chain": should_cast = to.length() <= float(spell_data.get("reach", 260.0))
+					"drain": should_cast = to.length() <= float(spell_data.get("reach", 170.0)) and Game.hp < Game.max_hp() * 0.82
+					"blink": should_cast = to.length() > 190.0 and Game.hp < Game.max_hp() * 0.5
+					_: should_cast = to.length() <= float(spell_data.get("range", 420.0)) and _clear_line(_feet(), tgt.center())
+				if should_cast:
+					await press("skill%d" % (slot_index + 1))
+					spell_actions += 1
+					break
+		# Save ultimates for a real threat or a cluster; the Paladin may also spend it to heal.
+		if p.caster.ult_ready() and (tgt.is_in_group("bosses") or enemies_close >= 3 or (Game.cls == "paladin" and Game.hp < Game.max_hp() * 0.72)):
+			await press("ult")
+			ult_actions += 1
 		await wait(0.1)
 		t += 0.1
 		next_shot -= 0.1
@@ -798,8 +859,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		detail += " · bosses " + ", ".join(boss_report)
 	if not arena_report.is_empty():
 		detail += " · arena " + ", ".join(arena_report)
-	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · swings %d, hits %d%s" % [ended, t, kills,
-		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, p.swings - swings0, p.hits_landed - hits0, detail]
+	_log("PLAYER_AGENT_ACTIONS blocks=%d parries_total=%d rolls=%d signatures=%d spells=%d ultimates=%d heavy=%d" % [block_actions, p.parries, dodges, signature_actions, spell_actions, ult_actions, heavy_actions])
+	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · blocks %d · signatures %d · spells %d · ultimates %d · heavy %d · swings %d, hits %d%s" % [ended, t, kills,
+		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, block_actions, signature_actions, spell_actions, ult_actions, heavy_actions, p.swings - swings0, p.hits_landed - hits0, detail]
 
 ## the way out of the nearest marked attack that is about to land on the hero (Vector2.ZERO: nothing to dodge)
 
@@ -894,6 +956,12 @@ func _step(s: Dictionary) -> Variant:
 			Game.lang_changed.emit()
 			await wait(0.3)
 			return "lang " + Game.lang
+		"agent_talents":
+			return await player_agent.spend_talents()
+		"agent_shop":
+			return await player_agent.visit_shop(str(s.get("vendor", "merchant")))
+		"agent_loadout":
+			return await player_agent.prepare_loadout()
 		"tap":
 			var vs: Vector2 = get_tree().root.size
 			var p := Vector2(float(s.get("x", vs.x * float(s.get("fx", 0.5)))), float(s.get("y", vs.y * float(s.get("fy", 0.5)))))
