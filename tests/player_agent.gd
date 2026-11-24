@@ -556,11 +556,14 @@ func bind_adaptive_spells() -> String:
 func collect_nearby_pickups(max_items := 8) -> String:
 	var collected: Array[String] = []
 	var skipped := 0
+	var blocked_pickups: Dictionary = {}
 	for attempt in max_items:
 		var nearest: Node2D = null
 		var best := INF
 		for node in driver.get_tree().get_nodes_in_group("pickups"):
 			if not is_instance_valid(node) or node.get_parent() == null:
+				continue
+			if blocked_pickups.has(node.get_instance_id()):
 				continue
 			if not driver.main.world.ysort.is_ancestor_of(node):
 				continue
@@ -572,8 +575,29 @@ func collect_nearby_pickups(max_items := 8) -> String:
 			break
 		var pickup_kind := str(nearest.get_meta("kind", "unknown"))
 		var pickup_key := str(nearest.get_meta("key", ""))
+		# Skip loot inside an exit's safety margin. The Sunken Crypt chest is
+		# deliberately close to the hidden Shrine of Weight arch; a direct approach
+		# can cross that portal even though the player only intended to loot a chest.
+		var nearby_exit := ""
+		for exit_data in driver.main.world.data.get("exits", []):
+			var exit_rect := Rect2(float(exit_data.get("x", 0)), float(exit_data.get("y", 0)), float(exit_data.get("w", 0)), float(exit_data.get("h", 0)))
+			if exit_rect.grow(72.0).has_point(nearest.global_position):
+				nearby_exit = str(exit_data.get("to", "unknown"))
+				break
+		if nearby_exit != "":
+			blocked_pickups[nearest.get_instance_id()] = true
+			skipped += 1
+			driver._log("PLAYER_AGENT_PICKUP_SKIPPED_NEAR_EXIT kind=%s key=%s exit=%s" % [pickup_kind, pickup_key, nearby_exit])
+			continue
+		var map_before := str(driver.main.world.key)
 		var before_count: int = Game.state.get("picked", []).size()
 		var route: String = await driver.walk_to(nearest.global_position, 22.0, 16.0)
+		if driver.main.world == null or not is_instance_valid(driver.main.world) or str(driver.main.world.key) != map_before:
+			var map_after := str(driver.main.world.key) if driver.main.world != null else "none"
+			var route_failure := "pickup route unexpectedly changed map from %s to %s" % [map_before, map_after]
+			driver.assertion_failures.append(route_failure)
+			driver._log("ASSERTION_FAILED " + route_failure)
+			return "aborted pickup scan after an unintended map transition: " + route_failure
 		await driver.wait(0.35)
 		var taken := not is_instance_valid(nearest) or not driver.get_tree().get_nodes_in_group("pickups").has(nearest)
 		var after_count: int = Game.state.get("picked", []).size()
