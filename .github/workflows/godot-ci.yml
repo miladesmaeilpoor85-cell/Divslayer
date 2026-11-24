@@ -178,8 +178,8 @@ jobs:
           profile="$RUNNER_TEMP/gameplay-playtest/profile-$HERO"
           mkdir -p "$output/shots" "$profile"
           set +e
-          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=10 900s xvfb-run -a -s "-screen 0 1600x720x24" \
-            "$RUNNER_TEMP/godot/godot" --path . --rendering-driver opengl3 --resolution 1600x720 --fixed-fps 60 --audio-driver Dummy \
+          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=10 900s xvfb-run -a -s "-screen 0 1067x480x24" \
+            "$RUNNER_TEMP/godot/godot" --path . --rendering-driver opengl3 --resolution 1067x480 --fixed-fps 60 --audio-driver Dummy \
             -- --test res://tests/playtest.gd --playtest \
             --script "$RUNNER_TEMP/gameplay-playtest/scenario.json" --out "$output" \
             2>&1 | tee "$output/godot.txt"
