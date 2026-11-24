@@ -79,6 +79,38 @@ class AnimationQualityAuditTests(unittest.TestCase):
         self.assertFalse(report["errors"])
         self.assertEqual(len(report["skipped"]), 1)
 
+
+    def test_audits_svg_enemy_animation_sheet(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.make_project(root)
+            manifest_path = root / "data/art_manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["enemies"]["gale_warden"] = {
+                "cellW": 12, "cellH": 10, "frames": 4, "variants": 1,
+                "pivot": [0.5, 0.1], "timedMs": 160,
+                "file": "gale_warden", "extension": "svg",
+            }
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            svg = """<svg xmlns="http://www.w3.org/2000/svg" width="48" height="10" viewBox="0 0 48 10">
+            <rect x="1" y="1" width="7" height="8" fill="#d0e0ef"/>
+            <rect x="13" y="1" width="6" height="7" fill="#8bc7df"/>
+            <rect x="25" y="1" width="5" height="6" fill="#6098b5"/>
+            <rect x="37" y="1" width="4" height="5" fill="#426680"/>
+            </svg>"""
+            (root / "assets/art/Enemies/gale_warden.svg").write_text(svg, encoding="utf-8")
+            report = audit(root)
+
+        self.assertFalse(report["errors"], report["errors"])
+        self.assertEqual(report["enemy_sprite_sheets"], 3)
+        warden_clips = [
+            clip for clip in report["clips"]
+            if clip["asset_id"] == "gale_warden"
+        ]
+        self.assertEqual(len(warden_clips), 1)
+        self.assertEqual(warden_clips[0]["frame_count"], 4)
+        self.assertEqual(warden_clips[0]["fps"], 6.25)
+
     def test_reads_separate_attack_frame_files_by_direction(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
