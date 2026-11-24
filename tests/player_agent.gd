@@ -15,12 +15,54 @@ const TALENT_ORDER := {
 func attach(playtest_driver: Node) -> void:
 	driver = playtest_driver
 
+func _first_button(node: Node) -> Button:
+	if node is Button and (node as Button).is_visible_in_tree():
+		return node as Button
+	for child in node.get_children():
+		var found := _first_button(child)
+		if found != null:
+			return found
+	return null
+
+func _mouse_tap(window_point: Vector2) -> void:
+	var down := InputEventMouseButton.new()
+	down.button_index = MOUSE_BUTTON_LEFT
+	down.position = window_point
+	down.pressed = true
+	Input.parse_input_event(down)
+	await driver.frames(4)
+	var up := InputEventMouseButton.new()
+	up.button_index = MOUSE_BUTTON_LEFT
+	up.position = window_point
+	up.pressed = false
+	Input.parse_input_event(up)
+	await driver.frames(4)
+
 func _tap_control(control: Control) -> bool:
 	if control == null or not is_instance_valid(control) or not control.is_visible_in_tree():
 		return false
+	# Give Container-based menus one layout pass before computing the touch target.
+	await driver.frames(2)
 	var canvas_point: Vector2 = control.get_global_transform_with_canvas() * (control.size * 0.5)
-	await driver.tap(driver._win(canvas_point))
-	await driver.wait(0.25)
+	var window_point: Vector2 = driver._win(canvas_point)
+	var button := _first_button(control)
+	var signal_state := {"pressed": false}
+	var callback := func(): signal_state["pressed"] = true
+	if button != null:
+		button.pressed.connect(callback)
+	await driver.tap(window_point)
+	await driver.wait(0.12)
+	if button != null and not bool(signal_state["pressed"]):
+		# Xvfb does not always map ScreenTouch to standard desktop Button controls.
+		# Fall back to a mouse click at the same visible control centre, then verify
+		# that the real Button.pressed signal fired.
+		await _mouse_tap(window_point)
+	if button != null:
+		if is_instance_valid(button) and button.pressed.is_connected(callback):
+			button.pressed.disconnect(callback)
+		await driver.wait(0.15)
+		return bool(signal_state["pressed"])
+	await driver.wait(0.15)
 	return true
 
 func _named_control(wanted: String) -> Control:
