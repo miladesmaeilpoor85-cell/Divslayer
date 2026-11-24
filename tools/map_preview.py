@@ -10,6 +10,8 @@ import sys
 
 from PIL import Image, ImageDraw
 
+from image_assets import open_image
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCALE_SPR = 1.0 / 3.0
 
@@ -17,6 +19,15 @@ def ground_image_path(root: str, key: str, map_definition: dict) -> str:
 	"""Resolve the same explicit groundFile override used by the runtime World loader."""
 	ground_file = str(map_definition.get("groundFile") or (key + "_ground.jpg"))
 	return os.path.join(root, "assets", "art", "Maps", ground_file)
+
+
+def map_object_image_path(root: str, sprite_name: str, metadata: dict) -> str:
+	"""Resolve the manifest-selected object filename and extension."""
+	filename = str(metadata.get("file") or sprite_name)
+	extension = str(metadata.get("extension") or "png").lower().lstrip(".")
+	if os.path.basename(filename) != filename or extension not in {"png", "jpg", "jpeg", "webp", "svg"}:
+		raise ValueError(f"unsafe or unsupported map-object image reference: {sprite_name}")
+	return os.path.join(root, "assets", "art", "MapObjects", filename + "." + extension)
 
 
 def main():
@@ -28,7 +39,7 @@ def main():
 	W, H = int(d["w"]), int(d["h"])
 	gpath = ground_image_path(ROOT, key, md)
 	if os.path.exists(gpath):
-		g = Image.open(gpath).convert("RGBA").resize((int(W * sc), int(H * sc)), Image.LANCZOS)
+		g = open_image(gpath).resize((int(W * sc), int(H * sc)), Image.LANCZOS)
 	else:
 		g = Image.new("RGBA", (int(W * sc), int(H * sc)), (40, 40, 48, 255))
 	with open(os.path.join(ROOT, "data", "map_object_sprites.json"), encoding="utf-8") as sprites_file:
@@ -38,8 +49,8 @@ def main():
 		m = sprites.get(o.get("sprite", ""))
 		if not m:
 			continue
-		p = os.path.join(ROOT, "assets", "art", "MapObjects", m.get("file", o["sprite"]) + ".png")
-		im = Image.open(p).convert("RGBA")
+		p = map_object_image_path(ROOT, o["sprite"], m)
+		im = open_image(p)
 		k = SCALE_SPR * sc
 		im = im.resize((max(1, int(im.width * k)), max(1, int(im.height * k))), Image.LANCZOS)
 		x = o["x"] * sc - float(m["w"]) * 0.5 * k
