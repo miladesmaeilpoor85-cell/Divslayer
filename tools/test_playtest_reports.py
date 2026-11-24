@@ -50,5 +50,46 @@ class PlayerReportTests(unittest.TestCase):
             self.assertTrue((destination / "run-evidence.json").is_file())
 
 
+    def test_engine_startup_error_without_player_log_is_a_failed_run(self) -> None:
+        report = build_report("mage", "", "SCRIPT ERROR: Failed to initialize player scene")
+        self.assertEqual(report["journey_status"], "failed")
+        self.assertFalse(report["test_run_finished"])
+        self.assertTrue(any(
+            item["severity"] == "BLOCKER" and item["source"] == "Godot engine"
+            for item in report["qa_issues"]
+        ))
+
+    def test_failure_summary_without_detail_still_creates_blocker(self) -> None:
+        report = build_report(
+            "warrior",
+            "PLAYTEST_ASSERTIONS_FAILED 1\\nPLAYTEST_DONE 2.0 s wall",
+        )
+        self.assertEqual(report["journey_status"], "failed")
+        self.assertFalse(report["assertions_passed"])
+        self.assertTrue(any(
+            item["severity"] == "BLOCKER" and item["source"] == "playtest summary"
+            for item in report["qa_issues"]
+        ))
+
+    def test_success_summary_without_run_completion_is_incomplete(self) -> None:
+        report = build_report("rogue", "PLAYTEST_ASSERTIONS_PASSED\\n")
+        self.assertEqual(report["journey_status"], "incomplete")
+        self.assertFalse(report["test_run_finished"])
+
+    def test_missing_screenshot_is_not_claimed_as_captured_evidence(self) -> None:
+        report = build_report(
+            "paladin",
+            "SCREEN 01_missing.png: [شروع بازی]\\n",
+            available_shots=set(),
+        )
+        self.assertFalse(report["screenshots"][0]["file_present"])
+        with tempfile.TemporaryDirectory() as folder:
+            destination = Path(folder)
+            write_reports(report, destination)
+            player_report = (destination / "player-report.md").read_text(encoding="utf-8")
+            self.assertNotIn("01_missing.png", player_report)
+            self.assertIn("No screenshot file was confirmed as present.", player_report)
+
+
 if __name__ == "__main__":
     unittest.main()
