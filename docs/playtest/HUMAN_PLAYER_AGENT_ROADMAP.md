@@ -14,6 +14,8 @@ It is not yet a full-campaign agent and it is not yet a vision-only AI. The Godo
 
 The latest shop-interaction change records visible dialogue/control evidence and selects Kaveh's visible "Buy armour" choice by inspecting the actual active dialogue buttons. This is a diagnostic and resilience improvement; it is not considered verified until a new run against the updated PR head passes.
 
+The journey workflow now generates four evidence artifacts per class run: `run-evidence.json`, `player-report.md`, `critic-report.md`, and `qa-report.md`. Reports are deliberately conservative: a passing Chapter I run is not treated as full-game completion, unvisited maps remain `not tested`, and subjective critic/player judgements are left for human review. The report generator has dedicated Python unit tests in `tools/test_playtest_reports.py` and is included in both Godot CI and the class-journey workflow.
+
 ## Target architecture
 
 ### 1. Observation
@@ -108,6 +110,7 @@ The critic report must analyse recorded play evidence after the run; it must not
 - PR #65 remains a Draft and must stay unmerged until its artifacts and CI are reviewed.
 - Earlier Chapter I runs on commit `59678c20865f74196b67a61f07e6d3053d6b3b6c` failed at the first shop interaction for all four classes. Those runs predate the latest shop-diagnostic commit and cannot be used to judge that newer code.
 - The updated shop logic is not yet verified by a CI run against the current PR head.
+- The evidence-report generator and its CI wiring have been committed, but its new unit tests and generated artifacts are not yet verified on the current PR head.
 - The current scripted journey ends after confirming Arzhang took damage; that is not a Chapter I victory, much less full-game completion.
 - Existing long campaign touch tests have independent navigation/survival failures. Those must be fixed from their own logs rather than hidden by relaxing assertions.
 
@@ -118,6 +121,7 @@ Keep the PR Draft until:
 1. The updated branch passes Godot import/parse and all required headless tests.
 2. All four fresh class journeys complete the advertised Chapter I checkpoints without shortcuts.
 3. Shop, dialogue, navigation, combat, and recovery evidence is present and reviewable.
-4. The scope and limitations in the PR description match what the tests actually prove.
+4. Every class artifact includes the machine-readable evidence manifest and three distinct reports; no report claims unvisited content or full-game completion.
+5. The scope and limitations in the PR description match what the tests actually prove.
 
 Do not merge or label the agent "full game complete" until the V2/V3 completion rules are met.
