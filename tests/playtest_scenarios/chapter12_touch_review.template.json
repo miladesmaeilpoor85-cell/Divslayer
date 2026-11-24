@@ -523,6 +523,10 @@
     "do": "close_intro"
   },
   {
+    "do": "isolate_boss",
+    "target_foe": "ancientwyrm"
+  },
+  {
     "do": "shot",
     "name": "ch2_dragon_start"
   },
