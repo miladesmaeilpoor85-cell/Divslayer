@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from generate_player_reports import build_report, write_reports
+from playtest.generate_player_reports import build_report, write_reports
 
 
 class PlayerReportTests(unittest.TestCase):
