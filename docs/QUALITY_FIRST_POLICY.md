@@ -12,6 +12,13 @@ The game must not sacrifice artistic or sensory quality merely to meet an arbitr
 ## What must not be reduced just to save bytes
 
 ### Artwork, textures, and UI
+
+- All 2D image imports in Godot must use `compress/mode=0` (Lossless) and `process/size_limit=0`.
+- Do not use Godot Lossy, VRAM Compressed, or Basis Universal import modes for 2D artwork merely to reduce disk/download size. Godot's texture-import documentation specifically recommends against VRAM Compressed and Basis Universal for 2D elements.
+- The CI audit `tools/quality_first_audit.py` enforces Lossless imports and rejects hidden import-time downscaling.
+- Lossless import preserves the quality of the existing source file; it cannot restore information already lost inside a JPEG or lossy WebP source. Keep or reacquire a higher-quality master when that happens.
+- Lossless imports can use more memory than VRAM-compressed textures. Profile the game on target devices, but do not respond to memory pressure by silently lowering source or import quality; optimize resource lifetime, loading, atlases, and scene usage first.
+
 - Do not downscale source artwork, character atlases, environment textures, portraits, UI, or VFX just to reduce package size.
 - Do not lower texture quality, colour precision, alpha fidelity, or image dimensions only to make the package smaller.
 - Keep lossless source masters. Prefer PNG or another lossless source format for sprites, pixel art, line art, UI, transparency-critical assets, and masks.
