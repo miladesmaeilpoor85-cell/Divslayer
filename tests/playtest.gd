@@ -654,8 +654,21 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var side := 1.0
 	var quiet := 0.0
 	var last_progress := -5.0
+	var recovery_attempts := 0
 	while t < sec:
 		if p.dead:
+			if main.hud.death.visible and recovery_attempts < 3:
+				recovery_attempts += 1
+				var recovery_result: String = await player_agent.recover_from_death()
+				if not main.player.dead and main.hud.death.visible == false:
+					_log("PLAYER_AGENT_RECOVERED count=%d result=%s" % [recovery_attempts, recovery_result])
+					if main.world.key != map0:
+						ended = "respawned in %s after defeat; objective route must be followed again" % main.world.key
+						break
+					p = main.player
+					last = _feet()
+					t += 1.2
+					continue
 			ended = "the hero fell"
 			break
 		if get_tree().paused:
@@ -665,7 +678,12 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			elif main.hud.intro.visible:
 				await tap(_win(get_viewport().get_visible_rect().get_center()))
 			elif main.hud.death.visible:
-				ended = "the hero fell"
+				var recovery_result: String = await player_agent.recover_from_death()
+				if not main.player.dead and main.world.key == map0:
+					p = main.player
+					t += 1.2
+					continue
+				ended = recovery_result
 				break
 			else:
 				await wait(0.3)
@@ -1001,6 +1019,16 @@ func _step(s: Dictionary) -> Variant:
 			return "lang " + Game.lang
 		"agent_training":
 			return await player_agent.complete_training()
+		"agent_spells":
+			return await player_agent.bind_adaptive_spells()
+		"agent_gear":
+			return await player_agent.equip_best_accessory()
+		"agent_collect":
+			return await player_agent.collect_nearby_pickups(clampi(int(s.get("max_items", 8)), 1, 16))
+		"agent_objective":
+			return await player_agent.follow_objective(clampi(int(s.get("max_steps", 1)), 1, 12))
+		"agent_recover":
+			return await player_agent.recover_from_death()
 		"agent_talents":
 			return await player_agent.spend_talents()
 		"agent_shop":
