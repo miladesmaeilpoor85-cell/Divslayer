@@ -134,7 +134,7 @@ func complete_training() -> String:
 						continue
 					var eta := float(warning.get("t", 1.15))
 					if eta > 0.28:
-						var pause := min(eta - 0.28, 0.08)
+						var pause: float = minf(eta - 0.28, 0.08)
 						await driver.wait(pause)
 						roll_wait += pause
 						continue
@@ -154,7 +154,7 @@ func complete_training() -> String:
 						continue
 					var eta := float(warning.get("t", 1.4))
 					if eta > 0.5:
-						var pause := min(eta - 0.5, 0.08)
+						var pause: float = minf(eta - 0.5, 0.08)
 						await driver.wait(pause)
 						block_wait += pause
 						continue
@@ -526,7 +526,7 @@ func recover_from_death() -> String:
 	if choice == null or not await _tap_control(choice):
 		return "death screen choice was unavailable"
 	await driver.wait(1.2)
-	var recovered := not driver.main.player.dead and not death.visible
+	var recovered: bool = not driver.main.player.dead and not death.visible
 	if recovered:
 		driver._log("PLAYER_AGENT_RECOVERY retries=%d action=%s map=%s hp=%d" % [int(Game.fight.get("retries", 0)), action, str(driver.main.world.key), int(Game.hp)])
 		return action
