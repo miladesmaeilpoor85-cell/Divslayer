@@ -472,8 +472,8 @@
   {
     "do": "goto",
     "map": "frostvale",
-    "x": 950,
-    "y": 650
+    "x": 1000,
+    "y": 488
   },
   {
     "do": "close_intro"
@@ -484,9 +484,10 @@
   },
   {
     "do": "fight",
-    "sec": 30,
-    "shots_every": 20,
-    "target_foe": "glaciertitan"
+    "sec": 15,
+    "shots_every": 5,
+    "target_foe": "glaciertitan",
+    "verbose": true
   },
   {
     "do": "assert_state",
