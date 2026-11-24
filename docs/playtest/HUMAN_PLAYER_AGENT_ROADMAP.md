@@ -105,6 +105,12 @@ The critic report must analyse recorded play evidence after the run; it must not
 - Keep Godot runtime access limited to test assertions and QA validation.
 - Evaluate how closely the agent's actions and decisions resemble a human player, and document any simulation limits.
 
+## Campaign completion boundary
+
+A source review of the current Chapter IV implementation shows that it is a vertical slice, not a final-game chapter: it covers the Alborz pass, one scout rescue, and a return to Zal. Its own story text describes this as the first part of the Silent Wind and says the deeper silence requires another journey. The project does not currently expose a single, authoritative true-ending or full-campaign-complete flag for the player agent to verify.
+
+Until the game defines that final condition, the agent may report verified chapter/quest milestones and the currently playable content boundary, but it must not claim that the full game has been completed. The report generator's strict true-ending marker is intentionally not emitted by the current Chapter I test.
+
 ## Current blockers and validation status
 
 - PR #65 remains a Draft and must stay unmerged until its artifacts and CI are reviewed.
