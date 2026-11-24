@@ -137,6 +137,11 @@ func run(m: Node) -> void:
 	check("alborz_uses_dedicated_ground_art",
 		str(map_data.get("groundFile", "")) == "alborz_ground.svg"
 		and ResourceLoader.exists("res://assets/art/Maps/alborz_ground.svg"))
+	var alborz_ground_texture: Texture2D = load("res://assets/art/Maps/alborz_ground.svg")
+	var alborz_ground_image: Image = alborz_ground_texture.get_image() if alborz_ground_texture != null else null
+	check("alborz_svg_ground_rasterizes_with_visible_pixels",
+		alborz_ground_image != null and not alborz_ground_image.is_empty()
+		and alborz_ground_image.get_width() >= 1400 and alborz_ground_image.get_height() >= 1100)
 	var alborz_prop_count := 0
 	for object_data in map_data.get("objects", []):
 		var sprite_meta: Dictionary = Game.obj_sprites.get(str(object_data.get("sprite", "")), {})
@@ -234,6 +239,11 @@ func run(m: Node) -> void:
 	check("high_eyrie_uses_dedicated_ground_art",
 		str(eyrie_data.get("groundFile", "")) == "alborz_eyrie_ground.svg"
 		and ResourceLoader.exists("res://assets/art/Maps/alborz_eyrie_ground.svg"))
+	var eyrie_ground_texture: Texture2D = load("res://assets/art/Maps/alborz_eyrie_ground.svg")
+	var eyrie_ground_image: Image = eyrie_ground_texture.get_image() if eyrie_ground_texture != null else null
+	check("high_eyrie_svg_ground_rasterizes_with_visible_pixels",
+		eyrie_ground_image != null and not eyrie_ground_image.is_empty()
+		and eyrie_ground_image.get_width() >= 1000 and eyrie_ground_image.get_height() >= 820)
 	var eyrie_prop_count := 0
 	for object_data in eyrie_data.get("objects", []):
 		var sprite_meta: Dictionary = Game.obj_sprites.get(str(object_data.get("sprite", "")), {})
@@ -255,6 +265,11 @@ func run(m: Node) -> void:
 		check("gale_warden_uses_three_separate_telegraphed_lanes",
 			gale_warden.moves.has("crosswind") and eyrie_world.bossfx.tele.size() == 3,
 			{"moves": gale_warden.moves, "telegraphs": eyrie_world.bossfx.tele.size()})
+		var warden_sprite_texture: Texture2D = load("res://assets/art/Enemies/alborzwarden.svg")
+		var warden_sprite_image: Image = warden_sprite_texture.get_image() if warden_sprite_texture != null else null
+		check("gale_warden_svg_atlas_rasterizes_with_visible_pixels",
+			warden_sprite_image != null and not warden_sprite_image.is_empty()
+			and warden_sprite_image.get_width() == 816 and warden_sprite_image.get_height() == 234)
 		var warden_frames: SpriteFrames = gale_warden.anim.sprite_frames if gale_warden.anim != null else null
 		check("gale_warden_has_three_health_phases_and_dedicated_four_frame_sprite",
 			Game.boss_cfg("alborzwarden").get("phases", []) == [0.66, 0.33]
