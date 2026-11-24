@@ -947,6 +947,25 @@ func _step(s: Dictionary) -> Variant:
 			_enter_world()
 			await wait(1.0)
 			return "new %s" % Game.hero_role()
+		"new_real":
+			var chosen := str(s.get("class", "warrior"))
+			if main.menu == null:
+				main.show_menu()
+			var menu_result := str(await _step({"do": "tap_text", "text": Game.t("New game", "بازی تازه"), "after": 0.5}))
+			if menu_result.begins_with("NOT FOUND"):
+				return "real new-game menu unavailable: " + menu_result
+			var class_result := str(await _step({"do": "tap_text", "text": Game.hero_role(chosen), "after": 0.4}))
+			if class_result.begins_with("NOT FOUND"):
+				return "class card was not visible: " + class_result
+			var begin_result := str(await _step({"do": "tap_text", "text": Game.t("Begin the adventure", "آغاز ماجرا"), "after": 0.8}))
+			if begin_result.begins_with("NOT FOUND"):
+				return "begin button was not visible: " + begin_result
+			await wait(0.8)
+			if Game.cls != chosen or main.world == null:
+				var failure := "real new-game flow did not start %s (class=%s world=%s)" % [chosen, Game.cls, str(main.world != null)]
+				assertion_failures.append(failure)
+				return failure
+			return "started %s through title, class selection and begin buttons" % Game.hero_role()
 		"continue":
 			if not Game.load_game():
 				return "no save"
@@ -962,6 +981,8 @@ func _step(s: Dictionary) -> Variant:
 			Game.lang_changed.emit()
 			await wait(0.3)
 			return "lang " + Game.lang
+		"agent_training":
+			return await player_agent.complete_training()
 		"agent_talents":
 			return await player_agent.spend_talents()
 		"agent_shop":
