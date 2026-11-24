@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2300" height="1840" viewBox="0 0 1150 920">
+<defs>
+ <linearGradient id="ash" x2=".12" y2="1"><stop stop-color="#4c332b"/><stop offset=".46" stop-color="#362723"/><stop offset="1" stop-color="#291d1b"/></linearGradient>
+ <radialGradient id="heat"><stop stop-color="#a84a24" stop-opacity=".32"/><stop offset="1" stop-color="#7d2f1e" stop-opacity="0"/></radialGradient>
+ <linearGradient id="track" x2="0" y2="1"><stop stop-color="#958273"/><stop offset=".5" stop-color="#756255"/><stop offset="1" stop-color="#4b3b34"/></linearGradient>
+ <pattern id="cinder" width="46" height="40" patternUnits="userSpaceOnUse">
+  <circle cx="6" cy="9" r="2" fill="#bb8a68" opacity=".45"/><circle cx="29" cy="28" r="2.4" fill="#130f0f" opacity=".55"/>
+  <path d="M12 33l8-5 6 3-4 7zm15-25l5-4 5 5-7 4z" fill="#786258" opacity=".55"/>
+  <path d="M2 21l8-2m24 15l7-3" stroke="#b28c72" stroke-width="1.3" opacity=".35"/>
+ </pattern>
+ <pattern id="basalt" width="84" height="70" patternUnits="userSpaceOnUse">
+  <path d="M3 18l19-13 24 9 5 19-18 15-25-9zM57 49l13-13 12 8-2 20-16 3z" fill="#47352f" stroke="#1c1715" stroke-width="2"/>
+  <path d="M8 20l16-9 16 6M61 50l9-8" fill="none" stroke="#887064" stroke-width="2" opacity=".4"/>
+ </pattern>
+ <pattern id="embers" width="108" height="96" patternUnits="userSpaceOnUse">
+  <path d="M18 20l8-8 3 11-6 10zM76 66l9-11 4 14-8 9z" fill="#c05b2b" opacity=".5"/>
+  <circle cx="52" cy="41" r="1.8" fill="#fa8a43" opacity=".62"/><circle cx="93" cy="18" r="1.3" fill="#f3a05a" opacity=".55"/>
+ </pattern>
+</defs>
+<rect width="1150" height="920" fill="url(#ash)"/>
+<rect width="1150" height="920" fill="url(#cinder)" opacity=".9"/>
+<ellipse cx="575" cy="480" rx="650" ry="500" fill="url(#heat)"/>
+<rect width="1150" height="920" fill="url(#basalt)" opacity=".72"/>
+<!-- ash ridges and long fractured shelves -->
+<g fill="none" stroke-linecap="round">
+ <path d="M-30 160q130 45 215-5t200 26q105 58 230 5t220 20q135 58 340-18" stroke="#171312" stroke-width="24" opacity=".5"/>
+ <path d="M-30 160q130 45 215-5t200 26q105 58 230 5t220 20q135 58 340-18" stroke="#806052" stroke-width="6" opacity=".44"/>
+ <path d="M50 780q150-50 230-4t180-12q105-44 210 10t200 3q120-48 260-6" stroke="#211614" stroke-width="26" opacity=".55"/>
+ <path d="M50 780q150-50 230-4t180-12q105-44 210 10t200 3q120-48 260-6" stroke="#796052" stroke-width="5" opacity=".42"/>
+</g>
+<!-- pale volcanic footpaths connect all map exits and the shrine spur -->
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <g stroke="#1c1412" stroke-width="58" opacity=".65"><path d="M575 450C568 330 574 180 560 -20"/><path d="M575 450C470 520 330 610 185 668S30 700 -20 660"/><path d="M575 450C680 470 830 540 1170 620"/><path d="M575 450C570 590 580 740 575 940"/><path d="M575 450C735 335 850 170 1000 -20"/><path d="M575 450C420 410 270 355 110 300"/></g>
+ <g stroke="url(#track)" stroke-width="47"><path d="M575 450C568 330 574 180 560 -20"/><path d="M575 450C470 520 330 610 185 668S30 700 -20 660"/><path d="M575 450C680 470 830 540 1170 620"/><path d="M575 450C570 590 580 740 575 940"/><path d="M575 450C735 335 850 170 1000 -20"/><path d="M575 450C420 410 270 355 110 300"/></g>
+ <g stroke="#c6aa8e" stroke-width="2.8" stroke-dasharray="3 19" opacity=".42"><path d="M575 450C568 330 574 180 560 -20"/><path d="M575 450C470 520 330 610 185 668S30 700 -20 660"/><path d="M575 450C680 470 830 540 1170 620"/><path d="M575 450C570 590 580 740 575 940"/></g>
+</g>
+<rect width="1150" height="920" fill="url(#cinder)" opacity=".22"/>
+<rect width="1150" height="920" fill="url(#embers)" opacity=".66"/>
+<!-- glowing hairline fissures, deliberately away from main lanes -->
+<g fill="none" stroke-linecap="round">
+ <path d="M80 210l40 28-18 30 36 26-9 36" stroke="#b94e2c" stroke-width="4" opacity=".72"/>
+ <path d="M760 150l-22 27 25 24-14 33 34 20" stroke="#c05b32" stroke-width="5" opacity=".6"/>
+ <path d="M950 770l-33-28 10-27-26-24" stroke="#b84b29" stroke-width="4" opacity=".64"/>
+ <path d="M330 820l-18-24 16-30-20-34" stroke="#a84629" stroke-width="4" opacity=".48"/>
+ <path d="M840 360l26-18 19 14 22-9" stroke="#d17a43" stroke-width="3" opacity=".55"/>
+</g>
+<g fill="#171312" stroke="#8a6e5d" stroke-width="2" opacity=".95">
+ <path d="M170 120l26-15 28 12 8 23-25 19-32-11z"/><path d="M340 230l19-14 25 9 8 21-22 18-30-13z"/>
+ <path d="M760 285l21-16 28 10 6 24-25 16-26-12z"/><path d="M930 490l24-18 29 10 8 23-25 20-31-11z"/>
+ <path d="M235 760l21-13 24 10 5 21-25 15-27-11z"/><path d="M645 820l25-15 30 10 4 23-27 17-30-12z"/>
+</g>
+<g fill="#d98148" opacity=".8"><circle cx="140" cy="345" r="2.2"/><circle cx="151" cy="353" r="1.5"/><circle cx="815" cy="220" r="2.4"/><circle cx="823" cy="227" r="1.3"/><circle cx="1020" cy="700" r="2"/><circle cx="1031" cy="709" r="1.5"/><circle cx="405" cy="92" r="1.8"/></g>
+<path d="M0 0H1150V920H0Z" fill="none" stroke="#17110f" stroke-width="20" opacity=".34"/>
+</svg>
