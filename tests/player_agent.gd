@@ -318,6 +318,272 @@ func visit_shop(vendor: String) -> String:
 		return "purchased %s through the shop UI; gold now %d" % [item_name, purse_after]
 	return "purchase did not register for %s; gold now %d" % [item_name, purse_after]
 
+func _gear_score(item: Dictionary) -> float:
+	var stat: Dictionary = item.get("stat", {})
+	var value := float(stat.get("val", 0.0))
+	match str(stat.get("key", "")):
+		"atk": return value * 3.0
+		"def": return value * 1.7
+		"hpMax": return value * 0.16
+		"mpMax": return value * 0.08
+		"crit": return value * 22.0
+		"critDmg": return value * 12.0
+		"dodgeBonus": return value * 28.0
+		"dashCd": return value * 30.0
+		"lifesteal": return value * 24.0
+		"haste": return value * 22.0
+		"xp": return value * 5.0
+		"gold": return value * 4.0
+	return value
+
+func equip_best_accessory() -> String:
+	var worn_before: Dictionary = {}
+	for slot in Game.Gear.SLOTS:
+		worn_before[slot] = Game.Gear.eq().get(slot, null)
+	var equipped: Array[String] = []
+	var guard := 0
+	while guard < 4:
+		guard += 1
+		var best_index := -1
+		var best_gain := 0.01
+		var bag: Array = Game.Gear.bag()
+		for i in bag.size():
+			var item: Dictionary = bag[i]
+			var slot := str(item.get("slot", ""))
+			if slot not in Game.Gear.SLOTS:
+				continue
+			var current: Dictionary = Game.Gear.eq().get(slot, {})
+			var gain := _gear_score(item) - _gear_score(current)
+			if gain > best_gain:
+				best_gain = gain
+				best_index = i
+		if best_index < 0:
+			break
+		if not await _open_pause():
+			return "could not open menu to inspect accessory bag"
+		if not await _tap_text(Game.t("Gear", "تجهیزات")):
+			await _close_pause()
+			return "could not open Gear page"
+		var control := _named_control("Wear_%d" % best_index)
+		if control == null or not await _tap_control(control):
+			await _close_pause()
+			return "better accessory was not visible or tappable"
+		await driver.wait(0.25)
+		var after: Dictionary = Game.Gear.eq()
+		var slot_after := str(after.keys()[0]) if not after.is_empty() else ""
+		if Game.Gear.bag().size() < bag.size():
+			equipped.append("bag-index-%d" % best_index)
+		else:
+			break
+	await _close_pause()
+	var changed: Array[String] = []
+	for slot in Game.Gear.SLOTS:
+		var before = worn_before.get(slot, null)
+		var after = Game.Gear.eq().get(slot, null)
+		if before != after:
+			changed.append("%s:%s" % [slot, Game.Gear.item_name(after) if typeof(after) == TYPE_DICTIONARY else "empty"])
+	if changed.is_empty():
+		return "kept current accessories; no bag item had a better stat score"
+	Game.save_game()
+	driver._log("PLAYER_AGENT_ACCESSORIES_EQUIPPED %s" % ", ".join(changed))
+	return "equipped better accessories from the bag: " + ", ".join(changed)
+
+func bind_adaptive_spells() -> String:
+	var priorities: Dictionary = {
+		"warrior": ["roar", "nova", "quake", "bolt", "mend"],
+		"mage": ["icelance", "chain", "firewall", "nova", "bolt", "mend"],
+		"rogue": ["blink", "drain", "bolt", "nova", "mend"],
+		"paladin": ["mend", "roar", "nova", "quake", "bolt"],
+	}
+	var preferred: Array = priorities.get(Game.cls, priorities["warrior"])
+	var chosen: Array[String] = []
+	for id in preferred:
+		if Game.Skills.known(str(id)) and not chosen.has(str(id)):
+			chosen.append(str(id))
+			if chosen.size() == 2:
+				break
+	if chosen.size() < 2:
+		for id in Game.Skills.ORDER:
+			if Game.Skills.known(str(id)) and not chosen.has(str(id)):
+				chosen.append(str(id))
+				if chosen.size() == 2:
+					break
+	if chosen.size() < 2:
+		return "only %d known spells; kept current bindings" % chosen.size()
+	if not await _open_pause():
+		return "could not open Skills menu to bind spells"
+	if not await _tap_text(Game.t("Skills", "مهارت‌ها")):
+		await _close_pause()
+		return "could not open Skills page"
+	var before: Array = Game.slots().duplicate()
+	for slot_index in 2:
+		var id := chosen[slot_index]
+		if str(Game.slots()[slot_index]) == id:
+			continue
+		var button := _named_control("Bind%d_%s" % [slot_index, id])
+		if button == null or not await _tap_control(button):
+			driver._log("PLAYER_AGENT_SPELL_BIND_UNAVAILABLE slot=%d spell=%s" % [slot_index, id])
+			continue
+		await driver.wait(0.2)
+	var after: Array = Game.slots().duplicate()
+	await _close_pause()
+	if after != before:
+		Game.save_game()
+		driver._log("PLAYER_AGENT_SPELLS_BOUND before=%s after=%s" % [str(before), str(after)])
+	return "spell bindings: %s -> %s" % [str(before), str(after)]
+
+func collect_nearby_pickups(max_items := 8) -> String:
+	var collected: Array[String] = []
+	var skipped := 0
+	for attempt in max_items:
+		var nearest: Node2D = null
+		var best := INF
+		for node in driver.get_tree().get_nodes_in_group("pickups"):
+			if not is_instance_valid(node) or node.get_parent() == null:
+				continue
+			if not driver.main.world.ysort.is_ancestor_of(node):
+				continue
+			var distance: float = driver._feet().distance_to(node.global_position)
+			if distance < best:
+				best = distance
+				nearest = node
+		if nearest == null:
+			break
+		var pickup_kind := str(nearest.get_meta("kind", "unknown"))
+		var pickup_key := str(nearest.get_meta("key", ""))
+		var before_count := Game.state.get("picked", []).size()
+		var route: String = await driver.walk_to(nearest.global_position, 22.0, 16.0)
+		await driver.wait(0.35)
+		var taken := not is_instance_valid(nearest) or not driver.get_tree().get_nodes_in_group("pickups").has(nearest)
+		var after_count := Game.state.get("picked", []).size()
+		if taken or after_count > before_count or pickup_key in Game.state.get("picked", []):
+			collected.append(pickup_kind)
+			driver._log("PLAYER_AGENT_PICKUP kind=%s key=%s route=%s" % [pickup_kind, pickup_key, route])
+		else:
+			skipped += 1
+			if skipped >= 2:
+				break
+			# Avoid getting stuck repeatedly targeting the same unreachable object.
+			if best > 260.0:
+				break
+			await driver.wait(0.2)
+	return "collected %d ground pickups%s" % [collected.size(), " (" + ", ".join(collected) + ")" if not collected.is_empty() else ""]
+
+func _choose_dialogue_option() -> String:
+	var dialogue = driver.main.hud.dialogue
+	if dialogue == null or not dialogue.visible or not dialogue.choosing():
+		return "no dialogue choice pending"
+	var preferred := ["Train with me", "با من تمرین کن", "Continue", "ادامه", "Accept", "قبول", "Enter", "ورود", "Take", "بگیر", "Begin", "شروع", "Investigate", "بررسی"]
+	var buttons: Array = dialogue._choice_box.get_children()
+	var picked: Button = null
+	for term in preferred:
+		for control in buttons:
+			if control is Button and (control as Button).is_visible_in_tree() and str((control as Button).text).find(term) >= 0:
+				picked = control as Button
+				break
+		if picked != null:
+			break
+	if picked == null:
+		for control in buttons:
+			if control is Button and not (control as Button).disabled:
+				picked = control as Button
+				break
+	if picked == null:
+		return "no enabled dialogue option"
+	var chosen_text := picked.text
+	if not await _tap_control(picked):
+		return "dialogue option failed to receive input"
+	await driver.wait(0.35)
+	driver._log("PLAYER_AGENT_DIALOGUE_CHOICE %s" % chosen_text)
+	return "selected dialogue option: " + chosen_text
+
+func follow_objective(max_steps := 8) -> String:
+	var report: Array[String] = []
+	for step_index in max_steps:
+		var target: Dictionary = Game.quest_target()
+		if target.is_empty():
+			return "no active objective; " + " | ".join(report)
+		var target_map := str(target.get("map", ""))
+		var current_map := str(driver.main.world.key)
+		if target_map != current_map:
+			var hop := Game.next_hop(current_map, target_map)
+			if hop == "":
+				report.append("no world-graph route from %s to %s" % [current_map, target_map])
+				break
+			var exit_data: Dictionary = {}
+			for exit in driver.main.world.data.get("exits", []):
+				if str(exit.get("to", "")) == hop:
+					exit_data = exit
+					break
+			if exit_data.is_empty():
+				report.append("route exit to %s is not present in the current region" % hop)
+				break
+			var exit_center := Vector2(float(exit_data.get("x", 0)) + float(exit_data.get("w", 0)) * 0.5, float(exit_data.get("y", 0)) + float(exit_data.get("h", 0)) * 0.5)
+			var route: String = await driver.walk_to(exit_center, 50.0, 6.0, hop)
+			await driver.wait(0.4)
+			if str(driver.main.world.key) == current_map:
+				report.append("could not pass exit to %s: %s" % [hop, route])
+				break
+			report.append("travelled %s -> %s" % [current_map, str(driver.main.world.key)])
+			continue
+		var target_pos: Vector2 = target.get("pos", driver._feet())
+		var kind := str(target.get("kind", ""))
+		if kind == "boss":
+			var boss: Node = null
+			var nearest_boss := INF
+			for node in driver.get_tree().get_nodes_in_group("bosses"):
+				if node.world != driver.main.world or node.dead:
+					continue
+				var distance: float = node.global_position.distance_to(target_pos)
+				if distance < nearest_boss:
+					nearest_boss = distance
+					boss = node
+			if boss == null:
+				report.append("objective boss is not spawned on %s" % current_map)
+				break
+			await driver.walk_to(boss.global_position, 45.0, 110.0)
+			await driver.wait(0.3)
+			var outcome: String = await driver.fight(75.0, 0.0, str(boss.type))
+			report.append("boss %s: %s" % [str(boss.type), outcome])
+			if not is_instance_valid(boss) or boss.dead:
+				continue
+			break
+		var candidate: Node2D = null
+		var distance_best := INF
+		var group_name := "quest_points" if kind == "quest_point" else "npcs"
+		for node in driver.get_tree().get_nodes_in_group(group_name):
+			if not is_instance_valid(node) or node.get_parent() == null:
+				continue
+			if not driver.main.world.ysort.is_ancestor_of(node):
+				continue
+			var distance: float = node.global_position.distance_to(target_pos)
+			if distance < distance_best:
+				distance_best = distance
+				candidate = node
+		var goal := target_pos
+		if candidate != null:
+			goal = candidate.global_position + Vector2(0, 24)
+		var route: String = await driver.walk_to(goal, 32.0, 20.0)
+		await driver.wait(0.25)
+		if kind == "npc" or kind == "quest_point":
+			if driver.main.player.near_npc != null:
+				await driver.press("talk")
+				await driver.wait(0.35)
+				if driver.main.hud.dialogue.choosing():
+					report.append(await _choose_dialogue_option())
+				if driver.main.hud.dialogue.visible:
+					report.append(await driver.dialog_all())
+				else:
+					await driver.wait(0.2)
+				report.append("interacted with objective on %s: %s" % [current_map, route])
+			else:
+				report.append("objective interaction range not reached: %s" % route)
+				break
+		else:
+			report.append("approached objective %s: %s" % [kind, route])
+			break
+	return " | ".join(report)
+
 func prepare_loadout() -> String:
 	var armor_before := int(Game.state.get("armor", 0))
 	var weapon_before := int(Game.state.get("weapon", 1))
