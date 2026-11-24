@@ -73,7 +73,9 @@ func _scan_directory(folder_path: String, changed_sources: PackedStringArray) ->
 		if not FileAccess.file_exists(source_path):
 			continue
 		var content: String = FileAccess.get_file_as_string(import_path)
-		if not content.contains('importer="texture"') or not content.contains('type="CompressedTexture2D"'):
+		var has_texture_importer: bool = content.contains('importer="texture"')
+		var has_compressed_texture_type: bool = content.contains('type="CompressedTexture2D"')
+		if not has_texture_importer or not has_compressed_texture_type:
 			continue
 
 		scanned_count += 1
