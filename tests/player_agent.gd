@@ -458,11 +458,11 @@ func collect_nearby_pickups(max_items := 8) -> String:
 			break
 		var pickup_kind := str(nearest.get_meta("kind", "unknown"))
 		var pickup_key := str(nearest.get_meta("key", ""))
-		var before_count := Game.state.get("picked", []).size()
+		var before_count: int = Game.state.get("picked", []).size()
 		var route: String = await driver.walk_to(nearest.global_position, 22.0, 16.0)
 		await driver.wait(0.35)
 		var taken := not is_instance_valid(nearest) or not driver.get_tree().get_nodes_in_group("pickups").has(nearest)
-		var after_count := Game.state.get("picked", []).size()
+		var after_count: int = Game.state.get("picked", []).size()
 		if taken or after_count > before_count or pickup_key in Game.state.get("picked", []):
 			collected.append(pickup_kind)
 			driver._log("PLAYER_AGENT_PICKUP kind=%s key=%s route=%s" % [pickup_kind, pickup_key, route])
