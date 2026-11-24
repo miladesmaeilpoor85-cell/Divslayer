@@ -22,7 +22,9 @@ KNOWN_MAPS = [
 ]
 ENGINE_ERROR = re.compile(
     r"(?:SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|"
-    r"ERROR: Failed to create an autoload|ERROR: Invalid get index)",
+    r"ERROR: Failed to create an autoload|ERROR: Invalid get index|"
+    r"ERROR: .*\\.import:|QUALITY_FIRST_IMPORT_AUDIT_FAILED|"
+    r"QUALITY_FIRST_IMPORTS_FAILED)",
     re.IGNORECASE,
 )
 STEP_RE = re.compile(r"^STEP (\d+) ([0-9.]+) s (\{.*\}) -> (.*)$")
@@ -152,6 +154,24 @@ def build_report(
         })
     for item in engine_errors:
         issues.append({"severity": "BLOCKER", "source": "Godot engine", "detail": item})
+    if journey_status == "not_run":
+        issues.append({
+            "severity": "BLOCKER",
+            "source": "playtest summary",
+            "detail": (
+                "No player journey output or recognized engine diagnostic was captured; "
+                "the journey did not run."
+            ),
+        })
+    elif journey_status == "incomplete":
+        issues.append({
+            "severity": "HIGH",
+            "source": "playtest summary",
+            "detail": (
+                "The journey did not record both PLAYTEST_DONE and "
+                "PLAYTEST_ASSERTIONS_PASSED completion markers."
+            ),
+        })
     for marker, severity, label in [
         ("PLAYER_AGENT_ROUTE_MISROUTED", "HIGH", "Unexpected map transition during objective navigation"),
         ("PLAYER_AGENT_SHOP_FAILED", "HIGH", "Shop UI interaction did not open"),
