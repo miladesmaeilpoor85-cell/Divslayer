@@ -20,6 +20,7 @@ on:
       - "data/**"
       - "scenes/**"
       - "scripts/**"
+      - "tests/**"
   pull_request:
     branches:
       - "main"
@@ -36,6 +37,7 @@ on:
       - "data/**"
       - "scenes/**"
       - "scripts/**"
+      - "tests/**"
   workflow_dispatch:
 
 permissions:
