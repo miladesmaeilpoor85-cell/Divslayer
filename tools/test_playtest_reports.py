@@ -32,6 +32,8 @@ class PlayerReportTests(unittest.TestCase):
         log = "\n".join([
             "FIGHT_EVIDENCE type=boss present_before=true hp_before=100.0 present_after=false hp_after=0.0 defeated=true",
             "PLAYER_AGENT_PILLAR_PRIORITY type=gravepillar distance=80 hp=60/60",
+            "PLAYER_AGENT_PILLAR_APPROACH distance=80 flank_distance=30 side=opposite_boss",
+            "PLAYER_AGENT_PILLAR_DAMAGED hp=60.0->44.0",
             "ASSERTION_PASSED arzhang_defeated",
             "ASSERTION_PASSED returned_to_zal",
             "PLAYTEST_ASSERTIONS_PASSED",
@@ -42,6 +44,7 @@ class PlayerReportTests(unittest.TestCase):
         self.assertEqual(len(report["boss_encounters"]), 1)
         self.assertTrue(report["boss_encounters"][0]["defeated"])
         self.assertEqual(report["boss_encounters"][0]["hp_after_percent"], 0.0)
+        self.assertTrue(any("PLAYER_AGENT_PILLAR_DAMAGED" in item for item in report["player_action_evidence"]))
         self.assertFalse(report["full_game_completion"]["confirmed"])
         with tempfile.TemporaryDirectory() as folder:
             destination = Path(folder)

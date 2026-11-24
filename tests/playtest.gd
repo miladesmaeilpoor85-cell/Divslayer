@@ -630,6 +630,20 @@ func _fight_target_is_live(target: Variant) -> bool:
 		return false
 	return not bool(live_node.get("dead"))
 
+## Report only real pillar HP loss after a touch attack; selecting a pillar is not enough.
+func _record_pillar_attack(target: Variant, hp_before: float) -> bool:
+	if target == null or not is_instance_valid(target) or not (target is Node):
+		return false
+	var pillar := target as Node
+	var hp_after := float(pillar.get("hp"))
+	if hp_after >= hp_before - 0.01:
+		return false
+	if bool(pillar.get("dead")) or pillar.is_queued_for_deletion():
+		_log("PLAYER_AGENT_PILLAR_DESTROYED hp=%.1f->%.1f" % [hp_before, hp_after])
+	else:
+		_log("PLAYER_AGENT_PILLAR_DAMAGED hp=%.1f->%.1f" % [hp_before, hp_after])
+	return true
+
 func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var p = main.player
 	var t := 0.0
@@ -681,6 +695,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var recovery_attempts := 0
 	var last_add_priority_id := 0
 	var last_pillar_priority_id := 0
+	var last_pillar_approach_id := 0
+	var pillar_damage_events := 0
 	while t < sec:
 		if focus_type != "" and int(Game.v18().get("kills", {}).get(focus_type, 0)) > focus_kills_before:
 			ended = "defeated %s through the live combat encounter" % focus_type
@@ -813,7 +829,31 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			await stick(Vector2.ZERO)
 			continue
 		var target_center: Vector2 = tgt.center()
-		var to: Vector2 = target_center - (p.global_position + Vector2(0, -17))
+		var hero_center: Vector2 = p.global_position + Vector2(0, -17)
+		var to: Vector2 = target_center - hero_center
+		var target_is_pillar := str(tgt.type) == "gravepillar" and tgt.is_in_group("arena")
+		var movement_to := to
+		# The player attack's own aim-assist chooses the nearest enemy, not the
+		# test driver's preferred target. Stand on the side of a grave pillar
+		# opposite Arzhang so the pillar, rather than the overlapping boss hitbox,
+		# becomes the closest valid attack target.
+		if target_is_pillar and _fight_target_is_live(focused_tgt):
+			var flank_direction: Vector2 = target_center - focused_tgt.center()
+			if flank_direction.length_squared() < 1.0:
+				flank_direction = hero_center - target_center
+			if flank_direction.length_squared() < 1.0:
+				flank_direction = Vector2.RIGHT
+			var flank_clearance := maxf(42.0, maxf(float(tgt.box.x), float(tgt.box.y)) * 0.5 + 24.0)
+			var flank_goal := target_center + flank_direction.normalized() * flank_clearance
+			movement_to = flank_goal - hero_center
+			var approach_id := tgt.get_instance_id()
+			if approach_id != last_pillar_approach_id:
+				_log("PLAYER_AGENT_PILLAR_APPROACH distance=%d flank_distance=%d side=opposite_boss" % [
+					int(to.length()), int(movement_to.length())
+				])
+			last_pillar_approach_id = approach_id
+		else:
+			last_pillar_approach_id = 0
 		if verbose and int(t * 10) % 5 == 0:
 			_log("  t %.1f feet %s joy %s tgt %s at %d reach %d" % [t, str(p.global_position.round()), str(p.joy), tgt.type, int(to.length()), int(46.0 + float(tgt.hit_rect().size.x) * 0.5)])
 		if verbose and tgt.is_in_group("bosses") and int(t * 10) % 5 == 0:
@@ -853,7 +893,6 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
 			continue
-		var target_is_pillar := str(tgt.type) == "gravepillar" and tgt.is_in_group("arena")
 		var preferred_range := reach
 		if Game.cls == "mage" and not target_is_pillar:
 			preferred_range = maxf(reach + 72.0, 122.0)
@@ -863,6 +902,22 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			var retreat := (-to.normalized() + Vector2(randf_range(-0.18, 0.18), randf_range(-0.18, 0.18))).normalized()
 			await stick(_avoid_exits(retreat))
 			await wait(0.12)
+		elif target_is_pillar and movement_to.length() > 10.0:
+			var flank_dir := _avoid_exits(movement_to.normalized())
+			if detour > 0.0:
+				flank_dir = flank_dir.rotated(side * 1.3)
+				detour -= 0.1
+			await stick(flank_dir)
+			if _feet().distance_to(last) < 1.0:
+				stuck += 0.1
+				if stuck >= 0.4:
+					stuck = 0.0
+					detour = 0.9
+					if randf() < 0.4:
+						side = -side
+			else:
+				stuck = 0.0
+			last = _feet()
 		elif to.length() > preferred_range:
 			var dir := _avoid_exits(to.normalized())
 			if detour > 0.0:
@@ -887,7 +942,12 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			await stick(Vector2.ZERO)
 			await stick(to.normalized() * 0.2)
 			await stick(Vector2.ZERO)
+			var pillar_hp_before := float(tgt.hp) if target_is_pillar else -1.0
 			await press("attack")
+			if target_is_pillar:
+				await wait(0.22)
+				if _record_pillar_attack(tgt, pillar_hp_before):
+					pillar_damage_events += 1
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
 			continue
@@ -897,8 +957,13 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		var heavy_window := target_is_pillar or (tgt.is_in_group("bosses") and float(tgt.get("busy")) > 0.25)
 		if heavy_t <= 0.0 and to.length() <= reach + 12.0 and heavy_window and away == Vector2.ZERO:
 			heavy_t = randf_range(5.0, 8.0)
+			var pillar_hp_before_heavy := float(tgt.hp) if target_is_pillar else -1.0
 			await press("attack", 0.55)
 			heavy_actions += 1
+			if target_is_pillar:
+				await wait(0.32)
+				if _record_pillar_attack(tgt, pillar_hp_before_heavy):
+					pillar_damage_events += 1
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
 			continue
@@ -1000,6 +1065,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		if arena_obj.world == main.world and not arena_obj.dead and str(arena_obj.type) == "gravepillar":
 			arena_report.append("gravepillar %d%%" % int(100.0 * float(arena_obj.hp) / maxf(1.0, float(arena_obj.max_hp))))
 	var detail := ""
+	if pillar_damage_events > 0:
+		detail += " · grave-pillar HP reductions %d" % pillar_damage_events
 	if not boss_report.is_empty():
 		detail += " · bosses " + ", ".join(boss_report)
 	if not arena_report.is_empty():
