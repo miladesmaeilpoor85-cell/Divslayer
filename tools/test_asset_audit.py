@@ -16,7 +16,7 @@ def png_bytes(width=2, height=3):
 
 
 def svg_bytes(width=8, height=9):
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"></svg>').encode("utf-8")
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"></svg>').encode()
 
 
 def jpeg_bytes(width=4, height=5):
