@@ -29,7 +29,7 @@ class PlayerReportTests(unittest.TestCase):
         self.assertEqual(report["scenario_checkpoints_reached"], ["Chapter I — Whispering Forest and its clues"])
 
     def test_arzhang_kill_evidence_is_recorded_without_claiming_full_game_completion(self) -> None:
-        log = "\\n".join([
+        log = "\n".join([
             "FIGHT_EVIDENCE type=boss present_before=true hp_before=100.0 present_after=false hp_after=0.0 defeated=true",
             "PLAYER_AGENT_PILLAR_PRIORITY type=gravepillar distance=80 hp=60/60",
             "ASSERTION_PASSED arzhang_defeated",
