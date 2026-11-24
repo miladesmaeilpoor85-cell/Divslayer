@@ -1,0 +1,157 @@
+name: Real player journey
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "tests/player_agent.gd"
+      - "tests/playtest.gd"
+      - "tests/playtest_scenarios/real_player_ch1.template.json"
+      - ".github/workflows/real-player-journey.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: real-player-journey-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  natural-chapter-one:
+    name: Real player journey — ${{ matrix.hero }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        hero: [warrior, mage, rogue, paladin]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install virtual display
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null 2>&1 || ! command -v xauth >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes xvfb xauth
+          fi
+
+      - name: Download and verify Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          expected="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --silent --show-error "$url" --output "$RUNNER_TEMP/godot.zip"
+          echo "$expected  $RUNNER_TEMP/godot.zip" | sha256sum --check -
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64"
+          ln -s "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64" "$RUNNER_TEMP/godot/godot"
+          "$RUNNER_TEMP/godot/godot" --version
+          echo "$RUNNER_TEMP/godot" >> "$GITHUB_PATH"
+
+      - name: Import project and parse scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          log_file="$RUNNER_TEMP/real-player-import.log"
+          set +e
+          "$RUNNER_TEMP/godot/godot" --headless --editor --path . --quit 2>&1 | tee "$log_file"
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$log_file"; then
+            echo "::error::Godot reported script parse/load errors during import."
+            exit 1
+          fi
+          exit "$status"
+
+      - name: Prepare a clean natural-progression scenario
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/real-player-journey"
+          python3 - "$HERO" "$RUNNER_TEMP/real-player-journey/scenario.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          hero, destination = sys.argv[1], Path(sys.argv[2])
+          template = Path("tests/playtest_scenarios/real_player_ch1.template.json")
+          scenario = json.loads(template.read_text(encoding="utf-8").replace("__CLASS__", hero))
+          actions = [step.get("do") for step in scenario]
+          forbidden = {"preset", "goto", "set", "invuln", "isolate_boss"}
+          used = forbidden.intersection(actions)
+          assert not used, f"Natural journey contains shortcuts: {sorted(used)}"
+          assert actions.count("new_real") == 1, "Expected one title-screen new-game flow"
+          assert actions.count("agent_training") == 1, "Expected Rostam's touch-driven training"
+          assert actions.count("agent_loadout") == 1, "Expected real shop and loadout actions"
+          assert actions.count("agent_talents") >= 1, "Expected talent UI decisions after earning XP"
+          assert actions.count("fight") == 3, "Expected forest, crypt and Arzhang combat samples"
+          destination.write_text(json.dumps(scenario, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Run natural Chapter I player journey
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/real-player-journey/$HERO"
+          profile="$RUNNER_TEMP/real-player-journey/profile-$HERO"
+          mkdir -p "$output/shots" "$profile"
+          set +e
+          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=10 1800s xvfb-run -a -s "-screen 0 1067x480x24" \
+            "$RUNNER_TEMP/godot/godot" --path . --rendering-driver opengl3 --resolution 1067x480 --fixed-fps 60 --audio-driver Dummy \
+            -- --test res://tests/playtest.gd --playtest \
+            --script "$RUNNER_TEMP/real-player-journey/scenario.json" --out "$output" \
+            2>&1 | tee "$output/godot.txt"
+          status=${PIPESTATUS[0]}
+          set -e
+          cat "$output/log.txt"
+          if [[ "$status" -ne 0 ]]; then
+            echo "::error::Real player journey exited with status $status."
+            exit "$status"
+          fi
+
+      - name: Validate natural progression and player actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - "$RUNNER_TEMP/real-player-journey/$HERO/log.txt" "$RUNNER_TEMP/real-player-journey/$HERO/godot.txt" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          log = Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+          godot = Path(sys.argv[2]).read_text(encoding="utf-8", errors="replace")
+          fights = [line for line in log.splitlines() if '"do":"fight"' in line]
+          assert "PLAYTEST_DONE" in log, "Journey did not reach its last step"
+          assert "PLAYTEST_ASSERTIONS_PASSED" in log, "Journey assertions did not all pass"
+          assert "ASSERTION_FAILED" not in log, "A natural progression or gameplay assertion failed"
+          assert len(fights) == 3, f"Expected three natural combat samples, found {len(fights)}"
+          assert "PLAYER_AGENT_TRAINING_DONE" in log, "Rostam's real touch-control training did not finish"
+          assert "PLAYER_AGENT_LOADOUT" in log, "The actual shop/loadout routine did not complete"
+          loadout = re.search(r"PLAYER_AGENT_LOADOUT weapon=(\d+)->(\d+) armour=(\d+)->(\d+)", log)
+          assert loadout, "Missing verified weapon/armour progression record"
+          assert int(loadout.group(4)) >= 1, "The fresh player did not buy the first armour tier"
+          assert "PLAYER_AGENT_ACTIONS" in log, "Humanized combat actions were not recorded"
+          errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
+          assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
+          print("REAL_PLAYER_JOURNEY_VALIDATED")
+          print("\\n".join(fights))
+          PY
+
+      - name: Upload journey logs and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Real-Player-Journey-${{ matrix.hero }}
+          path: ${{ runner.temp }}/real-player-journey/${{ matrix.hero }}/
+          if-no-files-found: warn
+          retention-days: 14
