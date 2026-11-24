@@ -607,12 +607,15 @@ func _isolate_boss(target_type: String) -> String:
 	_log("BOSS_ISOLATION type=%s removed_unrelated=%d live_at_start=%d" % [target_type, removed, live_left])
 	return "isolated %s; removed %d unrelated foes; %d live target(s) remain" % [target_type, removed, live_left]
 
-func _fight_target_is_live(target: Node) -> bool:
-	if target == null or not is_instance_valid(target):
+func _fight_target_is_live(target: Variant) -> bool:
+	# A target can be freed by an enemy death animation during any awaited touch.
+	# Accept Variant so GDScript does not try to cast the stale object before this guard runs.
+	if target == null or not is_instance_valid(target) or not (target is Node):
 		return false
-	if target.is_queued_for_deletion():
+	var live_node := target as Node
+	if live_node.is_queued_for_deletion():
 		return false
-	return not bool(target.get("dead"))
+	return not bool(live_node.get("dead"))
 
 func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var p = main.player
@@ -799,7 +802,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				await press("block", 0.18)
 				block_actions += 1
 			else:
-				await stick(away.normalized())
+				# Combat evasions must respect the same hard portal boundary as normal movement.
+				var escape_dir := _avoid_exits(away.normalized())
+				await stick(escape_dir)
 				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (last_danger_eta <= 0.34 or Game.hp < Game.max_hp() * 0.55):
 					await press("dodge")
 					dodges += 1
@@ -813,7 +818,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			preferred_range = maxf(reach + 72.0, 122.0)
 		if Game.cls == "mage" and to.length() < 82.0 and away == Vector2.ZERO:
 			# A mage should not stand inside a melee enemy's reach merely to use a staff.
-			await stick((-to.normalized() + Vector2(randf_range(-0.18, 0.18), randf_range(-0.18, 0.18))).normalized())
+			# Kiting must still reject unrelated exits; otherwise a retreat can leave the arena.
+			var retreat := (-to.normalized() + Vector2(randf_range(-0.18, 0.18), randf_range(-0.18, 0.18))).normalized()
+			await stick(_avoid_exits(retreat))
 			await wait(0.12)
 		elif to.length() > preferred_range:
 			var dir := _avoid_exits(to.normalized())
@@ -904,6 +911,14 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			next_shot = shots_every
 			await shot("fight_%ds" % int(t))
 	await stick(Vector2.ZERO)
+	# The final combat tick can cross an exit after the loop's last boundary check.
+	# Never let the next scenario step silently continue on a different map.
+	if main.world == null or not is_instance_valid(main.world) or main.world.key != map0:
+		var map_after := str(main.world.key) if main.world != null else "none"
+		ended = "combat unexpectedly left %s for %s" % [map0, map_after]
+		var route_failure := "combat unexpectedly changed map from %s to %s; the fight must not consume a portal" % [map0, map_after]
+		assertion_failures.append(route_failure)
+		_log("ASSERTION_FAILED " + route_failure)
 	for id in seen:
 		var e = seen[id].get_ref()
 		if e == null or e.dead:

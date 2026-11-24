@@ -127,6 +127,11 @@ jobs:
           assert actions.count("agent_gear") >= 2, "Expected accessory comparison and equipment management"
           assert actions.count("agent_spells") >= 2, "Expected adaptive spell loadout decisions"
           assert actions.count("fight") == 3, "Expected forest, crypt and Arzhang combat samples"
+          playtest_source = Path("tests/playtest.gd").read_text(encoding="utf-8")
+          assert "func _fight_target_is_live(target: Variant)" in playtest_source, "Freed combat targets must be guarded before typed Node conversion"
+          assert "await stick(_avoid_exits(escape_dir))" in playtest_source, "Combat evasion must respect map exit boundaries"
+          assert "await stick(_avoid_exits(retreat))" in playtest_source, "Mage kiting must respect map exit boundaries"
+          assert "combat unexpectedly changed map from %s to %s" in playtest_source, "Combat must verify its final map boundary"
           forest_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("sec") == 12)
           next_forest_objective = next(i for i in range(forest_fight + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
           assert int(scenario[next_forest_objective].get("max_steps", 1)) >= 2, "Allow the post-fight forest map hop and clue interaction"
