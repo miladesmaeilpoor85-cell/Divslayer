@@ -121,6 +121,8 @@ jobs:
 
       - name: Validate natural progression and player actions
         shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
         run: |
           set -euo pipefail
           python3 - "$RUNNER_TEMP/real-player-journey/$HERO/log.txt" "$RUNNER_TEMP/real-player-journey/$HERO/godot.txt" <<'PY'
@@ -144,7 +146,7 @@ jobs:
           errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
           assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
           print("REAL_PLAYER_JOURNEY_VALIDATED")
-          print("\\n".join(fights))
+          print("\n".join(fights))
           PY
 
       - name: Upload journey logs and screenshots
