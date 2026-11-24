@@ -11,9 +11,8 @@ from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
-from PIL import Image, ImageChops
-
 from image_assets import open_image
+from PIL import Image, ImageChops
 
 ROOT = Path(__file__).resolve().parents[1]
 DIFF_THRESHOLD = 12
