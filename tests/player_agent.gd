@@ -139,6 +139,14 @@ func complete_training() -> String:
 		return failure
 	return "completed Rostam's training through touch controls"
 
+func tap_text(label: String) -> String:
+	var control: Control = driver.find_text(label)
+	if control == null:
+		return "NOT FOUND. On screen: " + " | ".join(driver._texts().map(func(t): return str(t.get("t", ""))))
+	if not await _tap_control(control):
+		return "visible text was found but its control did not receive a tap: " + label
+	return "tapped UI text through its actual control: " + label
+
 func spend_talents() -> String:
 	if Game.talent_points() <= 0:
 		return "no talent points available; no menu action needed"
