@@ -693,6 +693,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			continue
 		if main.world.key != map0:
 			ended = "walked into an exit -> %s" % main.world.key
+			var route_failure := "combat unexpectedly changed map from %s to %s; the fight must not consume a portal" % [map0, main.world.key]
+			assertion_failures.append(route_failure)
+			_log("ASSERTION_FAILED " + route_failure)
 			break
 		var tgt: Node = null
 		var focused_tgt: Node = null
@@ -993,23 +996,33 @@ func _clear_line(a: Vector2, b: Vector2) -> bool:
 func _avoid_exits(dir: Vector2, intended_exit := "") -> Vector2:
 	var f := _feet()
 	for e in main.world.data.get("exits", []):
-		# Navigation to a named exit must be allowed to enter that exit. Other exits
-		# remain blocked so combat steering cannot drift through a portal.
+		# A route may intentionally enter its selected exit. Every other portal is
+		# treated as a hard navigation boundary for combat and local exploration.
 		if intended_exit != "" and str(e.get("to", "")) == intended_exit:
 			continue
-		var r := Rect2(float(e["x"]), float(e["y"]), float(e["w"]), float(e["h"])).grow(52.0)
-		var approaching_exit := false
-		# Check several points ahead: a single short look-ahead let the mage cross
-		# the forest's north portal while chasing a foe near the map edge.
-		for distance in [24.0, 48.0, 72.0]:
-			if r.has_point(f + dir * distance):
-				approaching_exit = true
-				break
-		if approaching_exit:
-			var away: Vector2 = f - r.get_center()
-			if away.length_squared() < 1.0:
-				away = -dir
-			return (dir + away.normalized() * 2.0).normalized()
+		var authored := Rect2(float(e["x"]), float(e["y"]), float(e["w"]), float(e["h"]))
+		var r := authored.grow(52.0)
+		var inside_buffer := r.has_point(f)
+		var approaching_exit := inside_buffer
+		if not approaching_exit:
+			for distance in [24.0, 48.0, 72.0, 96.0]:
+				if r.has_point(f + dir * distance):
+					approaching_exit = true
+					break
+		if not approaching_exit:
+			continue
+
+		# Push away from the map edge along the portal's narrow axis. A weighted
+		# radial repulsion could still leave enough forward movement to cross a
+		# gate when a target stood directly beyond it (observed in the forest).
+		var outward := Vector2.ZERO
+		if authored.size.x >= authored.size.y:
+			outward = Vector2.DOWN if authored.get_center().y < main.world.size.y * 0.5 else Vector2.UP
+		else:
+			outward = Vector2.RIGHT if authored.get_center().x < main.world.size.x * 0.5 else Vector2.LEFT
+		if inside_buffer:
+			return outward
+		return (dir + outward * 3.5).normalized()
 	return dir
 
 # ---------------------------------------------------------------- one step
