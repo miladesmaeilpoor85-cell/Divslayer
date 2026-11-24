@@ -24,7 +24,7 @@ func _tap_control(control: Control) -> bool:
 	return true
 
 func _named_control(wanted: String) -> Control:
-	for node in driver._all(get_tree().root):
+	for node in driver._all(driver.get_tree().root):
 		if node is Control and str(node.name) == wanted and (node as Control).is_visible_in_tree():
 			return node as Control
 	return null
