@@ -624,6 +624,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var spell_actions := 0
 	var ult_actions := 0
 	var heavy_actions := 0
+	var sneak_actions := 0
 	var hp_low := 1.0
 	# Focused boss samples use a cautious player policy; ordinary skirmishes keep
 	# the original potion threshold so this does not inflate campaign survivability.
@@ -750,6 +751,11 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				float(tgt.get("busy")), str(tgt.get("last_move"))
 			])
 		var reach: float = 46.0 + (float(tgt.hit_rect().size.x) * 0.5 if tgt.has_method("hit_rect") else 12.0)
+		# Rogues use the actual stealth toggle to approach an unaware ordinary foe before
+		# the opening strike; the game itself decides whether the enemy remains unaware.
+		if Game.cls == "rogue" and not tgt.is_in_group("bosses") and not bool(tgt.get("alert")) and not p.sneaking and to.length() > reach + 8.0:
+			await press("sneak")
+			sneak_actions += 1
 		# A boss-only diagnostic sample reacts to every readable telegraph; ordinary
 		# campaign skirmishes preserve the imperfect 75% response of the original bot.
 		var away := _danger_away(false)
@@ -757,7 +763,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			# A human does not perfectly evade every warning. When the hit is close and the
 			# hero is in melee range, sometimes raise the shield for a parry; otherwise roll
 			# toward open ground and keep a little distance.
-			var parry_attempt: bool = last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < 0.58
+			var parry_chance := 0.72 if Game.cls == "paladin" else (0.62 if Game.cls == "warrior" else 0.44)
+			var parry_attempt: bool = last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
 			if parry_attempt:
 				await stick(Vector2.ZERO)
 				await press("block", 0.18)
@@ -769,7 +776,14 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 					dodges += 1
 				else:
 					await wait(randf_range(0.12, 0.22))
-		elif to.length() > reach:
+		var preferred_range := reach
+		if Game.cls == "mage":
+			preferred_range = maxf(reach + 72.0, 122.0)
+		if Game.cls == "mage" and to.length() < 82.0 and away == Vector2.ZERO:
+			# A mage should not stand inside a melee enemy's reach merely to use a staff.
+			await stick((-to.normalized() + Vector2(randf_range(-0.18, 0.18), randf_range(-0.18, 0.18))).normalized())
+			await wait(0.12)
+		elif to.length() > preferred_range:
 			var dir := _avoid_exits(to.normalized())
 			if detour > 0.0:
 				dir = dir.rotated(side * 1.3)
@@ -785,6 +799,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			else:
 				stuck = 0.0
 			last = _feet()
+		elif Game.cls == "mage" and to.length() > reach:
+			# Hold a safe casting distance; do not swing a melee weapon out of range.
+			await stick(Vector2.ZERO)
 		else:
 			await stick(Vector2.ZERO)
 			await stick(to.normalized() * 0.2)
@@ -885,7 +902,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		detail += " · bosses " + ", ".join(boss_report)
 	if not arena_report.is_empty():
 		detail += " · arena " + ", ".join(arena_report)
-	_log("PLAYER_AGENT_ACTIONS blocks=%d parries_total=%d rolls=%d signatures=%d spells=%d ultimates=%d heavy=%d" % [block_actions, p.parries, dodges, signature_actions, spell_actions, ult_actions, heavy_actions])
+	_log("PLAYER_AGENT_ACTIONS class=%s blocks=%d parries_total=%d rolls=%d sneak_uses=%d signatures=%d spells=%d ultimates=%d heavy=%d" % [Game.cls, block_actions, p.parries, dodges, sneak_actions, signature_actions, spell_actions, ult_actions, heavy_actions])
 	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · blocks %d · signatures %d · spells %d · ultimates %d · heavy %d · swings %d, hits %d%s" % [ended, t, kills,
 		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, block_actions, signature_actions, spell_actions, ult_actions, heavy_actions, p.swings - swings0, p.hits_landed - hits0, detail]
 
