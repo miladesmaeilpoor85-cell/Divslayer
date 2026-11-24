@@ -55,7 +55,7 @@ for t in windgusttest quittest achtest rushtest audiotest shrinetest chapter2tes
 done
 
 if (( shard_index == 0 )); then
-  printf 'START player report generator tests\\n' | tee -a "$out"
+  printf 'START player report generator tests\n' | tee -a "$out"
   if ! python3 -m py_compile tools/playtest/generate_player_reports.py tools/test_playtest_reports.py; then
     failed=1
   fi
