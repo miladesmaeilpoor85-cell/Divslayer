@@ -647,7 +647,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				focus_hp_before = boss_hp_before[boss_type]
 	var ended := "time"
 	if focus_type != "":
-		_log("PLAYER_AGENT_POLICY target=%s telegraph_read=75%% reaction=humanized shield_parry=enabled spells=adaptive" % focus_type)
+		_log("PLAYER_AGENT_POLICY target=%s telegraph_read=100%% projectile_prediction=enabled reaction=humanized shield_parry=enabled spells=adaptive" % focus_type)
 	var map0: String = main.world.key
 	var last := _feet()
 	var stuck := 0.0
@@ -656,6 +656,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var quiet := 0.0
 	var last_progress := -5.0
 	var recovery_attempts := 0
+	var last_add_priority_id := 0
 	while t < sec:
 		if p.dead:
 			if main.hud.death.visible and recovery_attempts < 3:
@@ -695,6 +696,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			break
 		var tgt: Node = null
 		var focused_tgt: Node = null
+		var urgent_add_tgt: Node = null
+		var urgent_add_dist := INF
 		var bd := INF
 		var any_alive := false
 		for e in get_tree().get_nodes_in_group("enemies"):
@@ -715,11 +718,23 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				continue
 			if not _clear_line(_feet(), e.global_position):
 				dd += 400.0          # behind a wall: a player picks another foe first
+			# The Ancient Wyrm's summoned wyrmlings are active threats, not background
+			# decoration. A real player clears one that closes to striking distance.
+			if focus_type == "ancientwyrm" and str(e.type) == "wyrmling" and dd <= 240.0 and dd < urgent_add_dist:
+				urgent_add_tgt = e
+				urgent_add_dist = dd
 			if dd < bd:
 				bd = dd
 				tgt = e
-		if focused_tgt != null:
+		if urgent_add_tgt != null:
+			tgt = urgent_add_tgt
+			var add_id := urgent_add_tgt.get_instance_id()
+			if add_id != last_add_priority_id:
+				_log("PLAYER_AGENT_ADD_PRIORITY type=%s distance=%d" % [str(urgent_add_tgt.type), int(urgent_add_dist)])
+			last_add_priority_id = add_id
+		elif focused_tgt != null:
 			tgt = focused_tgt
+			last_add_priority_id = 0
 		if tgt == null:
 			if any_alive and quiet < 4.0:
 				quiet += 0.2          # a foe out of reach for a moment (a boss between phases, a burrowed thing): wait for it
@@ -758,7 +773,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			sneak_actions += 1
 		# A boss-only diagnostic sample reacts to every readable telegraph; ordinary
 		# campaign skirmishes preserve the imperfect 75% response of the original bot.
-		var away := _danger_away(false)
+		var away := _danger_away(focus_type != "")
 		if away != Vector2.ZERO:
 			# A human does not perfectly evade every warning. When the hit is close and the
 			# hero is in melee range, sometimes raise the shield for a parry; otherwise roll
@@ -930,6 +945,34 @@ func _danger_away(perfect_telegraph_read := false) -> Vector2:
 			_:
 				var aw: Vector2 = pc - t["pos"]
 				return aw if aw.length() > 1.0 else Vector2.RIGHT
+
+	# Boss bolts are live projectiles, not telegraphs. Predict their closest approach
+	# to the real player hitbox so the agent can step off a collision course in time.
+	var body: Rect2 = main.player.body_rect()
+	var collision_radius := body.size.length() * 0.5 + 4.0
+	var best_eta := INF
+	var best_away := Vector2.ZERO
+	for shot_data in bfx.shots:
+		var velocity: Vector2 = shot_data.get("v", Vector2.ZERO)
+		var speed_sq := velocity.length_squared()
+		if speed_sq < 1.0:
+			continue
+		var rel: Vector2 = pc - shot_data.get("pos", pc)
+		var eta := rel.dot(velocity) / speed_sq
+		var available_life := float(shot_data.get("life", 0.0))
+		if eta < 0.04 or eta > minf(available_life, 0.65) or eta >= best_eta:
+			continue
+		var closest := shot_data.get("pos", pc) + velocity * eta
+		var offset: Vector2 = pc - closest
+		if offset.length() > collision_radius:
+			continue
+		var side := 1.0 if velocity.cross(offset) >= 0.0 else -1.0
+		best_away = velocity.normalized().orthogonal() * side
+		best_eta = eta
+	if best_away != Vector2.ZERO:
+		last_danger_eta = best_eta
+		last_danger_kind = "projectile"
+		return best_away
 	return Vector2.ZERO
 
 ## nothing solid between a and b (the map's walls)
@@ -950,13 +993,22 @@ func _avoid_exits(dir: Vector2, intended_exit := "") -> Vector2:
 	var f := _feet()
 	for e in main.world.data.get("exits", []):
 		# Navigation to a named exit must be allowed to enter that exit. Other exits
-		# remain blocked so collision detours do not accidentally change maps.
+		# remain blocked so combat steering cannot drift through a portal.
 		if intended_exit != "" and str(e.get("to", "")) == intended_exit:
 			continue
-		var r := Rect2(float(e["x"]), float(e["y"]), float(e["w"]), float(e["h"])).grow(36.0)
-		if r.has_point(f + dir * 30.0):
-			var away: Vector2 = (f - r.get_center()).normalized()
-			return (dir + away * 1.6).normalized()
+		var r := Rect2(float(e["x"]), float(e["y"]), float(e["w"]), float(e["h"])).grow(52.0)
+		var approaching_exit := false
+		# Check several points ahead: a single short look-ahead let the mage cross
+		# the forest's north portal while chasing a foe near the map edge.
+		for distance in [24.0, 48.0, 72.0]:
+			if r.has_point(f + dir * distance):
+				approaching_exit = true
+				break
+		if approaching_exit:
+			var away: Vector2 = f - r.get_center()
+			if away.length_squared() < 1.0:
+				away = -dir
+			return (dir + away.normalized() * 2.0).normalized()
 	return dir
 
 # ---------------------------------------------------------------- one step
