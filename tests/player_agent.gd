@@ -45,8 +45,57 @@ func _close_pause() -> void:
 	if driver.main.hud.pause.visible:
 		var resume := Game.t("Resume", "ادامهٔ بازی")
 		if not await _tap_text(resume):
-			await _tap_control(driver.main.hud.pause.get_node_or_null("Panel/NavScroll"))
+			driver._log("PLAYER_AGENT_RESUME_BUTTON_NOT_FOUND")
 		await driver.wait(0.35)
+
+func complete_training() -> String:
+	var elapsed := 0.0
+	var attempts := {}
+	var actions := 0
+	while elapsed < 55.0:
+		var stage := Game.Tut.step()
+		if stage == "done":
+			driver._log("PLAYER_AGENT_TRAINING_DONE actions=%d" % actions)
+			return "completed Rostam's training through touch controls (%d actions)" % actions
+		if stage == "skipped" or stage == "":
+			break
+		var n := int(attempts.get(stage, 0))
+		attempts[stage] = n + 1
+		match stage:
+			"strike":
+				await driver.press("attack", 0.10)
+				await driver.wait(0.30)
+			"heavy":
+				await driver.press("attack", 0.85)
+				await driver.wait(0.45)
+			"roll":
+				# Rostam launches repeated marked strikes. Wait for a fresh cue, then try a roll;
+				# imperfect timing is intentional and the drill itself decides whether it counted.
+				await driver.wait(randf_range(0.55, 0.95))
+				await driver.press("dodge")
+				await driver.wait(0.30)
+			"block":
+				await driver.wait(randf_range(0.45, 0.85))
+				await driver.press("block", 0.28)
+				await driver.wait(0.30)
+			"spell":
+				await driver.press("skill1")
+				await driver.wait(0.55)
+			"sig":
+				await driver.press("shove")
+				await driver.wait(0.55)
+			_:
+				break
+		actions += 1
+		elapsed += 0.7
+		if n >= 10:
+			break
+	if Game.Tut.step() != "done":
+		var failure := "real-player training stopped at '%s' after %d touches" % [Game.Tut.step(), actions]
+		driver.assertion_failures.append(failure)
+		driver._log("ASSERTION_FAILED " + failure)
+		return failure
+	return "completed Rostam's training through touch controls"
 
 func spend_talents() -> String:
 	if Game.talent_points() <= 0:
