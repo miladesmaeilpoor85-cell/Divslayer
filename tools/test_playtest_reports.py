@@ -23,6 +23,8 @@ class PlayerReportTests(unittest.TestCase):
         self.assertFalse(report["full_game_completion"]["confirmed"])
         self.assertIn("dungeon", report["known_maps_not_observed"])
         self.assertEqual(report["combat_samples"], 1)
+        self.assertEqual(report["steps_completed"], 2)
+        self.assertEqual(report["final_observed_state"]["map"], "forest")
         self.assertEqual(report["scenario_checkpoints_planned"], ["Chapter I — Whispering Forest and its clues", "Chapter I — Sunken Crypt"])
         self.assertEqual(report["scenario_checkpoints_reached"], ["Chapter I — Whispering Forest and its clues"])
 
