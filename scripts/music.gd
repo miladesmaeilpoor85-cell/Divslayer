@@ -8,7 +8,7 @@ extends Node
 ## a region without a track; wind and crickets fall back to synthesised loops the same way.
 ## Settings: music on/off and music volume; sound off mutes everything; the sound volume covers the ambience.
 
-const RATE := 22050
+const RATE := 44100
 const BASE := 220.0
 const TRACK_DIR := "res://assets/audio/music/%s.ogg"
 const AMB_DIR := "res://assets/audio/amb/%s.ogg"
