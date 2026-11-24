@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/cobble.webp-393b6c9db28bfb07e119b1aa6826f3ae.
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

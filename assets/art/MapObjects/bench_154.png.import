@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/bench_154.png-4a796c307c2ed612bb703cd7e72fa2d
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

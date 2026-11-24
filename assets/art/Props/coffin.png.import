@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/coffin.png-33f395c993e9c8ccb1d4812966794707.c
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

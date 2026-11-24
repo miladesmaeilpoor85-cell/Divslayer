@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/arbiter.png-ba13d705e41144e10c0c22376a225c50.
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

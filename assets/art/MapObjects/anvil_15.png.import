@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/anvil_15.png-46ca41e2cd7882df7d77ac302c9944d9
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

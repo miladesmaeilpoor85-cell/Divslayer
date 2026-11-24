@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/warrior_mid.png-60c335efb763a98dfb1ae6bd10cc0
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

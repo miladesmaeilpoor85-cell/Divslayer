@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/crystals_119.png-0ba4d63251564ab7b027720f1cfb
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

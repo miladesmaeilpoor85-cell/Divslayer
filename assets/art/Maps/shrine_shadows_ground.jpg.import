@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/shrine_shadows_ground.jpg-4ea1d636b8697da41b9
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.62
 compress/uastc_level=0

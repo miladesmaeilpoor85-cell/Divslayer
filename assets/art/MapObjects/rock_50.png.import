@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/rock_50.png-e0fd24684c9b8a00a25d7df0334c89b1.
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

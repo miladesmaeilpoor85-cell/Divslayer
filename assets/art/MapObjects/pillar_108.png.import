@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/pillar_108.png-fbbee468b6cab80eeea8aa6b594040
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

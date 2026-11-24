@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/fire_scroll.png-3e03e78c5589ecedf7ad7f5bbde57
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

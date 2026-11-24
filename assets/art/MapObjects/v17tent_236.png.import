@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/v17tent_236.png-b6e2139bf67a7a1771535836fefe8
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

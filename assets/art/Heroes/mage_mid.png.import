@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/mage_mid.png-e236ae844d0abbef870d42593dbe4377
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

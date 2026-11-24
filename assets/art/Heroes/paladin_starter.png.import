@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/paladin_starter.png-d2692f65a49ff4b1c3c5011c3
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/gravepillar.png-67913e64f854dfaa5486bd23908ea
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

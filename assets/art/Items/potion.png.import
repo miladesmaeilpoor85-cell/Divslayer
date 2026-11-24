@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/potion.png-7170a64da5d32b34c83d1a21e15f619e.c
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0
