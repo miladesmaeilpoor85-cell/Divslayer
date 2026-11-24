@@ -41,8 +41,14 @@ def audit_2d_image_imports(root: Path) -> dict[str, object]:
                 f"{relative}: compress/mode={mode}; 2D artwork must use 0 (Lossless)"
             )
 
+        detect_3d_mode = _setting(contents, "detect_3d/compress_to")
+        if detect_3d_mode != 0:
+            errors.append(
+                f"{relative}: detect_3d/compress_to={detect_3d_mode}; detected 3D usage must keep Lossless quality"
+            )
+
         size_limit = _setting(contents, "process/size_limit")
-        if size_limit not in (None, 0):
+        if size_limit != 0:
             errors.append(
                 f"{relative}: process/size_limit={size_limit}; hidden downscaling is not allowed"
             )

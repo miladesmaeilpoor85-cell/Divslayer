@@ -15,7 +15,7 @@ The game must not sacrifice artistic or sensory quality merely to meet an arbitr
 
 - All 2D image imports in Godot must use `compress/mode=0` (Lossless) and `process/size_limit=0`.
 - Do not use Godot Lossy, VRAM Compressed, or Basis Universal import modes for 2D artwork merely to reduce disk/download size. Godot's texture-import documentation specifically recommends against VRAM Compressed and Basis Universal for 2D elements.
-- The CI audit `tools/quality_first_audit.py` enforces Lossless imports and rejects hidden import-time downscaling.
+- The editor plugin enforces Lossless imports whenever the project opens in Godot. The CI helper `tools/enforce_quality_first_imports.py` applies the same settings before import, and `tools/quality_first_audit.py` rejects any remaining lossy or downscaled image.
 - Lossless import preserves the quality of the existing source file; it cannot restore information already lost inside a JPEG or lossy WebP source. Keep or reacquire a higher-quality master when that happens.
 - Lossless imports can use more memory than VRAM-compressed textures. Profile the game on target devices, but do not respond to memory pressure by silently lowering source or import quality; optimize resource lifetime, loading, atlases, and scene usage first.
 

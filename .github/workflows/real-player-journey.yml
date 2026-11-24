@@ -8,6 +8,9 @@ on:
       - "tests/playtest.gd"
       - "tests/playtest_scenarios/real_player_ch1.template.json"
       - ".github/workflows/real-player-journey.yml"
+      - "project.godot"
+      - "addons/**"
+      - "tools/**"
   workflow_dispatch:
 
 permissions:
@@ -58,6 +61,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          python3 tools/enforce_quality_first_imports.py
           log_file="$RUNNER_TEMP/real-player-import.log"
           set +e
           "$RUNNER_TEMP/godot/godot" --headless --editor --path . --quit 2>&1 | tee "$log_file"
@@ -67,7 +71,9 @@ jobs:
             echo "::error::Godot reported script parse/load errors during import."
             exit 1
           fi
-          exit "$status"
+          if [[ "$status" -ne 0 ]]; then exit "$status"; fi
+          python3 tools/quality_first_audit.py
+          python3 tools/enforce_quality_first_imports.py --check
 
       - name: Prepare a clean natural-progression scenario
         shell: bash

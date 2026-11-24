@@ -10,6 +10,10 @@ on:
       - ".github/workflows/android-qa-apk.yml"
       - "ci/android-qa-export-presets.cfg"
       - "project.godot"
+      - "addons/**"
+      - "tools/**"
+      - "ci/**"
+      - "docs/QUALITY_FIRST_POLICY.md"
       - "icon.png"
       - "assets/**"
       - "data/**"
@@ -22,6 +26,10 @@ on:
       - ".github/workflows/android-qa-apk.yml"
       - "ci/android-qa-export-presets.cfg"
       - "project.godot"
+      - "addons/**"
+      - "tools/**"
+      - "ci/**"
+      - "docs/QUALITY_FIRST_POLICY.md"
       - "icon.png"
       - "assets/**"
       - "data/**"
@@ -141,7 +149,10 @@ jobs:
             fi
             return "$status"
           }
+          python3 tools/enforce_quality_first_imports.py
           run_godot_checked import godot --headless --editor --path . --quit
+          python3 tools/quality_first_audit.py
+          python3 tools/enforce_quality_first_imports.py --check
           run_godot_checked export godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
           test -s build/android/Divslayer-QA.apk
 
@@ -220,103 +231,7 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           disable-linux-hw-accel: false
-          script: |
-            set -euo pipefail
-            trap 'timeout 20s adb logcat -d -v time > build/android/emulator-logcat.txt 2>&1 || true; timeout 20s adb shell dumpsys activity activities > build/android/emulator-activity.txt 2>&1 || true' EXIT
-
-            echo "Installing Divslayer QA APK"
-            adb shell settings put secure immersive_mode_confirmations confirmed || true
-            adb logcat -c
-            timeout 240s adb install -r build/android/Divslayer-QA.apk
-            adb shell pm path com.example.divslayer.qa | grep -F 'package:'
-            # The exported manifest is verified above: GodotAppLauncher is an enabled,
-            # exported activity-alias with MAIN + LAUNCHER. Launch that exact component.
-            # Passing the package as a bare trailing token to cmd package resolve-activity
-            # is parsed inconsistently by Android 16's PackageManager shell.
-            # Do not require the text output of am start -W: some Android 16 emulator
-            # boots return an empty response even though the activity launch is dispatched.
-            # Verify the actual app startup and foreground state below instead.
-            launch_result="$(timeout 60s adb shell am start -n com.example.divslayer.qa/com.godot.game.GodotAppLauncher 2>&1 | tr -d '\r')"
-            printf '%s\n' "$launch_result" | tee build/android/launcher-command.txt
-            if [ -n "$launch_result" ] && printf '%s\n' "$launch_result" | grep -Eq '(^|[[:space:]])Error:|Exception'; then
-              echo "::error::Android rejected the explicit Godot launcher activity."
-              exit 1
-            fi
-            echo "Validating launch through Godot startup log and foreground activity."
-            sleep 20
-
-            timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt
-            if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ANR in com\.example\.divslayer\.qa|Application Not Responding: com\.example\.divslayer\.qa' build/android/emulator-logcat.txt; then
-              echo "::error::Android runtime reported a fatal, app ANR, or Godot script error."
-              exit 1
-            fi
-            grep -F 'OnGodotSetupCompleted' build/android/emulator-logcat.txt
-
-            # The Pixel emulator can show a system ANR dialog for its launcher while
-            # Godot is starting under software-rendered CI. Detect it through the UI
-            # hierarchy, explicitly tap the real "Wait" control, and require the dialog
-            # to disappear. Do not silently accept a screenshot with a system dialog.
-            dump_ui() {
-              timeout 30s adb shell uiautomator dump --compressed /sdcard/divslayer-window.xml >/dev/null
-              timeout 30s adb pull /sdcard/divslayer-window.xml build/android/emulator-window.xml >/dev/null
-            }
-            dump_ui
-            python3 - build/android/emulator-window.xml > build/android/anr-action.txt <<'PY'
-            import sys
-            import xml.etree.ElementTree as ET
-            from pathlib import Path
-
-            root = ET.parse(Path(sys.argv[1])).getroot()
-            nodes = list(root.iter("node"))
-            labels = [
-                " ".join((node.attrib.get("text", ""), node.attrib.get("content-desc", ""))).strip()
-                for node in nodes
-            ]
-            is_anr = any(
-                "not responding" in label.lower() or "isn't responding" in label.lower()
-                for label in labels
-            )
-            if not is_anr:
-                print("NONE")
-                raise SystemExit(0)
-
-            for node in nodes:
-                label = " ".join((node.attrib.get("text", ""), node.attrib.get("content-desc", ""))).strip()
-                if label.lower() == "wait":
-                    bounds = node.attrib.get("bounds", "")
-                    values = [int(part) for part in __import__("re").findall(r"-?\d+", bounds)]
-                    if len(values) == 4:
-                        print(f"WAIT {(values[0] + values[2]) // 2} {(values[1] + values[3]) // 2}")
-                        raise SystemExit(0)
-            print("ERROR: ANR dialog detected but its Wait button was not exposed")
-            raise SystemExit(2)
-            PY
-            read -r action tap_x tap_y < build/android/anr-action.txt
-            if [ "$action" = "ERROR:" ]; then
-              cat build/android/anr-action.txt
-              echo "::error::Could not dismiss the emulator system ANR dialog safely."
-              exit 1
-            fi
-            if [ "$action" = "WAIT" ]; then
-              echo "System launcher ANR dialog detected; selecting its visible Wait button."
-              adb shell input tap "$tap_x" "$tap_y"
-              sleep 8
-              dump_ui
-              if grep -Eiq "not responding|isn't responding" build/android/emulator-window.xml; then
-                echo "::error::The emulator system ANR dialog remained after selecting Wait."
-                exit 1
-              fi
-            fi
-
-            timeout 30s adb shell dumpsys activity activities > build/android/emulator-activity.txt
-            foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-activity.txt | grep -F 'com.example.divslayer.qa/' || true)"
-            test -n "$foreground"
-            printf '%s\n' "$foreground"
-            timeout 30s adb shell screencap -p /sdcard/divslayer-qa-launch.png
-            timeout 30s adb pull /sdcard/divslayer-qa-launch.png build/android/emulator-launch.png
-            test -s build/android/emulator-launch.png
-            echo "Captured Android QA launch screenshot with no visible system ANR dialog."
-            echo 'Divslayer Godot setup completed and the QA app remained in the foreground.'
+          script: bash ci/android_qa_emulator_smoke.sh
 
       - name: Upload emulator diagnostics if launch validation fails
         if: failure()
