@@ -54,7 +54,7 @@ jobs:
       - name: Compile all project Python tools
         run: python -m py_compile tools/*.py tools/creative/*.py
       - name: Lint the maintained pipeline tools
-        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/animation_review.py tools/test_animation_review.py tools/animation_quality_audit.py tools/test_animation_quality_audit.py tools/import_animation_atlas.py tools/test_import_animation_atlas.py tools/map_preview.py tools/test_map_preview.py tools/creative/*.py
+        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/animation_review.py tools/test_animation_review.py tools/image_assets.py tools/test_image_assets.py tools/animation_quality_audit.py tools/test_animation_quality_audit.py tools/import_animation_atlas.py tools/test_import_animation_atlas.py tools/map_preview.py tools/test_map_preview.py tools/map_depth_audit.py tools/test_map_depth_audit.py tools/creative/*.py
 
   audio-quality:
     name: Audio decode and metadata — FFmpeg
@@ -89,12 +89,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install pinned Pillow and NumPy
-        run: python -m pip install --disable-pip-version-check "Pillow==13.0.0" "numpy==2.3.4"
+      - name: Install pinned Pillow, NumPy, and SVG renderer
+        run: python -m pip install --disable-pip-version-check "Pillow==13.0.0" "numpy==2.3.4" "CairoSVG==2.9.1"
+      - name: Test raster and SVG image loading
+        run: python -m unittest discover -s tools -p "test_image_assets.py" -v
       - name: Test sprite-sheet transparency handling
         run: python -m unittest discover -s tools -p "test_sprite_sheet.py" -v
       - name: Test map preview ground-file resolution
         run: python -m unittest discover -s tools -p "test_map_preview.py" -v
+      - name: Test map depth and playtime evidence audit
+        run: python -m unittest discover -s tools -p "test_map_depth_audit.py" -v
+      - name: Generate map depth report
+        run: python tools/map_depth_audit.py --report artifacts/map-depth-report.json
       - name: Test sprite animation review
         run: python -m unittest discover -s tools -p "test_animation_review.py" -v
       - name: Render sprite animation review previews
@@ -118,5 +124,6 @@ jobs:
             artifacts/artwork-review/
             artifacts/animation-review/
             artifacts/map-previews/
+            artifacts/map-depth-report.json
           if-no-files-found: ignore
           retention-days: 14
