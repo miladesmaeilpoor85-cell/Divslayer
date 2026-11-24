@@ -75,6 +75,13 @@ jobs:
           python3 tools/quality_first_audit.py
           python3 tools/enforce_quality_first_imports.py --check
 
+      - name: Test player report generator
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/playtest/generate_player_reports.py tools/test_playtest_reports.py
+          python3 -m unittest discover -s tools -p "test_playtest_reports.py" -v
+
       - name: Prepare a clean natural-progression scenario
         shell: bash
         env:
@@ -162,6 +169,22 @@ jobs:
           print("REAL_PLAYER_JOURNEY_VALIDATED")
           print("\n".join(fights))
           PY
+
+      - name: Generate evidence-backed player, critic, and QA reports
+        if: always()
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/real-player-journey/$HERO"
+          mkdir -p "$output/reports"
+          python3 tools/playtest/generate_player_reports.py \
+            --class "$HERO" \
+            --log "$output/log.txt" \
+            --engine-log "$output/godot.txt" \
+            --scenario "$RUNNER_TEMP/real-player-journey/scenario.json" \
+            --out "$output/reports"
 
       - name: Upload journey logs and screenshots
         if: always()
