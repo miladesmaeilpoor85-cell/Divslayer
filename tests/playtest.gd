@@ -739,7 +739,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			# A human does not perfectly evade every warning. When the hit is close and the
 			# hero is in melee range, sometimes raise the shield for a parry; otherwise roll
 			# toward open ground and keep a little distance.
-			var parry_attempt := last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < 0.58
+			var parry_attempt: bool = last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < 0.58
 			if parry_attempt:
 				await stick(Vector2.ZERO)
 				await press("block", 0.18)
