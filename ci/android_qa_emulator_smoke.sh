@@ -17,7 +17,9 @@ app_is_foreground() {
 }
 
 godot_setup_completed() {
-  timeout 20s adb logcat -d -v brief 2>/dev/null | grep -Fq 'OnGodotSetupCompleted'
+  local current_log
+  current_log="$(timeout 20s adb logcat -d -v brief 2>/dev/null || true)"
+  grep -Fq 'OnGodotSetupCompleted' <<< "$current_log"
 }
 
 ready=0
