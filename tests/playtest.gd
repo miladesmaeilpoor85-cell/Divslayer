@@ -909,7 +909,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 					int(to.length()), int(Game.hp), int(Game.max_hp())
 				])
 				last_mage_threat_id = threat_id
-			var should_dodge := p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (
+			var should_dodge: bool = p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (
 				to.length() <= 95.0 or Game.hp < Game.max_hp() * 0.62
 			) and (randf() < 0.72 or Game.hp < Game.max_hp() * 0.40)
 			if should_dodge:
