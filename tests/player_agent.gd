@@ -389,9 +389,15 @@ func visit_shop(vendor: String) -> String:
 		return "no sensible purchase: purse=%d weapon_tier=%d armour_tier=%d; saved currency" % [purse, weapon, armor]
 
 	var item_name := Game.t(str(selected.get("name", "")))
+	var selected_id := str(selected.get("id", ""))
+	var selected_price := int(selected.get("price", 0))
+	var gold_before := int(Game.state.get("gold", 0))
 	var old_weapon := int(Game.state.get("weapon", 0))
 	var old_armor := int(Game.state.get("armor", 0))
 	var old_potions := int(Game.state.get("potions", 0))
+	driver._log("PLAYER_AGENT_SHOP_PURCHASE_ATTEMPT vendor=%s id=%s price=%d gold=%d weapon=%d armour=%d potions=%d" % [
+		vendor, selected_id, selected_price, gold_before, old_weapon, old_armor, old_potions
+	])
 	if not await _tap_text(item_name):
 		await _tap_control(shop.close_btn)
 		return "visible shop item was not tappable: " + item_name
@@ -414,6 +420,13 @@ func visit_shop(vendor: String) -> String:
 		bought = int(Game.state.get("greater", 0)) > 0
 
 	var purse_after := int(Game.state.get("gold", 0))
+	driver._log("PLAYER_AGENT_SHOP_PURCHASE_RESULT vendor=%s id=%s bought=%s gold=%d->%d weapon=%d->%d armour=%d->%d potions=%d->%d" % [
+		vendor, selected_id, str(bought), gold_before, purse_after,
+		old_weapon, int(Game.state.get("weapon", 0)),
+		old_armor, int(Game.state.get("armor", 0)),
+		old_potions, int(Game.state.get("potions", 0))
+	])
+	await driver.shot("shop_%s_purchase_result" % vendor)
 	await _tap_control(shop.close_btn)
 	if bought:
 		Game.save_game()
