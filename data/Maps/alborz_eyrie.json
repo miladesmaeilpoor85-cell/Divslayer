@@ -1,8 +1,8 @@
 {
-  "groundFile": "frostvale_ground.jpg",
+  "groundFile": "alborz_eyrie_ground.svg",
   "groundScale": 2,
   "data": {
-    "name": "The High Eyrie — Gale Warden arena",
+    "name": "The High Eyrie — dedicated storm-summit arena",
     "w": 1000,
     "h": 820,
     "bg": "#253341",
@@ -103,5 +103,56 @@
       "y": 570
     }
   },
-  "objects": []
+  "objects": [
+    {
+      "sprite": "eyrie_spire_rock",
+      "x": 205,
+      "y": 318,
+      "sort": 318,
+      "kind": "spire",
+      "isWall": true,
+      "animated": false,
+      "smoke": null
+    },
+    {
+      "sprite": "eyrie_spire_rock",
+      "x": 795,
+      "y": 318,
+      "sort": 318,
+      "kind": "spire",
+      "isWall": true,
+      "animated": false,
+      "smoke": null
+    },
+    {
+      "sprite": "alborz_cairn",
+      "x": 500,
+      "y": 704,
+      "sort": 704,
+      "kind": "stone",
+      "isWall": false,
+      "animated": false,
+      "smoke": null
+    },
+    {
+      "sprite": "alborz_scree_boulder",
+      "x": 120,
+      "y": 690,
+      "sort": 690,
+      "kind": "rock",
+      "isWall": false,
+      "animated": false,
+      "smoke": null
+    },
+    {
+      "sprite": "alborz_scree_boulder",
+      "x": 880,
+      "y": 690,
+      "sort": 690,
+      "kind": "rock",
+      "isWall": false,
+      "animated": false,
+      "smoke": null
+    }
+  ]
 }
