@@ -10,7 +10,9 @@ from typing import Any
 
 from PIL import Image, ImageDraw
 
-IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
+from image_assets import open_image
+
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
 EXCLUDED_PARTS = {".git", ".godot", ".venv", "build", "dist", "artifacts", "__pycache__"}
 CELL_WIDTH = 184
 CELL_HEIGHT = 164
@@ -67,24 +69,21 @@ def audit_images(root: Path, output_dir: Path) -> dict[str, Any]:
     for path in images:
         rel = path.relative_to(root).as_posix()
         try:
-            with Image.open(path) as image:
-                image.verify()
-            with Image.open(path) as image:
-                image.load()
-                width, height = image.size
-                mode = image.mode
-                if width <= 0 or height <= 0:
-                    raise ValueError("image has zero dimensions")
-                category = _category(root, path)
-                grouped[category].append((path.name, image.copy()))
-                modes[mode] = modes.get(mode, 0) + 1
-                details.append({
-                    "path": rel,
-                    "width": width,
-                    "height": height,
-                    "mode": mode,
-                    "size_bytes": path.stat().st_size,
-                })
+            image = open_image(path)
+            width, height = image.size
+            mode = image.mode
+            if width <= 0 or height <= 0:
+                raise ValueError("image has zero dimensions")
+            category = _category(root, path)
+            grouped[category].append((path.name, image.copy()))
+            modes[mode] = modes.get(mode, 0) + 1
+            details.append({
+                "path": rel,
+                "width": width,
+                "height": height,
+                "mode": mode,
+                "size_bytes": path.stat().st_size,
+            })
         except (OSError, ValueError, Image.DecompressionBombError) as exc:
             errors.append(f"{rel}: {exc}")
 
