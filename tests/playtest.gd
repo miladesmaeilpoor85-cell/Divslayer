@@ -457,7 +457,7 @@ func _enter_world() -> void:
 func _feet() -> Vector2:
 	return main.player.global_position
 
-func walk_to(goal: Vector2, max_sec: float, near := 14.0) -> String:
+func walk_to(goal: Vector2, max_sec: float, near := 14.0, intended_exit := "") -> String:
 	var t := 0.0
 	var last := _feet()
 	var stuck := 0.0
@@ -481,7 +481,7 @@ func walk_to(goal: Vector2, max_sec: float, near := 14.0) -> String:
 			detour -= 0.1
 		# Keep collision detours from taking the touch bot through an unrelated
 		# map exit (notably the hidden shrine entrance in the Whispering Forest).
-		dir = _avoid_exits(dir)
+		dir = _avoid_exits(dir, intended_exit)
 		await stick(dir)
 		await wait(0.1)
 		t += 0.1
@@ -733,9 +733,13 @@ func _clear_line(a: Vector2, b: Vector2) -> bool:
 	return true
 
 ## a fighter does not walk out of the fight: steer along an exit's mouth, not into it
-func _avoid_exits(dir: Vector2) -> Vector2:
+func _avoid_exits(dir: Vector2, intended_exit := "") -> Vector2:
 	var f := _feet()
 	for e in main.world.data.get("exits", []):
+		# Navigation to a named exit must be allowed to enter that exit. Other exits
+		# remain blocked so collision detours do not accidentally change maps.
+		if intended_exit != "" and str(e.get("to", "")) == intended_exit:
+			continue
 		var r := Rect2(float(e["x"]), float(e["y"]), float(e["w"]), float(e["h"])).grow(36.0)
 		if r.has_point(f + dir * 30.0):
 			var away: Vector2 = (f - r.get_center()).normalized()
@@ -847,11 +851,22 @@ func _step(s: Dictionary) -> Variant:
 			var r2 := await walk_to(npc.global_position + Vector2(0, 26), float(s.get("max_sec", 20.0)), 22.0)
 			return r2 + (" · Talk button showing" if main.player.near_npc else " · not close enough to talk")
 		"walk_to_exit":
+			var target_map := str(s.get("to", ""))
 			for e in main.world.data.get("exits", []):
-				if str(e.get("to", "")) == str(s.get("to", "")):
+				if str(e.get("to", "")) == target_map:
 					var c2 := Vector2(float(e["x"]) + float(e["w"]) * 0.5, float(e["y"]) + float(e["h"]) * 0.5)
-					return await walk_to(c2, float(s.get("max_sec", 40.0)), 6.0)
-			return "no exit to '%s' here" % str(s.get("to", ""))
+					# Ignore the destination exit while steering, but continue avoiding
+					# every unrelated exit. Confirm the world transition, not just arrival
+					# near the exit rectangle.
+					var route_result: String = await walk_to(c2, float(s.get("max_sec", 40.0)), 6.0, target_map)
+					var actual_map := str(main.world.key) if main.world else ""
+					if actual_map != target_map:
+						var failure := "walk_to_exit_%s: expected map %s, got %s (%s)" % [target_map, target_map, actual_map, route_result]
+						assertion_failures.append(failure)
+						_log("ASSERTION_FAILED " + failure)
+						return "ASSERTION_FAILED " + failure
+					return "entered map %s" % target_map
+			return "no exit to '%s' here" % target_map
 		"button":
 			return await press(str(s.get("id", "attack")), float(s.get("hold", 0.08)))
 		"talk":
