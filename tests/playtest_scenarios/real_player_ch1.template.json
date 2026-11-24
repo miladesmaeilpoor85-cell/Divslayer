@@ -221,21 +221,42 @@
   },
   {
     "do": "fight",
-    "sec": 20,
-    "shots_every": 5,
+    "sec": 150,
+    "shots_every": 8,
     "target_foe": "boss"
   },
   {
     "do": "assert_state",
-    "label": "boss_took_damage",
+    "label": "arzhang_defeated",
     "map": "dungeon",
     "foe_type": "boss",
-    "foe_hp_below": 100,
-    "player_alive": true
+    "foe_defeated": true,
+    "quest_index": 1,
+    "quest_status": "complete",
+    "player_alive": true,
+    "game_unpaused": true
   },
   {
     "do": "shot",
-    "name": "ch1_arzhang_end"
+    "name": "ch1_arzhang_victory"
+  },
+  {
+    "do": "agent_objective",
+    "max_steps": 5,
+    "stop_after_interaction": true
+  },
+  {
+    "do": "assert_state",
+    "label": "returned_to_zal",
+    "map": "village",
+    "quest_index": 1,
+    "quest_status": "done",
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "shot",
+    "name": "ch1_returned_to_zal"
   },
   {
     "do": "state"

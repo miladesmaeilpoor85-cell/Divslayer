@@ -115,7 +115,25 @@ def build_report(
     fight_steps = [step for step in steps if step["action"] == "fight"]
     action_events = [
         line for line in lines
-        if re.search(r"PLAYER_AGENT_(?:ACTIONS|POLICY|RECOVERED|RECOVERY|SHOP_PURCHASE_RESULT)", line)
+        if re.search(r"PLAYER_AGENT_(?:ACTIONS|POLICY|RECOVERED|RECOVERY|SHOP_PURCHASE_RESULT|PILLAR_PRIORITY)", line)
+        or line.startswith("FIGHT_EVIDENCE ")
+    ]
+    boss_encounters = [
+        {
+            "type": match.group(1),
+            "present_before": match.group(2) == "true",
+            "hp_before_percent": float(match.group(3)),
+            "present_after": match.group(4) == "true",
+            "hp_after_percent": float(match.group(5)),
+            "defeated": match.group(6) == "true",
+        }
+        for match in re.finditer(
+            r"^FIGHT_EVIDENCE type=(\S+) present_before=(true|false) "
+            r"hp_before=([0-9.]+) present_after=(true|false) "
+            r"hp_after=([0-9.]+) defeated=(true|false)$",
+            log_text,
+            re.MULTILINE,
+        )
     ]
     screenshots = [s["file"] for s in screens if s["file_present"]]
     done = "PLAYTEST_DONE" in log_text
@@ -215,6 +233,7 @@ def build_report(
              "duration_limit": item["scenario"].get("sec")}
             for item in fight_steps
         ],
+        "boss_encounters": boss_encounters,
         "map_visits_observed": map_visits,
         "known_maps_not_observed": known_not_visited,
         "scenario_checkpoints_planned": planned_checkpoint_names,
@@ -237,7 +256,7 @@ def build_report(
             "This report summarizes only evidence present in this run's logs and screenshots.",
             "No subjective enjoyment, fairness, narrative quality, audio quality, or visual quality score is inferred automatically.",
             "Maps not observed in this run are classified as not tested, not as inaccessible or absent.",
-            "The current scripted journey ends at a Chapter I boss-damage checkpoint; it is not a full-campaign run.",
+            "The current scripted journey verifies an Arzhang victory and return to Zal in Chapter I; it is not a full-campaign run.",
         ],
     }
 
@@ -283,6 +302,10 @@ def write_reports(report: dict[str, Any], destination: Path) -> None:
 
 {_bullets(report['player_action_evidence'], 'No player-action telemetry was recorded.')}
 
+## Boss encounter evidence
+
+{_bullets([f"{item['type']}: defeated={item['defeated']}, HP {item['hp_before_percent']:.1f}% → {item['hp_after_percent']:.1f}%" for item in report['boss_encounters']], 'No boss encounter outcome was recorded.')}
+
 ## Evidence captured
 
 {_bullets(screenshots, 'No screenshot file was confirmed as present.')}
@@ -307,6 +330,7 @@ A subjective experience verdict is **pending human review**. The automated run c
 | Narrative and dialogue | {readable_text_shots} screenshot(s) with visible UI text; extracted text is in run-evidence.json | Dialogue quality still requires human review |
 | World and exploration | {len(maps)} observed map(s) | Partial; unvisited areas remain untested |
 | Combat | {report['combat_samples']} combat sample(s) | Tactical and animation quality not scored automatically |
+| Boss progression | {len(report['boss_encounters'])} recorded boss outcome(s) | Kill-counter evidence only; encounter quality still needs human review |
 | Progression and economy | {purchase_events} recorded purchase result(s) | State-change evidence only |
 | UI and readability | {len(screenshots)} screenshot(s) with visible-text extraction | Manual visual inspection required |
 | Audio | No reliable audio judgement is produced by this run | Not evaluated |
@@ -337,6 +361,10 @@ The current test journey is a Chapter I sample. It does not establish full-game 
 ## Findings
 
 {_bullets(issue_lines, 'No automated QA finding was detected in the available logs.')}
+
+## Boss encounter evidence
+
+{_bullets([f"{item['type']}: defeated={item['defeated']}, HP {item['hp_before_percent']:.1f}% → {item['hp_after_percent']:.1f}%" for item in report['boss_encounters']], 'No boss encounter outcome was recorded.')}
 
 ## Passed checkpoints
 

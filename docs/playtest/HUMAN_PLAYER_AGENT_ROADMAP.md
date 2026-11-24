@@ -117,7 +117,9 @@ Until the game defines that final condition, the agent may report verified chapt
 - Earlier Chapter I runs on commit `59678c20865f74196b67a61f07e6d3053d6b3b6c` failed at the first shop interaction for all four classes. Those runs predate the latest shop-diagnostic commit and cannot be used to judge that newer code.
 - The updated shop logic is not yet verified by a CI run against the current PR head.
 - The evidence-report generator and its CI wiring have been committed, but its new unit tests and generated artifacts are not yet verified on the current PR head.
-- The current scripted journey ends after confirming Arzhang took damage; that is not a Chapter I victory, much less full-game completion.
+- The expanded Chapter I scenario now requires evidence of Arzhang's actual defeat from the game's boss kill counter, then follows the live quest target back to Zal and verifies the Chapter I reward state. This is still only a Chapter I milestone, not a full-campaign run.
+- The updated fight policy prioritizes Arzhang's live grave pillars from phase II onward and uses ordinary light/heavy attacks to break them; it does not remove other enemies, grant damage, or change boss/player state.
+- Runtime verification of this expanded scenario is pending on the updated PR head; a source change alone is not evidence that all four classes can win the encounter.
 - Existing long campaign touch tests have independent navigation/survival failures. Those must be fixed from their own logs rather than hidden by relaxing assertions.
 
 ## Acceptance gate before merge
@@ -125,7 +127,7 @@ Until the game defines that final condition, the agent may report verified chapt
 Keep the PR Draft until:
 
 1. The updated branch passes Godot import/parse and all required headless tests.
-2. All four fresh class journeys complete the advertised Chapter I checkpoints without shortcuts.
+2. All four fresh class journeys defeat Arzhang through normal combat, follow the objective back to Zal, and complete the Chapter I reward checkpoint without shortcuts.
 3. Shop, dialogue, navigation, combat, and recovery evidence is present and reviewable.
 4. Every class artifact includes the machine-readable evidence manifest and three distinct reports; no report claims unvisited content or full-game completion.
 5. The scope and limitations in the PR description match what the tests actually prove.

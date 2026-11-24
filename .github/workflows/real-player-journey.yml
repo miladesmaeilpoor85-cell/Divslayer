@@ -127,6 +127,13 @@ jobs:
           assert actions.count("agent_gear") >= 2, "Expected accessory comparison and equipment management"
           assert actions.count("agent_spells") >= 2, "Expected adaptive spell loadout decisions"
           assert actions.count("fight") == 3, "Expected forest, crypt and Arzhang combat samples"
+          boss_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("target_foe") == "boss")
+          assert float(scenario[boss_fight].get("sec", 0)) >= 120, "Arzhang must receive a full natural combat window"
+          boss_victory = next(i for i in range(boss_fight + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("foe_defeated") is True)
+          assert scenario[boss_victory].get("quest_status") == "complete", "Require the real q1 boss-defeat transition"
+          zal_return = next(i for i in range(boss_victory + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          zal_assertion = next(i for i in range(zal_return + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "returned_to_zal")
+          assert scenario[zal_assertion].get("map") == "village" and scenario[zal_assertion].get("quest_status") == "done", "Require the natural return to Zal and quest reward"
           playtest_source = Path("tests/playtest.gd").read_text(encoding="utf-8")
           assert "func _fight_target_is_live(target: Variant)" in playtest_source, "Freed combat targets must be guarded before typed Node conversion"
           assert "var escape_dir := _avoid_exits(away.normalized())" in playtest_source, "Combat evasion must respect map exit boundaries"
@@ -197,6 +204,10 @@ jobs:
           assert "PLAYTEST_ASSERTIONS_PASSED" in log, "Journey assertions did not all pass"
           assert "ASSERTION_FAILED" not in log, "A natural progression or gameplay assertion failed"
           assert len(fights) == 3, f"Expected three natural combat samples, found {len(fights)}"
+          assert re.search(r"FIGHT_EVIDENCE type=boss .* defeated=true", log), "Arzhang's defeat was not confirmed by the real boss kill counter"
+          assert "PLAYER_AGENT_PILLAR_PRIORITY" in log, "The agent did not exercise Arzhang's grave-pillar mechanic"
+          assert "ASSERTION_PASSED arzhang_defeated" in log, "The Arzhang victory checkpoint did not pass"
+          assert "ASSERTION_PASSED returned_to_zal" in log, "The natural return-to-Zal checkpoint did not pass"
           assert "PLAYER_AGENT_TRAINING_DONE" in log, "Rostam's real touch-control training did not finish"
           assert "PLAYER_AGENT_LOADOUT" in log, "The actual shop/loadout routine did not complete"
           loadout = re.search(r"PLAYER_AGENT_LOADOUT weapon=(\d+)->(\d+) armour=(\d+)->(\d+)", log)

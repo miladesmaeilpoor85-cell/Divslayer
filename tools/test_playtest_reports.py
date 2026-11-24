@@ -28,6 +28,30 @@ class PlayerReportTests(unittest.TestCase):
         self.assertEqual(report["scenario_checkpoints_planned"], ["Chapter I — Whispering Forest and its clues", "Chapter I — Sunken Crypt"])
         self.assertEqual(report["scenario_checkpoints_reached"], ["Chapter I — Whispering Forest and its clues"])
 
+    def test_arzhang_kill_evidence_is_recorded_without_claiming_full_game_completion(self) -> None:
+        log = "\\n".join([
+            "FIGHT_EVIDENCE type=boss present_before=true hp_before=100.0 present_after=false hp_after=0.0 defeated=true",
+            "PLAYER_AGENT_PILLAR_PRIORITY type=gravepillar distance=80 hp=60/60",
+            "ASSERTION_PASSED arzhang_defeated",
+            "ASSERTION_PASSED returned_to_zal",
+            "PLAYTEST_ASSERTIONS_PASSED",
+            "PLAYTEST_DONE 240.0 s wall",
+        ])
+        report = build_report("warrior", log)
+        self.assertEqual(report["journey_status"], "passed")
+        self.assertEqual(len(report["boss_encounters"]), 1)
+        self.assertTrue(report["boss_encounters"][0]["defeated"])
+        self.assertEqual(report["boss_encounters"][0]["hp_after_percent"], 0.0)
+        self.assertFalse(report["full_game_completion"]["confirmed"])
+        with tempfile.TemporaryDirectory() as folder:
+            destination = Path(folder)
+            write_reports(report, destination)
+            player_report = (destination / "player-report.md").read_text(encoding="utf-8")
+            qa_report = (destination / "qa-report.md").read_text(encoding="utf-8")
+            self.assertIn("Boss encounter evidence", player_report)
+            self.assertIn("defeated=True", player_report)
+            self.assertIn("Boss encounter evidence", qa_report)
+
     def test_assertion_and_engine_errors_become_blocking_findings(self) -> None:
         log = "ASSERTION_FAILED armour_not_purchased\nPLAYTEST_ASSERTIONS_FAILED 1"
         engine = "SCRIPT ERROR: Parse failed\n"

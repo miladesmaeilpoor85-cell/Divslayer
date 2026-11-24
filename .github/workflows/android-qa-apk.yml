@@ -6,6 +6,7 @@ on:
       - "main"
       - "feature/quest-point-framework"
       - "feat/animation-pipeline-warrior-attack"
+      - "qa/human-player-agent-v1-20261124"
     paths:
       - ".github/workflows/android-qa-apk.yml"
       - "ci/android-qa-export-presets.cfg"

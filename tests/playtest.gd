@@ -194,6 +194,19 @@ func _assert_state(s: Dictionary) -> String:
 				var hp_percent := float(evidence.get("hp_after", 100.0))
 				if hp_percent >= float(s["foe_hp_below"]):
 					failures.append("%s health did not fall below %.0f%% (currently %.0f%%)" % [required_foe, float(s["foe_hp_below"]), hp_percent])
+		if bool(s.get("foe_defeated", false)):
+			var defeat_evidence: Dictionary = fight_evidence.get(required_foe, {})
+			if required_foe == "" or defeat_evidence.is_empty() or not bool(defeat_evidence.get("present_before", false)):
+				failures.append("no verified encounter evidence to confirm %s was defeated" % required_foe)
+			elif not bool(defeat_evidence.get("defeated", false)):
+				failures.append("%s victory was not confirmed by the real boss kill counter" % required_foe)
+			else:
+				_log("ASSERTION_INFO %s: %s victory confirmed by the real boss kill counter" % [label, required_foe])
+	if s.has("quest_index") and s.has("quest_status"):
+		var quest_index := int(s.get("quest_index", 0))
+		var actual_quest_status := Game.q(quest_index) if quest_index >= 1 and quest_index <= 3 else "invalid quest index"
+		if actual_quest_status != str(s.get("quest_status", "")):
+			failures.append("expected q%d status %s, got %s" % [quest_index, str(s.get("quest_status", "")), actual_quest_status])
 	if failures.is_empty():
 		_log("ASSERTION_PASSED %s" % label)
 		return "assertion passed: " + label
@@ -667,7 +680,11 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var last_progress := -5.0
 	var recovery_attempts := 0
 	var last_add_priority_id := 0
+	var last_pillar_priority_id := 0
 	while t < sec:
+		if focus_type != "" and int(Game.v18().get("kills", {}).get(focus_type, 0)) > focus_kills_before:
+			ended = "defeated %s through the live combat encounter" % focus_type
+			break
 		if p.dead:
 			if main.hud.death.visible and recovery_attempts < 3:
 				recovery_attempts += 1
@@ -746,8 +763,31 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				_log("PLAYER_AGENT_ADD_PRIORITY type=%s distance=%d" % [str(urgent_add_tgt.type), int(urgent_add_dist)])
 			last_add_priority_id = add_id
 		elif focused_tgt != null:
-			tgt = focused_tgt
 			last_add_priority_id = 0
+			var pillar_target: Node = null
+			var pillar_distance := INF
+			# Arzhang's pillars absorb up to 45% of incoming damage. Treat the
+			# visible grave pillars as priority combat targets in later phases;
+			# destroy them with ordinary attacks rather than bypassing the mechanic.
+			if focus_type == "boss" and int(focused_tgt.get("ph")) >= 2:
+				for pillar in get_tree().get_nodes_in_group("arena"):
+					if not _fight_target_is_live(pillar) or pillar.world != main.world or str(pillar.type) != "gravepillar":
+						continue
+					var pillar_dist: float = pillar.center().distance_to(p.global_position + Vector2(0, -17))
+					if pillar_dist < pillar_distance:
+						pillar_distance = pillar_dist
+						pillar_target = pillar
+			if pillar_target != null:
+				tgt = pillar_target
+				var pillar_id := pillar_target.get_instance_id()
+				if pillar_id != last_pillar_priority_id:
+					_log("PLAYER_AGENT_PILLAR_PRIORITY type=gravepillar distance=%d hp=%d/%d" % [
+						int(pillar_distance), int(pillar_target.hp), int(pillar_target.max_hp)
+					])
+				last_pillar_priority_id = pillar_id
+			else:
+				tgt = focused_tgt
+				last_pillar_priority_id = 0
 		if tgt == null:
 			if any_alive and quiet < 4.0:
 				quiet += 0.2          # a foe out of reach for a moment (a boss between phases, a burrowed thing): wait for it
@@ -813,8 +853,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
 			continue
+		var target_is_pillar := str(tgt.get("type", "")) == "gravepillar" and tgt.is_in_group("arena")
 		var preferred_range := reach
-		if Game.cls == "mage":
+		if Game.cls == "mage" and not target_is_pillar:
 			preferred_range = maxf(reach + 72.0, 122.0)
 		if Game.cls == "mage" and to.length() < 82.0 and away == Vector2.ZERO:
 			# A mage should not stand inside a melee enemy's reach merely to use a staff.
@@ -838,8 +879,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			else:
 				stuck = 0.0
 			last = _feet()
-		elif Game.cls == "mage" and to.length() > reach:
+		elif Game.cls == "mage" and to.length() > reach and not target_is_pillar:
 			# Hold a safe casting distance; do not swing a melee weapon out of range.
+			# A grave pillar is different: the player must close in and break it.
 			await stick(Vector2.ZERO)
 		else:
 			await stick(Vector2.ZERO)
@@ -852,7 +894,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		# Use charged heavy blows only after the target commits to an animation, rather than
 		# holding attack continuously and ignoring the fight around the hero.
 		heavy_t -= 0.1
-		if heavy_t <= 0.0 and to.length() <= reach + 12.0 and tgt.is_in_group("bosses") and float(tgt.get("busy")) > 0.25 and away == Vector2.ZERO:
+		var heavy_window := target_is_pillar or (tgt.is_in_group("bosses") and float(tgt.get("busy")) > 0.25)
+		if heavy_t <= 0.0 and to.length() <= reach + 12.0 and heavy_window and away == Vector2.ZERO:
 			heavy_t = randf_range(5.0, 8.0)
 			await press("attack", 0.55)
 			heavy_actions += 1
