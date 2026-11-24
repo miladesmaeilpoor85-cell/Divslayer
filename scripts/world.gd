@@ -205,7 +205,7 @@ func build(map_key: String) -> void:
 		var d := Game.enemy_def(str(s["type"]))
 		var feet := Vector2(float(s["x"]) + float(d.get("w", 24)) * 0.5, float(s["y"]) + float(d.get("h", 24)))
 		if not Game.BOSS_CFG.has(str(s["type"])):
-			feet = _clear_feet(feet, float(d.get("w", 24)) * 0.5)
+			feet = _clear_feet(feet, float(d.get("w", 24)) * 0.5, minf(float(d.get("h", 24)), 18.0))
 		var se: Node = spawn_enemy(str(s["type"]), feet)
 		if not Game.testing and Game.lvl() >= 3 and not Game.BOSS_CFG.has(str(s["type"])) and key != "village" and randf() < Game.elite_chance():
 			var elite_pool: Array[String] = Game.elite_pool(key)
@@ -628,10 +628,12 @@ func _ensure_q1_boss() -> void:
 
 ## (v0.27, level design: "16 foes are spawned inside a wall; one cannot be reached") a common foe whose place in the map
 ## data lies in a wall stands on the nearest clear ground instead
-func _clear_feet(feet: Vector2, hw: float) -> Vector2:
+func _clear_feet(feet: Vector2, hw: float, collision_h: float = 18.0) -> Vector2:
 	var walls: Array = _arr(data.get("walls"))
 	var blocked := func(p: Vector2) -> bool:
-		var r := Rect2(p.x - hw - 2.0, p.y - 12.0, hw * 2.0 + 4.0, 14.0)
+		# Enemy collision shapes are bottom-pivoted in enemy.gd. Keep the full
+		# hitbox (plus a 2 px margin) clear, not just the lower 14 px.
+		var r := Rect2(p.x - hw - 2.0, p.y - collision_h - 2.0, hw * 2.0 + 4.0, collision_h + 4.0)
 		if r.position.x < 0.0 or r.position.y < 0.0 or r.end.x > float(data.get("w", 9999)) or r.end.y > float(data.get("h", 9999)):
 			return true
 		for w in walls:
