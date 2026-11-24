@@ -36,7 +36,7 @@ def _parse_step(line: str) -> dict[str, Any] | None:
     over the whole line consumes both objects. Let JSONDecoder identify the
     exact end of the scenario object instead.
     """
-    prefix = re.match(r"^STEP (\\d+) ([0-9.]+) s ", line.strip())
+    prefix = re.match(r"^STEP (\d+) ([0-9.]+) s ", line.strip())
     if not prefix:
         return None
     raw = line.strip()
