@@ -147,7 +147,7 @@ jobs:
           assert int(scenario[next_forest_objective].get("max_steps", 1)) >= 2, "Allow the post-fight forest map hop and clue interaction"
           assert scenario[next_forest_objective].get("stop_after_interaction") is True, "Stop after the second forest clue; do not auto-follow the exit"
           boss_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("target_foe") == "boss")
-          assert not any(step.get("do") in {"agent_collect", "agent_gear", "agent_spells", "agent_talents"} for step in scenario[boss_fight + 1:]), "Do not idle in the live Arzhang arena after the boss damage check"
+          assert not any(step.get("do") in {"agent_collect", "agent_gear", "agent_spells", "agent_talents"} for step in scenario[boss_fight + 1:]), "Do not run optional setup actions inside the active Arzhang encounter"
           crypt_checkpoint = next(
               i for i, step in enumerate(scenario)
               if step.get("do") == "checkpoint" and "Sunken Crypt" in step.get("name", "")

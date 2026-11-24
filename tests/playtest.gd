@@ -857,7 +857,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		var preferred_range := reach
 		if Game.cls == "mage" and not target_is_pillar:
 			preferred_range = maxf(reach + 72.0, 122.0)
-		if Game.cls == "mage" and to.length() < 82.0 and away == Vector2.ZERO:
+		if Game.cls == "mage" and to.length() < 82.0 and away == Vector2.ZERO and not target_is_pillar:
 			# A mage should not stand inside a melee enemy's reach merely to use a staff.
 			# Kiting must still reject unrelated exits; otherwise a retreat can leave the arena.
 			var retreat := (-to.normalized() + Vector2(randf_range(-0.18, 0.18), randf_range(-0.18, 0.18))).normalized()
