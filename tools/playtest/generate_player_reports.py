@@ -30,19 +30,30 @@ SCREEN_RE = re.compile(r"^SCREEN ([^:]+): (.*)$")
 
 
 def _parse_step(line: str) -> dict[str, Any] | None:
-    match = STEP_RE.match(line.strip())
-    if not match:
+    """Parse one playtest STEP line without confusing nested JSON in its result.
+
+    The result may itself be JSON (for the "state" action), so a greedy regex
+    over the whole line consumes both objects. Let JSONDecoder identify the
+    exact end of the scenario object instead.
+    """
+    prefix = re.match(r"^STEP (\\d+) ([0-9.]+) s ", line.strip())
+    if not prefix:
         return None
+    raw = line.strip()
     try:
-        scenario = json.loads(match.group(3))
-    except json.JSONDecodeError:
-        scenario = {}
+        scenario, end = json.JSONDecoder().raw_decode(raw, prefix.end())
+    except (json.JSONDecodeError, TypeError):
+        return None
+    if not isinstance(scenario, dict):
+        return None
+    if raw[end:end + 4] != " -> ":
+        return None
     return {
-        "index": int(match.group(1)),
-        "elapsed_seconds": float(match.group(2)),
+        "index": int(prefix.group(1)),
+        "elapsed_seconds": float(prefix.group(2)),
         "action": str(scenario.get("do", "")),
         "scenario": scenario,
-        "result": match.group(4),
+        "result": raw[end + 4:],
     }
 
 
