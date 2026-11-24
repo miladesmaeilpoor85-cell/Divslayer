@@ -128,7 +128,7 @@ def _svg_dimensions(path: Path) -> tuple[int, int]:
         if value is None:
             return None
         match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)(?:px)?\s*", value)
-        return int(round(float(match.group(1)))) if match else None
+        return round(float(match.group(1))) if match else None
 
     width = dimension(root.get("width"))
     height = dimension(root.get("height"))
@@ -137,8 +137,8 @@ def _svg_dimensions(path: Path) -> tuple[int, int]:
         if len(view_box) != 4:
             raise ValueError("SVG needs numeric width/height or a four-value viewBox")
         try:
-            view_width = int(round(float(view_box[2])))
-            view_height = int(round(float(view_box[3])))
+            view_width = round(float(view_box[2]))
+            view_height = round(float(view_box[3]))
         except ValueError as exc:
             raise ValueError("SVG viewBox dimensions are invalid") from exc
         width = width or view_width
