@@ -9,7 +9,7 @@
               OpenGameArt tracks; every one used here was checked on its OpenGameArt page (see assets/audio/CREDITS.md)
   --frostbound  the audio/music folder of github.com/seskiramadhan/Frostbound (two CC0 OpenGameArt tracks, v0.19)
 
-Files are encoded to high-quality Ogg Vorbis, loudness-matched (EBU R128, two passes), and edited only where musically intended. Source channels are preserved unless a deliberate mono treatment is specified.
+Files are encoded to maximum-quality Ogg Vorbis (quality 10), loudness-matched (EBU R128, two passes), and edited only where musically intended. Full music and ambience durations and source channel layouts are preserved by default.
 Needs ffmpeg with libvorbis. The output is deterministic for the same sources and settings.
 """
 import argparse, json, os, re, shutil, subprocess, sys
@@ -49,8 +49,7 @@ AMBIENCE = {
 
 # Preserve the original channel layout. Mono is allowed only when it is an intentional sound-design choice.
 MONO_MUSIC = set()
-# every ambience loop is re-folded so its end runs into its start without a click: name -> (seconds kept, crossfade).
-# Keep the full ambience recordings; only crossfade a short boundary for seamless looping.
+# Every ambience loop retains its full duration; a short boundary crossfade prevents an audible loop click.
 AMB_FOLD = {}
 
 KENNEY = {
@@ -124,7 +123,7 @@ def duration(src):
 	r = run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", src])
 	return float(r.stdout.strip())
 
-def encode(src, dst, lufs, q, mono=False, rate=44100, trim=None, fade_in=0.0, fade_out=0.0, tp=-1.5):
+def encode(src, dst, lufs, q, mono=False, rate=48000, trim=None, fade_in=0.0, fade_out=0.0, tp=-1.5):
 	pre = []
 	if mono:
 		# downmix first, inside the chain, so the loudness pass and the limiter see the final signal
@@ -174,7 +173,7 @@ def fold_loop(src, keep, dst, x=3.0):
 	return dst
 
 def trim_silence_encode(src, dst, q=10):
-	"""a one-shot sound: mono, leading/trailing silence cut, peak at -1 dBFS"""
+	"""A one-shot sound: trim leading/trailing silence, preserve source channels, peak at -1 dBFS."""
 	r = run(["ffmpeg", "-hide_banner", "-nostats", "-i", src, "-af", "volumedetect", "-f", "null", "-"])
 	mx = float(re.search(r"max_volume: (-?[\d.]+) dB", r.stderr).group(1))
 	gain = -1.0 - mx
