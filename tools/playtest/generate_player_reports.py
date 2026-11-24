@@ -137,10 +137,14 @@ def build_report(
     step_source = scenario_steps if scenario_steps is not None else [
         step["scenario"] for step in steps if step.get("scenario")
     ]
-    checkpoint_names = [
+    planned_checkpoint_names = [
         str(item.get("name", ""))
         for item in step_source
         if item.get("do") == "checkpoint" and item.get("name")
+    ]
+    reached_checkpoint_names = [
+        name for name in re.findall(r"^STAGE_START (.+?) potions=", log_text, re.MULTILINE)
+        if name != "startup"
     ]
     known_not_visited = [name for name in KNOWN_MAPS if name not in map_visits]
     final_state = states[-1] if states else {}
@@ -165,7 +169,8 @@ def build_report(
         ],
         "map_visits_observed": map_visits,
         "known_maps_not_observed": known_not_visited,
-        "scenario_checkpoints": checkpoint_names,
+        "scenario_checkpoints_planned": planned_checkpoint_names,
+        "scenario_checkpoints_reached": reached_checkpoint_names,
         "screenshots": screens,
         "player_action_evidence": action_events,
         "final_observed_state": final_state,
@@ -220,7 +225,7 @@ def write_reports(report: dict[str, Any], destination: Path) -> None:
 
 ## What this run actually covered
 
-{_bullets(report['scenario_checkpoints'], 'No named scenario checkpoints were recorded.')}
+{_bullets(report['scenario_checkpoints_reached'], 'No named scenario checkpoint was confirmed as reached.')}
 
 ## Observed areas
 
