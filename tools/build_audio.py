@@ -19,20 +19,20 @@ OUT = os.path.join(ROOT, "assets", "audio")
 
 # region -> (source file in innworld/music, title, author, OpenGameArt page, target loudness, max seconds or None)
 MUSIC = {
-	"title":      ("lament_warriors_soul.mp3", "Fantasy: Lament for a Warrior's Soul", "RandomMind", "https://opengameart.org/content/fantasy-lament-for-a-warriors-soul", -19, 130),
+	"title":      ("lament_warriors_soul.mp3", "Fantasy: Lament for a Warrior's Soul", "RandomMind", "https://opengameart.org/content/fantasy-lament-for-a-warriors-soul", -19, None),
 	"village":    ("market_day.mp3", "Medieval: Market Day (loop)", "RandomMind", "https://opengameart.org/content/medieval-market-day", -19, None),
 	"forest":     ("field_of_dreams.mp3", "The Field Of Dreams", "pauliuw", "https://opengameart.org/content/the-field-of-dreams", -19, None),
-	"dungeon":    ("forgotten_tombs.mp3", "Forgoten tomb ambience", "kindland", "https://opengameart.org/content/forgoten-tomb-ambience", -23, 120),
+	"dungeon":    ("forgotten_tombs.mp3", "Forgoten tomb ambience", "kindland", "https://opengameart.org/content/forgoten-tomb-ambience", -23, None),
 	"peaks":      ("doom_in_the_morning.mp3", "Doom in the Morning", "VishwaJai", "https://opengameart.org/content/doom-in-the-morning", -19, None),
-	"shadowfen":  ("rising_moon.mp3", "Fantasy: Rising Moon", "RandomMind", "https://opengameart.org/content/fantasy-rising-moon", -20, 150),
+	"shadowfen":  ("rising_moon.mp3", "Fantasy: Rising Moon", "RandomMind", "https://opengameart.org/content/fantasy-rising-moon", -20, None),
 	"sanctum":    ("cold_hands.ogg", "Cold Hands", "SkyleTheFrench", "https://opengameart.org/content/cold-hands", -20, None),
 	"emberforge": ("fall_of_nightmares.ogg", "Fall of Nightmares [Epic, Orchestral]", "nene", "https://opengameart.org/content/fall-of-nightmares-epic-orchestral", -18, None),
-	"camp":       ("bards_tale.mp3", "Medieval: The Bard's Tale", "RandomMind", "https://opengameart.org/content/medieval-the-bards-tale", -20, 125),
+	"camp":       ("bards_tale.mp3", "Medieval: The Bard's Tale", "RandomMind", "https://opengameart.org/content/medieval-the-bards-tale", -20, None),
 	"trial":      ("medieval_battle.mp3", "Medieval: Battle", "RandomMind", "https://opengameart.org/content/medieval-battle", -18, None),
 	"boss":       ("battle_theme_a.mp3", "Battle Theme A", "cynicmusic", "https://opengameart.org/content/battle-theme-a", -17, None),
 	"shrine":     ("heavenly_loop.ogg", "Heavenly Loop", "isaiah658", "https://opengameart.org/content/heavenly-loop", -22, None),
 	# v0.19, chapter 2 ("frostbound:" = from --frostbound)
-	"frostvale":  ("frostbound:explore.mp3", "Medieval: Exploration", "RandomMind", "https://opengameart.org/content/medieval-exploration", -19, 165),
+	"frostvale":  ("frostbound:explore.mp3", "Medieval: Exploration", "RandomMind", "https://opengameart.org/content/medieval-exploration", -19, None),
 	"wyrmhollow": ("snowfall.ogg", "Snowfall (looped version)", "Kistol", "https://opengameart.org/content/snowfall", -21, None),
 	"boss_ancientwyrm": ("frostbound:boss.mp3", "Boss Battle Music (Epic Boss Battle)", "SubspaceAudio (Juhani Junkala)", "https://opengameart.org/content/boss-battle-music", -17, None),
 }
@@ -50,8 +50,8 @@ AMBIENCE = {
 # Preserve the original channel layout. Mono is allowed only when it is an intentional sound-design choice.
 MONO_MUSIC = set()
 # every ambience loop is re-folded so its end runs into its start without a click: name -> (seconds kept, crossfade).
-# The cave loop is also shortened (94 s -> 48 s); the others keep their length and get a 0.3 s crossfade.
-AMB_FOLD = {"cave": (48.0, 3.0)}
+# Keep the full ambience recordings; only crossfade a short boundary for seamless looping.
+AMB_FOLD = {}
 
 KENNEY = {
 	"kenney_rpgaudio": ("RPG Audio", "https://kenney.nl/assets/rpg-audio"),
@@ -152,7 +152,7 @@ def fold_loop(src, keep, dst, x=3.0):
 	(fading in, equal power). Playing [0, keep) on repeat then joins without a seam."""
 	import wave, struct
 	tmp = dst + ".raw.wav"
-	run(["ffmpeg", "-hide_banner", "-y", "-i", src, "-t", "%g" % (keep + x), "-ac", "2", "-ar", "48000", "-c:a", "pcm_s24le", tmp])
+	run(["ffmpeg", "-hide_banner", "-y", "-i", src, "-t", "%g" % (keep + x), "-ac", "2", "-ar", "48000", "-c:a", "pcm_s16le", tmp])
 	with wave.open(tmp) as w:
 		n = w.getnframes()
 		raw = w.readframes(n)
@@ -169,7 +169,7 @@ def fold_loop(src, keep, dst, x=3.0):
 			v = a[i * 2 + c] * fi + a[(keep_n + i) * 2 + c] * fo
 			out[i * 2 + c] = max(-32768, min(32767, int(v)))
 	with wave.open(dst, "wb") as w:
-		w.setnchannels(2); w.setsampwidth(3); w.setframerate(48000)
+		w.setnchannels(2); w.setsampwidth(2); w.setframerate(48000)
 		w.writeframes(out.tobytes())
 	return dst
 
