@@ -59,6 +59,8 @@ var active_stage := "startup"
 var stage_started_ms := 0
 var assertion_failures: Array[String] = []
 var fight_evidence: Dictionary = {}
+var last_danger_eta := 1.0
+var last_danger_kind := ""
 
 const PRESETS := {
 	# level, weapon, armour, potions, gold
@@ -767,7 +769,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		# Use charged heavy blows only after the target commits to an animation, rather than
 		# holding attack continuously and ignoring the fight around the hero.
 		heavy_t -= 0.1
-		if heavy_t <= 0.0 and to.length() <= reach + 12.0 and float(tgt.get("busy")) > 0.25 and away == Vector2.ZERO:
+		if heavy_t <= 0.0 and to.length() <= reach + 12.0 and tgt.is_in_group("bosses") and float(tgt.get("busy")) > 0.25 and away == Vector2.ZERO:
 			heavy_t = randf_range(5.0, 8.0)
 			await press("attack", 0.55)
 			heavy_actions += 1
@@ -780,14 +782,14 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			signature_actions += 1
 		# Choose either of the two currently bound spells using the situation, not a fixed
 		# skill-1 spam timer. The mana/cooldown rules remain enforced by the real caster.
+		var enemies_close := 0
+		for candidate in get_tree().get_nodes_in_group("enemies"):
+			if candidate.world == main.world and not candidate.dead and candidate.targetable() and candidate.center().distance_to(p.global_position + Vector2(0, -17)) <= 145.0:
+				enemies_close += 1
 		spell_t -= 0.1
 		if spell_t <= 0.0 and away == Vector2.ZERO:
 			spell_t = randf_range(2.2, 3.4)
 			var slots: Array = Game.slots()
-			var enemies_close := 0
-			for candidate in get_tree().get_nodes_in_group("enemies"):
-				if candidate.world == main.world and not candidate.dead and candidate.targetable() and candidate.center().distance_to(p.global_position + Vector2(0, -17)) <= 145.0:
-					enemies_close += 1
 			for slot_index in 2:
 				var spell_id := str(slots[slot_index])
 				if p.caster.block(spell_id) != "":
@@ -867,6 +869,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 
 func _danger_away(perfect_telegraph_read := false) -> Vector2:
 	var bfx = main.world.get("bossfx") if main.world else null
+	last_danger_eta = 1.0
+	last_danger_kind = ""
 	if bfx == null:
 		return Vector2.ZERO
 	var pc: Vector2 = main.player.global_position + Vector2(0, -17)
@@ -875,6 +879,8 @@ func _danger_away(perfect_telegraph_read := false) -> Vector2:
 			t["_pt"] = randf() < (1.0 if perfect_telegraph_read else 0.75)
 		if not bool(t["_pt"]) or float(t["t"]) > 0.45 or not bfx.inside(t):
 			continue
+		last_danger_eta = float(t["t"])
+		last_danger_kind = str(t["kind"])
 		match str(t["kind"]):
 			"lane":
 				var lv: Vector2 = t["b"] - t["pos"]
