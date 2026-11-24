@@ -419,6 +419,7 @@ func bind_adaptive_spells() -> String:
 	if spells_tab != null and not await _tap_control(spells_tab):
 		await _close_pause()
 		return "could not open the Spells subpage"
+	driver._log("PLAYER_AGENT_SPELL_POLICY class=%s priorities=%s selected=%s" % [Game.cls, str(priorities.get(Game.cls, priorities["warrior"])), str(chosen)])
 	var before: Array = Game.slots().duplicate()
 	for slot_index in 2:
 		var id := chosen[slot_index]
@@ -636,8 +637,10 @@ func prepare_loadout() -> String:
 	var armor_before := int(Game.state.get("armor", 0))
 	var weapon_before := int(Game.state.get("weapon", 1))
 	var report: Array[String] = []
-	report.append(await visit_shop("merchant"))
+	# The first purse is enough for armour but not both upgrades. A sensible new player
+	# buys protection first and returns for a better weapon after earning more gold.
 	report.append(await visit_shop("smith"))
+	report.append(await visit_shop("merchant"))
 	report.append(await spend_talents())
 	var armor_after := int(Game.state.get("armor", 0))
 	var weapon_after := int(Game.state.get("weapon", 1))
