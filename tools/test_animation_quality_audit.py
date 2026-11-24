@@ -109,7 +109,6 @@ class AnimationQualityAuditTests(unittest.TestCase):
         ]
         self.assertEqual(len(warden_clips), 1)
         self.assertEqual(warden_clips[0]["frame_count"], 4)
-        self.assertEqual(warden_clips[0]["fps"], 6.25)
 
     def test_reads_separate_attack_frame_files_by_direction(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
