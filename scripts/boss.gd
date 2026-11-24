@@ -94,13 +94,6 @@ func _after_setup() -> void:
 		cd["erupt"] = 9.0
 	if type == "arbiter":
 		burn_bonus = 1.3
-	if type == "alborzwarden":
-		# Procedural placeholder silhouette until painted encounter art is supplied.
-		if anim != null:
-			anim.visible = false
-		for child in get_children():
-			if child is Polygon2D:
-				child.queue_free()
 
 func targetable() -> bool:
 	return not dead and not cloaked
@@ -1564,7 +1557,8 @@ func _draw_over() -> void:
 		_draw_zahhak()
 	var t := Time.get_ticks_msec() / 1000.0
 	var mid := Vector2(0, -box.y * 0.5)
-	if type == "alborzwarden":
+	var has_dedicated_warden_sprite := anim != null and anim.visible and anim.sprite_frames != null and anim.sprite_frames.has_animation("v0")
+	if type == "alborzwarden" and not has_dedicated_warden_sprite:
 		_draw_alborzwarden(t)
 	if staggered > 0.0:
 		for i in 4:
