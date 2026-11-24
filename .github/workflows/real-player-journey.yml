@@ -186,6 +186,43 @@ jobs:
             --scenario "$RUNNER_TEMP/real-player-journey/scenario.json" \
             --out "$output/reports"
 
+      - name: Validate generated evidence package
+        if: always()
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/real-player-journey/$HERO"
+          reports="$output/reports"
+          test -s "$reports/run-evidence.json"
+          test -s "$reports/player-report.md"
+          test -s "$reports/critic-report.md"
+          test -s "$reports/qa-report.md"
+          python3 - "$reports/run-evidence.json" "$output/shots" "$HERO" "$output/log.txt" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          report_path, shot_dir, hero, log_path = map(Path, sys.argv[1:]) if False else (Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3], Path(sys.argv[4]))
+          report = json.loads(report_path.read_text(encoding="utf-8"))
+          assert report.get("hero_class") == hero, f"Report class mismatch: {report.get('hero_class')} != {hero}"
+          assert report.get("journey_status") in {"passed", "failed", "incomplete", "not_run"}, "Invalid journey status"
+          assert isinstance(report.get("qa_issues"), list), "qa_issues must be a list"
+          assert isinstance(report.get("scenario_checkpoints_planned"), list), "planned checkpoints must be a list"
+          assert isinstance(report.get("scenario_checkpoints_reached"), list), "reached checkpoints must be a list"
+          assert isinstance(report.get("screenshots"), list), "screenshots must be a list"
+          available = {p.name for p in shot_dir.glob("*.png")} if shot_dir.exists() else set()
+          for shot in report["screenshots"]:
+              assert isinstance(shot.get("file_present"), bool), "screenshot file_present must be boolean"
+              if shot["file_present"]:
+                  assert shot.get("file") in available, f"Report claims missing screenshot exists: {shot.get('file')}"
+          log = log_path.read_text(encoding="utf-8", errors="replace") if log_path.exists() else ""
+          true_ending = report.get("full_game_completion", {}).get("confirmed") is True
+          assert not true_ending or "PLAYER_AGENT_TRUE_ENDING_CONFIRMED" in log, "Unsubstantiated full-game completion claim"
+          print(f"EVIDENCE_PACKAGE_VALID class={hero} status={report['journey_status']} shots={sum(s['file_present'] for s in report['screenshots'])} issues={len(report['qa_issues'])}")
+          PY
+
       - name: Upload journey logs and screenshots
         if: always()
         uses: actions/upload-artifact@v4
