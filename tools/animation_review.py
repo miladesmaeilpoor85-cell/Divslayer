@@ -14,6 +14,8 @@ from typing import Any
 
 from PIL import Image, ImageDraw
 
+from image_assets import open_image
+
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
 CHECKER_A = (54, 58, 66, 255)
 CHECKER_B = (76, 80, 88, 255)
@@ -173,15 +175,18 @@ def review_sheets(
                 continue
 
             report["checked"] += 1
-            relative = Path("assets") / "art" / folder / f"{key}.png"
+            source_name = str(meta.get("file", key))
+            extension = str(meta.get("extension", "png")).lower().lstrip(".")
+            if Path(source_name).name != source_name or extension not in {"png", "jpg", "jpeg", "webp", "svg"}:
+                report["errors"].append(f"{key} has an unsafe or unsupported sprite file reference")
+                continue
+            relative = Path("assets") / "art" / folder / f"{source_name}.{extension}"
             source = root / relative
             try:
                 cell_w, cell_h, pivot = _validate_metadata(key, meta, kind)
                 if not source.is_file():
                     raise ValueError(f"missing sprite sheet: {relative.as_posix()}")
-                with Image.open(source) as opened:
-                    opened.load()
-                    sheet = opened.convert("RGBA")
+                sheet = open_image(source)
 
                 if kind == "heroes":
                     rows, cols = meta["rows"], meta["cols"]
@@ -206,9 +211,7 @@ def review_sheets(
                         attack_path = root / separate_attack_relative
                         if not attack_path.is_file():
                             raise ValueError(f"missing separate attack atlas: {separate_attack_relative}")
-                        with Image.open(attack_path) as opened_attack:
-                            opened_attack.load()
-                            separate_attack = opened_attack.convert("RGBA")
+                        separate_attack = open_image(attack_path)
                         attack_count = _positive_int(meta.get("attackFrames"), f"{key}.attackFrames")
                         attack_expected = (cell_w * attack_count, cell_h * len(rows))
                         if separate_attack.size != attack_expected:
