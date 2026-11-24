@@ -215,7 +215,9 @@ static func enemy(type: String) -> Dictionary:
 	if not meta.has("cellW"):
 		_cache[key] = {}
 		return {}
-	var tex: Texture2D = load(Game.ART + "Enemies/" + type + ".png")
+	var enemy_file := str(meta.get("file", type))
+	var enemy_extension := str(meta.get("extension", "png"))
+	var tex: Texture2D = load(Game.ART + "Enemies/" + enemy_file + "." + enemy_extension)
 	if tex == null:
 		push_error("sheet missing from the build: Enemies/%s.png" % type)
 	var sf := SpriteFrames.new()
