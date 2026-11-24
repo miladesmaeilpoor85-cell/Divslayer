@@ -222,8 +222,17 @@ func visit_shop(vendor: String) -> String:
 	return "purchase did not register for %s; gold now %d" % [item_name, purse_after]
 
 func prepare_loadout() -> String:
+	var armor_before := int(Game.state.get("armor", 0))
+	var weapon_before := int(Game.state.get("weapon", 1))
 	var report: Array[String] = []
 	report.append(await visit_shop("merchant"))
 	report.append(await visit_shop("smith"))
 	report.append(await spend_talents())
+	var armor_after := int(Game.state.get("armor", 0))
+	var weapon_after := int(Game.state.get("weapon", 1))
+	if armor_before == 0 and armor_after == 0:
+		var failure := "fresh player could not buy the first armour tier through the shop UI"
+		driver.assertion_failures.append(failure)
+		driver._log("ASSERTION_FAILED " + failure)
+	driver._log("PLAYER_AGENT_LOADOUT weapon=%d->%d armour=%d->%d gold=%d" % [weapon_before, weapon_after, armor_before, armor_after, int(Game.state.get("gold", 0))])
 	return " | ".join(report)
