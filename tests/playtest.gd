@@ -159,6 +159,12 @@ func _assert_state(s: Dictionary) -> String:
 		failures.append("game remained paused")
 	if s.has("potions_at_least") and int(snapshot.get("potions", 0)) < int(s["potions_at_least"]):
 		failures.append("expected at least %d health potions, got %d" % [int(s["potions_at_least"]), int(snapshot.get("potions", 0))])
+	if s.has("armor_at_least") and int(Game.state.get("armor", 0)) < int(s["armor_at_least"]):
+		failures.append("expected armour tier at least %d, got %d" % [int(s["armor_at_least"]), int(Game.state.get("armor", 0))])
+	if s.has("weapon_at_least") and int(Game.state.get("weapon", 1)) < int(s["weapon_at_least"]):
+		failures.append("expected weapon tier at least %d, got %d" % [int(s["weapon_at_least"]), int(Game.state.get("weapon", 1))])
+	if s.has("tutorial_step") and Game.Tut.step() != str(s["tutorial_step"]):
+		failures.append("expected Rostam tutorial step '%s', got '%s'" % [str(s["tutorial_step"]), Game.Tut.step()])
 	var required_foe := str(s.get("foe_type", ""))
 	if required_foe != "":
 		var found := false
