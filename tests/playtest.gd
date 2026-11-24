@@ -109,6 +109,11 @@ func run(m: Node) -> void:
 		_log("STEP %d %.2f s %s -> %s" % [i, step_elapsed, JSON.stringify(s), str(res)])
 		current_step = -1
 		current_action = ""
+		# Stop at the first failed checkpoint or required map transition. Continuing
+		# would execute later stages on the wrong map and waste the CI time budget.
+		if not assertion_failures.is_empty():
+			_log("PLAYTEST_STOPPED_EARLY after a failed required checkpoint")
+			break
 	_finish()
 
 func _heartbeat() -> void:
