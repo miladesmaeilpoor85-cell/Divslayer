@@ -110,7 +110,7 @@
       "y": 318,
       "sort": 318,
       "kind": "spire",
-      "isWall": true,
+      "isWall": false,
       "animated": false,
       "smoke": null
     },
@@ -120,7 +120,7 @@
       "y": 318,
       "sort": 318,
       "kind": "spire",
-      "isWall": true,
+      "isWall": false,
       "animated": false,
       "smoke": null
     },
