@@ -711,8 +711,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			any_alive = true
 			if not e.targetable():
 				continue
-			# For boss samples, deliberately pursue the named encounter instead of
-			# spending the short combat window clearing nearby adds.
+			# Boss samples pursue the named encounter instead of clearing the whole arena.
+			# The exception is an Ancient Wyrm wyrmling that closes within striking range.
 			if focus_type != "" and e.is_in_group("bosses") and str(e.type) == focus_type:
 				focused_tgt = e
 				continue
@@ -921,7 +921,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · blocks %d · signatures %d · spells %d · ultimates %d · heavy %d · swings %d, hits %d%s" % [ended, t, kills,
 		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, block_actions, signature_actions, spell_actions, ult_actions, heavy_actions, p.swings - swings0, p.hits_landed - hits0, detail]
 
-## the way out of the nearest marked attack that is about to land on the hero (Vector2.ZERO: nothing to dodge)
+## the way out of the nearest imminent telegraph or projectile (Vector2.ZERO: nothing to dodge)
 
 func _danger_away(perfect_telegraph_read := false) -> Vector2:
 	var bfx = main.world.get("bossfx") if main.world else null
@@ -957,12 +957,13 @@ func _danger_away(perfect_telegraph_read := false) -> Vector2:
 		var speed_sq := velocity.length_squared()
 		if speed_sq < 1.0:
 			continue
-		var rel: Vector2 = pc - shot_data.get("pos", pc)
+		var shot_pos: Vector2 = shot_data.get("pos", pc)
+		var rel: Vector2 = pc - shot_pos
 		var eta := rel.dot(velocity) / speed_sq
 		var available_life := float(shot_data.get("life", 0.0))
 		if eta < 0.04 or eta > minf(available_life, 0.65) or eta >= best_eta:
 			continue
-		var closest := shot_data.get("pos", pc) + velocity * eta
+		var closest: Vector2 = shot_pos + velocity * eta
 		var offset: Vector2 = pc - closest
 		if offset.length() > collision_radius:
 			continue
