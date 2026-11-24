@@ -853,7 +853,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
 			continue
-		var target_is_pillar := str(tgt.get("type", "")) == "gravepillar" and tgt.is_in_group("arena")
+		var target_is_pillar := str(tgt.type) == "gravepillar" and tgt.is_in_group("arena")
 		var preferred_range := reach
 		if Game.cls == "mage" and not target_is_pillar:
 			preferred_range = maxf(reach + 72.0, 122.0)
