@@ -235,6 +235,27 @@ func spend_talents() -> String:
 		Game.save_game()
 	return "spent %d/%d talent points through the Skills UI (%s)" % [spent, points_before, ", ".join(gained)]
 
+func _tap_dialogue_choice(terms: Array) -> String:
+	var dialogue = driver.main.hud.dialogue
+	if dialogue == null or not dialogue.visible or not dialogue.choosing():
+		return "no dialogue choice is currently visible"
+	var options: Array = dialogue._choice_box.get_children()
+	var visible_options: Array[String] = []
+	for option in options:
+		if not option is Button or not option.is_visible_in_tree() or option.disabled:
+			continue
+		var label := str(option.text)
+		visible_options.append(label)
+		for term in terms:
+			if label.to_lower().find(str(term).to_lower()) >= 0:
+				if not await _tap_control(option):
+					return "visible choice could not receive a touch: " + label
+				await driver.wait(0.35)
+				driver._log("PLAYER_AGENT_DIALOGUE_CHOICE " + label)
+				return "selected dialogue choice: " + label
+	return "matching choice not found; visible choices=%s" % " | ".join(visible_options)
+
+
 func visit_shop(vendor: String) -> String:
 	if vendor not in ["merchant", "smith", "hesk"]:
 		return "unsupported vendor: " + vendor
@@ -245,39 +266,75 @@ func visit_shop(vendor: String) -> String:
 	await driver.wait(0.25)
 	if driver.main.player.near_npc == null:
 		return "could not reach %s: %s" % [vendor, route]
-	await driver.press("talk")
-	await driver.wait(0.5)
+
 	var shop = driver.main.hud.shop
-	# Some vendors have a story-first interaction. Kavian's first conversation advances
-	# his chapter dialogue but does not open the shop; the player must talk to him again
-	# to reach the visible Buy Armour / Forge choice. Sindokht opens her shop after her
-	# introductory conversation. Treat these as separate player interactions rather than
-	# assuming every vendor opens a shop on the first tap.
+	# A first conversation with Kaveh may only advance the chapter story. The shop
+	# appears after the dialogue is dismissed and the player talks to him again.
+	# Observe each UI state and select the visible armour choice directly; do not
+	# infer success from a talk-button press alone.
 	var interaction_pass := 0
-	while not shop.visible and interaction_pass < 3:
+	var last_observation := ""
+	while not shop.visible and interaction_pass < 6:
 		interaction_pass += 1
 		var dialogue = driver.main.hud.dialogue
+		var visible_texts: Array[String] = []
+		for item in driver._texts():
+			var text_value := str(item.get("t", "")).strip_edges()
+			if not text_value.is_empty():
+				visible_texts.append(text_value)
+		last_observation = "dialogue=%s choosing=%s near_npc=%s text=%s" % [
+			str(dialogue.visible),
+			str(dialogue.visible and dialogue.choosing()),
+			str(driver.main.player.near_npc != null),
+			" | ".join(visible_texts).substr(0, 420)
+		]
+		driver._log("PLAYER_AGENT_SHOP_OBSERVE vendor=%s pass=%d shop=%s %s" % [
+			vendor, interaction_pass, str(shop.visible), last_observation
+		])
+
 		if dialogue.visible:
 			if dialogue.choosing():
 				if vendor == "smith":
-					var purchase_option := Game.t("Buy armour", "خرید زره")
-					if not await _tap_text(purchase_option):
-						return "vendor %s opened a choice, but its purchase option was not tappable" % vendor
+					var choice_result := await _tap_dialogue_choice(["Buy armour", "خرید زره"])
+					if not choice_result.begins_with("selected dialogue choice:"):
+						return "smith dialogue choice blocked shop opening: " + choice_result
 				else:
-					await _choose_dialogue_option()
+					var generic_choice := await _choose_dialogue_option()
+					if generic_choice.find("selected dialogue option:") < 0:
+						return "vendor %s dialogue choice could not be selected: %s" % [vendor, generic_choice]
 			else:
-				await driver.dialog_all()
+				var read_result: String = await driver.dialog_all()
+				driver._log("PLAYER_AGENT_SHOP_DIALOGUE vendor=%s result=%s" % [vendor, read_result])
 		else:
 			if driver.main.player.near_npc == null:
-				break
+				route = await driver.walk_to(npc.global_position + Vector2(0, 26), 12.0, 22.0)
+				await driver.wait(0.25)
+				if driver.main.player.near_npc == null:
+					break
 			await driver.press("talk")
-		await driver.wait(0.45)
+			await driver.wait(0.55)
+
+		await driver.wait(0.25)
+
 	if not shop.visible:
 		var dialogue = driver.main.hud.dialogue
-		return "talked to %s but its shop did not open after %d interaction passes; dialogue_visible=%s choosing=%s" % [
-			vendor, interaction_pass, str(dialogue.visible), str(dialogue.choosing())
+		var final_texts: Array[String] = []
+		for item in driver._texts():
+			var text_value := str(item.get("t", "")).strip_edges()
+			if not text_value.is_empty():
+				final_texts.append(text_value)
+		var failure := "talked to %s but its shop did not open after %d interaction passes; dialogue_visible=%s choosing=%s near_npc=%s visible_text=%s" % [
+			vendor,
+			interaction_pass,
+			str(dialogue.visible),
+			str(dialogue.visible and dialogue.choosing()),
+			str(driver.main.player.near_npc != null),
+			" | ".join(final_texts).substr(0, 420)
 		]
+		driver._log("PLAYER_AGENT_SHOP_FAILED " + failure)
+		return failure
 
+	driver._log("PLAYER_AGENT_SHOP_OPEN vendor=%s passes=%d" % [vendor, interaction_pass])
 	var catalog: Array = Game.shop_catalog(vendor)
 	var selected: Dictionary = {}
 	# A genuine buyer prefers the next equipment tier, but will not buy beyond the visible purse.
@@ -344,7 +401,6 @@ func visit_shop(vendor: String) -> String:
 		Game.save_game()
 		return "purchased %s through the shop UI; gold now %d" % [item_name, purse_after]
 	return "purchase did not register for %s; gold now %d" % [item_name, purse_after]
-
 func _gear_score(item: Dictionary) -> float:
 	var stat: Dictionary = item.get("stat", {})
 	var value := float(stat.get("val", 0.0))
