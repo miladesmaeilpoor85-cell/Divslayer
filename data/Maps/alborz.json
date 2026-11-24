@@ -180,7 +180,7 @@
       "y": 706,
       "sort": 706,
       "kind": "stone",
-      "isWall": false,
+      "isWall": true,
       "animated": false,
       "smoke": null
     },
