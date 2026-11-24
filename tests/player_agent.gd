@@ -145,7 +145,11 @@ func spend_talents() -> String:
 func visit_shop(vendor: String) -> String:
 	if vendor not in ["merchant", "smith", "hesk"]:
 		return "unsupported vendor: " + vendor
-	var route := await driver.walk_to_npc(vendor, 30.0)
+	var npc: Node = driver.npc_node(vendor)
+	if npc == null:
+		return "no %s vendor on the current map" % vendor
+	var route: String = await driver.walk_to(npc.global_position + Vector2(0, 26), 30.0, 22.0)
+	await driver.wait(0.25)
 	if driver.main.player.near_npc == null:
 		return "could not reach %s: %s" % [vendor, route]
 	await driver.press("talk")
