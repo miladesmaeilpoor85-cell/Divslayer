@@ -275,7 +275,9 @@ func _object(o: Dictionary) -> void:
 		return
 	var spr := Sprite2D.new()
 	# identical pictures are stored once ("file" names the shared one)
-	spr.texture = load(Game.ART + "MapObjects/" + str(m.get("file", nm)) + ".png")
+	var sprite_file := str(m.get("file", nm))
+	var sprite_extension := str(m.get("extension", "png"))
+	spr.texture = load(Game.ART + "MapObjects/" + sprite_file + "." + sprite_extension)
 	spr.centered = false
 	spr.offset = Vector2(-float(m["w"]) * 0.5, -float(m["h"]) * (1.0 - float(m["pivot"][1])))
 	spr.scale = Vector2.ONE * Sheets.SCALE
