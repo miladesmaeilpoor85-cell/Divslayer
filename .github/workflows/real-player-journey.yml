@@ -92,6 +92,10 @@ jobs:
           assert actions.count("agent_training") == 1, "Expected Rostam's touch-driven training"
           assert actions.count("agent_loadout") == 1, "Expected real shop and loadout actions"
           assert actions.count("agent_talents") >= 1, "Expected talent UI decisions after earning XP"
+          assert actions.count("agent_objective") >= 4, "Expected dynamic quest-target navigation"
+          assert actions.count("agent_collect") >= 2, "Expected ground-loot collection attempts"
+          assert actions.count("agent_gear") >= 2, "Expected accessory comparison and equipment management"
+          assert actions.count("agent_spells") >= 2, "Expected adaptive spell loadout decisions"
           assert actions.count("fight") == 3, "Expected forest, crypt and Arzhang combat samples"
           destination.write_text(json.dumps(scenario, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
@@ -143,6 +147,10 @@ jobs:
           assert loadout, "Missing verified weapon/armour progression record"
           assert int(loadout.group(4)) >= 1, "The fresh player did not buy the first armour tier"
           assert "PLAYER_AGENT_ACTIONS" in log, "Humanized combat actions were not recorded"
+          assert "PLAYER_AGENT_SPELL_POLICY" in log, "Class-aware spell policy was not exercised"
+          assert "PLAYER_AGENT_OBJECTIVE" in log, "Dynamic objective navigation was not exercised"
+          assert "PLAYER_AGENT_PICKUP_SCAN" in log, "Loot scanning was not exercised"
+          assert "PLAYER_AGENT_GEAR_SCAN" in log, "Accessory comparison was not exercised"
           errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
           assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
           print("REAL_PLAYER_JOURNEY_VALIDATED")
