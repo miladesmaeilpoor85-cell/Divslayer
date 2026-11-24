@@ -1,2163 +1,2185 @@
 {
- "enemies": {
-  "slime": {
-   "cellW": 120,
-   "cellH": 96,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 40,
-   "logicalH": 32,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.0625
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 24,
-    "h": 20
-   }
+  "enemies": {
+    "slime": {
+      "cellW": 120,
+      "cellH": 96,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 40,
+      "logicalH": 32,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.0625
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 24,
+        "h": 20
+      }
+    },
+    "skeleton": {
+      "cellW": 114,
+      "cellH": 144,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 38,
+      "logicalH": 48,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.041666666666666664
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 6,
+      "alpha": 1,
+      "gameSize": {
+        "w": 26,
+        "h": 36
+      }
+    },
+    "archer": {
+      "cellW": 120,
+      "cellH": 138,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 40,
+      "logicalH": 46,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.043478260869565216
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 6,
+      "alpha": 1,
+      "gameSize": {
+        "w": 24,
+        "h": 34
+      }
+    },
+    "wraith": {
+      "cellW": 138,
+      "cellH": 156,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 46,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "foot": 0,
+      "hover": [
+        5,
+        300,
+        2
+      ],
+      "timedMs": 150,
+      "stride": 7,
+      "alpha": 0.9,
+      "gameSize": {
+        "w": 28,
+        "h": 38
+      }
+    },
+    "bat": {
+      "cellW": 150,
+      "cellH": 120,
+      "frames": 2,
+      "variants": 1,
+      "logicalW": 50,
+      "logicalH": 40,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05
+      ],
+      "foot": 0,
+      "hover": [
+        12,
+        160,
+        3
+      ],
+      "timedMs": 140,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 22,
+        "h": 16
+      }
+    },
+    "imp": {
+      "cellW": 108,
+      "cellH": 114,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 36,
+      "logicalH": 38,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05263157894736842
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 5,
+      "alpha": 1,
+      "gameSize": {
+        "w": 20,
+        "h": 24
+      }
+    },
+    "golem": {
+      "cellW": 174,
+      "cellH": 162,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 58,
+      "logicalH": 54,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.037037037037037035
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 8,
+      "alpha": 1,
+      "gameSize": {
+        "w": 36,
+        "h": 40
+      }
+    },
+    "boss": {
+      "cellW": 240,
+      "cellH": 252,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 80,
+      "logicalH": 84,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.023809523809523808
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 9,
+      "alpha": 1,
+      "gameSize": {
+        "w": 48,
+        "h": 58
+      }
+    },
+    "boss2": {
+      "cellW": 276,
+      "cellH": 276,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 92,
+      "logicalH": 92,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.021739130434782608
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 10,
+      "alpha": 1,
+      "gameSize": {
+        "w": 56,
+        "h": 66
+      }
+    },
+    "mosquito": {
+      "cellW": 120,
+      "cellH": 110,
+      "frames": 2,
+      "variants": 1,
+      "logicalW": 40,
+      "logicalH": 36.6667,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05454545454545454
+      ],
+      "foot": 0,
+      "hover": [
+        14,
+        140,
+        3
+      ],
+      "timedMs": 120,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 18,
+        "h": 14
+      }
+    },
+    "toad": {
+      "cellW": 144,
+      "cellH": 102,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 48,
+      "logicalH": 34,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.058823529411764705
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 30,
+        "h": 24
+      }
+    },
+    "lurker": {
+      "cellW": 150,
+      "cellH": 138,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 50,
+      "logicalH": 46,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.043478260869565216
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "wisp": {
+      "error": "no paint(): bw,bh,live"
+    },
+    "toadking": {
+      "cellW": 192,
+      "cellH": 168,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 64,
+      "logicalH": 56,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.03571428571428571
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 44,
+        "h": 38
+      }
+    },
+    "matriarch": {
+      "cellW": 312,
+      "cellH": 324,
+      "frames": 2,
+      "variants": 2,
+      "logicalW": 104,
+      "logicalH": 108,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.018518518518518517
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": 520,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 64,
+        "h": 80
+      }
+    },
+    "iceling": {
+      "cellW": 108,
+      "cellH": 114,
+      "frames": 1,
+      "variants": 1,
+      "logicalW": 36,
+      "logicalH": 38,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05263157894736842
+      ],
+      "foot": 0,
+      "hover": [
+        10,
+        240,
+        2.5
+      ],
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 22,
+        "h": 20
+      }
+    },
+    "frostknight": {
+      "cellW": 162,
+      "cellH": 156,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 54,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 6,
+      "alpha": 1,
+      "gameSize": {
+        "w": 28,
+        "h": 38
+      }
+    },
+    "crystalSpider": {
+      "cellW": 150,
+      "cellH": 120,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 50,
+      "logicalH": 40,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 5,
+      "alpha": 1,
+      "gameSize": {
+        "w": 26,
+        "h": 22
+      }
+    },
+    "icegolem": {
+      "cellW": 168,
+      "cellH": 168,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 56,
+      "logicalH": 56,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.03571428571428571
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 8,
+      "alpha": 1,
+      "gameSize": {
+        "w": 36,
+        "h": 40
+      }
+    },
+    "arbiter": {
+      "cellW": 264,
+      "cellH": 300,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 88,
+      "logicalH": 100,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.02
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 54,
+        "h": 64
+      }
+    },
+    "ancientwyrm": {
+      "cellW": 372,
+      "cellH": 324,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 124,
+      "logicalH": 108,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.018518518518518517
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": 180,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 70,
+        "h": 80
+      }
+    },
+    "cinderhound": {
+      "cellW": 150,
+      "cellH": 126,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 50,
+      "logicalH": 42,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.047619047619047616
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 30,
+        "h": 22
+      }
+    },
+    "slagbrute": {
+      "cellW": 162,
+      "cellH": 162,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 54,
+      "logicalH": 54,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.037037037037037035
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 8,
+      "alpha": 1,
+      "gameSize": {
+        "w": 34,
+        "h": 40
+      }
+    },
+    "bellowdrone": {
+      "cellW": 138,
+      "cellH": 114,
+      "frames": 2,
+      "variants": 1,
+      "logicalW": 46,
+      "logicalH": 38,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05263157894736842
+      ],
+      "foot": 0,
+      "hover": [
+        12,
+        230,
+        3
+      ],
+      "timedMs": 160,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "moltencore": {
+      "cellW": 120,
+      "cellH": 126,
+      "frames": 1,
+      "variants": 1,
+      "logicalW": 40,
+      "logicalH": 42,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.047619047619047616
+      ],
+      "foot": 0,
+      "hover": [
+        8,
+        300,
+        2.5
+      ],
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 26,
+        "h": 26
+      }
+    },
+    "anvilward": {
+      "cellW": 240,
+      "cellH": 210,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 80,
+      "logicalH": 70,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.02857142857142857
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 8,
+      "alpha": 1,
+      "gameSize": {
+        "w": 46,
+        "h": 50
+      }
+    },
+    "ignarok": {
+      "cellW": 408,
+      "cellH": 366,
+      "frames": 2,
+      "variants": 3,
+      "logicalW": 136,
+      "logicalH": 122,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.01639344262295082
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": 300,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 72,
+        "h": 84
+      }
+    },
+    "bandit": {
+      "cellW": 120,
+      "cellH": 156,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 6,
+      "alpha": 1,
+      "gameSize": {
+        "w": 24,
+        "h": 34
+      }
+    },
+    "banditArcher": {
+      "cellW": 138,
+      "cellH": 156,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 46,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 6,
+      "alpha": 1,
+      "gameSize": {
+        "w": 24,
+        "h": 34
+      }
+    },
+    "captain": {
+      "cellW": 144,
+      "cellH": 186,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 48,
+      "logicalH": 62,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.03225806451612903
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 28,
+        "h": 38
+      }
+    },
+    "gravepillar": {
+      "cellW": 132,
+      "cellH": 228,
+      "frames": 1,
+      "variants": 1,
+      "logicalW": 44,
+      "logicalH": 76,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.02631578947368421
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 30,
+        "h": 40
+      }
+    },
+    "bogegg": {
+      "cellW": 96,
+      "cellH": 96,
+      "frames": 1,
+      "variants": 1,
+      "logicalW": 32,
+      "logicalH": 32,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.0625
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 22,
+        "h": 20
+      }
+    },
+    "arbiterclone": {
+      "cellW": 264,
+      "cellH": 300,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 88,
+      "logicalH": 100,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.02
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 0.42,
+      "gameSize": {
+        "w": 54,
+        "h": 64
+      }
+    },
+    "frostwolf": {
+      "cellW": 150,
+      "cellH": 120,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 50,
+      "logicalH": 40,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 30,
+        "h": 22
+      }
+    },
+    "rimewraith": {
+      "cellW": 138,
+      "cellH": 156,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 46,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "foot": 0,
+      "hover": [
+        5,
+        300,
+        2
+      ],
+      "timedMs": 150,
+      "stride": 7,
+      "alpha": 0.9,
+      "gameSize": {
+        "w": 28,
+        "h": 38
+      }
+    },
+    "wyrmling": {
+      "cellW": 204,
+      "cellH": 178,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 68,
+      "logicalH": 59,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.018518518518518517
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": 180,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 38,
+        "h": 44
+      }
+    },
+    "glaciertitan": {
+      "cellW": 294,
+      "cellH": 294,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 98,
+      "logicalH": 98,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.03571428571428571
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 8,
+      "alpha": 1,
+      "gameSize": {
+        "w": 64,
+        "h": 70
+      }
+    },
+    "zahhak": {
+      "cellW": 312,
+      "cellH": 327,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 104,
+      "logicalH": 109,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.023809523809523808
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 9,
+      "alpha": 1,
+      "gameSize": {
+        "w": 60,
+        "h": 72
+      }
+    },
+    "kondrow": {
+      "cellW": 175,
+      "cellH": 226,
+      "frames": 4,
+      "variants": 2,
+      "logicalW": 59,
+      "logicalH": 76,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.03225806451612903
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 34,
+        "h": 46
+      }
+    },
+    "serpentguard": {
+      "cellW": 132,
+      "cellH": 156,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 44,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 6,
+      "alpha": 1,
+      "gameSize": {
+        "w": 24,
+        "h": 34
+      }
+    },
+    "serpentarcher": {
+      "cellW": 138,
+      "cellH": 156,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 46,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 6,
+      "alpha": 1,
+      "gameSize": {
+        "w": 24,
+        "h": 34
+      }
+    },
+    "serpent": {
+      "cellW": 150,
+      "cellH": 108,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 50,
+      "logicalH": 36,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05555555555555555
+      ],
+      "foot": 0,
+      "hover": null,
+      "timedMs": null,
+      "stride": 7,
+      "alpha": 1,
+      "gameSize": {
+        "w": 30,
+        "h": 20
+      }
+    },
+    "alborzwarden": {
+      "cellW": 204,
+      "cellH": 234,
+      "frames": 4,
+      "variants": 1,
+      "logicalW": 68,
+      "logicalH": 78,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.01282051282051282
+      ],
+      "timedMs": 160,
+      "stride": 0,
+      "alpha": 1,
+      "gameSize": {
+        "w": 68,
+        "h": 78
+      },
+      "file": "alborzwarden",
+      "extension": "svg"
+    }
   },
-  "skeleton": {
-   "cellW": 114,
-   "cellH": 144,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 38,
-   "logicalH": 48,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.041666666666666664
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 6,
-   "alpha": 1,
-   "gameSize": {
-    "w": 26,
-    "h": 36
-   }
+  "heroes": {
+    "warrior_starter": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 1,
+      "armorTier": 0,
+      "attackFrameFiles": [
+        [
+          "warrior_starter_attack/down_0.png",
+          "warrior_starter_attack/down_1.png",
+          "warrior_starter_attack/down_2.png",
+          "warrior_starter_attack/down_3.png"
+        ],
+        [
+          "warrior_starter_attack/up_0.png",
+          "warrior_starter_attack/up_1.png",
+          "warrior_starter_attack/up_2.png",
+          "warrior_starter_attack/up_3.png"
+        ],
+        [
+          "warrior_starter_attack/side_0.png",
+          "warrior_starter_attack/side_1.png",
+          "warrior_starter_attack/side_2.png",
+          "warrior_starter_attack/side_3.png"
+        ]
+      ],
+      "attackFrames": 4,
+      "attackFps": 24,
+      "attackImpactFrame": 2
+    },
+    "warrior_mid": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 3,
+      "armorTier": 2
+    },
+    "warrior_endgame": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 6,
+      "armorTier": 5
+    },
+    "mage_starter": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 1,
+      "armorTier": 0
+    },
+    "mage_mid": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 3,
+      "armorTier": 2
+    },
+    "mage_endgame": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 6,
+      "armorTier": 5
+    },
+    "rogue_starter": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 1,
+      "armorTier": 0,
+      "attackSheetBase64Parts": [
+        "attack_atlas_data/rogue/part_00.b64",
+        "attack_atlas_data/rogue/part_01.b64",
+        "attack_atlas_data/rogue/part_02.b64",
+        "attack_atlas_data/rogue/part_03.b64",
+        "attack_atlas_data/rogue/part_04.b64",
+        "attack_atlas_data/rogue/part_05.b64",
+        "attack_atlas_data/rogue/part_06.b64",
+        "attack_atlas_data/rogue/part_07.b64",
+        "attack_atlas_data/rogue/part_08.b64",
+        "attack_atlas_data/rogue/part_09.b64"
+      ],
+      "attackFrames": 4,
+      "attackFps": 24,
+      "attackImpactFrame": 2
+    },
+    "rogue_mid": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 3,
+      "armorTier": 2
+    },
+    "rogue_endgame": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 6,
+      "armorTier": 5
+    },
+    "paladin_starter": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 1,
+      "armorTier": 0
+    },
+    "paladin_mid": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 3,
+      "armorTier": 2
+    },
+    "paladin_endgame": {
+      "cellW": 160,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 53.33,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true,
+      "weaponTier": 6,
+      "armorTier": 5
+    }
   },
-  "archer": {
-   "cellW": 120,
-   "cellH": 138,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 40,
-   "logicalH": 46,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.043478260869565216
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 6,
-   "alpha": 1,
-   "gameSize": {
-    "w": 24,
-    "h": 34
-   }
+  "npcs": {
+    "elder": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "smith": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "merchant": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "alchemist": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "brann": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "keeper": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "hesk": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "qaren": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "rostam": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "siavash": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    },
+    "gordafarid": {
+      "cellW": 120,
+      "cellH": 156,
+      "rows": [
+        "down",
+        "up",
+        "side"
+      ],
+      "cols": [
+        "walk0",
+        "walk1",
+        "walk2",
+        "walk3",
+        "attack"
+      ],
+      "logicalW": 40,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "flipSideForLeft": true
+    }
   },
-  "wraith": {
-   "cellW": 138,
-   "cellH": 156,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 46,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "foot": 0,
-   "hover": [
-    5,
-    300,
-    2
-   ],
-   "timedMs": 150,
-   "stride": 7,
-   "alpha": 0.9,
-   "gameSize": {
-    "w": 28,
-    "h": 38
-   }
+  "props": {
+    "bush": {
+      "cellW": 114,
+      "cellH": 90,
+      "variants": 4,
+      "logicalW": 38,
+      "logicalH": 30,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.06666666666666667
+      ],
+      "light": null,
+      "animated": false
+    },
+    "rock": {
+      "cellW": 90,
+      "cellH": 66,
+      "variants": 4,
+      "logicalW": 30,
+      "logicalH": 22,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.09090909090909091
+      ],
+      "light": null,
+      "animated": false
+    },
+    "stump": {
+      "cellW": 84,
+      "cellH": 72,
+      "variants": 1,
+      "logicalW": 28,
+      "logicalH": 24,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.08333333333333333
+      ],
+      "light": null,
+      "animated": false
+    },
+    "barrel": {
+      "cellW": 72,
+      "cellH": 84,
+      "variants": 1,
+      "logicalW": 24,
+      "logicalH": 28,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.07142857142857142
+      ],
+      "light": null,
+      "animated": false
+    },
+    "crate": {
+      "cellW": 78,
+      "cellH": 78,
+      "variants": 1,
+      "logicalW": 26,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.07692307692307693
+      ],
+      "light": null,
+      "animated": false
+    },
+    "lamp": {
+      "cellW": 60,
+      "cellH": 180,
+      "variants": 1,
+      "logicalW": 20,
+      "logicalH": 60,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.03333333333333333
+      ],
+      "light": {
+        "dy": -48,
+        "r": 150,
+        "i": 0.85,
+        "c": "#ffcf80"
+      },
+      "animated": true
+    },
+    "torch": {
+      "cellW": 48,
+      "cellH": 102,
+      "variants": 1,
+      "logicalW": 16,
+      "logicalH": 34,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.058823529411764705
+      ],
+      "light": {
+        "dy": -24,
+        "r": 140,
+        "i": 0.85,
+        "c": "#ffb060"
+      },
+      "animated": true
+    },
+    "brazier": {
+      "cellW": 90,
+      "cellH": 102,
+      "variants": 1,
+      "logicalW": 30,
+      "logicalH": 34,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.058823529411764705
+      ],
+      "light": {
+        "dy": -24,
+        "r": 170,
+        "i": 0.9,
+        "c": "#ffa050"
+      },
+      "animated": true
+    },
+    "icebrazier": {
+      "cellW": 90,
+      "cellH": 102,
+      "variants": 1,
+      "logicalW": 30,
+      "logicalH": 34,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.058823529411764705
+      ],
+      "light": {
+        "dy": -24,
+        "r": 160,
+        "i": 0.85,
+        "c": "#9fdcff"
+      },
+      "animated": true
+    },
+    "campfire": {
+      "cellW": 102,
+      "cellH": 66,
+      "variants": 1,
+      "logicalW": 34,
+      "logicalH": 22,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.09090909090909091
+      ],
+      "light": {
+        "dy": -8,
+        "r": 170,
+        "i": 0.9,
+        "c": "#ffa050"
+      },
+      "animated": true
+    },
+    "cauldron": {
+      "cellW": 102,
+      "cellH": 96,
+      "variants": 1,
+      "logicalW": 34,
+      "logicalH": 32,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.0625
+      ],
+      "light": {
+        "dy": -16,
+        "r": 110,
+        "i": 0.6,
+        "c": "#8fff7a"
+      },
+      "animated": true
+    },
+    "stall": {
+      "cellW": 234,
+      "cellH": 186,
+      "variants": 1,
+      "logicalW": 78,
+      "logicalH": 62,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.03225806451612903
+      ],
+      "light": null,
+      "animated": false
+    },
+    "anvil": {
+      "cellW": 102,
+      "cellH": 78,
+      "variants": 1,
+      "logicalW": 34,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.07692307692307693
+      ],
+      "light": null,
+      "animated": false
+    },
+    "rack": {
+      "cellW": 102,
+      "cellH": 114,
+      "variants": 1,
+      "logicalW": 34,
+      "logicalH": 38,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05263157894736842
+      ],
+      "light": null,
+      "animated": false
+    },
+    "tent": {
+      "cellW": 180,
+      "cellH": 138,
+      "variants": 1,
+      "logicalW": 60,
+      "logicalH": 46,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.043478260869565216
+      ],
+      "light": null,
+      "animated": false
+    },
+    "sign": {
+      "cellW": 90,
+      "cellH": 120,
+      "variants": 1,
+      "logicalW": 30,
+      "logicalH": 40,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.05
+      ],
+      "light": null,
+      "animated": false
+    },
+    "hay": {
+      "cellW": 114,
+      "cellH": 84,
+      "variants": 1,
+      "logicalW": 38,
+      "logicalH": 28,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.07142857142857142
+      ],
+      "light": null,
+      "animated": false
+    },
+    "fence": {
+      "cellW": 144,
+      "cellH": 66,
+      "variants": 1,
+      "logicalW": 48,
+      "logicalH": 22,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.09090909090909091
+      ],
+      "light": null,
+      "animated": false
+    },
+    "deadtree": {
+      "cellW": 192,
+      "cellH": 252,
+      "variants": 4,
+      "logicalW": 64,
+      "logicalH": 84,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.023809523809523808
+      ],
+      "light": null,
+      "animated": false
+    },
+    "reeds": {
+      "cellW": 84,
+      "cellH": 90,
+      "variants": 4,
+      "logicalW": 28,
+      "logicalH": 30,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.06666666666666667
+      ],
+      "light": null,
+      "animated": false
+    },
+    "glowshroom": {
+      "cellW": 72,
+      "cellH": 60,
+      "variants": 1,
+      "logicalW": 24,
+      "logicalH": 20,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.1
+      ],
+      "light": {
+        "dy": -6,
+        "r": 80,
+        "i": 0.55,
+        "c": "#7affd0"
+      },
+      "animated": false
+    },
+    "smallcrystal": {
+      "cellW": 72,
+      "cellH": 90,
+      "variants": 1,
+      "logicalW": 24,
+      "logicalH": 30,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.06666666666666667
+      ],
+      "light": {
+        "dy": -10,
+        "r": 70,
+        "i": 0.45,
+        "c": "#9fdcff"
+      },
+      "animated": false
+    },
+    "vent": {
+      "cellW": 90,
+      "cellH": 54,
+      "variants": 1,
+      "logicalW": 30,
+      "logicalH": 18,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.1111111111111111
+      ],
+      "light": null,
+      "animated": true
+    },
+    "coffin": {
+      "cellW": 84,
+      "cellH": 144,
+      "variants": 1,
+      "logicalW": 28,
+      "logicalH": 48,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.041666666666666664
+      ],
+      "light": null,
+      "animated": false
+    },
+    "bones": {
+      "cellW": 84,
+      "cellH": 54,
+      "variants": 1,
+      "logicalW": 28,
+      "logicalH": 18,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.1111111111111111
+      ],
+      "light": null,
+      "animated": false
+    },
+    "ingots": {
+      "cellW": 90,
+      "cellH": 54,
+      "variants": 1,
+      "logicalW": 30,
+      "logicalH": 18,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.1111111111111111
+      ],
+      "light": null,
+      "animated": false
+    },
+    "coal": {
+      "cellW": 90,
+      "cellH": 54,
+      "variants": 1,
+      "logicalW": 30,
+      "logicalH": 18,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.1111111111111111
+      ],
+      "light": null,
+      "animated": false
+    },
+    "banner": {
+      "cellW": 72,
+      "cellH": 156,
+      "variants": 1,
+      "logicalW": 24,
+      "logicalH": 52,
+      "pxPerUnitLogical": 3,
+      "pivot": [
+        0.5,
+        0.038461538461538464
+      ],
+      "light": null,
+      "animated": false
+    }
   },
-  "bat": {
-   "cellW": 150,
-   "cellH": 120,
-   "frames": 2,
-   "variants": 1,
-   "logicalW": 50,
-   "logicalH": 40,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05
-   ],
-   "foot": 0,
-   "hover": [
-    12,
-    160,
-    3
-   ],
-   "timedMs": 140,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 22,
-    "h": 16
-   }
+  "items": {
+    "potion": {
+      "w": 60,
+      "h": 78,
+      "logicalW": 20,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#ff5a7a"
+    },
+    "mana_potion": {
+      "w": 60,
+      "h": 78,
+      "logicalW": 20,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#5a9aff"
+    },
+    "greater_potion": {
+      "w": 69,
+      "h": 90,
+      "logicalW": 23,
+      "logicalH": 30,
+      "pxPerUnitLogical": 3,
+      "glow": "#ff7090"
+    },
+    "herb": {
+      "w": 72,
+      "h": 78,
+      "logicalW": 24,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#7ad44a"
+    },
+    "chest": {
+      "w": 96,
+      "h": 84,
+      "logicalW": 32,
+      "logicalH": 28,
+      "pxPerUnitLogical": 3,
+      "glow": null
+    },
+    "relic": {
+      "w": 72,
+      "h": 78,
+      "logicalW": 24,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#ff8a3c"
+    },
+    "relic_frost": {
+      "w": 72,
+      "h": 84,
+      "logicalW": 24,
+      "logicalH": 28,
+      "pxPerUnitLogical": 3,
+      "glow": "#9fdcff"
+    },
+    "relic_essence": {
+      "w": 72,
+      "h": 72,
+      "logicalW": 24,
+      "logicalH": 24,
+      "pxPerUnitLogical": 3,
+      "glow": "#7ac8ff"
+    },
+    "fire_scroll": {
+      "w": 60,
+      "h": 78,
+      "logicalW": 20,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#ff8a3c"
+    },
+    "ice_scroll": {
+      "w": 60,
+      "h": 78,
+      "logicalW": 20,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#74d1d5"
+    },
+    "regen_scroll": {
+      "w": 60,
+      "h": 78,
+      "logicalW": 20,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#7fd15f"
+    },
+    "frost_scroll": {
+      "w": 60,
+      "h": 78,
+      "logicalW": 20,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#a8d4ff"
+    },
+    "haste_scroll": {
+      "w": 60,
+      "h": 78,
+      "logicalW": 20,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#f0b45b"
+    },
+    "wyrm_key": {
+      "w": 90,
+      "h": 54,
+      "logicalW": 30,
+      "logicalH": 18,
+      "pxPerUnitLogical": 3,
+      "glow": "#5ac8d8"
+    },
+    "obsidian": {
+      "w": 72,
+      "h": 84,
+      "logicalW": 24,
+      "logicalH": 28,
+      "pxPerUnitLogical": 3,
+      "glow": "#9d7ce8"
+    },
+    "warden_core": {
+      "w": 84,
+      "h": 84,
+      "logicalW": 28,
+      "logicalH": 28,
+      "pxPerUnitLogical": 3,
+      "glow": "#ffb14a"
+    },
+    "accessory": {
+      "w": 72,
+      "h": 72,
+      "logicalW": 24,
+      "logicalH": 24,
+      "pxPerUnitLogical": 3,
+      "glow": null
+    },
+    "strongbox": {
+      "w": 90,
+      "h": 78,
+      "logicalW": 30,
+      "logicalH": 26,
+      "pxPerUnitLogical": 3,
+      "glow": "#ffd27a"
+    },
+    "ledger": {
+      "w": 72,
+      "h": 66,
+      "logicalW": 24,
+      "logicalH": 22,
+      "pxPerUnitLogical": 3,
+      "glow": "#e8d8a0"
+    }
   },
-  "imp": {
-   "cellW": 108,
-   "cellH": 114,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 36,
-   "logicalH": 38,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05263157894736842
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 5,
-   "alpha": 1,
-   "gameSize": {
-    "w": 20,
-    "h": 24
-   }
-  },
-  "golem": {
-   "cellW": 174,
-   "cellH": 162,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 58,
-   "logicalH": 54,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.037037037037037035
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 8,
-   "alpha": 1,
-   "gameSize": {
-    "w": 36,
-    "h": 40
-   }
-  },
-  "boss": {
-   "cellW": 240,
-   "cellH": 252,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 80,
-   "logicalH": 84,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.023809523809523808
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 9,
-   "alpha": 1,
-   "gameSize": {
-    "w": 48,
-    "h": 58
-   }
-  },
-  "boss2": {
-   "cellW": 276,
-   "cellH": 276,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 92,
-   "logicalH": 92,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.021739130434782608
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 10,
-   "alpha": 1,
-   "gameSize": {
-    "w": 56,
-    "h": 66
-   }
-  },
-  "mosquito": {
-   "cellW": 120,
-   "cellH": 110,
-   "frames": 2,
-   "variants": 1,
-   "logicalW": 40,
-   "logicalH": 36.6667,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05454545454545454
-   ],
-   "foot": 0,
-   "hover": [
-    14,
-    140,
-    3
-   ],
-   "timedMs": 120,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 18,
-    "h": 14
-   }
-  },
-  "toad": {
-   "cellW": 144,
-   "cellH": 102,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 48,
-   "logicalH": 34,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.058823529411764705
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 30,
-    "h": 24
-   }
-  },
-  "lurker": {
-   "cellW": 150,
-   "cellH": 138,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 50,
-   "logicalH": 46,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.043478260869565216
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 32,
-    "h": 32
-   }
-  },
-  "wisp": {
-   "error": "no paint(): bw,bh,live"
-  },
-  "toadking": {
-   "cellW": 192,
-   "cellH": 168,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 64,
-   "logicalH": 56,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.03571428571428571
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 44,
-    "h": 38
-   }
-  },
-  "matriarch": {
-   "cellW": 312,
-   "cellH": 324,
-   "frames": 2,
-   "variants": 2,
-   "logicalW": 104,
-   "logicalH": 108,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.018518518518518517
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": 520,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 64,
-    "h": 80
-   }
-  },
-  "iceling": {
-   "cellW": 108,
-   "cellH": 114,
-   "frames": 1,
-   "variants": 1,
-   "logicalW": 36,
-   "logicalH": 38,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05263157894736842
-   ],
-   "foot": 0,
-   "hover": [
-    10,
-    240,
-    2.5
-   ],
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 22,
-    "h": 20
-   }
-  },
-  "frostknight": {
-   "cellW": 162,
-   "cellH": 156,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 54,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 6,
-   "alpha": 1,
-   "gameSize": {
-    "w": 28,
-    "h": 38
-   }
-  },
-  "crystalSpider": {
-   "cellW": 150,
-   "cellH": 120,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 50,
-   "logicalH": 40,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 5,
-   "alpha": 1,
-   "gameSize": {
-    "w": 26,
-    "h": 22
-   }
-  },
-  "icegolem": {
-   "cellW": 168,
-   "cellH": 168,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 56,
-   "logicalH": 56,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.03571428571428571
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 8,
-   "alpha": 1,
-   "gameSize": {
-    "w": 36,
-    "h": 40
-   }
-  },
-  "arbiter": {
-   "cellW": 264,
-   "cellH": 300,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 88,
-   "logicalH": 100,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.02
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 54,
-    "h": 64
-   }
-  },
-  "ancientwyrm": {
-   "cellW": 372,
-   "cellH": 324,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 124,
-   "logicalH": 108,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.018518518518518517
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": 180,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 70,
-    "h": 80
-   }
-  },
-  "cinderhound": {
-   "cellW": 150,
-   "cellH": 126,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 50,
-   "logicalH": 42,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.047619047619047616
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 30,
-    "h": 22
-   }
-  },
-  "slagbrute": {
-   "cellW": 162,
-   "cellH": 162,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 54,
-   "logicalH": 54,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.037037037037037035
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 8,
-   "alpha": 1,
-   "gameSize": {
-    "w": 34,
-    "h": 40
-   }
-  },
-  "bellowdrone": {
-   "cellW": 138,
-   "cellH": 114,
-   "frames": 2,
-   "variants": 1,
-   "logicalW": 46,
-   "logicalH": 38,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05263157894736842
-   ],
-   "foot": 0,
-   "hover": [
-    12,
-    230,
-    3
-   ],
-   "timedMs": 160,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 24,
-    "h": 24
-   }
-  },
-  "moltencore": {
-   "cellW": 120,
-   "cellH": 126,
-   "frames": 1,
-   "variants": 1,
-   "logicalW": 40,
-   "logicalH": 42,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.047619047619047616
-   ],
-   "foot": 0,
-   "hover": [
-    8,
-    300,
-    2.5
-   ],
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 26,
-    "h": 26
-   }
-  },
-  "anvilward": {
-   "cellW": 240,
-   "cellH": 210,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 80,
-   "logicalH": 70,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.02857142857142857
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 8,
-   "alpha": 1,
-   "gameSize": {
-    "w": 46,
-    "h": 50
-   }
-  },
-  "ignarok": {
-   "cellW": 408,
-   "cellH": 366,
-   "frames": 2,
-   "variants": 3,
-   "logicalW": 136,
-   "logicalH": 122,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.01639344262295082
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": 300,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 72,
-    "h": 84
-   }
-  },
-  "bandit": {
-   "cellW": 120,
-   "cellH": 156,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 6,
-   "alpha": 1,
-   "gameSize": {
-    "w": 24,
-    "h": 34
-   }
-  },
-  "banditArcher": {
-   "cellW": 138,
-   "cellH": 156,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 46,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 6,
-   "alpha": 1,
-   "gameSize": {
-    "w": 24,
-    "h": 34
-   }
-  },
-  "captain": {
-   "cellW": 144,
-   "cellH": 186,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 48,
-   "logicalH": 62,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.03225806451612903
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 28,
-    "h": 38
-   }
-  },
-  "gravepillar": {
-   "cellW": 132,
-   "cellH": 228,
-   "frames": 1,
-   "variants": 1,
-   "logicalW": 44,
-   "logicalH": 76,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.02631578947368421
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 30,
-    "h": 40
-   }
-  },
-  "bogegg": {
-   "cellW": 96,
-   "cellH": 96,
-   "frames": 1,
-   "variants": 1,
-   "logicalW": 32,
-   "logicalH": 32,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.0625
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 22,
-    "h": 20
-   }
-  },
-  "arbiterclone": {
-   "cellW": 264,
-   "cellH": 300,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 88,
-   "logicalH": 100,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.02
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 0.42,
-   "gameSize": {
-    "w": 54,
-    "h": 64
-   }
-  },
-  "frostwolf": {
-   "cellW": 150,
-   "cellH": 120,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 50,
-   "logicalH": 40,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 30,
-    "h": 22
-   }
-  },
-  "rimewraith": {
-   "cellW": 138,
-   "cellH": 156,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 46,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "foot": 0,
-   "hover": [
-    5,
-    300,
-    2
-   ],
-   "timedMs": 150,
-   "stride": 7,
-   "alpha": 0.9,
-   "gameSize": {
-    "w": 28,
-    "h": 38
-   }
-  },
-  "wyrmling": {
-   "cellW": 204,
-   "cellH": 178,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 68,
-   "logicalH": 59,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.018518518518518517
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": 180,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 38,
-    "h": 44
-   }
-  },
-  "glaciertitan": {
-   "cellW": 294,
-   "cellH": 294,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 98,
-   "logicalH": 98,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.03571428571428571
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 8,
-   "alpha": 1,
-   "gameSize": {
-    "w": 64,
-    "h": 70
-   }
-  },
-  "zahhak": {
-   "cellW": 312,
-   "cellH": 327,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 104,
-   "logicalH": 109,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.023809523809523808
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 9,
-   "alpha": 1,
-   "gameSize": {
-    "w": 60,
-    "h": 72
-   }
-  },
-  "kondrow": {
-   "cellW": 175,
-   "cellH": 226,
-   "frames": 4,
-   "variants": 2,
-   "logicalW": 59,
-   "logicalH": 76,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.03225806451612903
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 34,
-    "h": 46
-   }
-  },
-  "serpentguard": {
-   "cellW": 132,
-   "cellH": 156,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 44,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 6,
-   "alpha": 1,
-   "gameSize": {
-    "w": 24,
-    "h": 34
-   }
-  },
-  "serpentarcher": {
-   "cellW": 138,
-   "cellH": 156,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 46,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 6,
-   "alpha": 1,
-   "gameSize": {
-    "w": 24,
-    "h": 34
-   }
-  },
-  "serpent": {
-   "cellW": 150,
-   "cellH": 108,
-   "frames": 4,
-   "variants": 1,
-   "logicalW": 50,
-   "logicalH": 36,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05555555555555555
-   ],
-   "foot": 0,
-   "hover": null,
-   "timedMs": null,
-   "stride": 7,
-   "alpha": 1,
-   "gameSize": {
-    "w": 30,
-    "h": 20
-   }
+  "projectiles": {
+    "arrow": {
+      "w": 84,
+      "h": 33,
+      "logicalW": 28,
+      "logicalH": 11
+    },
+    "ice": {
+      "w": 72,
+      "h": 39,
+      "logicalW": 24,
+      "logicalH": 13
+    },
+    "poison": {
+      "w": 45,
+      "h": 45,
+      "logicalW": 15,
+      "logicalH": 15
+    }
   }
- },
- "heroes": {
-  "warrior_starter": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 1,
-   "armorTier": 0,
-   "attackFrameFiles": [
-    [
-     "warrior_starter_attack/down_0.png",
-     "warrior_starter_attack/down_1.png",
-     "warrior_starter_attack/down_2.png",
-     "warrior_starter_attack/down_3.png"
-    ],
-    [
-     "warrior_starter_attack/up_0.png",
-     "warrior_starter_attack/up_1.png",
-     "warrior_starter_attack/up_2.png",
-     "warrior_starter_attack/up_3.png"
-    ],
-    [
-     "warrior_starter_attack/side_0.png",
-     "warrior_starter_attack/side_1.png",
-     "warrior_starter_attack/side_2.png",
-     "warrior_starter_attack/side_3.png"
-    ]
-   ],
-   "attackFrames": 4,
-   "attackFps": 24,
-   "attackImpactFrame": 2
-  },
-  "warrior_mid": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 3,
-   "armorTier": 2
-  },
-  "warrior_endgame": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 6,
-   "armorTier": 5
-  },
-  "mage_starter": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 1,
-   "armorTier": 0
-  },
-  "mage_mid": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 3,
-   "armorTier": 2
-  },
-  "mage_endgame": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 6,
-   "armorTier": 5
-  },
-  "rogue_starter": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 1,
-   "armorTier": 0,
-   "attackSheetBase64Parts": [
-    "attack_atlas_data/rogue/part_00.b64",
-    "attack_atlas_data/rogue/part_01.b64",
-    "attack_atlas_data/rogue/part_02.b64",
-    "attack_atlas_data/rogue/part_03.b64",
-    "attack_atlas_data/rogue/part_04.b64",
-    "attack_atlas_data/rogue/part_05.b64",
-    "attack_atlas_data/rogue/part_06.b64",
-    "attack_atlas_data/rogue/part_07.b64",
-    "attack_atlas_data/rogue/part_08.b64",
-    "attack_atlas_data/rogue/part_09.b64"
-   ],
-   "attackFrames": 4,
-   "attackFps": 24,
-   "attackImpactFrame": 2
-  },
-  "rogue_mid": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 3,
-   "armorTier": 2
-  },
-  "rogue_endgame": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 6,
-   "armorTier": 5
-  },
-  "paladin_starter": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 1,
-   "armorTier": 0
-  },
-  "paladin_mid": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 3,
-   "armorTier": 2
-  },
-  "paladin_endgame": {
-   "cellW": 160,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 53.33,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true,
-   "weaponTier": 6,
-   "armorTier": 5
-  }
- },
- "npcs": {
-  "elder": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "smith": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "merchant": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "alchemist": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "brann": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "keeper": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "hesk": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "qaren": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "rostam": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "siavash": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  },
-  "gordafarid": {
-   "cellW": 120,
-   "cellH": 156,
-   "rows": [
-    "down",
-    "up",
-    "side"
-   ],
-   "cols": [
-    "walk0",
-    "walk1",
-    "walk2",
-    "walk3",
-    "attack"
-   ],
-   "logicalW": 40,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "flipSideForLeft": true
-  }
- },
- "props": {
-  "bush": {
-   "cellW": 114,
-   "cellH": 90,
-   "variants": 4,
-   "logicalW": 38,
-   "logicalH": 30,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.06666666666666667
-   ],
-   "light": null,
-   "animated": false
-  },
-  "rock": {
-   "cellW": 90,
-   "cellH": 66,
-   "variants": 4,
-   "logicalW": 30,
-   "logicalH": 22,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.09090909090909091
-   ],
-   "light": null,
-   "animated": false
-  },
-  "stump": {
-   "cellW": 84,
-   "cellH": 72,
-   "variants": 1,
-   "logicalW": 28,
-   "logicalH": 24,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.08333333333333333
-   ],
-   "light": null,
-   "animated": false
-  },
-  "barrel": {
-   "cellW": 72,
-   "cellH": 84,
-   "variants": 1,
-   "logicalW": 24,
-   "logicalH": 28,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.07142857142857142
-   ],
-   "light": null,
-   "animated": false
-  },
-  "crate": {
-   "cellW": 78,
-   "cellH": 78,
-   "variants": 1,
-   "logicalW": 26,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.07692307692307693
-   ],
-   "light": null,
-   "animated": false
-  },
-  "lamp": {
-   "cellW": 60,
-   "cellH": 180,
-   "variants": 1,
-   "logicalW": 20,
-   "logicalH": 60,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.03333333333333333
-   ],
-   "light": {
-    "dy": -48,
-    "r": 150,
-    "i": 0.85,
-    "c": "#ffcf80"
-   },
-   "animated": true
-  },
-  "torch": {
-   "cellW": 48,
-   "cellH": 102,
-   "variants": 1,
-   "logicalW": 16,
-   "logicalH": 34,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.058823529411764705
-   ],
-   "light": {
-    "dy": -24,
-    "r": 140,
-    "i": 0.85,
-    "c": "#ffb060"
-   },
-   "animated": true
-  },
-  "brazier": {
-   "cellW": 90,
-   "cellH": 102,
-   "variants": 1,
-   "logicalW": 30,
-   "logicalH": 34,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.058823529411764705
-   ],
-   "light": {
-    "dy": -24,
-    "r": 170,
-    "i": 0.9,
-    "c": "#ffa050"
-   },
-   "animated": true
-  },
-  "icebrazier": {
-   "cellW": 90,
-   "cellH": 102,
-   "variants": 1,
-   "logicalW": 30,
-   "logicalH": 34,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.058823529411764705
-   ],
-   "light": {
-    "dy": -24,
-    "r": 160,
-    "i": 0.85,
-    "c": "#9fdcff"
-   },
-   "animated": true
-  },
-  "campfire": {
-   "cellW": 102,
-   "cellH": 66,
-   "variants": 1,
-   "logicalW": 34,
-   "logicalH": 22,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.09090909090909091
-   ],
-   "light": {
-    "dy": -8,
-    "r": 170,
-    "i": 0.9,
-    "c": "#ffa050"
-   },
-   "animated": true
-  },
-  "cauldron": {
-   "cellW": 102,
-   "cellH": 96,
-   "variants": 1,
-   "logicalW": 34,
-   "logicalH": 32,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.0625
-   ],
-   "light": {
-    "dy": -16,
-    "r": 110,
-    "i": 0.6,
-    "c": "#8fff7a"
-   },
-   "animated": true
-  },
-  "stall": {
-   "cellW": 234,
-   "cellH": 186,
-   "variants": 1,
-   "logicalW": 78,
-   "logicalH": 62,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.03225806451612903
-   ],
-   "light": null,
-   "animated": false
-  },
-  "anvil": {
-   "cellW": 102,
-   "cellH": 78,
-   "variants": 1,
-   "logicalW": 34,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.07692307692307693
-   ],
-   "light": null,
-   "animated": false
-  },
-  "rack": {
-   "cellW": 102,
-   "cellH": 114,
-   "variants": 1,
-   "logicalW": 34,
-   "logicalH": 38,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05263157894736842
-   ],
-   "light": null,
-   "animated": false
-  },
-  "tent": {
-   "cellW": 180,
-   "cellH": 138,
-   "variants": 1,
-   "logicalW": 60,
-   "logicalH": 46,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.043478260869565216
-   ],
-   "light": null,
-   "animated": false
-  },
-  "sign": {
-   "cellW": 90,
-   "cellH": 120,
-   "variants": 1,
-   "logicalW": 30,
-   "logicalH": 40,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.05
-   ],
-   "light": null,
-   "animated": false
-  },
-  "hay": {
-   "cellW": 114,
-   "cellH": 84,
-   "variants": 1,
-   "logicalW": 38,
-   "logicalH": 28,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.07142857142857142
-   ],
-   "light": null,
-   "animated": false
-  },
-  "fence": {
-   "cellW": 144,
-   "cellH": 66,
-   "variants": 1,
-   "logicalW": 48,
-   "logicalH": 22,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.09090909090909091
-   ],
-   "light": null,
-   "animated": false
-  },
-  "deadtree": {
-   "cellW": 192,
-   "cellH": 252,
-   "variants": 4,
-   "logicalW": 64,
-   "logicalH": 84,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.023809523809523808
-   ],
-   "light": null,
-   "animated": false
-  },
-  "reeds": {
-   "cellW": 84,
-   "cellH": 90,
-   "variants": 4,
-   "logicalW": 28,
-   "logicalH": 30,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.06666666666666667
-   ],
-   "light": null,
-   "animated": false
-  },
-  "glowshroom": {
-   "cellW": 72,
-   "cellH": 60,
-   "variants": 1,
-   "logicalW": 24,
-   "logicalH": 20,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.1
-   ],
-   "light": {
-    "dy": -6,
-    "r": 80,
-    "i": 0.55,
-    "c": "#7affd0"
-   },
-   "animated": false
-  },
-  "smallcrystal": {
-   "cellW": 72,
-   "cellH": 90,
-   "variants": 1,
-   "logicalW": 24,
-   "logicalH": 30,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.06666666666666667
-   ],
-   "light": {
-    "dy": -10,
-    "r": 70,
-    "i": 0.45,
-    "c": "#9fdcff"
-   },
-   "animated": false
-  },
-  "vent": {
-   "cellW": 90,
-   "cellH": 54,
-   "variants": 1,
-   "logicalW": 30,
-   "logicalH": 18,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.1111111111111111
-   ],
-   "light": null,
-   "animated": true
-  },
-  "coffin": {
-   "cellW": 84,
-   "cellH": 144,
-   "variants": 1,
-   "logicalW": 28,
-   "logicalH": 48,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.041666666666666664
-   ],
-   "light": null,
-   "animated": false
-  },
-  "bones": {
-   "cellW": 84,
-   "cellH": 54,
-   "variants": 1,
-   "logicalW": 28,
-   "logicalH": 18,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.1111111111111111
-   ],
-   "light": null,
-   "animated": false
-  },
-  "ingots": {
-   "cellW": 90,
-   "cellH": 54,
-   "variants": 1,
-   "logicalW": 30,
-   "logicalH": 18,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.1111111111111111
-   ],
-   "light": null,
-   "animated": false
-  },
-  "coal": {
-   "cellW": 90,
-   "cellH": 54,
-   "variants": 1,
-   "logicalW": 30,
-   "logicalH": 18,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.1111111111111111
-   ],
-   "light": null,
-   "animated": false
-  },
-  "banner": {
-   "cellW": 72,
-   "cellH": 156,
-   "variants": 1,
-   "logicalW": 24,
-   "logicalH": 52,
-   "pxPerUnitLogical": 3,
-   "pivot": [
-    0.5,
-    0.038461538461538464
-   ],
-   "light": null,
-   "animated": false
-  }
- },
- "items": {
-  "potion": {
-   "w": 60,
-   "h": 78,
-   "logicalW": 20,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#ff5a7a"
-  },
-  "mana_potion": {
-   "w": 60,
-   "h": 78,
-   "logicalW": 20,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#5a9aff"
-  },
-  "greater_potion": {
-   "w": 69,
-   "h": 90,
-   "logicalW": 23,
-   "logicalH": 30,
-   "pxPerUnitLogical": 3,
-   "glow": "#ff7090"
-  },
-  "herb": {
-   "w": 72,
-   "h": 78,
-   "logicalW": 24,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#7ad44a"
-  },
-  "chest": {
-   "w": 96,
-   "h": 84,
-   "logicalW": 32,
-   "logicalH": 28,
-   "pxPerUnitLogical": 3,
-   "glow": null
-  },
-  "relic": {
-   "w": 72,
-   "h": 78,
-   "logicalW": 24,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#ff8a3c"
-  },
-  "relic_frost": {
-   "w": 72,
-   "h": 84,
-   "logicalW": 24,
-   "logicalH": 28,
-   "pxPerUnitLogical": 3,
-   "glow": "#9fdcff"
-  },
-  "relic_essence": {
-   "w": 72,
-   "h": 72,
-   "logicalW": 24,
-   "logicalH": 24,
-   "pxPerUnitLogical": 3,
-   "glow": "#7ac8ff"
-  },
-  "fire_scroll": {
-   "w": 60,
-   "h": 78,
-   "logicalW": 20,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#ff8a3c"
-  },
-  "ice_scroll": {
-   "w": 60,
-   "h": 78,
-   "logicalW": 20,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#74d1d5"
-  },
-  "regen_scroll": {
-   "w": 60,
-   "h": 78,
-   "logicalW": 20,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#7fd15f"
-  },
-  "frost_scroll": {
-   "w": 60,
-   "h": 78,
-   "logicalW": 20,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#a8d4ff"
-  },
-  "haste_scroll": {
-   "w": 60,
-   "h": 78,
-   "logicalW": 20,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#f0b45b"
-  },
-  "wyrm_key": {
-   "w": 90,
-   "h": 54,
-   "logicalW": 30,
-   "logicalH": 18,
-   "pxPerUnitLogical": 3,
-   "glow": "#5ac8d8"
-  },
-  "obsidian": {
-   "w": 72,
-   "h": 84,
-   "logicalW": 24,
-   "logicalH": 28,
-   "pxPerUnitLogical": 3,
-   "glow": "#9d7ce8"
-  },
-  "warden_core": {
-   "w": 84,
-   "h": 84,
-   "logicalW": 28,
-   "logicalH": 28,
-   "pxPerUnitLogical": 3,
-   "glow": "#ffb14a"
-  },
-  "accessory": {
-   "w": 72,
-   "h": 72,
-   "logicalW": 24,
-   "logicalH": 24,
-   "pxPerUnitLogical": 3,
-   "glow": null
-  },
-  "strongbox": {
-   "w": 90,
-   "h": 78,
-   "logicalW": 30,
-   "logicalH": 26,
-   "pxPerUnitLogical": 3,
-   "glow": "#ffd27a"
-  },
-  "ledger": {
-   "w": 72,
-   "h": 66,
-   "logicalW": 24,
-   "logicalH": 22,
-   "pxPerUnitLogical": 3,
-   "glow": "#e8d8a0"
-  }
- },
- "projectiles": {
-  "arrow": {
-   "w": 84,
-   "h": 33,
-   "logicalW": 28,
-   "logicalH": 11
-  },
-  "ice": {
-   "w": 72,
-   "h": 39,
-   "logicalW": 24,
-   "logicalH": 13
-  },
-  "poison": {
-   "w": 45,
-   "h": 45,
-   "logicalW": 15,
-   "logicalH": 15
-  }
- }
 }
