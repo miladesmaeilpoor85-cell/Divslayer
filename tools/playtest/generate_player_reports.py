@@ -259,7 +259,7 @@ A subjective experience verdict is **pending human review**. The automated run c
 {report['full_game_completion']['note']}
 """
 
-    dialogue_shots = sum("dialogue" in s["file"].lower() for s in screenshots)
+    readable_text_shots = sum(bool(s["visible_text"].strip()) for s in report["screenshots"] if s["file_present"])
     purchase_events = sum("SHOP_PURCHASE_RESULT" in e for e in report["player_action_evidence"])
     critic = f"""# Critic report — {hero}
 
@@ -267,7 +267,7 @@ A subjective experience verdict is **pending human review**. The automated run c
 
 | Area | Evidence in this run | Assessment |
 |---|---|---|
-| Narrative and dialogue | {dialogue_shots} dialogue-related screenshot name(s); screenshot text is in run-evidence.json | Evidence only; human review required |
+| Narrative and dialogue | {readable_text_shots} screenshot(s) with visible UI text; extracted text is in run-evidence.json | Dialogue quality still requires human review |
 | World and exploration | {len(maps)} observed map(s) | Partial; unvisited areas remain untested |
 | Combat | {report['combat_samples']} combat sample(s) | Tactical and animation quality not scored automatically |
 | Progression and economy | {purchase_events} recorded purchase result(s) | State-change evidence only |
