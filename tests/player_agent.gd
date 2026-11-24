@@ -337,6 +337,7 @@ func _gear_score(item: Dictionary) -> float:
 	return value
 
 func equip_best_accessory() -> String:
+	var bag_start := Game.Gear.bag().size()
 	var worn_before: Dictionary = {}
 	for slot in Game.Gear.SLOTS:
 		worn_before[slot] = Game.Gear.eq().get(slot, null)
@@ -382,6 +383,7 @@ func equip_best_accessory() -> String:
 		var after = Game.Gear.eq().get(slot, null)
 		if before != after:
 			changed.append("%s:%s" % [slot, Game.Gear.item_name(after) if typeof(after) == TYPE_DICTIONARY else "empty"])
+	driver._log("PLAYER_AGENT_GEAR_SCAN class=%s bag_start=%d bag_end=%d upgrades=%d" % [Game.cls, bag_start, Game.Gear.bag().size(), changed.size()])
 	if changed.is_empty():
 		return "kept current accessories; no bag item had a better stat score"
 	Game.save_game()
@@ -472,6 +474,7 @@ func collect_nearby_pickups(max_items := 8) -> String:
 			if best > 260.0:
 				break
 			await driver.wait(0.2)
+	driver._log("PLAYER_AGENT_PICKUP_SCAN map=%s collected=%d skipped=%d kinds=%s" % [str(driver.main.world.key), collected.size(), skipped, ", ".join(collected)])
 	return "collected %d ground pickups%s" % [collected.size(), " (" + ", ".join(collected) + ")" if not collected.is_empty() else ""]
 
 func _choose_dialogue_option() -> String:
@@ -537,6 +540,7 @@ func follow_objective(max_steps := 8) -> String:
 			return "no active objective; " + " | ".join(report)
 		var target_map := str(target.get("map", ""))
 		var current_map := str(driver.main.world.key)
+		driver._log("PLAYER_AGENT_OBJECTIVE map=%s target_map=%s kind=%s pos=%s" % [current_map, target_map, str(target.get("kind", "")), str(target.get("pos", Vector2.ZERO))])
 		if target_map != current_map:
 			var hop := Game.next_hop(current_map, target_map)
 			if hop == "":
