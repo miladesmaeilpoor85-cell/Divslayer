@@ -1014,14 +1014,10 @@ func _step(s: Dictionary) -> Variant:
 			await wait(float(s.get("after", 0.4)))
 			return "tapped %s" % str(p)
 		"tap_text":
-			var c := find_text(str(s.get("text", "")))
-			if c == null:
-				return "NOT FOUND. On screen: " + " | ".join(_texts().map(func(x): return x["t"]))
-			var cp := _win(c.get_global_transform_with_canvas() * (c.size * 0.5))
-			var ctext := str(c.get("text")).left(40)          # read before the tap: the tap may rebuild the menu and free it
-			await tap(cp)
+			var tx := str(s.get("text", ""))
+			var tap_result: String = await player_agent.tap_text(tx)
 			await wait(float(s.get("after", 0.6)))
-			return "tapped '%s' at %s" % [ctext, str(cp)]
+			return tap_result
 		"drag":
 			var a: Array = s.get("from", [400, 300])
 			var b: Array = s.get("to", [400, 100])
