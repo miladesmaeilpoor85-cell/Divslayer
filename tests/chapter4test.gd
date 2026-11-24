@@ -134,9 +134,15 @@ func run(m: Node) -> void:
 	check("entry_and_return_are_on_opposite_edges",
 		Vector2(float(data.get("playerStart", {}).get("x", 0)), float(data.get("playerStart", {}).get("y", 0))).y > 900.0
 		and return_exit_found)
-	check("map_uses_existing_ground_placeholder",
-		str(map_data.get("groundFile", "")) == "frostvale_ground.jpg"
-		and ResourceLoader.exists("res://assets/art/Maps/frostvale_ground.jpg"))
+	check("alborz_uses_dedicated_ground_art",
+		str(map_data.get("groundFile", "")) == "alborz_ground.svg"
+		and ResourceLoader.exists("res://assets/art/Maps/alborz_ground.svg"))
+	var alborz_prop_count := 0
+	for object_data in map_data.get("objects", []):
+		var sprite_meta: Dictionary = Game.obj_sprites.get(str(object_data.get("sprite", "")), {})
+		if str(sprite_meta.get("extension", "")) == "svg":
+			alborz_prop_count += 1
+	check("alborz_uses_dedicated_vector_props", alborz_prop_count == map_data.get("objects", []).size() and alborz_prop_count >= 4, alborz_prop_count)
 	check("map_title_is_localized",
 		Game.map_title("alborz") == "گذرگاهِ البرز")
 
@@ -224,6 +230,16 @@ func run(m: Node) -> void:
 	main.goto_map("alborz_eyrie", Vector2(80, 570))
 	await frames(10)
 	main.player.invuln = 99999.0
+	var eyrie_data := Game.map_data("alborz_eyrie")
+	check("high_eyrie_uses_dedicated_ground_art",
+		str(eyrie_data.get("groundFile", "")) == "alborz_eyrie_ground.svg"
+		and ResourceLoader.exists("res://assets/art/Maps/alborz_eyrie_ground.svg"))
+	var eyrie_prop_count := 0
+	for object_data in eyrie_data.get("objects", []):
+		var sprite_meta: Dictionary = Game.obj_sprites.get(str(object_data.get("sprite", "")), {})
+		if str(sprite_meta.get("extension", "")) == "svg":
+			eyrie_prop_count += 1
+	check("high_eyrie_uses_dedicated_vector_props", eyrie_prop_count == eyrie_data.get("objects", []).size() and eyrie_prop_count >= 4, eyrie_prop_count)
 	var eyrie_world = main.world
 	var gale_warden: Node = null
 	for enemy in get_tree().get_nodes_in_group("bosses"):
@@ -239,9 +255,12 @@ func run(m: Node) -> void:
 		check("gale_warden_uses_three_separate_telegraphed_lanes",
 			gale_warden.moves.has("crosswind") and eyrie_world.bossfx.tele.size() == 3,
 			{"moves": gale_warden.moves, "telegraphs": eyrie_world.bossfx.tele.size()})
-		check("gale_warden_has_three_health_phases_and_procedural_silhouette",
+		var warden_frames: SpriteFrames = gale_warden.anim.sprite_frames if gale_warden.anim != null else null
+		check("gale_warden_has_three_health_phases_and_dedicated_four_frame_sprite",
 			Game.boss_cfg("alborzwarden").get("phases", []) == [0.66, 0.33]
-			and gale_warden.over != null and (gale_warden.anim == null or not gale_warden.anim.visible))
+			and gale_warden.over != null and gale_warden.anim != null and gale_warden.anim.visible
+			and warden_frames != null and warden_frames.has_animation("v0")
+			and warden_frames.get_frame_count("v0") == 4 and warden_frames.get_animation_speed("v0") > 0.0)
 	main.goto_map("alborz", Vector2(1290, 520))
 	await frames(5)
 
