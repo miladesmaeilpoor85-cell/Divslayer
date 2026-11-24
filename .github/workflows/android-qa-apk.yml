@@ -210,10 +210,14 @@ jobs:
             adb logcat -c
             timeout 240s adb install -r build/android/Divslayer-QA.apk
             adb shell pm path com.example.divslayer.qa | grep -F 'package:'
-            launcher="$(timeout 30s adb shell cmd package resolve-activity --brief --user 0 -a android.intent.action.MAIN -c android.intent.category.LAUNCHER com.example.divslayer.qa | tr -d '\r')"
-            printf '%s\n' "$launcher"
-            printf '%s\n' "$launcher" | grep -F 'com.example.divslayer.qa/'
-            timeout 60s adb shell monkey -p com.example.divslayer.qa 1
+            # The exported manifest is verified above: GodotAppLauncher is an enabled,
+            # exported activity-alias with MAIN + LAUNCHER. Launch that exact component.
+            # Passing the package as a bare trailing token to cmd package resolve-activity
+            # is parsed inconsistently by Android 16's PackageManager shell.
+            launch_result="$(timeout 60s adb shell am start -W -n com.example.divslayer.qa/com.godot.game.GodotAppLauncher 2>&1 | tr -d '\r')"
+            printf '%s\n' "$launch_result"
+            printf '%s\n' "$launch_result" | grep -F 'Status: ok'
+            printf '%s\n' "$launch_result" | grep -F 'com.example.divslayer.qa/com.godot.game.GodotAppLauncher'
             sleep 20
 
             timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt
