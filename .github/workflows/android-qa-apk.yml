@@ -154,6 +154,9 @@ jobs:
           }
           python3 tools/enforce_quality_first_imports.py
           run_godot_checked import godot --headless --editor --path . --quit
+          # Godot's import pass can regenerate image sidecars with defaults.
+          # Re-apply the quality policy after import, then audit the final sidecars.
+          python3 tools/enforce_quality_first_imports.py
           python3 tools/quality_first_audit.py
           python3 tools/enforce_quality_first_imports.py --check
           run_godot_checked export godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
