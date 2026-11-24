@@ -651,7 +651,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var kills := 0
 	var seen := {}
 	var next_shot := shots_every
-	var spell_t := 1.8
+	var spell_interval_min := 1.0 if Game.cls == "mage" else 2.2
+	var spell_interval_max := 1.5 if Game.cls == "mage" else 3.4
+	var spell_t := 1.0 if Game.cls == "mage" else 1.8
 	var heavy_t := randf_range(5.0, 8.0)
 	var signature_t := randf_range(3.0, 5.0)
 	var pots := 0
@@ -663,9 +665,10 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var heavy_actions := 0
 	var sneak_actions := 0
 	var hp_low := 1.0
-	# Focused boss samples use a cautious player policy; ordinary skirmishes keep
-	# the original potion threshold so this does not inflate campaign survivability.
-	var potion_threshold := 0.64 if Game.cls == "mage" else (0.48 if focus_type != "" else 0.38)
+	# Mage keeps one health potion in reserve during ordinary encounters for the
+	# chapter boss. The boss encounter then uses the normal early-heal threshold.
+	var potion_threshold := 0.64 if Game.cls == "mage" and focus_type != "" else (0.42 if Game.cls == "mage" else (0.48 if focus_type != "" else 0.38))
+	var potion_reserve := 1 if Game.cls == "mage" and focus_type == "" else 0
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
 	var boss_hp_before := {}
@@ -685,6 +688,10 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var ended := "time"
 	if focus_type != "":
 		_log("PLAYER_AGENT_POLICY target=%s telegraph_read=100%% projectile_prediction=enabled reaction=humanized shield_parry=enabled spells=adaptive" % focus_type)
+	if Game.cls == "mage":
+		_log("PLAYER_AGENT_MAGE_POLICY potion_reserve=%d preferred_range=210 retreat_distance=%d spell_interval=%.1f-%.1fs" % [
+			potion_reserve, 180 if focus_type != "" else 150, spell_interval_min, spell_interval_max
+		])
 	var map0: String = main.world.key
 	var last := _feet()
 	var stuck := 0.0
@@ -823,7 +830,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			_log("FIGHT_PROGRESS elapsed=%.1f/%.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
 			last_progress = t
 		hp_low = min(hp_low, Game.hp / Game.max_hp())
-		if Game.hp < potion_threshold * Game.max_hp() and int(Game.state.get("potions", 0)) > 0:
+		if Game.hp < potion_threshold * Game.max_hp() and int(Game.state.get("potions", 0)) > potion_reserve:
 			await press("potion")
 			pots += 1
 		if not _fight_target_is_live(tgt):
@@ -895,9 +902,10 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			await stick(Vector2.ZERO)
 			continue
 		var preferred_range := reach
+		var mage_retreat_distance := 180.0 if focus_type != "" else 150.0
 		if Game.cls == "mage" and not target_is_pillar:
-			preferred_range = maxf(reach + 72.0, 122.0)
-		if Game.cls == "mage" and to.length() < 112.0 and away == Vector2.ZERO and not target_is_pillar:
+			preferred_range = maxf(reach + 130.0, 210.0)
+		if Game.cls == "mage" and to.length() < mage_retreat_distance and away == Vector2.ZERO and not target_is_pillar:
 			# A mage keeps more room against ordinary melee threats; when pressure closes,
 			# retreat through the real movement control and sometimes roll to create space.
 			# The earlier 82 px threshold let several crypt foes overlap the light-armour Mage.
@@ -1002,7 +1010,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				enemies_close += 1
 		spell_t -= 0.1
 		if spell_t <= 0.0 and away == Vector2.ZERO:
-			spell_t = randf_range(2.2, 3.4)
+			spell_t = randf_range(spell_interval_min, spell_interval_max)
 			var slots: Array = Game.slots()
 			for slot_index in 2:
 				var spell_id := str(slots[slot_index])

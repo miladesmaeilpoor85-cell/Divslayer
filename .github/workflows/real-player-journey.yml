@@ -142,6 +142,9 @@ jobs:
           assert "side=opposite_boss" in playtest_source, "The player must flank pillars so the game's own aim assist can select them"
           assert "PLAYER_AGENT_PILLAR_DAMAGED" in playtest_source, "Pillar attack results must be measured from actual HP changes"
           assert "PLAYER_AGENT_MAGE_EVASION" in playtest_source, "Mage must have a bounded close-range evasion policy"
+          assert "potion_reserve := 1 if Game.cls == \"mage\" and focus_type == \"\"" in playtest_source, "Mage must preserve a health potion for the boss encounter"
+          assert "preferred_range = maxf(reach + 130.0, 210.0)" in playtest_source, "Mage must maintain a safer ranged boss distance"
+          assert "spell_interval_min := 1.0 if Game.cls == \"mage\" else 2.2" in playtest_source, "Mage must use its ranged spells at a useful cadence"
           agent_source = Path("tests/player_agent.gd").read_text(encoding="utf-8")
           assert "PLAYER_AGENT_PICKUP_SKIPPED_NEAR_EXIT" in agent_source, "Pickup scanning must skip loot in exit safety margins"
           assert "pickup route unexpectedly changed map" in agent_source, "Pickup movement must fail if it leaves the intended map"

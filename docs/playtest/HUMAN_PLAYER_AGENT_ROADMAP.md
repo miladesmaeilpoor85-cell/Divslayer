@@ -121,7 +121,7 @@ Until the game defines that final condition, the agent may report verified chapt
 - The evidence-report generator and its CI wiring have been committed, but its new unit tests and generated artifacts are not yet verified on the current PR head.
 - The expanded Chapter I scenario now requires evidence of Arzhang's actual defeat from the game's boss kill counter, then follows the live quest target back to Zal and verifies the Chapter I reward state. This is still only a Chapter I milestone, not a full-campaign run.
 - The updated fight policy prioritizes Arzhang's live grave pillars from phase II onward and uses ordinary light/heavy attacks to break them; it does not remove other enemies, grant damage, or change boss/player state.
-- Runtime verification of this expanded scenario is pending on the updated PR head; a source change alone is not evidence that all four classes can win the encounter.
+- On the first verified four-class boss run, Warrior, Rogue, and Paladin defeated Arzhang and returned to Zal; Mage died at 15/50 boss HP after entering the encounter with no health potions. The updated Mage policy reserves one potion during non-boss fights, maintains a 210 px preferred ranged distance, and attempts available spells more frequently. This is pending a fresh four-class run and must not be treated as verified until that run passes.
 - Existing long campaign touch tests have independent navigation/survival failures. Those must be fixed from their own logs rather than hidden by relaxing assertions.
 
 ## Acceptance gate before merge
