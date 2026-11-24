@@ -149,6 +149,8 @@ func _assert_state(s: Dictionary) -> String:
 		failures.append("player is dead")
 	if bool(s.get("game_unpaused", false)) and get_tree().paused:
 		failures.append("game remained paused")
+	if s.has("potions_at_least") and int(snapshot.get("potions", 0)) < int(s["potions_at_least"]):
+		failures.append("expected at least %d health potions, got %d" % [int(s["potions_at_least"]), int(snapshot.get("potions", 0))])
 	var required_foe := str(s.get("foe_type", ""))
 	if required_foe != "":
 		var found := false
@@ -306,6 +308,13 @@ func find_text(s: String, buttons_first := true) -> Control:
 			continue
 		if n is Button:
 			return c
+		# Shop item names are labels inside full-card Buttons. Resolve the matching
+		# label to its clickable Button so a touch taps the item card, not just text.
+		var ancestor: Node = n.get_parent()
+		while ancestor != null and ancestor != get_tree().root:
+			if ancestor is Button and (ancestor as Control).is_visible_in_tree():
+				return ancestor as Control
+			ancestor = ancestor.get_parent()
 		if best == null:
 			best = c
 	return best if not buttons_first or best != null else null
