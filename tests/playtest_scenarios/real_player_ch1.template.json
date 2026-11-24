@@ -1,0 +1,290 @@
+[
+  {
+    "do": "lang",
+    "v": "fa"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Zabol, Rostam and Zal"
+  },
+  {
+    "do": "new_real",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "shot",
+    "name": "real_player_title_and_class_selection"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "rostam",
+    "max_sec": 20
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "tap_text",
+    "text": "با من تمرین کن",
+    "after": 0.6
+  },
+  {
+    "do": "agent_training"
+  },
+  {
+    "do": "dialog_all"
+  },
+  {
+    "do": "assert_state",
+    "label": "rostam_training_completed",
+    "tutorial_step": "done",
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "elder",
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "agent_loadout"
+  },
+  {
+    "do": "assert_state",
+    "label": "real_player_first_armour_purchase",
+    "armor_at_least": 1,
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "forest",
+    "max_sec": 45
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Whispering Forest and its clues"
+  },
+  {
+    "do": "assert_state",
+    "label": "entered_whispering_forest",
+    "map": "forest",
+    "objective_contains": "(۰/۲)",
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch1_forest"
+  },
+  {
+    "do": "walk_to",
+    "x": 240,
+    "y": 240,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 420,
+    "y": 250,
+    "max_sec": 25
+  },
+  {
+    "do": "shot",
+    "name": "forest_skirmish_start"
+  },
+  {
+    "do": "fight",
+    "sec": 12,
+    "shots_every": 0
+  },
+  {
+    "do": "agent_talents"
+  },
+  {
+    "do": "shot",
+    "name": "forest_skirmish_end"
+  },
+  {
+    "do": "walk_to",
+    "x": 620,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 690,
+    "y": 500,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 760,
+    "y": 560,
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "assert_state",
+    "label": "first_forest_clue_collected",
+    "map": "forest",
+    "objective_contains": "۱/۲"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "button",
+    "id": "potion"
+  },
+  {
+    "do": "walk_to",
+    "x": 680,
+    "y": 500,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 420,
+    "y": 250,
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "assert_state",
+    "label": "both_forest_clues_collected",
+    "map": "forest",
+    "objective_contains": "گذرگاه شمالی جنگل"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 80,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "dungeon",
+    "max_sec": 45
+  },
+  {
+    "do": "assert_state",
+    "label": "entered_sunken_crypt",
+    "map": "dungeon",
+    "objective_contains": "سنگ‌نوشتهٔ کهن"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Sunken Crypt and Arzhang"
+  },
+  {
+    "do": "shot",
+    "name": "ch1_crypt"
+  },
+  {
+    "do": "fight",
+    "sec": 25,
+    "shots_every": 5
+  },
+  {
+    "do": "agent_talents"
+  },
+  {
+    "do": "button",
+    "id": "potion"
+  },
+  {
+    "do": "assert_state",
+    "label": "crypt_approach_survived",
+    "map": "dungeon",
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 760,
+    "y": 540,
+    "max_sec": 35
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "close_intro"
+  },
+  {
+    "do": "assert_state",
+    "label": "arzhang_encounter_unlocked",
+    "map": "dungeon",
+    "objective_contains": "ارژنگ",
+    "foe_type": "boss",
+    "foe_must_exist": true,
+    "foe_must_be_alive": true,
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 800,
+    "y": 600,
+    "max_sec": 25
+  },
+  {
+    "do": "shot",
+    "name": "ch1_arzhang_start"
+  },
+  {
+    "do": "fight",
+    "sec": 20,
+    "shots_every": 5,
+    "target_foe": "boss"
+  },
+  {
+    "do": "agent_talents"
+  },
+  {
+    "do": "assert_state",
+    "label": "boss_took_damage",
+    "map": "dungeon",
+    "foe_type": "boss",
+    "foe_hp_below": 100,
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch1_arzhang_end"
+  },
+  {
+    "do": "state"
+  }
+]
