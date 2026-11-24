@@ -54,10 +54,6 @@ class PlayerReportTests(unittest.TestCase):
         report = build_report("mage", "", "SCRIPT ERROR: Failed to initialize player scene")
         self.assertEqual(report["journey_status"], "failed")
         self.assertFalse(report["test_run_finished"])
-        self.assertTrue(any(
-            item["severity"] == "HIGH" and item["source"] == "playtest summary"
-            for item in report["qa_issues"]
-        ))
 
         self.assertTrue(any(
             item["severity"] == "BLOCKER" and item["source"] == "Godot engine"
@@ -80,6 +76,10 @@ class PlayerReportTests(unittest.TestCase):
         report = build_report("rogue", "PLAYTEST_ASSERTIONS_PASSED\n")
         self.assertEqual(report["journey_status"], "incomplete")
         self.assertFalse(report["test_run_finished"])
+        self.assertTrue(any(
+            item["severity"] == "HIGH" and item["source"] == "playtest summary"
+            for item in report["qa_issues"]
+        ))
 
     def test_quality_first_import_audit_failure_is_blocking(self) -> None:
         engine = (
