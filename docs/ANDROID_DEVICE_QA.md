@@ -6,6 +6,8 @@
 
 The repository provides a non-release debug build workflow. It uses Godot 4.7.2, a QA-only Android package identifier (`com.example.divslayer.qa`), and a temporary debug signing key generated inside the runner. It does not read or use the owner's private export preset, release package identifier, or release keystore.
 
+**QA APK ABI set:** `arm64-v8a` + `x86_64` only. ARM32 (`armeabi-v7a`) is disabled; `x86_64` exists only for the GitHub Actions emulator. The production/store policy is stricter: `arm64-v8a` only.
+
 - Open the repository's **Actions** tab and select **Android QA APK**.
 - Open the completed run and download the **Divslayer-Android-QA-APK** artifact.
 - Extract the ZIP and install `Divslayer-QA.apk` on the phone. Android may ask you to allow installation from the browser or file manager used to open it.
