@@ -63,9 +63,8 @@
     "do": "state"
   },
   {
-    "do": "walk_to_exit",
-    "to": "forest",
-    "max_sec": 45
+    "do": "agent_objective",
+    "max_steps": 1
   },
   {
     "do": "checkpoint",
@@ -83,16 +82,19 @@
     "name": "ch1_forest"
   },
   {
-    "do": "walk_to",
-    "x": 240,
-    "y": 240,
-    "max_sec": 25
+    "do": "agent_objective",
+    "max_steps": 1
   },
   {
-    "do": "walk_to",
-    "x": 420,
-    "y": 250,
-    "max_sec": 25
+    "do": "assert_state",
+    "label": "first_forest_clue_collected",
+    "map": "forest",
+    "objective_contains": "۱/۲",
+    "player_alive": true
+  },
+  {
+    "do": "agent_collect",
+    "max_items": 5
   },
   {
     "do": "shot",
@@ -104,6 +106,12 @@
     "shots_every": 0
   },
   {
+    "do": "agent_gear"
+  },
+  {
+    "do": "agent_spells"
+  },
+  {
     "do": "agent_talents"
   },
   {
@@ -111,31 +119,15 @@
     "name": "forest_skirmish_end"
   },
   {
-    "do": "walk_to",
-    "x": 620,
-    "y": 300,
-    "max_sec": 25
-  },
-  {
-    "do": "walk_to",
-    "x": 690,
-    "y": 500,
-    "max_sec": 25
-  },
-  {
-    "do": "walk_to",
-    "x": 760,
-    "y": 560,
-    "max_sec": 25
-  },
-  {
-    "do": "talk"
+    "do": "agent_objective",
+    "max_steps": 1
   },
   {
     "do": "assert_state",
-    "label": "first_forest_clue_collected",
+    "label": "both_forest_clues_collected",
     "map": "forest",
-    "objective_contains": "۱/۲"
+    "objective_contains": "گذرگاه شمالی جنگل",
+    "player_alive": true
   },
   {
     "do": "state"
@@ -145,57 +137,15 @@
     "id": "potion"
   },
   {
-    "do": "walk_to",
-    "x": 680,
-    "y": 500,
-    "max_sec": 25
-  },
-  {
-    "do": "walk_to",
-    "x": 520,
-    "y": 300,
-    "max_sec": 25
-  },
-  {
-    "do": "walk_to",
-    "x": 420,
-    "y": 250,
-    "max_sec": 25
-  },
-  {
-    "do": "talk"
-  },
-  {
-    "do": "assert_state",
-    "label": "both_forest_clues_collected",
-    "map": "forest",
-    "objective_contains": "گذرگاه شمالی جنگل"
-  },
-  {
-    "do": "state"
-  },
-  {
-    "do": "walk_to",
-    "x": 520,
-    "y": 300,
-    "max_sec": 25
-  },
-  {
-    "do": "walk_to",
-    "x": 520,
-    "y": 80,
-    "max_sec": 25
-  },
-  {
-    "do": "walk_to_exit",
-    "to": "dungeon",
-    "max_sec": 45
+    "do": "agent_objective",
+    "max_steps": 1
   },
   {
     "do": "assert_state",
     "label": "entered_sunken_crypt",
     "map": "dungeon",
-    "objective_contains": "سنگ‌نوشتهٔ کهن"
+    "objective_contains": "سنگ‌نوشتهٔ کهن",
+    "player_alive": true
   },
   {
     "do": "checkpoint",
@@ -206,9 +156,19 @@
     "name": "ch1_crypt"
   },
   {
+    "do": "agent_collect",
+    "max_items": 5
+  },
+  {
     "do": "fight",
     "sec": 25,
     "shots_every": 5
+  },
+  {
+    "do": "agent_gear"
+  },
+  {
+    "do": "agent_spells"
   },
   {
     "do": "agent_talents"
@@ -228,13 +188,8 @@
     "do": "state"
   },
   {
-    "do": "walk_to",
-    "x": 760,
-    "y": 540,
-    "max_sec": 35
-  },
-  {
-    "do": "talk"
+    "do": "agent_objective",
+    "max_steps": 1
   },
   {
     "do": "close_intro"
@@ -268,6 +223,16 @@
     "sec": 20,
     "shots_every": 5,
     "target_foe": "boss"
+  },
+  {
+    "do": "agent_collect",
+    "max_items": 5
+  },
+  {
+    "do": "agent_gear"
+  },
+  {
+    "do": "agent_spells"
   },
   {
     "do": "agent_talents"
