@@ -4,19 +4,16 @@
  <linearGradient id="base" x2=".2" y2="1"><stop stop-color="#344858"/><stop offset=".45" stop-color="#263b4b"/><stop offset="1" stop-color="#192d3d"/></linearGradient>
  <radialGradient id="arena"><stop stop-color="#647580"/><stop offset=".72" stop-color="#435967"/><stop offset="1" stop-color="#2a414f"/></radialGradient>
  <linearGradient id="ice" x2=".2" y2="1"><stop stop-color="#d3e2e3" stop-opacity=".9"/><stop offset="1" stop-color="#8ba9ba" stop-opacity="0"/></linearGradient>
- <pattern id="grain" width="54" height="46" patternUnits="userSpaceOnUse">
-  <path d="M5 28l8-7 12 3-8 8zM34 10l7-5 9 8-13 5z" fill="#a6bbc4" opacity=".15"/><circle cx="45" cy="38" r="1.8" fill="#e3efed" opacity=".18"/>
- </pattern>
  <radialGradient id="storm"><stop stop-color="#8ab8ce" stop-opacity=".22"/><stop offset="1" stop-color="#8ab8ce" stop-opacity="0"/></radialGradient>
 </defs>
 <rect width="1000" height="820" fill="url(#base)"/>
 <ellipse cx="520" cy="392" rx="480" ry="365" fill="url(#storm)"/>
 <!-- broken summit rim -->
-<path d="M0 0H1000V820H0Z" fill="url(#grain)"/>
+<path d="M0 0H1000V820H0Z"/>
 <path d="M0 0L170 0 198 64 170 113 206 164 168 221 187 274 141 333 164 398 115 460 152 524 96 592 122 650 65 704 0 742Z" fill="#1b3140" stroke="#8096a1" stroke-width="9" opacity=".88"/>
 <path d="M1000 0H828L804 59 838 112 794 170 827 226 778 284 815 348 770 405 804 465 754 526 790 590 738 652 774 711 830 748 1000 746Z" fill="#1b3140" stroke="#8096a1" stroke-width="9" opacity=".88"/>
-<path d="M0 0L170 0 198 64 170 113 206 164 168 221 187 274 141 333 164 398 115 460 152 524 96 592 122 650 65 704 0 742Z" fill="url(#grain)"/>
-<path d="M1000 0H828L804 59 838 112 794 170 827 226 778 284 815 348 770 405 804 465 754 526 790 590 738 652 774 711 830 748 1000 746Z" fill="url(#grain)"/>
+<path d="M0 0L170 0 198 64 170 113 206 164 168 221 187 274 141 333 164 398 115 460 152 524 96 592 122 650 65 704 0 742Z"/>
+<path d="M1000 0H828L804 59 838 112 794 170 827 226 778 284 815 348 770 405 804 465 754 526 790 590 738 652 774 711 830 748 1000 746Z"/>
 <!-- snow shelves around sheer outer rim -->
 <g fill="url(#ice)" opacity=".78">
  <path d="M0 90Q96 56 153 103L180 145 137 161 80 146 20 178Z"/>
@@ -50,7 +47,11 @@
 <g fill="#93a9a8" opacity=".34">
  <path d="M88 250l36-12 30 18-22 25-38-9zM890 235l-32-13-31 21 24 25 34-8zM83 732l42-16 27 22-30 27-37-8zM880 731l-41-16-27 23 31 26 36-8z"/>
 </g>
-<rect width="1000" height="820" fill="url(#grain)" opacity=".6"/>
+<rect width="1000" height="820" opacity=".6"/>
+<g fill="#a9bec2" opacity=".18">
+ <circle cx="74" cy="312" r="2"/><circle cx="924" cy="302" r="2.2"/><circle cx="142" cy="592" r="2.1"/>
+ <circle cx="868" cy="608" r="2.4"/><circle cx="490" cy="158" r="1.8"/><circle cx="628" cy="660" r="2.2"/>
+</g>
 <g fill="none" stroke="#dbe7e3" stroke-width="2" opacity=".15"><path d="M64 182l44-10m-24 27 31-8M925 181l-44-11m22 28-32-8M57 680l48-12m-23 29 32-9M940 680l-46-11m21 28-31-8"/></g>
 <rect x="3" y="3" width="994" height="814" fill="none" stroke="#b5c4c6" stroke-opacity=".15" stroke-width="6"/>
 </svg>
