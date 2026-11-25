@@ -24,7 +24,7 @@ static func should_engage_route_threat(distance: float, radius: float = 420.0) -
 
 ## Do not chase an enemy through a nearby exit while clearing a world-map route.
 ## The player can take the authored exit normally and encounter that enemy on its destination map.
-static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, margin: float = 140.0) -> bool:
+static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, margin: float = 180.0) -> bool:
 	var safe_margin := maxf(margin, 0.0)
 	for exit_data in exits:
 		if typeof(exit_data) != TYPE_DICTIONARY:
@@ -768,7 +768,7 @@ func _nearest_route_threat(radius: float = 420.0, excluded_type := "") -> Dictio
 			nearest_position = foe.global_position
 			nearest_type = str(foe.type)
 	if not deferred_near_exit.is_empty():
-		driver._log("PLAYER_AGENT_ROUTE_THREATS_DEFERRED_NEAR_EXIT map=%s foes=%s margin=140" % [
+		driver._log("PLAYER_AGENT_ROUTE_THREATS_DEFERRED_NEAR_EXIT map=%s foes=%s margin=180" % [
 			str(driver.main.world.key), ", ".join(deferred_near_exit)
 		])
 	return {
