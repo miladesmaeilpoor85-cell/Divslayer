@@ -65,7 +65,7 @@ func run(_main: Node) -> void:
 		str(pulad_target.get("map", "")) == "emberforge"
 		and str(pulad_target.get("kind", "")) == "boss")
 	check("pulad_objective_resumes_after_zal_opens_peaks",
-		Game.objective().find("Pulad of Ghandi") >= 0, Game.objective())
+		Game.objective() == Game.brann_objective(), Game.objective())
 	Game.state["brann"] = "anvil_done"
 	var turn_in_target: Dictionary = Game.quest_target()
 	check("pulad_reward_turn_in_still_targets_jamshid",
@@ -102,4 +102,4 @@ func run(_main: Node) -> void:
 	check("route_threat_outside_radius_is_not_engaged", not PlayerAgent.should_engage_route_threat(420.1))
 	check("negative_route_distance_is_invalid", not PlayerAgent.should_engage_route_threat(-1.0))
 	print("PLAYERAGENTPOLICYTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
-	get_tree().quit()
+	get_tree().quit(1 if not fails.is_empty() else 0)
