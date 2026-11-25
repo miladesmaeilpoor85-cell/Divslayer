@@ -939,11 +939,11 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				_log("PLAYER_AGENT_EMERGENCY_GUARD kind=%s eta=%.2f stamina=%.0f" % [
 					last_danger_kind, last_danger_eta, p.stamina
 				])
-			else:
-				_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=step eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
-					last_danger_kind, last_danger_eta, dodge_window, int(to.length()), p.stamina
-				])
-				await wait(randf_range(0.10, 0.16))
+				else:
+					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=step eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
+						last_danger_kind, last_danger_eta, dodge_window, int(to.length()), p.stamina
+					])
+					await wait(randf_range(0.10, 0.16))
 			elif parry_attempt:
 				await stick(Vector2.ZERO)
 				var parry_hold := maxf(0.22, last_danger_eta + 0.08)
