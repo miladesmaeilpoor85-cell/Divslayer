@@ -82,7 +82,6 @@ func run(_main: Node) -> void:
 		Game.state["defeated"] = saved_defeated
 	else:
 		Game.state.erase("defeated")
-	print("PLAYERAGENTPOLICYTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	check("route_threat_at_player_position_is_engaged", PlayerAgent.should_engage_route_threat(0.0))
 	check("near_route_threat_is_engaged", PlayerAgent.should_engage_route_threat(180.0))
 	check("route_threat_at_radius_boundary_is_engaged", PlayerAgent.should_engage_route_threat(420.0))

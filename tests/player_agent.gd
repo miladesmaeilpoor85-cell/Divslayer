@@ -696,7 +696,7 @@ func _nearest_route_threat(radius: float = 420.0) -> Dictionary:
 		if foe.world != driver.main.world or bool(foe.dead):
 			continue
 		var distance: float = foe.center().distance_to(origin)
-		if not PlayerAgent.should_engage_route_threat(distance, radius):
+		if not should_engage_route_threat(distance, radius):
 			continue
 		threat_count += 1
 		if distance < nearest_distance:

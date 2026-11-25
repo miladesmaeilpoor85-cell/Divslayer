@@ -164,6 +164,8 @@ jobs:
           assert "PLAYER_AGENT_ROUTE_THREAT" in agent_source and "PLAYER_AGENT_ROUTE_COMBAT" in agent_source, "Route combat must log observed nearby enemies and ordinary combat outcomes"
           assert "var route_safety: Dictionary = await _clear_route_threats(4, 420.0)" in agent_source, "The agent must validate route safety before crossing map exits"
           assert "var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0)" in agent_source, "The agent must validate nearby threats before approaching an objective boss"
+          assert "if remaining.is_empty() or int(remaining.get(\"count\", 0)) == 0" not in agent_source, "Route safety must use an explicit residual-threat gate"
+          assert "var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0)" in agent_source, "The agent must validate nearby threats before approaching an objective boss"
           game_source = Path("scripts/game.gd").read_text(encoding="utf-8")
           assert "func navigation_graph() -> Dictionary:" in game_source, "Navigation must include a copy of the currently open story gates"
           assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
