@@ -200,6 +200,19 @@
     "do": "state"
   },
   {
+    "do": "shot",
+    "name": "forest_exit_safety_start"
+  },
+  {
+    "do": "fight",
+    "sec": 18,
+    "shots_every": 0
+  },
+  {
+    "do": "shot",
+    "name": "forest_exit_safety_end"
+  },
+  {
     "do": "walk_to",
     "x": 520,
     "y": 300,

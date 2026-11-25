@@ -199,7 +199,7 @@ jobs:
           template = Path("tests/playtest_scenarios/chapter12_touch_review.template.json")
           rendered = template.read_text(encoding="utf-8").replace("__CLASS__", hero)
           parsed = json.loads(rendered)
-          assert len([step for step in parsed if step.get("do") == "fight"]) == 8
+          assert len([step for step in parsed if step.get("do") == "fight"]) == 9
           assert len([step for step in parsed if step.get("do") == "assert_state"]) == 13
           destination.write_text(json.dumps(parsed, ensure_ascii=False, indent=2), encoding="utf-8")
           PY
@@ -236,7 +236,7 @@ jobs:
           assert "PLAYTEST_DONE" in log, "Playtest did not reach its final step"
           assert "PLAYTEST_ASSERTIONS_PASSED" in log, "Playtest scenario assertions did not all pass"
           assert "ASSERTION_FAILED" not in log, "A campaign path or boss-combat assertion failed"
-          assert len(fights) == 8, f"Expected 8 combat samples, found {len(fights)}"
+          assert len(fights) == 9, f"Expected 9 combat samples, found {len(fights)}"
           passed = log.count("ASSERTION_PASSED ")
           assert passed == 13, f"Expected all 13 campaign checkpoint assertions, found {passed}"
           errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
