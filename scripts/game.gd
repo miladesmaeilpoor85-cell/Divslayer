@@ -966,6 +966,9 @@ func objective() -> String:
 	# (v0.24, playtest: after Arzhang the compass sent the hero to Jamshid first) Zal's reward and the tale lead
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
 		return t("Return to Zal", "نزد زال برگرد")
+	# The eastern Peaks route stays sealed until Zal starts Q2, even after Jamshid grants the key.
+	if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_sync()):
+		return t("Speak with Zal", "با زال صحبت کن")
 	var bo := brann_objective()
 	if bo != "" and ["core", "anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann()):
 		return bo
@@ -1673,8 +1676,10 @@ func quest_target() -> Dictionary:
 		return c4t
 	var g := world_graph()
 	var elder := {"map": "village", "pos": _v(g.get("village", {}).get("npcs", {}).get("elder", [443, 334])), "kind": "npc"}
-	# An active Jamshid forge contract must outrank the next-chapter Elder nudge.
-	# The Kindling Key changes the objective from a village interaction to a real boss encounter.
+	# The Kindling Key does not bypass Zal's story gate: Q2 must be started before the Peaks exit opens.
+	if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_sync()):
+		return elder
+	# Once Zal opens the eastern route, the active Jamshid contract again targets its real boss encounter.
 	if ["anvil", "ignarok"].has(brann_sync()):
 		return brann_target()
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
