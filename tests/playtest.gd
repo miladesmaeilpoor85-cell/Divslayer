@@ -692,7 +692,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				focus_hp_before = boss_hp_before[boss_type]
 	var ended := "time"
 	if focus_type != "":
-		_log("PLAYER_AGENT_POLICY target=%s telegraph_read=100%% projectile_prediction=enabled reaction=humanized shield_parry=enabled spells=adaptive" % focus_type)
+		_log("PLAYER_AGENT_POLICY target=%s telegraph_read=75%% projectile_prediction=enabled reaction=humanized shield_parry=enabled spells=adaptive" % focus_type)
 	if Game.cls == "mage":
 		_log("PLAYER_AGENT_MAGE_POLICY potion_reserve=%d preferred_range=210 retreat_distance=%d spell_interval=%.1f-%.1fs" % [
 			potion_reserve, 180 if focus_type != "" else 150, spell_interval_min, spell_interval_max
