@@ -35,6 +35,12 @@ func run(_main: Node) -> void:
 	check("mage_preserves_dodge_when_stamina_is_low", not PlayerAgent.should_dodge_mage(38.0, 8.0, 84.0, 24.0, 0.0))
 	check("mage_does_not_repeat_dodge_during_cooldown", not PlayerAgent.should_dodge_mage(38.0, 8.0, 84.0, 60.0, 0.2))
 
+	check("anvilward_circle_slam_uses_evasion_not_guard", PlayerAgent.should_evade_boss_telegraph("circle"))
+	check("anvilward_forge_furrows_use_evasion", PlayerAgent.should_evade_boss_telegraph("lane"))
+	check("predicted_boss_projectile_uses_evasion", PlayerAgent.should_evade_boss_telegraph("projectile"))
+	check("boss_cone_remains_guardable_or_parryable", not PlayerAgent.should_evade_boss_telegraph("cone"))
+	check("unknown_telegraph_is_not_marked_as_unavoidable_evasion", not PlayerAgent.should_evade_boss_telegraph("unknown"))
+
 	check("anvilward_alerted_close_adds_get_priority", PlayerAgent.should_prioritize_focus_add("anvilward", "slagbrute", false, 200.0, true))
 	check("anvilward_alerted_ranged_adds_inside_aggro_are_prioritized", PlayerAgent.should_prioritize_focus_add("anvilward", "moltencore", false, 230.0, true))
 	check("anvilward_does_not_pull_unalerted_adds_into_the_duel", not PlayerAgent.should_prioritize_focus_add("anvilward", "moltencore", false, 200.0, false))

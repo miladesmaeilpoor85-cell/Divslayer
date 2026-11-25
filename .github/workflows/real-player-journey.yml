@@ -174,6 +174,8 @@ jobs:
           assert "is_alerted: bool" in agent_source and "not is_alerted" in agent_source, "Focused boss fights must not pull passive adds into active combat"
           assert 'var pressure_radius := 445.5 if focus_type == "anvilward" else radius' in agent_source, "Anvilward add priority must respect normal enemy aggro distance"
           assert "static func should_dodge_mage" in agent_source and "PlayerAgent.should_dodge_mage(" in playtest_source, "Mage must preserve stamina by reserving rolls for close or critical threats"
+          assert "static func should_evade_boss_telegraph" in agent_source and "PlayerAgent.should_evade_boss_telegraph(last_danger_kind)" in playtest_source, "Area slams, forge lanes and projectiles must force evasive movement rather than shield tanking"
+          assert "PLAYER_AGENT_BOSS_EVADE" in playtest_source, "Boss-area evasion decisions must be recorded for combat review"
           assert "await prepare_route_supplies(3)" in agent_source, "The Pulad expedition must attempt a third real merchant potion when affordable"
           assert "Keep the authored boss target even when it begins farther" in playtest_source, "The named boss must remain targetable beyond the ordinary scan radius"
           assert "PLAYER_AGENT_ANVILWARD_ADD_PRIORITY" in playtest_source, "Anvilward close-add decisions must be recorded"

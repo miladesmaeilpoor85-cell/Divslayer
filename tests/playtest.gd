@@ -909,26 +909,44 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			# A marked lane explicitly teaches a sideways roll; blocking it does not leave the
 			# damaging strip. Evade as soon as its 0.45 s warning is visible.
 			var lane_warning := last_danger_kind == "lane"
+			var must_evade := PlayerAgent.should_evade_boss_telegraph(last_danger_kind)
 			var parry_chance := 0.72 if Game.cls == "paladin" else (0.62 if Game.cls == "warrior" else 0.44)
-			var parry_attempt: bool = not lane_warning and last_danger_eta <= 0.18 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
-			if parry_attempt:
+			var parry_attempt: bool = not must_evade and last_danger_eta <= 0.18 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
+			if must_evade:
+				# Circles are area slams: holding the shield only absorbs one third of their
+				# damage while leaving the hero in the marked blast. Move out and roll at impact.
+				var escape_dir := _avoid_exits(away.normalized())
+				await stick(escape_dir)
+				var dodge_window := 0.45
+				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (last_danger_eta <= dodge_window or Game.hp < Game.max_hp() * 0.55):
+					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=roll eta=%.2f distance=%d stamina=%.0f" % [
+						last_danger_kind, last_danger_eta, int(to.length()), p.stamina
+					])
+					await press("dodge")
+					dodges += 1
+				else:
+					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=step eta=%.2f distance=%d stamina=%.0f" % [
+						last_danger_kind, last_danger_eta, int(to.length()), p.stamina
+					])
+					await wait(randf_range(0.12, 0.22))
+			elif parry_attempt:
 				await stick(Vector2.ZERO)
 				var parry_hold := maxf(0.22, last_danger_eta + 0.08)
 				await press("block", parry_hold)
 				block_actions += 1
-			elif not lane_warning and last_danger_kind != "projectile" and to.length() <= 210.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0:
-				# If the parry window is already too close, hold the shield through impact
-				# instead of tapping it for 0.18 s and releasing before the attack lands.
+			elif to.length() <= 210.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0:
+				# Cones are narrow/front-loaded: a timed shield remains a valid response.
+				# If the parry window is already too close, hold through impact instead of
+				# tapping for 0.18 s and releasing before the attack lands.
 				await stick(Vector2.ZERO)
 				var shield_hold := maxf(0.18, last_danger_eta + 0.08)
 				await press("block", shield_hold)
 				block_actions += 1
 				_log("PLAYER_AGENT_BLOCK kind=%s eta=%.2f hold=%.2f" % [last_danger_kind, last_danger_eta, shield_hold])
 			else:
-				# Combat evasions must respect the same hard portal boundary as normal movement.
 				var escape_dir := _avoid_exits(away.normalized())
 				await stick(escape_dir)
-				var dodge_window := 0.45 if lane_warning else 0.34
+				var dodge_window := 0.34
 				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (last_danger_eta <= dodge_window or Game.hp < Game.max_hp() * 0.55):
 					await press("dodge")
 					dodges += 1

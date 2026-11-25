@@ -32,6 +32,11 @@ static func should_dodge_mage(distance: float, hp: float, max_hp: float, stamina
 		return false
 	return distance <= 52.0 or (distance <= 120.0 and hp <= max_hp * 0.42)
 
+## Area slams, marked lanes and predicted projectiles cannot be safely tanked by a shield.
+## Cones remain guardable/parryable, but circles must be rolled or stepped out of.
+static func should_evade_boss_telegraph(kind: String) -> bool:
+	return kind in ["circle", "lane", "projectile"]
+
 ## Prioritize only enemies that have actually noticed the player and remain inside
 ## their active chase envelope. Emberforge mobs acquire aggro at 270 px; squad calls
 ## extend that envelope to 1.65x (445.5 px). Never pull passive packs into the duel.
