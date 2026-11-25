@@ -4,7 +4,7 @@
 
 The world graph currently contains 22 map nodes: 15 non-shrine regions and 7 shrines. All seven shrines use 680 × 520 logical units. The 15 non-shrine regions range from 900 × 650 (Zabol) to 1500 × 1200 (Damavand); the average is approximately 1193 × 947.
 
-The map files expose several useful depth signals: placed objects, enemy spawn points, NPCs, items, hazards, exits, quest markers, and boss registrations. These signals are now reported separately. Object count is not treated as equivalent to meaningful content: a decorative prop does not count as a quest, puzzle, encounter, or discovery. The report distinguishes ordinary map exits from scripted quest gates. The current code confirms a village-to-Trial transition through Siavash's arena dialogue and a Peaks-to-Emberforge transition through the Kindling door after the Brann key is awarded; both are declared in `world_graph.json` under `scriptedConnections`.
+The map files expose several useful depth signals: placed objects, enemy spawn points, NPCs, items, hazards, exits, quest markers, and boss registrations. These signals are now reported separately. Object count is not treated as equivalent to meaningful content: a decorative prop does not count as a quest, puzzle, encounter, or discovery. The report distinguishes ordinary map exits from gated world-graph exits and scripted quest transitions. The village-to-Trial transition is declared in `scriptedConnections` and requires Siavash's arena dialogue. The Peaks-to-Emberforge transition is a world-graph exit marked `gate: brann_key` and opens after the Brann key is awarded. Static reachability excludes both types of locked transition; the expanded reachability count includes the declared gates.
 
 ## Why dimensions do not prove campaign length
 
@@ -40,4 +40,4 @@ The report aggregates actual durations by map and across the supplied log. It do
 
 ## First terrain pass in this branch
 
-Dedicated, region-specific ground files are wired for Zabol, Whispering Forest, and Ashen Peaks. Their map dimensions, collision rectangles, exits, enemy placements, and quest progression are unchanged. SVG import, preview rendering, rights-register coverage, and map-depth reporting are included in CI; Godot import and on-device visual acceptance still need their run results and human review.
+Dedicated, region-specific ground files are wired for Zabol, Whispering Forest, and Ashen Peaks. These three maps use their authored SVG ground images in gameplay rather than the shared tiled-terrain layer; other configured terrain maps (such as the camp) retain the tiled system. Their map dimensions, collision rectangles, exits, enemy placements, and quest progression are unchanged. SVG import, preview rendering, rights-register coverage, and map-depth reporting are included in CI; Godot import and on-device visual acceptance still need their run results and human review.
