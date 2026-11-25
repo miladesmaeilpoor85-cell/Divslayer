@@ -52,6 +52,14 @@ func run(_main: Node) -> void:
 		PlayerBrain.find_death_recovery_button([{"text": "Respawn in Zabol", "enabled": true, "visible": true}]) == 0)
 	check("screen_brain_refuses_unknown_death_actions",
 		PlayerBrain.find_death_recovery_button([{"text": "Quit", "enabled": true, "visible": true}]) == -1)
+	var hud_status := {"meters": {"HealthMeter": 0.42, "StaminaMeter": 0.65, "ManaMeter": 0.8}, "resources": {"potions_text": "۳"}}
+	var parsed_status := PlayerBrain.read_visible_combat_status(hud_status)
+	check("screen_brain_reads_health_from_visible_hud_meter", is_equal_approx(float(parsed_status.health_ratio), 0.42))
+	check("screen_brain_reads_stamina_from_visible_hud_meter", is_equal_approx(float(parsed_status.stamina_ratio), 0.65))
+	check("screen_brain_parses_persian_potion_count", int(parsed_status.potions) == 3)
+	check("visible_potion_policy_uses_hud_health_and_stock", PlayerBrain.should_use_visible_potion(parsed_status, 1, 0.68))
+	check("visible_potion_policy_respects_reserve", not PlayerBrain.should_use_visible_potion(parsed_status, 3, 0.68))
+	check("visible_potion_policy_does_not_guess_missing_hud_values", not PlayerBrain.should_use_visible_potion({"health_ratio": -1.0, "potions": -1}, 0, 0.68))
 	var brain_source := FileAccess.get_file_as_string("res://tests/player_brain.gd")
 	var observer_source := FileAccess.get_file_as_string("res://tests/player_observation.gd")
 	check("player_brain_has_no_game_state_or_world_queries",
@@ -73,6 +81,26 @@ func run(_main: Node) -> void:
 	hidden_button.size = Vector2(240, 42)
 	hidden_button.visible = false
 	test_layer.add_child(hidden_button)
+	var hud_fixture := Control.new()
+	hud_fixture.name = "HudFixture"
+	add_child(hud_fixture)
+	var health_meter := Control.new()
+	health_meter.name = "HealthMeter"
+	health_meter.set_meta("unused", true)
+	health_meter.set_script(load("res://scripts/ui/bar.gd"))
+	health_meter.set("value", 0.4)
+	health_meter.position = Vector2(32, 132)
+	health_meter.size = Vector2(180, 15)
+	hud_fixture.add_child(health_meter)
+	var potion_chip := HBoxContainer.new()
+	potion_chip.name = "PotionChip"
+	potion_chip.position = Vector2(32, 152)
+	potion_chip.size = Vector2(80, 20)
+	var potion_value := Label.new()
+	potion_value.name = "Value"
+	potion_value.text = "۳"
+	potion_chip.add_child(potion_value)
+	hud_fixture.add_child(potion_chip)
 	var captured_screen := PlayerObservation.capture(self, _main.get_viewport())
 	var saw_visible := false
 	var saw_hidden := false
@@ -82,7 +110,10 @@ func run(_main: Node) -> void:
 		saw_hidden = saw_hidden or label == "PLAYER_OBSERVATION_HIDDEN_SENTINEL"
 	check("screen_observer_captures_visible_buttons", saw_visible)
 	check("screen_observer_ignores_hidden_buttons", not saw_hidden)
+	check("screen_observer_captures_visible_health_meter", is_equal_approx(float(captured_screen.get("meters", {}).get("HealthMeter", -1.0)), 0.4))
+	check("screen_observer_captures_visible_potion_count", str(captured_screen.get("resources", {}).get("potions_text", "")) == "۳")
 	test_layer.free()
+	hud_fixture.free()
 
 	check("no_pillars_do_not_trigger_pillar_chase", not PlayerAgent.should_prioritize_grave_pillars(0))
 	check("leave_one_pillar_as_low_shield_anchor", not PlayerAgent.should_prioritize_grave_pillars(1))
