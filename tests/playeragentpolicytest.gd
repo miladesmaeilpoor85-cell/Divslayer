@@ -96,6 +96,9 @@ func run(_main: Node) -> void:
 		Game.state["defeated"] = saved_defeated
 	else:
 		Game.state.erase("defeated")
+	check("boss_arena_does_not_run_generic_route_threat_sweep", not PlayerAgent.should_clear_route_threats_before_objective("emberforge", "emberforge", "boss"))
+	check("boss_objective_keeps_route_clearance_on_intermediate_maps", PlayerAgent.should_clear_route_threats_before_objective("peaks", "emberforge", "boss"))
+	check("ordinary_objective_travel_keeps_route_clearance", PlayerAgent.should_clear_route_threats_before_objective("forest", "peaks", "exit"))
 	check("route_threat_at_player_position_is_engaged", PlayerAgent.should_engage_route_threat(0.0))
 	check("near_route_threat_is_engaged", PlayerAgent.should_engage_route_threat(180.0))
 	check("route_threat_at_radius_boundary_is_engaged", PlayerAgent.should_engage_route_threat(420.0))
