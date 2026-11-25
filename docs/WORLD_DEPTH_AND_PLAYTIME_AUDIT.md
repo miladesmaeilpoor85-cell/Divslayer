@@ -4,13 +4,13 @@
 
 The world graph currently contains 22 map nodes: 15 non-shrine regions and 7 shrines. All seven shrines use 680 × 520 logical units. The 15 non-shrine regions range from 900 × 650 (Zabol) to 1500 × 1200 (Damavand); the average is approximately 1193 × 947.
 
-The map files expose several useful depth signals: placed objects, enemy spawn points, NPCs, items, hazards, exits, quest markers, and boss registrations. These signals are now reported separately. Object count is not treated as equivalent to meaningful content: a decorative prop does not count as a quest, puzzle, encounter, or discovery.
+The map files expose several useful depth signals: placed objects, enemy spawn points, NPCs, items, hazards, exits, quest markers, and boss registrations. These signals are now reported separately. Object count is not treated as equivalent to meaningful content: a decorative prop does not count as a quest, puzzle, encounter, or discovery. The report distinguishes ordinary map exits from scripted quest gates. The current code confirms a village-to-Trial transition through Siavash's arena dialogue and a Peaks-to-Emberforge transition through the Kindling door after the Brann key is awarded; both are declared in `world_graph.json` under `scriptedConnections`.
 
 ## Why dimensions do not prove campaign length
 
 The player movement implementation uses class base speeds from `data/Tables/CLASSES.json` multiplied by 62.5 in `scripts/game.gd`. A shortest-side boundary crossing can therefore be only a few seconds on paper. That is an ideal straight-line lower bound, not a real traversal time: walls, collision, enemies, objectives, combat, backtracking, menus, and player behaviour are not represented by the formula.
 
-The audit deliberately reports these calculations as layout diagnostics and keeps `actual_playtime.status = not_measured` until explicit playtest durations are supplied. It must never turn map area, enemy density, or authored quest count into a claimed completion time.
+The audit deliberately reports these calculations as layout diagnostics. It also reports reachability through ordinary exits separately from reachability after the declared scripted gates are included. It keeps `actual_playtime.status = not_measured` until explicit playtest durations are supplied. It must never turn map area, enemy density, or authored quest count into a claimed completion time.
 
 ## Evidence format for a real playthrough
 
