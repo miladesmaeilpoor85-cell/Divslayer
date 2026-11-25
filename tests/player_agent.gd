@@ -22,6 +22,23 @@ static func should_prioritize_grave_pillars(active_pillars: int) -> bool:
 static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:
 	return distance >= 0.0 and distance <= radius
 
+## Do not chase an enemy through a nearby exit while clearing a world-map route.
+## The player can take the authored exit normally and encounter that enemy on its destination map.
+static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, margin: float = 140.0) -> bool:
+	var safe_margin := maxf(margin, 0.0)
+	for exit_data in exits:
+		if typeof(exit_data) != TYPE_DICTIONARY:
+			continue
+		var exit_rect := Rect2(
+			float(exit_data.get("x", 0.0)),
+			float(exit_data.get("y", 0.0)),
+			float(exit_data.get("w", 0.0)),
+			float(exit_data.get("h", 0.0))
+		)
+		if exit_rect.grow(safe_margin).has_point(position):
+			return true
+	return false
+
 func attach(playtest_driver: Node) -> void:
 	driver = playtest_driver
 
@@ -727,6 +744,8 @@ func _nearest_route_threat(radius: float = 420.0, excluded_type := "") -> Dictio
 	var nearest_distance := INF
 	var nearest_position := Vector2.ZERO
 	var nearest_type := ""
+	var deferred_near_exit: Array[String] = []
+	var exits: Array = driver.main.world.data.get("exits", [])
 	for foe in driver.get_tree().get_nodes_in_group("enemies"):
 		if not is_instance_valid(foe) or foe.get_parent() == null:
 			continue
@@ -734,7 +753,13 @@ func _nearest_route_threat(radius: float = 420.0, excluded_type := "") -> Dictio
 			continue
 		if excluded_type != "" and str(foe.type) == excluded_type:
 			continue
-		var distance: float = foe.center().distance_to(origin)
+		var foe_center: Vector2 = foe.center()
+		if should_skip_route_threat_near_exit(foe_center, exits):
+			var deferred_type := str(foe.type)
+			if not deferred_near_exit.has(deferred_type):
+				deferred_near_exit.append(deferred_type)
+			continue
+		var distance: float = foe_center.distance_to(origin)
 		if not should_engage_route_threat(distance, radius):
 			continue
 		threat_count += 1
@@ -742,6 +767,10 @@ func _nearest_route_threat(radius: float = 420.0, excluded_type := "") -> Dictio
 			nearest_distance = distance
 			nearest_position = foe.global_position
 			nearest_type = str(foe.type)
+	if not deferred_near_exit.is_empty():
+		driver._log("PLAYER_AGENT_ROUTE_THREATS_DEFERRED_NEAR_EXIT map=%s foes=%s margin=140" % [
+			str(driver.main.world.key), ", ".join(deferred_near_exit)
+		])
 	return {
 		"count": threat_count,
 		"nearest_type": nearest_type,
