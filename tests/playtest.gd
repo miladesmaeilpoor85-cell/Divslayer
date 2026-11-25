@@ -604,6 +604,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var spell_t := 2.0
 	var pots := 0
 	var dodges := 0
+	var blocks := 0
 	var hp_low := 1.0
 	# Focused boss samples use a cautious player policy; ordinary skirmishes keep
 	# the original potion threshold so this does not inflate campaign survivability.
@@ -721,7 +722,11 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				await press("dodge")
 				dodges += 1
 			else:
-				await wait(0.15)
+				# When a roll is unavailable, keep the shield raised through the imminent
+				# impact instead of standing exposed. Touch movement remains active while
+				# the second finger holds Block.
+				await press("block", 0.5)
+				blocks += 1
 		elif to.length() > reach:
 			var dir := _avoid_exits(to.normalized())
 			if detour > 0.0:
@@ -798,8 +803,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		detail += " · bosses " + ", ".join(boss_report)
 	if not arena_report.is_empty():
 		detail += " · arena " + ", ".join(arena_report)
-	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · swings %d, hits %d%s" % [ended, t, kills,
-		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, p.swings - swings0, p.hits_landed - hits0, detail]
+	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · guards %d · swings %d, hits %d%s" % [ended, t, kills,
+		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, blocks, p.swings - swings0, p.hits_landed - hits0, detail]
 
 ## the way out of the nearest marked attack that is about to land on the hero (Vector2.ZERO: nothing to dodge)
 
@@ -818,6 +823,15 @@ func _danger_away(perfect_telegraph_read := false) -> Vector2:
 				var lv: Vector2 = t["b"] - t["pos"]
 				var sg := 1.0 if (pc - t["pos"]).cross(lv) >= 0.0 else -1.0
 				return Vector2(lv.y * sg, -lv.x * sg)
+			"cone":
+				var radial: Vector2 = pc - t["pos"]
+				if radial.length() < 28.0:
+					return radial.normalized() if radial.length() > 1.0 else Vector2.RIGHT
+				# Step sideways out of the cone's angle, rather than moving deeper
+				# along its centre line.
+				var axis := Vector2.from_angle(float(t["a"]))
+				var side := Vector2(-axis.y, axis.x)
+				return side if radial.dot(side) >= 0.0 else -side
 			_:
 				var aw: Vector2 = pc - t["pos"]
 				return aw if aw.length() > 1.0 else Vector2.RIGHT
