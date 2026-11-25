@@ -309,5 +309,27 @@ func run(_main: Node) -> void:
 		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 1000), forge_exit))
 	check("empty_exit_list_does_not_hide_route_threats",
 		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 798), []))
+	check("visual_target_prefers_a_confident_visible_boss", PlayerBrain.choose_visual_target([
+		{"label": "enemy", "visible": true, "confidence": 0.9, "distance": 45.0},
+		{"label": "boss", "visible": true, "confidence": 0.7, "distance": 180.0}
+	]) == 1)
+	check("visual_target_ignores_low_confidence_candidates", PlayerBrain.choose_visual_target([
+		{"label": "boss", "visible": true, "confidence": 0.4, "distance": 20.0},
+		{"label": "enemy", "visible": true, "confidence": 0.9, "distance": 80.0}
+	]) == 1)
+	check("visual_target_does_not_guess_unknown_actor_labels", PlayerBrain.choose_visual_target([
+		{"label": "unknown", "visible": true, "confidence": 0.95, "distance": 10.0}
+	]) == -1)
+	check("visual_dodge_escapes_away_from_confident_warning", PlayerBrain.visual_dodge_direction(
+		Rect2(100, 100, 24, 32),
+		[{"rect": Rect2(40, 100, 30, 30), "confidence": 0.9}]
+	).x > 0.9)
+	check("visual_dodge_refuses_low_confidence_warning", PlayerBrain.visual_dodge_direction(
+		Rect2(100, 100, 24, 32),
+		[{"rect": Rect2(40, 100, 30, 30), "confidence": 0.2}]
+	) == Vector2.ZERO)
+	check("visual_dodge_refuses_unknown_player_bounds", PlayerBrain.visual_dodge_direction(
+		Rect2(), [{"rect": Rect2(40, 100, 30, 30), "confidence": 0.9}]
+	) == Vector2.ZERO)
 	print("PLAYERAGENTPOLICYTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit(1 if not fails.is_empty() else 0)
