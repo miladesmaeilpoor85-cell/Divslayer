@@ -850,7 +850,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			_log("FIGHT_PROGRESS elapsed=%.1f/%.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
 			last_progress = t
 		hp_low = min(hp_low, Game.hp / Game.max_hp())
-		var visible_status := player_agent.visible_combat_status()
+		var visible_status: Dictionary = player_agent.visible_combat_status()
 		var visible_potions := int(visible_status.get("potions", -1))
 		var potion_stock_before := visible_potions
 		var visible_hp_ratio := float(visible_status.get("health_ratio", -1.0))
@@ -858,7 +858,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		if visible_hp_ratio >= 0.0 and visible_potions >= 0 and potion_ready and PlayerBrain.should_use_visible_potion(visible_status, potion_reserve, potion_threshold):
 			await press("potion")
 			await wait(0.25)
-			var after_status := player_agent.visible_combat_status()
+			var after_status: Dictionary = player_agent.visible_combat_status()
 			var potion_stock_after := int(after_status.get("potions", -1))
 			var potion_consumed := maxi(0, potion_stock_before - potion_stock_after) if potion_stock_after >= 0 else 0
 			potion_ready_at = PlayerAgent.next_health_potion_time(t) if potion_consumed > 0 else PlayerAgent.next_health_potion_time(t, 0.5)
