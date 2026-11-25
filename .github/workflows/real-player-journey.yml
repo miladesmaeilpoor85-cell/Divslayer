@@ -145,11 +145,16 @@ jobs:
           zal_assertion = next(i for i in range(zal_route + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "zal_opens_ashen_peaks_for_pulad")
           assert scenario[zal_assertion].get("quest_index") == 2 and scenario[zal_assertion].get("quest_status") == "active", "Require Zal to open the Peaks route by starting Q2"
           assert scenario[zal_assertion].get("brann_state") == "anvil" and scenario[zal_assertion].get("brann_key") is True, "Keep the Kindling Key while starting Q2"
-          pulad_route = next(i for i in range(zal_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
-          assert int(scenario[pulad_route].get("max_steps", 0)) >= 8 and float(scenario[pulad_route].get("boss_fight_sec", 0)) >= 180, "Require a natural round trip and a full Pulad combat window"
-          pulad_assertion = next(i for i in range(pulad_route + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "pulad_of_ghandi_defeated_reward_claimed")
-          assert scenario[pulad_assertion].get("foe_type") == "anvilward" and scenario[pulad_assertion].get("foe_defeated") is True, "Require Pulad's confirmed boss-kill-counter victory"
-          assert scenario[pulad_assertion].get("brann_state") == "ignarok" and scenario[pulad_assertion].get("brann_key") is True, "Require the reward dialogue with Jamshid and the Puladvand objective"
+          pulad_boss_route = next(i for i in range(zal_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective" and float(scenario[i].get("boss_fight_sec", 0)) >= 180)
+          assert int(scenario[pulad_boss_route].get("max_steps", 0)) == 4, "Use three natural map hops followed by the focused Pulad boss encounter"
+          anvilward_assertion = next(i for i in range(pulad_boss_route + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "anvilward_defeated_reward_pending")
+          assert scenario[anvilward_assertion].get("map") == "emberforge" and scenario[anvilward_assertion].get("brann_state") == "anvil_done", "Record Anvilward defeat before the separate Jamshid turn-in"
+          assert scenario[anvilward_assertion].get("foe_type") == "anvilward" and scenario[anvilward_assertion].get("foe_defeated") is True, "Require Pulad's confirmed boss-kill-counter victory"
+          jamshid_return = next(i for i in range(anvilward_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert int(scenario[jamshid_return].get("max_steps", 0)) >= 4 and scenario[jamshid_return].get("stop_after_interaction") is True, "Require the return route and a real Jamshid reward interaction"
+          pulad_assertion = next(i for i in range(jamshid_return + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "pulad_of_ghandi_reward_claimed")
+          assert scenario[pulad_assertion].get("map") == "village" and scenario[pulad_assertion].get("brann_state") == "ignarok" and scenario[pulad_assertion].get("brann_key") is True, "Require the reward dialogue with Jamshid and the Puladvand objective"
+          assert "پولادوند" in scenario[pulad_assertion].get("objective_contains", ""), "Require the next Puladvand objective after the turn-in"
           playtest_source = Path("tests/playtest.gd").read_text(encoding="utf-8")
           assert "func _fight_target_is_live(target: Variant)" in playtest_source, "Freed combat targets must be guarded before typed Node conversion"
           assert "var escape_dir := _avoid_exits(away.normalized())" in playtest_source, "Combat evasion must respect map exit boundaries"
@@ -177,8 +182,9 @@ jobs:
           assert 'await visit_shop("merchant", true)' in agent_source, "Expedition supplies must be purchased through the merchant UI"
           assert "PLAYER_AGENT_ROUTE_SUPPLIES_READY" in agent_source, "Expedition preparation must log the observed potion stock"
           assert 'current_map == "village" and target_map == "emberforge" and Game.brann_sync() == "anvil"' in agent_source, "Supply preparation must be scoped to the active Pulad expedition"
-          assert "should_clear_route_threats_before_objective(current_map, target_map, str(target.get(\"kind\", \"\")))" in agent_source and "_clear_route_threats(4, 420.0)" in agent_source, "The agent must validate route safety on intermediate maps"
-          assert "static func should_clear_route_threats_before_objective(current_map: String, target_map: String, target_kind: String) -> bool:" in agent_source, "Boss arenas must not run generic route-threat sweeps before focused combat"
+          assert "should_clear_route_threats_before_objective(current_map, target_map, objective_kind, Game.brann_sync())" in agent_source and "_clear_route_threats(4, 420.0)" in agent_source, "The agent must validate route safety on intermediate maps"
+          assert "static func should_clear_route_threats_before_objective(current_map: String, target_map: String, target_kind: String, brann_state := \"\") -> bool:" in agent_source, "Boss arenas must not run generic route-threat sweeps before focused combat"
+          assert "PLAYER_AGENT_ROUTE_CLEARANCE_SKIPPED" in agent_source and "priority Jamshid reward turn-in" in agent_source, "Forge reward returns must not divert into optional mobs"
           assert 'var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0, boss_type)' in agent_source, "Intermediate route combat must preserve the live objective boss"
           assert "PLAYER_AGENT_BOSS_PRIORITY" in agent_source and "await driver.fight(fight_limit, 0.0, boss_type)" in agent_source, "Boss arenas must use focused live combat instead of nearest-threat sweeps"
           assert "await driver.walk_to(boss.global_position, 45.0, 110.0)" not in agent_source, "The focused combat controller must approach the boss while handling active threats"
