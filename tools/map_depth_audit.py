@@ -156,6 +156,7 @@ def build_report(root: Path, session_log: Path | None = None) -> dict[str, Any]:
             "npcs": len(npcs),
             "items": len(items),
             "exits": len(exits),
+            "graph_exits": len(graph_entry.get("exits", [])),
             "hazards": len(hazards),
             "quest_points": len(map_quests),
             "bosses": len(graph_entry.get("bosses", {})),
