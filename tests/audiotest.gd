@@ -187,6 +187,10 @@ func _v017(mus, sfx) -> void:
 			no_track.append(k)
 	var graph = JSON.parse_string(FileAccess.get_file_as_string("res://data/world_graph.json"))
 	for k in graph:
+		# world_graph also carries non-map metadata; only test actual map records.
+		if Game.map_data(str(k)).is_empty():
+			continue
+
 		mus.region = str(k)
 		if not mus.has_track(mus.track_key()):
 			no_track.append(k)
