@@ -221,7 +221,7 @@
   },
   {
     "do": "fight",
-    "sec": 150,
+    "sec": 240,
     "shots_every": 8,
     "target_foe": "boss"
   },
