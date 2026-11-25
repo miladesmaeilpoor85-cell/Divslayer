@@ -53,13 +53,27 @@ func run(_main: Node) -> void:
 	Game.state["q3"] = "not_started"
 	Game.state["defeated"] = {}
 	Game.state["brann"] = "anvil"
+	var locked_route_target: Dictionary = Game.quest_target()
+	check("kindling_key_routes_back_to_zal_before_q2_starts",
+		str(locked_route_target.get("map", "")) == "village"
+		and str(locked_route_target.get("kind", "")) == "npc")
+	check("locked_peaks_gate_is_the_current_hud_objective",
+		Game.objective() == Game.t("Speak with Zal", "با زال صحبت کن"), Game.objective())
+	Game.state["q2"] = "active"
 	var pulad_target: Dictionary = Game.quest_target()
-	check("active_pulad_contract_preempts_next_chapter_elder_target",
+	check("active_pulad_contract_resumes_after_zal_opens_peaks",
 		str(pulad_target.get("map", "")) == "emberforge"
 		and str(pulad_target.get("kind", "")) == "boss")
+	check("pulad_objective_resumes_after_zal_opens_peaks",
+		Game.objective().find("Pulad of Ghandi") >= 0, Game.objective())
+	Game.state["brann"] = "anvil_done"
+	var turn_in_target: Dictionary = Game.quest_target()
+	check("pulad_reward_turn_in_still_targets_jamshid",
+		str(turn_in_target.get("map", "")) == "village"
+		and str(turn_in_target.get("kind", "")) == "npc")
 	Game.state["brann"] = "ignarok"
 	var puladvand_target: Dictionary = Game.quest_target()
-	check("active_puladvand_contract_preempts_next_chapter_elder_target",
+	check("active_puladvand_contract_keeps_priority_after_q2_starts",
 		str(puladvand_target.get("map", "")) == "emberforge"
 		and str(puladvand_target.get("kind", "")) == "boss")
 	if had_q1:
