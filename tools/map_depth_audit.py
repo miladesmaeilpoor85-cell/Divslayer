@@ -76,9 +76,16 @@ def _reachable_from(
     start: str,
     graph: dict[str, Any],
     scripted_connections: list[dict[str, Any]] | None = None,
+    *,
+    include_gated_exits: bool = False,
 ) -> set[str]:
+    """Traverse ordinary exits by default; optionally include declared gated exits."""
     adjacency = {
-        key: [str(edge.get("to", "")) for edge in entry.get("exits", [])]
+        key: [
+            str(edge.get("to", ""))
+            for edge in entry.get("exits", [])
+            if include_gated_exits or not edge.get("gate")
+        ]
         for key, entry in graph.items()
     }
     for connection in scripted_connections or []:
@@ -177,7 +184,7 @@ def build_report(root: Path, session_log: Path | None = None) -> dict[str, Any]:
         target = str(connection.get("to", ""))
         if source not in graph or target not in graph:
             errors.append(f"scripted connection references unknown map: {source} -> {target}")
-    reached = _reachable_from("village", graph, scripted_connections)
+    reached = _reachable_from("village", graph, scripted_connections, include_gated_exits=True)
     shrines = [item for item in maps if item["kind"] == "shrine"]
     regions = [item for item in maps if item["kind"] == "region"]
     areas = [item["area"] for item in maps]
@@ -196,6 +203,9 @@ def build_report(root: Path, session_log: Path | None = None) -> dict[str, Any]:
             "unreachable_by_static_exits": sorted(set(graph) - static_reached),
             "unreachable_after_declared_scripted_gates": sorted(set(graph) - reached),
             "scripted_connection_count": len(scripted_connections),
+            "gated_exit_count": sum(
+                1 for entry in graph.values() for edge in entry.get("exits", []) if edge.get("gate")
+            ),
             "smallest_map_area": min(areas) if areas else None,
             "largest_map_area": max(areas) if areas else None,
             "mean_width": round(sum(item["width"] for item in maps) / len(maps), 1) if maps else None,
