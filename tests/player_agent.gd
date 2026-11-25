@@ -17,6 +17,15 @@ const TALENT_ORDER := {
 static func should_prioritize_grave_pillars(active_pillars: int) -> bool:
 	return active_pillars > 1
 
+## During the Anvilward encounter, clear only adds already close enough to pressure the hero.
+## The named boss remains the objective even when it starts beyond the normal target scan radius.
+static func should_prioritize_focus_add(focus_type: String, enemy_type: String, is_boss: bool, distance: float, radius: float = 240.0) -> bool:
+	if is_boss or distance < 0.0 or distance > radius:
+		return false
+	if focus_type == "anvilward":
+		return true
+	return focus_type == "ancientwyrm" and enemy_type == "wyrmling"
+
 ## Route combat is allowed only for nearby, reachable threats. The player must not
 ## run through an active pack just because the objective marker is on the far edge.
 static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:
