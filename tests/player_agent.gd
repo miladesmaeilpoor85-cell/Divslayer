@@ -39,6 +39,21 @@ static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, 
 			return true
 	return false
 
+## Do not chase a threat along a path that crosses the safety margin of a map exit.
+## A foe may stand outside the portal margin while the shortest approach still runs through it.
+static func should_skip_route_path_near_exit(origin: Vector2, destination: Vector2, exits: Array, margin: float = 180.0) -> bool:
+	if should_skip_route_threat_near_exit(origin, exits, margin):
+		return true
+	if should_skip_route_threat_near_exit(destination, exits, margin):
+		return true
+	var distance := origin.distance_to(destination)
+	var sample_count := maxi(1, int(ceil(distance / 8.0)))
+	for sample_index in range(1, sample_count):
+		var sample_position := origin.lerp(destination, float(sample_index) / float(sample_count))
+		if should_skip_route_threat_near_exit(sample_position, exits, margin):
+			return true
+	return false
+
 func attach(playtest_driver: Node) -> void:
 	driver = playtest_driver
 
@@ -754,7 +769,7 @@ func _nearest_route_threat(radius: float = 420.0, excluded_type := "") -> Dictio
 		if excluded_type != "" and str(foe.type) == excluded_type:
 			continue
 		var foe_center: Vector2 = foe.center()
-		if should_skip_route_threat_near_exit(foe_center, exits):
+		if should_skip_route_path_near_exit(origin, foe_center, exits):
 			var deferred_type := str(foe.type)
 			if not deferred_near_exit.has(deferred_type):
 				deferred_near_exit.append(deferred_type)
