@@ -158,3 +158,16 @@ PR #65 must remain Draft and unmerged until all of the following are true:
 5. The Godot CI, the four-class natural journey, all evidence-package checks, and human review of representative screenshots/logs pass on the same final head commit.
 
 Passing a narrow boss diagnostic, damaging a boss, reaching a map, or passing a scripted checkpoint is not equivalent to independent campaign completion. Any unvisited, inaccessible, or unverified content must remain explicitly labelled as such.
+
+
+### HUD-driven combat resource slice — 26 November 2026
+
+A second migration slice now reads the visible HUD resource presentation:
+
+- The observer captures the rendered health, stamina, and mana meter values plus the visible potion-chip count.
+- The HUD potion chip displays the combined ordinary and greater healing-potion stock, matching the resources available to the player.
+- The player brain parses Persian and Arabic-Indic digits and decides whether to heal using only the visible health ratio, visible potion stock, configured reserve, and cooldown.
+- The live combat loop now bases the potion-use decision on that observation. Missing HUD data means “unknown” and does not trigger a guessed action.
+- Regression tests cover visible meter capture, Persian potion digits, reserve preservation, and unknown-value refusal.
+
+This does **not** complete combat autonomy. Enemy identification, target selection, spacing, attack telegraphs/projectiles, dodge/block timing, class-specific offensive choices, stamina/mana expenditure, and combat recovery still need a player-observation path. Route threat scans and objective routing still read world/enemy/quest runtime data and remain explicitly out of bounds for the final independent-player acceptance gate.
