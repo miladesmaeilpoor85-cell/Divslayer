@@ -244,6 +244,7 @@ func run(m: Node) -> void:
 	check("high_eyrie_exit_is_physically_connected", exit_try("alborz_eyrie") == "left")
 	main.goto_map("alborz_eyrie", Vector2(80, 570))
 	await frames(10)
+	check("high_eyrie_uses_recorded_wind_ambience", bool(Music._amb_want.get("wind", false)))
 	main.player.invuln = 99999.0
 	var eyrie_data := Game.map_data("alborz_eyrie")
 	check("high_eyrie_uses_dedicated_ground_art",
