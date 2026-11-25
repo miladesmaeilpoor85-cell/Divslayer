@@ -57,6 +57,50 @@ class MapDepthAuditTests(unittest.TestCase):
             village = next(item for item in report["maps"] if item["key"] == "village")
             self.assertGreater(village["shortest_straight_boundary_crossing_seconds_fastest_class"], 0)
 
+    def test_scripted_connection_sidecar_is_included(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.make_repo(root)
+
+            graph_path = root / "data/world_graph.json"
+            graph = json.loads(graph_path.read_text(encoding="utf-8"))
+            graph["trial"] = {"w": 640, "h": 480, "exits": [], "bosses": {}}
+            graph_path.write_text(json.dumps(graph), encoding="utf-8")
+            trial_map = {
+                "groundScale": 2,
+                "objects": [],
+                "data": {
+                    "name": "The Arena",
+                    "w": 640,
+                    "h": 480,
+                    "exits": [],
+                    "npcs": [],
+                    "enemySpawns": [],
+                    "items": [],
+                    "hazards": [],
+                },
+            }
+            (root / "data/Maps/trial.json").write_text(json.dumps(trial_map), encoding="utf-8")
+            sidecar = {
+                "scriptedConnections": [
+                    {
+                        "from": "village",
+                        "to": "trial",
+                        "via": "Siavash dialogue",
+                        "condition": "player chooses Enter the Arena",
+                    }
+                ]
+            }
+            (root / "data/scripted_connections.json").write_text(
+                json.dumps(sidecar), encoding="utf-8"
+            )
+
+            report = build_report(root)
+            summary = report["summary"]
+            self.assertEqual(summary["scripted_connection_count"], 2)
+            self.assertEqual(summary["reachable_with_declared_scripted_gates_count"], 3)
+            self.assertEqual(summary["unreachable_after_declared_scripted_gates"], [])
+
     def test_gated_world_exit_is_not_counted_as_static_reachability(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
