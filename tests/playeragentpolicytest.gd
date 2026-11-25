@@ -3,6 +3,8 @@ extends Node
 ## A player should break all but one active grave pillar to avoid triggering another wave.
 
 const PlayerAgent = preload("res://tests/player_agent.gd")
+const PlayerBrain = preload("res://tests/player_brain.gd")
+const PlayerObservation = preload("res://tests/player_observation.gd")
 
 var results: Dictionary = {}
 var fails: Array[String] = []
@@ -14,6 +16,64 @@ func check(label: String, ok: bool, info = null) -> void:
 	printerr(("PASS " if ok else "FAIL ") + label + ("" if info == null else "  " + str(info)))
 
 func run(_main: Node) -> void:
+	var visible_choices: Array = [
+		{"text": "Leave", "enabled": true, "visible": true},
+		{"text": "Buy armour", "enabled": true, "visible": true},
+		{"text": "Continue", "enabled": false, "visible": true},
+		{"text": "Hidden action", "enabled": true, "visible": false}
+	]
+	check("screen_brain_selects_the_matching_visible_choice",
+		PlayerBrain.find_visible_button(visible_choices, ["Buy armour"]) == 1)
+	check("screen_brain_ignores_disabled_choices",
+		PlayerBrain.find_visible_button(visible_choices, ["Continue"]) == -1)
+	check("screen_brain_ignores_invisible_choices",
+		PlayerBrain.find_visible_button(visible_choices, ["Hidden action"]) == -1)
+	check("screen_brain_uses_first_enabled_choice_only_when_fallback_is_requested",
+		PlayerBrain.find_visible_button(visible_choices, ["not present"], true) == 0)
+	check("screen_brain_does_not_guess_when_no_matching_choice_exists",
+		PlayerBrain.find_visible_button(visible_choices, ["not present"]) == -1)
+	var death_choices: Array = [
+		{"text": "Return to Zabol", "enabled": true, "visible": true},
+		{"text": "Rematch", "enabled": true, "visible": true}
+	]
+	check("screen_brain_prefers_a_visible_boss_rematch",
+		PlayerBrain.find_death_recovery_button(death_choices) == 1)
+	check("screen_brain_uses_visible_respawn_when_no_rematch_exists",
+		PlayerBrain.find_death_recovery_button([{"text": "Respawn", "enabled": true, "visible": true}]) == 0)
+	check("screen_brain_refuses_unknown_death_actions",
+		PlayerBrain.find_death_recovery_button([{"text": "Quit", "enabled": true, "visible": true}]) == -1)
+	var brain_source := FileAccess.get_file_as_string("res://tests/player_brain.gd")
+	var observer_source := FileAccess.get_file_as_string("res://tests/player_observation.gd")
+	check("player_brain_has_no_game_state_or_world_queries",
+		not brain_source.contains("Game.") and not brain_source.contains("get_nodes_in_group")
+		and not brain_source.contains("quest_target") and not brain_source.contains("main.player"))
+	check("screen_observer_has_no_enemy_or_quest_telemetry",
+		not observer_source.contains("Game.") and not observer_source.contains("get_nodes_in_group")
+		and not observer_source.contains("quest_target"))
+	var test_layer := CanvasLayer.new()
+	_main.get_tree().root.add_child(test_layer)
+	var screen_button := Button.new()
+	screen_button.text = "PLAYER_OBSERVATION_VISIBLE_SENTINEL"
+	screen_button.position = Vector2(32, 32)
+	screen_button.size = Vector2(240, 42)
+	test_layer.add_child(screen_button)
+	var hidden_button := Button.new()
+	hidden_button.text = "PLAYER_OBSERVATION_HIDDEN_SENTINEL"
+	hidden_button.position = Vector2(32, 82)
+	hidden_button.size = Vector2(240, 42)
+	hidden_button.visible = false
+	test_layer.add_child(hidden_button)
+	var captured_screen := PlayerObservation.capture(_main.get_tree().root, _main.get_viewport())
+	var saw_visible := false
+	var saw_hidden := false
+	for item in captured_screen.get("buttons", []):
+		var label := str(item.get("text", ""))
+		saw_visible = saw_visible or label == "PLAYER_OBSERVATION_VISIBLE_SENTINEL"
+		saw_hidden = saw_hidden or label == "PLAYER_OBSERVATION_HIDDEN_SENTINEL"
+	check("screen_observer_captures_visible_buttons", saw_visible)
+	check("screen_observer_ignores_hidden_buttons", not saw_hidden)
+	test_layer.free()
+
 	check("no_pillars_do_not_trigger_pillar_chase", not PlayerAgent.should_prioritize_grave_pillars(0))
 	check("leave_one_pillar_as_low_shield_anchor", not PlayerAgent.should_prioritize_grave_pillars(1))
 	check("break_second_pillar_before_engaging_boss", PlayerAgent.should_prioritize_grave_pillars(2))
