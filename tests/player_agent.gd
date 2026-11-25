@@ -22,6 +22,12 @@ static func should_prioritize_grave_pillars(active_pillars: int) -> bool:
 static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:
 	return distance >= 0.0 and distance <= radius
 
+static func should_clear_route_threats_before_objective(current_map: String, target_map: String, target_kind: String) -> bool:
+	# Clear threats on maps being crossed, but do not burn the boss arena on
+	# generic nearest-enemy sweeps. The focused encounter driver handles adds
+	# while it pursues the authored objective boss with live touch combat.
+	return not (current_map == target_map and target_kind == "boss")
+
 ## Do not chase an enemy through a nearby exit while clearing a world-map route.
 ## The player can take the authored exit normally and encounter that enemy on its destination map.
 static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, margin: float = 180.0) -> bool:
@@ -883,7 +889,9 @@ func follow_objective(max_steps := 8, stop_after_interaction := false, boss_figh
 			if exit_data.is_empty():
 				report.append("route exit to %s is not present in the current region" % hop)
 				break
-			var route_safety: Dictionary = await _clear_route_threats(4, 420.0)
+			var route_safety: Dictionary = {"safe": true, "message": "destination is on another map"}
+			if should_clear_route_threats_before_objective(current_map, target_map, str(target.get("kind", ""))):
+				route_safety = await _clear_route_threats(4, 420.0)
 			report.append(str(route_safety.get("message", "route safety check unavailable")))
 			if not bool(route_safety.get("safe", false)):
 				break
@@ -928,15 +936,18 @@ func follow_objective(max_steps := 8, stop_after_interaction := false, boss_figh
 				report.append("objective boss is not spawned on %s" % current_map)
 				break
 			var boss_type := str(boss.type)
-			var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0, boss_type)
-			report.append(str(boss_route_safety.get("message", "boss route safety check unavailable")))
-			if not bool(boss_route_safety.get("safe", false)):
-				break
+			if should_clear_route_threats_before_objective(current_map, target_map, kind):
+				var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0, boss_type)
+				report.append(str(boss_route_safety.get("message", "boss route safety check unavailable")))
+				if not bool(boss_route_safety.get("safe", false)):
+					break
+			else:
+				driver._log("PLAYER_AGENT_BOSS_PRIORITY type=%s policy=focused_combat ambient_threats=not_precleared" % boss_type)
 			if not is_instance_valid(boss) or boss.dead:
-				report.append("objective boss %s was no longer available after route safety" % boss_type)
+				report.append("objective boss %s was no longer available before focused combat" % boss_type)
 				break
-			await driver.walk_to(boss.global_position, 45.0, 110.0)
-			await driver.wait(0.3)
+			# Let the live combat controller approach and prioritize this boss. A plain
+			# walk_to plus nearest-threat sweep strands the player in the boss arena's adds.
 			var fight_limit := clampf(float(boss_fight_sec), 30.0, 240.0)
 			await driver.shot("objective_boss_%s_start" % boss_type)
 			var outcome: String = await driver.fight(fight_limit, 0.0, boss_type)
