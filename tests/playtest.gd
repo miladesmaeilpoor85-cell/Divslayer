@@ -849,19 +849,23 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			_log("FIGHT_PROGRESS elapsed=%.1f/%.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
 			last_progress = t
 		hp_low = min(hp_low, Game.hp / Game.max_hp())
-		var potion_stock_before := int(Game.state.get("potions", 0)) + int(Game.state.get("greater", 0))
-		if PlayerAgent.should_use_health_potion(Game.hp, Game.max_hp(), potion_stock_before, potion_reserve, t, potion_ready_at, potion_threshold):
-			var potion_hp_before := float(Game.hp)
+		var visible_status := player_agent.visible_combat_status()
+		var visible_potions := int(visible_status.get("potions", -1))
+		var potion_stock_before := visible_potions
+		var visible_hp_ratio := float(visible_status.get("health_ratio", -1.0))
+		var potion_ready := t >= potion_ready_at
+		if visible_hp_ratio >= 0.0 and visible_potions >= 0 and potion_ready and PlayerBrain.should_use_visible_potion(visible_status, potion_reserve, potion_threshold):
 			await press("potion")
-			await wait(0.08)
-			var potion_stock_after := int(Game.state.get("potions", 0)) + int(Game.state.get("greater", 0))
-			var potion_consumed := maxi(0, potion_stock_before - potion_stock_after)
+			await wait(0.25)
+			var after_status := player_agent.visible_combat_status()
+			var potion_stock_after := int(after_status.get("potions", -1))
+			var potion_consumed := maxi(0, potion_stock_before - potion_stock_after) if potion_stock_after >= 0 else 0
 			potion_ready_at = PlayerAgent.next_health_potion_time(t) if potion_consumed > 0 else PlayerAgent.next_health_potion_time(t, 0.5)
 			pots += potion_consumed
-			if potion_consumed > 0:
-				_log("PLAYER_AGENT_POTION_USED class=%s hp=%.1f->%.1f stock=%d->%d next_ready=%.1f" % [Game.cls, potion_hp_before, float(Game.hp), potion_stock_before, potion_stock_after, potion_ready_at])
-			else:
-				_log("PLAYER_AGENT_POTION_NOT_CONSUMED class=%s hp=%.1f stock=%d" % [Game.cls, potion_hp_before, potion_stock_before])
+			_log("PLAYER_AGENT_POTION_OBSERVED class=%s hp_ratio=%.2f stock=%d->%d consumed=%s next_ready=%.1f" % [
+				str(visible_status.get("class_label", "unknown")), visible_hp_ratio, potion_stock_before, potion_stock_after,
+				str(potion_consumed > 0), potion_ready_at
+			])
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
 			continue
