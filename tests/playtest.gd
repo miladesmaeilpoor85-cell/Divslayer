@@ -661,6 +661,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var heavy_t := randf_range(5.0, 8.0)
 	var signature_t := randf_range(3.0, 5.0)
 	var pots := 0
+	var potion_ready_at := 0.0
 	var dodges := 0
 	var block_actions := 0
 	var signature_actions := 0
@@ -845,9 +846,19 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			_log("FIGHT_PROGRESS elapsed=%.1f/%.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
 			last_progress = t
 		hp_low = min(hp_low, Game.hp / Game.max_hp())
-		if Game.hp < potion_threshold * Game.max_hp() and int(Game.state.get("potions", 0)) > potion_reserve:
+		var potion_stock_before := int(Game.state.get("potions", 0)) + int(Game.state.get("greater", 0))
+		if PlayerAgent.should_use_health_potion(Game.hp, Game.max_hp(), potion_stock_before, potion_reserve, t, potion_ready_at, potion_threshold):
+			var potion_hp_before := float(Game.hp)
 			await press("potion")
-			pots += 1
+			await wait(0.08)
+			var potion_stock_after := int(Game.state.get("potions", 0)) + int(Game.state.get("greater", 0))
+			var potion_consumed := maxi(0, potion_stock_before - potion_stock_after)
+			potion_ready_at = PlayerAgent.next_health_potion_time(t) if potion_consumed > 0 else PlayerAgent.next_health_potion_time(t, 0.5)
+			pots += potion_consumed
+			if potion_consumed > 0:
+				_log("PLAYER_AGENT_POTION_USED class=%s hp=%.1f->%.1f stock=%d->%d next_ready=%.1f" % [Game.cls, potion_hp_before, float(Game.hp), potion_stock_before, potion_stock_after, potion_ready_at])
+			else:
+				_log("PLAYER_AGENT_POTION_NOT_CONSUMED class=%s hp=%.1f stock=%d" % [Game.cls, potion_hp_before, potion_stock_before])
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
 			continue
@@ -893,7 +904,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			sneak_actions += 1
 		# A boss-only diagnostic sample reacts to every readable telegraph; ordinary
 		# campaign skirmishes preserve the imperfect 75% response of the original bot.
-		var away := _danger_away(focus_type != "")
+		var away := _danger_away()
 		if away != Vector2.ZERO:
 			# A marked lane explicitly teaches a sideways roll; blocking it does not leave the
 			# damaging strip. Evade as soon as its 0.45 s warning is visible.
@@ -902,8 +913,17 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			var parry_attempt: bool = not lane_warning and last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
 			if parry_attempt:
 				await stick(Vector2.ZERO)
-				await press("block", 0.18)
+				var parry_hold := maxf(0.22, last_danger_eta + 0.08)
+				await press("block", parry_hold)
 				block_actions += 1
+			elif not lane_warning and last_danger_kind != "projectile" and to.length() <= 210.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0:
+				# If the parry window is already too close, hold the shield through impact
+				# instead of tapping it for 0.18 s and releasing before the attack lands.
+				await stick(Vector2.ZERO)
+				var shield_hold := maxf(0.18, last_danger_eta + 0.08)
+				await press("block", shield_hold)
+				block_actions += 1
+				_log("PLAYER_AGENT_BLOCK kind=%s eta=%.2f hold=%.2f" % [last_danger_kind, last_danger_eta, shield_hold])
 			else:
 				# Combat evasions must respect the same hard portal boundary as normal movement.
 				var escape_dir := _avoid_exits(away.normalized())
@@ -1122,8 +1142,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, block_actions, signature_actions, spell_actions, ult_actions, heavy_actions, p.swings - swings0, p.hits_landed - hits0, detail]
 
 ## the way out of the nearest imminent telegraph or projectile (Vector2.ZERO: nothing to dodge)
-
-func _danger_away(perfect_telegraph_read := false) -> Vector2:
+## Boss-focused playtests retain the same imperfect 75% telegraph recognition as other fights.
+func _danger_away() -> Vector2:
 	var bfx = main.world.get("bossfx") if main.world else null
 	last_danger_eta = 1.0
 	last_danger_kind = ""
@@ -1132,7 +1152,7 @@ func _danger_away(perfect_telegraph_read := false) -> Vector2:
 	var pc: Vector2 = main.player.global_position + Vector2(0, -17)
 	for t in bfx.tele:
 		if not t.has("_pt"):
-			t["_pt"] = randf() < (1.0 if perfect_telegraph_read else 0.75)
+			t["_pt"] = randf() < 0.75
 		if not bool(t["_pt"]) or float(t["t"]) > 0.45 or not bfx.inside(t):
 			continue
 		last_danger_eta = float(t["t"])
