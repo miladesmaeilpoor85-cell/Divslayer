@@ -173,6 +173,9 @@ func _screen_observation() -> Dictionary:
 		return {}
 	return PlayerObservation.capture(driver.get_tree().root, driver.get_viewport())
 
+func visible_combat_status() -> Dictionary:
+	return PlayerBrain.read_visible_combat_status(_screen_observation())
+
 func _visible_screen_texts() -> Array[String]:
 	var result: Array[String] = []
 	var observation := _screen_observation()
