@@ -164,6 +164,11 @@ jobs:
           assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
           assert "if brann_key():" in game_source, "The Emberforge route must remain gated until the Kindling Key is earned"
           assert '["core", "anvil", "anvil_done", "ignarok", "ignarok_done"]' in game_source, "The HUD must display the active Pulad and Puladvand quest objectives"
+          world_source = Path("scripts/world.gd").read_text(encoding="utf-8")
+          assert 'data = md.get("data", {}).duplicate()' in world_source, "Per-world exit data must be isolated from cached map resources"
+          assert "dynamic_exits.append(emberforge_exit)" in world_source, "The Kindling door must be visible to local touch navigation"
+          assert 'data["exits"] = dynamic_exits' in world_source, "The opened Kindling door must be exposed to path steering and exit avoidance"
+          assert "_exit(emberforge_exit)" in world_source, "The dynamic Kindling door must retain its real collision/transition object"
           forest_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("sec") == 12)
           next_forest_objective = next(i for i in range(forest_fight + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
           assert int(scenario[next_forest_objective].get("max_steps", 1)) >= 2, "Allow the post-fight forest map hop and clue interaction"

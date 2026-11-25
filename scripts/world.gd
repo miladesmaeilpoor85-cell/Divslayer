@@ -87,7 +87,7 @@ func build(map_key: String) -> void:
 	name = "World_" + map_key
 	rush = not Game.rush.is_empty() and str(Game.rush.get("map", "")) == map_key
 	var md: Dictionary = Game.map_data(map_key)
-	data = md.get("data", {})
+	data = md.get("data", {}).duplicate()
 	size = Vector2(float(data.get("w", 1000)), float(data.get("h", 800)))
 	configure_wind_zones(data.get("windGusts", []))
 	if not wind_zones.is_empty():
@@ -183,7 +183,18 @@ func build(map_key: String) -> void:
 		_ch2_sanctum()
 	if key == "peaks" and not rush:
 		# the Kindling door (v0.13): the road to the Emberforge, sealed until Jamshid hands over the key
-		_exit({"x": 520, "y": 790, "w": 110, "h": 16, "to": "emberforge", "spawnX": 30, "spawnY": 500, "dir": "up"})
+		# Expose this dynamic door to local player navigation as well as the Area2D collider.
+		var emberforge_exit := {"x": 520, "y": 790, "w": 110, "h": 16, "to": "emberforge", "spawnX": 30, "spawnY": 500, "dir": "up"}
+		var dynamic_exits: Array = _arr(data.get("exits")).duplicate(true)
+		var has_forge_exit := false
+		for exit_data in dynamic_exits:
+			if str(exit_data.get("to", "")) == "emberforge":
+				has_forge_exit = true
+				break
+		if not has_forge_exit:
+			dynamic_exits.append(emberforge_exit)
+		data["exits"] = dynamic_exits
+		_exit(emberforge_exit)
 		_door_visual()
 		_ch3_rubble()
 	if key == "damavand" and not rush:
