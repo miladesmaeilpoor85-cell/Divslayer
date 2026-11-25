@@ -198,6 +198,31 @@ func run(m: Node) -> void:
 		if e.type == "anvilward":
 			warden = e
 	check("warden_waits_in_the_forge", warden != null)
+	var locked_ignarok := false
+	for foe in main.world.camp_foes():
+		if str(foe.type) == "ignarok":
+			locked_ignarok = true
+	check("puladvand_stays_locked_before_jamshid_turn_in", not locked_ignarok)
+
+	# The natural route from the Peaks gate to Anvilward must not run through the
+	# optional forge packs. Keep them available on the north/east flanks for exploration.
+	var forge_data: Dictionary = Game.map_data("emberforge").get("data", {})
+	var route_start := Vector2(43, 534)
+	var route_end := Vector2(643, 950)
+	var route_delta := route_end - route_start
+	var closest_route_add := INF
+	for spawn in forge_data.get("enemySpawns", []):
+		var spawn_type := str(spawn.get("type", ""))
+		if spawn_type in ["anvilward", "ignarok"]:
+			continue
+		var enemy_data: Dictionary = Game.enemy_def(spawn_type)
+		var spawn_feet := Vector2(
+			float(spawn.get("x", 0)) + float(enemy_data.get("w", 24)) * 0.5,
+			float(spawn.get("y", 0)) + float(enemy_data.get("h", 24))
+		)
+		var route_t := clampf((spawn_feet - route_start).dot(route_delta) / route_delta.length_squared(), 0.0, 1.0)
+		closest_route_add = minf(closest_route_add, spawn_feet.distance_to(route_start + route_delta * route_t))
+	check("anvilward_approach_has_room_from_optional_forge_packs", closest_route_add >= 320.0, closest_route_add)
 
 	# ---- Pulad of Ghandi falls
 	clear_foes()
@@ -227,6 +252,11 @@ func run(m: Node) -> void:
 	# ---- Puladvand
 	main.goto_map("emberforge", Vector2(80, 520))
 	await frames(6)
+	var unlocked_ignarok := false
+	for foe in main.world.camp_foes():
+		if str(foe.type) == "ignarok":
+			unlocked_ignarok = true
+	check("puladvand_spawns_after_jamshid_turn_in", unlocked_ignarok)
 	clear_foes()
 	var ig = main.world.spawn_enemy("ignarok", main.player.global_position + Vector2(80, 0))
 	await frames(4)
