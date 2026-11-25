@@ -174,6 +174,7 @@ func run(m: Node) -> void:
 	for n in [1, 2, 3]:
 		Game.state["q%d" % n] = "done"        # the Elder's chain is finished: chapter 2 comes first (v0.19) ...
 	check("chapter2_objective_first", Game.objective() == Game.Ch2.line("o_elder"), Game.objective())
+	check("chapter2_compass_first", Game.quest_target().get("map", "") == "village" and Game.quest_target().get("kind", "") == "npc", Game.quest_target())
 	Game.state["c2"] = {"step": "done"}       # ... and with it done, Jamshid's objective shows
 	check("objective_slay_anvil", Game.objective().find("Pulad of Ghandi") >= 0, Game.objective())
 	check("compass_to_anvil", Game.quest_target().get("map", "") == "emberforge" and Game.quest_target().get("kind", "") == "boss", Game.quest_target())
@@ -281,6 +282,8 @@ func run(m: Node) -> void:
 	Game.state["brann"] = "anvil"
 	check("elder_objective_wins_while_questing", Game.quest_step("q1") == "boss_ready"
 		and Game.objective().find("Arzhang") >= 0, Game.objective())
+	check("elder_compass_wins_while_questing",
+		Game.quest_target().get("map", "") == "dungeon" and Game.quest_target().get("kind", "") == "boss", Game.quest_target())
 	Game.state["q1"] = "done"
 	Game.state["q2"] = "done"
 	Game.state["q3"] = "done"
