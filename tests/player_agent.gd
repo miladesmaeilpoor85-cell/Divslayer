@@ -28,6 +28,8 @@ static func should_clear_route_threats_before_objective(current_map: String, tar
 	# while it pursues the authored objective boss with live touch combat.
 	return not (current_map == target_map and target_kind == "boss")
 
+## Reused for both map traversal and destination-boss approach so the arena policy stays explicit.
+
 ## Do not chase an enemy through a nearby exit while clearing a world-map route.
 ## The player can take the authored exit normally and encounter that enemy on its destination map.
 static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, margin: float = 180.0) -> bool:
