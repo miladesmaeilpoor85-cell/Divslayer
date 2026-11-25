@@ -159,6 +159,11 @@ jobs:
           assert "PLAYER_AGENT_PICKUP_SKIPPED_NEAR_EXIT" in agent_source, "Pickup scanning must skip loot in exit safety margins"
           assert "pickup route unexpectedly changed map" in agent_source, "Pickup movement must fail if it leaves the intended map"
           assert "PLAYER_AGENT_OBJECTIVE_BOSS type=%s defeated=%s" in agent_source, "Dynamic objective boss fights must report observed defeat state"
+          assert "static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:" in agent_source, "Route combat must have a bounded nearby-threat policy"
+          assert "func _clear_route_threats(max_rounds := 4, radius := 420.0) -> Dictionary:" in agent_source, "The natural player must clear nearby threats before map travel"
+          assert "PLAYER_AGENT_ROUTE_THREAT" in agent_source and "PLAYER_AGENT_ROUTE_COMBAT" in agent_source, "Route combat must log observed nearby enemies and ordinary combat outcomes"
+          assert "var route_safety: Dictionary = await _clear_route_threats(4, 420.0)" in agent_source, "The agent must validate route safety before crossing map exits"
+          assert "var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0)" in agent_source, "The agent must validate nearby threats before approaching an objective boss"
           game_source = Path("scripts/game.gd").read_text(encoding="utf-8")
           assert "func navigation_graph() -> Dictionary:" in game_source, "Navigation must include a copy of the currently open story gates"
           assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"

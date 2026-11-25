@@ -17,6 +17,11 @@ const TALENT_ORDER := {
 static func should_prioritize_grave_pillars(active_pillars: int) -> bool:
 	return active_pillars > 1
 
+## Route combat is allowed only for nearby, reachable threats. The player must not
+## run through an active pack just because the objective marker is on the far edge.
+static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:
+	return distance >= 0.0 and distance <= radius
+
 func attach(playtest_driver: Node) -> void:
 	driver = playtest_driver
 
@@ -675,6 +680,87 @@ func recover_from_death() -> String:
 		return action
 	return "recovery choice was tapped but the player did not return to play"
 
+## Find living enemies close enough to threaten a normal map transition.
+## This only reads the live scene; it does not change enemy or quest state.
+func _nearest_route_threat(radius: float = 420.0) -> Dictionary:
+	if driver == null or driver.main == null or driver.main.player == null or driver.main.world == null:
+		return {}
+	var origin: Vector2 = driver.main.player.global_position + Vector2(0, -17)
+	var threat_count := 0
+	var nearest_distance := INF
+	var nearest_position := Vector2.ZERO
+	var nearest_type := ""
+	for foe in driver.get_tree().get_nodes_in_group("enemies"):
+		if not is_instance_valid(foe) or foe.get_parent() == null:
+			continue
+		if foe.world != driver.main.world or bool(foe.dead):
+			continue
+		var distance: float = foe.center().distance_to(origin)
+		if not PlayerAgent.should_engage_route_threat(distance, radius):
+			continue
+		threat_count += 1
+		if distance < nearest_distance:
+			nearest_distance = distance
+			nearest_position = foe.global_position
+			nearest_type = str(foe.type)
+	return {
+		"count": threat_count,
+		"nearest_type": nearest_type,
+		"nearest_position": nearest_position,
+		"nearest_distance": nearest_distance
+	}
+
+## A human player clears nearby pressure before crossing to another region.
+## Every attack is an ordinary touch-driven combat action; no enemy is removed,
+## isolated, or made invulnerable for route traversal.
+func _clear_route_threats(max_rounds := 4, radius := 420.0) -> Dictionary:
+	var rounds := clampi(int(max_rounds), 1, 5)
+	var before_map := str(driver.main.world.key) if driver.main.world else "none"
+	for round_index in range(rounds):
+		if driver.main.player == null or driver.main.player.dead or driver.get_tree().paused:
+			return {"safe": false, "message": "route sweep stopped because the player is dead or the game is paused"}
+		var threat := _nearest_route_threat(float(radius))
+		if threat.is_empty() or int(threat.get("count", 0)) == 0:
+			if round_index == 0:
+				driver._log("PLAYER_AGENT_ROUTE_CLEAR map=%s nearby=0" % before_map)
+			return {"safe": true, "message": "nearby route clear after %d combat round(s)" % round_index}
+		var threat_count := int(threat.get("count", 0))
+		var threat_type := str(threat.get("nearest_type", "unknown"))
+		var threat_position: Vector2 = threat.get("nearest_position", driver._feet())
+		var threat_distance := float(threat.get("nearest_distance", INF))
+		driver._log("PLAYER_AGENT_ROUTE_THREAT map=%s round=%d/%d nearby=%d nearest=%s distance=%d hp=%d/%d potions=%d" % [
+			before_map, round_index + 1, rounds, threat_count, threat_type, int(threat_distance),
+			int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0))
+		])
+		# A player uses a healing item before a dangerous approach, while a Mage
+		# keeps one potion in reserve for the upcoming boss encounter.
+		var potion_reserve := 1 if Game.cls == "mage" else 0
+		if Game.hp <= Game.max_hp() * 0.68 and int(Game.state.get("potions", 0)) > potion_reserve:
+			await driver.press("potion")
+			await driver.wait(0.2)
+		var approach: String = await driver.walk_to(threat_position, 10.0, 82.0)
+		if driver.main.world == null or str(driver.main.world.key) != before_map:
+			return {"safe": false, "message": "route threat approach changed map unexpectedly: " + approach}
+		if driver.main.player.dead or driver.get_tree().paused:
+			return {"safe": false, "message": "player fell while approaching route threat %s" % threat_type}
+		var combat_result: String = await driver.fight(18.0, 0.0)
+		driver._log("PLAYER_AGENT_ROUTE_COMBAT map=%s round=%d target=%s approach=%s result=%s hp=%d/%d" % [
+			before_map, round_index + 1, threat_type, approach, combat_result, int(Game.hp), int(Game.max_hp())
+		])
+		if driver.main.player.dead or driver.get_tree().paused:
+			return {"safe": false, "message": "player fell while clearing route threats in %s" % before_map}
+		await driver.wait(0.25)
+	var remaining := _nearest_route_threat(260.0)
+	if not remaining.is_empty() and int(remaining.get("count", 0)) > 0:
+		var blocked := "route remains unsafe: %d nearby foes, nearest %s at %d px" % [
+			int(remaining.get("count", 0)), str(remaining.get("nearest_type", "unknown")),
+			int(remaining.get("nearest_distance", 0.0))
+		]
+		driver._log("PLAYER_AGENT_ROUTE_BLOCKED map=%s %s" % [before_map, blocked])
+		return {"safe": false, "message": blocked}
+	driver._log("PLAYER_AGENT_ROUTE_CLEAR map=%s rounds=%d" % [before_map, rounds])
+	return {"safe": true, "message": "cleared nearby route threats in %d combat round(s)" % rounds}
+
 func follow_objective(max_steps := 8, stop_after_interaction := false, boss_fight_sec := 75.0) -> String:
 	var report: Array[String] = []
 	for step_index in max_steps:
@@ -696,6 +782,10 @@ func follow_objective(max_steps := 8, stop_after_interaction := false, boss_figh
 					break
 			if exit_data.is_empty():
 				report.append("route exit to %s is not present in the current region" % hop)
+				break
+			var route_safety: Dictionary = await _clear_route_threats(4, 420.0)
+			report.append(str(route_safety.get("message", "route safety check unavailable")))
+			if not bool(route_safety.get("safe", false)):
 				break
 			var exit_center := Vector2(float(exit_data.get("x", 0)) + float(exit_data.get("w", 0)) * 0.5, float(exit_data.get("y", 0)) + float(exit_data.get("h", 0)) * 0.5)
 			var route: String = await driver.walk_to(exit_center, 50.0, 6.0, hop)
@@ -736,6 +826,10 @@ func follow_objective(max_steps := 8, stop_after_interaction := false, boss_figh
 					boss = node
 			if boss == null:
 				report.append("objective boss is not spawned on %s" % current_map)
+				break
+			var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0)
+			report.append(str(boss_route_safety.get("message", "boss route safety check unavailable")))
+			if not bool(boss_route_safety.get("safe", false)):
 				break
 			await driver.walk_to(boss.global_position, 45.0, 110.0)
 			await driver.wait(0.3)
