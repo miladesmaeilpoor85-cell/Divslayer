@@ -41,6 +41,19 @@ static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, 
 
 ## Do not chase a threat along a path that crosses the safety margin of a map exit.
 ## A foe may stand outside the portal margin while the shortest approach still runs through it.
+## Only the Ashen Peaks -> Emberforge gate needs route-threat deferral.
+## Other regions keep their normal nearby-enemy clearing before map traversal.
+static func route_exit_safety_candidates(map_key: String, exits: Array) -> Array:
+	if map_key != "peaks":
+		return []
+	var selected: Array = []
+	for exit_data in exits:
+		if typeof(exit_data) != TYPE_DICTIONARY:
+			continue
+		if str(exit_data.get("to", "")) == "emberforge":
+			selected.append(exit_data)
+	return selected
+
 static func should_skip_route_path_near_exit(origin: Vector2, destination: Vector2, exits: Array, margin: float = 180.0) -> bool:
 	if should_skip_route_threat_near_exit(origin, exits, margin):
 		return true
@@ -760,7 +773,7 @@ func _nearest_route_threat(radius: float = 420.0, excluded_type := "") -> Dictio
 	var nearest_position := Vector2.ZERO
 	var nearest_type := ""
 	var deferred_near_exit: Array[String] = []
-	var exits: Array = driver.main.world.data.get("exits", [])
+	var exits: Array = route_exit_safety_candidates(str(driver.main.world.key), driver.main.world.data.get("exits", []))
 	for foe in driver.get_tree().get_nodes_in_group("enemies"):
 		if not is_instance_valid(foe) or foe.get_parent() == null:
 			continue
