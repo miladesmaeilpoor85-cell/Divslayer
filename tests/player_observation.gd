@@ -1,4 +1,6 @@
 extends RefCounted
+
+const PlayerVision = preload("res://tests/player_vision.gd")
 ## Reads only controls that are visible inside the rendered viewport.
 ## This adapter deliberately does not inspect Game state, world entities, quests, or enemy nodes.
 
@@ -15,7 +17,8 @@ static func capture(root: Node, viewport: Viewport) -> Dictionary:
 			"buttons": visible_buttons,
 			"panels": visible_panels,
 			"meters": visible_meters,
-			"resources": visible_resources
+			"resources": visible_resources,
+			"vision": {"valid": false, "warnings": []}
 		}
 	_collect_visible(root, root, viewport, visible_texts, visible_buttons, visible_panels, visible_meters, visible_resources)
 	return {
@@ -24,7 +27,8 @@ static func capture(root: Node, viewport: Viewport) -> Dictionary:
 		"buttons": visible_buttons,
 		"panels": visible_panels,
 		"meters": visible_meters,
-		"resources": visible_resources
+		"resources": visible_resources,
+		"vision": PlayerVision.capture(viewport)
 	}
 
 static func _collect_visible(node: Node, root: Node, viewport: Viewport, texts: Array, buttons: Array, panels: Array, meters: Dictionary, resources: Dictionary) -> void:
