@@ -28,9 +28,14 @@ static func next_health_potion_time(now: float, cooldown: float = 1.6) -> float:
 ## During the Anvilward encounter, clear only adds already close enough to pressure the hero.
 ## The named boss remains the objective even when it starts beyond the normal target scan radius.
 static func should_prioritize_focus_add(focus_type: String, enemy_type: String, is_boss: bool, distance: float, radius: float = 240.0) -> bool:
-	if is_boss or distance < 0.0 or distance > radius:
+	if is_boss or distance < 0.0:
 		return false
-	if focus_type == "anvilward":
+	# The forge adds begin farther out than a normal melee pack; include the closest
+	# ranged pressure sources instead of letting them fire freely throughout the duel.
+	var pressure_radius := 660.0 if focus_type == "anvilward" else radius
+	if distance > pressure_radius:
+		return false
+	if focus_type in ["anvilward", "boss"]:
 		return true
 	return focus_type == "ancientwyrm" and enemy_type == "wyrmling"
 
