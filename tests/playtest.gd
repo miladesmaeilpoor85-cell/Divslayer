@@ -890,11 +890,11 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		# campaign skirmishes preserve the imperfect 75% response of the original bot.
 		var away := _danger_away(focus_type != "")
 		if away != Vector2.ZERO:
-			# A human does not perfectly evade every warning. When the hit is close and the
-			# hero is in melee range, sometimes raise the shield for a parry; otherwise roll
-			# toward open ground and keep a little distance.
+			# A marked lane explicitly teaches a sideways roll; blocking it does not leave the
+			# damaging strip. Evade as soon as its 0.45 s warning is visible.
+			var lane_warning := last_danger_kind == "lane"
 			var parry_chance := 0.72 if Game.cls == "paladin" else (0.62 if Game.cls == "warrior" else 0.44)
-			var parry_attempt: bool = last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
+			var parry_attempt: bool = not lane_warning and last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
 			if parry_attempt:
 				await stick(Vector2.ZERO)
 				await press("block", 0.18)
@@ -903,11 +903,17 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				# Combat evasions must respect the same hard portal boundary as normal movement.
 				var escape_dir := _avoid_exits(away.normalized())
 				await stick(escape_dir)
-				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (last_danger_eta <= 0.34 or Game.hp < Game.max_hp() * 0.55):
+				var dodge_window := 0.45 if lane_warning else 0.34
+				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (last_danger_eta <= dodge_window or Game.hp < Game.max_hp() * 0.55):
 					await press("dodge")
 					dodges += 1
 				else:
 					await wait(randf_range(0.12, 0.22))
+			# Do not let the normal attack branch below zero the joystick and cancel the
+			# escape movement in the very same frame as a boss telegraph.
+			await wait(0.1)
+			t += 0.1
+			continue
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
 			continue

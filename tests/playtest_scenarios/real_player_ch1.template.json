@@ -324,18 +324,36 @@
   },
   {
     "do": "agent_objective",
-    "max_steps": 8,
-    "stop_after_interaction": true,
+    "max_steps": 4,
     "boss_fight_sec": 240
   },
   {
     "do": "assert_state",
-    "label": "pulad_of_ghandi_defeated_reward_claimed",
-    "map": "village",
-    "brann_state": "ignarok",
+    "label": "anvilward_defeated_reward_pending",
+    "map": "emberforge",
+    "brann_state": "anvil_done",
     "brann_key": true,
     "foe_type": "anvilward",
     "foe_defeated": true,
+    "objective_contains": "برای پاداش نزد جمشید برگرد",
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — Return to Jamshid after Anvilward"
+  },
+  {
+    "do": "agent_objective",
+    "max_steps": 5,
+    "stop_after_interaction": true
+  },
+  {
+    "do": "assert_state",
+    "label": "pulad_of_ghandi_reward_claimed",
+    "map": "village",
+    "brann_state": "ignarok",
+    "brann_key": true,
     "objective_contains": "پولادوند",
     "player_alive": true,
     "game_unpaused": true

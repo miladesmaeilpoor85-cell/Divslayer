@@ -97,6 +97,16 @@ func run(_main: Node) -> void:
 	else:
 		Game.state.erase("defeated")
 	check("boss_arena_does_not_run_generic_route_threat_sweep", not PlayerAgent.should_clear_route_threats_before_objective("emberforge", "emberforge", "boss"))
+	check("anvilward_reward_return_does_not_chase_forge_adds",
+		not PlayerAgent.should_clear_route_threats_before_objective("emberforge", "village", "npc", "anvil_done"))
+	check("anvilward_reward_return_defers_peaks_adds",
+		not PlayerAgent.should_clear_route_threats_before_objective("peaks", "village", "npc", "anvil_done"))
+	check("anvilward_reward_return_defers_forest_adds",
+		not PlayerAgent.should_clear_route_threats_before_objective("forest", "village", "npc", "anvil_done"))
+	check("puladvand_reward_return_uses_same_safe_turn_in_route",
+		not PlayerAgent.should_clear_route_threats_before_objective("peaks", "village", "npc", "ignarok_done"))
+	check("ordinary_village_npc_route_still_clears_threats",
+		PlayerAgent.should_clear_route_threats_before_objective("forest", "village", "npc", "none"))
 	check("boss_objective_keeps_route_clearance_on_intermediate_maps", PlayerAgent.should_clear_route_threats_before_objective("peaks", "emberforge", "boss"))
 	check("ordinary_objective_travel_keeps_route_clearance", PlayerAgent.should_clear_route_threats_before_objective("forest", "peaks", "exit"))
 	check("route_threat_at_player_position_is_engaged", PlayerAgent.should_engage_route_threat(0.0))

@@ -22,10 +22,14 @@ static func should_prioritize_grave_pillars(active_pillars: int) -> bool:
 static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:
 	return distance >= 0.0 and distance <= radius
 
-static func should_clear_route_threats_before_objective(current_map: String, target_map: String, target_kind: String) -> bool:
-	# Clear threats on maps being crossed, but do not burn the boss arena on
-	# generic nearest-enemy sweeps. The focused encounter driver handles adds
-	# while it pursues the authored objective boss with live touch combat.
+static func should_clear_route_threats_before_objective(current_map: String, target_map: String, target_kind: String, brann_state := "") -> bool:
+	# After either forge boss falls, Jamshid's reward turn-in is the active objective.
+	# Defer optional Emberforge/Peaks/Forest mobs while the player takes the authored
+	# route back to Zabol; otherwise a nearby Moltencore can strand the player before
+	# the reward interaction is reached.
+	if brann_state in ["anvil_done", "ignarok_done"] and target_map == "village" and target_kind == "npc" and current_map in ["emberforge", "peaks", "forest"]:
+		return false
+	# The focused encounter driver handles adds while it pursues the authored boss.
 	return not (current_map == target_map and target_kind == "boss")
 
 ## Reused for both map traversal and destination-boss approach so the arena policy stays explicit.
@@ -892,8 +896,14 @@ func follow_objective(max_steps := 8, stop_after_interaction := false, boss_figh
 				report.append("route exit to %s is not present in the current region" % hop)
 				break
 			var route_safety: Dictionary = {"safe": true, "message": "destination is on another map"}
-			if should_clear_route_threats_before_objective(current_map, target_map, str(target.get("kind", ""))):
+			var objective_kind := str(target.get("kind", ""))
+			var clear_route := should_clear_route_threats_before_objective(current_map, target_map, objective_kind, Game.brann_sync())
+			if clear_route:
 				route_safety = await _clear_route_threats(4, 420.0)
+			else:
+				var reason := "focused boss encounter" if current_map == target_map and objective_kind == "boss" else "priority Jamshid reward turn-in"
+				driver._log("PLAYER_AGENT_ROUTE_CLEARANCE_SKIPPED map=%s target=%s reason=%s" % [current_map, target_map, reason])
+				route_safety = {"safe": true, "message": "optional route threats deferred for " + reason}
 			report.append(str(route_safety.get("message", "route safety check unavailable")))
 			if not bool(route_safety.get("safe", false)):
 				break
