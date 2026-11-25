@@ -24,11 +24,18 @@ static func find_visible_button(buttons: Array, preferred_terms: Array, fallback
 	return -1
 
 static func find_death_recovery_button(buttons: Array) -> int:
+	# The game offers this visible option only after the player has already failed
+	# a rematch. Treat it as a clear recovery hint and adapt rather than repeat blindly.
+	var adaptive_difficulty := find_visible_button(buttons, [
+		"story difficulty", "سختی را", "داستانی"
+	])
+	if adaptive_difficulty >= 0:
+		return adaptive_difficulty
 	var rematch := find_visible_button(buttons, [
 		"rematch", "retry", "try again", "دوباره", "تلاش مجدد", "شروع دوباره"
 	])
 	if rematch >= 0:
 		return rematch
 	return find_visible_button(buttons, [
-		"respawn", "return to zabol", "return", "home", "بازگشت", "بازگشت به زابل", "ادامه"
+		"respawn", "return to zabol", "return", "home", "بازگشت", "بازگشت به زابل", "ادامه", "زنده شدن"
 	])
