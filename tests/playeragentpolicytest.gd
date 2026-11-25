@@ -116,6 +116,14 @@ func run(_main: Node) -> void:
 		PlayerAgent.should_skip_route_path_near_exit(Vector2(560, 856), Vector2(850, 650), forge_exit))
 	check("route_far_from_forge_exit_remains_engageable",
 		not PlayerAgent.should_skip_route_path_near_exit(Vector2(180, 200), Vector2(250, 280), forge_exit))
+
+	var forest_exit := [{ "x": 880.0, "y": 300.0, "w": 20.0, "h": 80.0, "to": "peaks" }]
+	var unrelated_exits: Array = forest_exit + forge_exit
+	check("forest_keeps_normal_enemy_clearance_near_its_exits",
+		PlayerAgent.route_exit_safety_candidates("forest", unrelated_exits).is_empty())
+	var peaks_safety_exits: Array = PlayerAgent.route_exit_safety_candidates("peaks", unrelated_exits)
+	check("peaks_only_defers_the_emberforge_exit",
+		peaks_safety_exits.size() == 1 and str(peaks_safety_exits[0].get("to", "")) == "emberforge")
 	check("enemy_outside_forge_exit_safety_margin_remains_engageable",
 		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 1000), forge_exit))
 	check("empty_exit_list_does_not_hide_route_threats",
