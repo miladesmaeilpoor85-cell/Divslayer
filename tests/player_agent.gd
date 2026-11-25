@@ -403,7 +403,12 @@ func spend_talents() -> String:
 	return "spent %d/%d talent points through the Skills UI (%s)" % [spent, points_before, ", ".join(gained)]
 
 func _tap_dialogue_choice(terms: Array) -> String:
-	var observation := _screen_observation()
+	var dialogue = driver.main.hud.dialogue
+	if dialogue == null or not dialogue.visible:
+		return "no visible dialogue panel is open"
+	# Scope perception to the visible dialogue panel so unrelated HUD buttons
+	# cannot win a choice when their labels happen to match a preferred term.
+	var observation := PlayerObservation.capture(dialogue, driver.get_viewport())
 	var visible_buttons: Array = observation.get("buttons", [])
 	var selected_index := PlayerBrain.find_visible_button(visible_buttons, terms)
 	if selected_index < 0:
@@ -783,7 +788,10 @@ func collect_nearby_pickups(max_items := 8) -> String:
 	return "collected %d ground pickups%s" % [collected.size(), " (" + ", ".join(collected) + ")" if not collected.is_empty() else ""]
 
 func _choose_dialogue_option() -> String:
-	var observation := _screen_observation()
+	var dialogue = driver.main.hud.dialogue
+	if dialogue == null or not dialogue.visible:
+		return "no visible dialogue panel is open"
+	var observation := PlayerObservation.capture(dialogue, driver.get_viewport())
 	var visible_buttons: Array = observation.get("buttons", [])
 	var preferred := ["Train with me", "با من تمرین کن", "Continue", "ادامه", "Accept", "قبول", "Enter", "ورود", "Take", "بگیر", "Begin", "شروع", "Investigate", "بررسی"]
 	var selected_index := PlayerBrain.find_visible_button(visible_buttons, preferred, true)
@@ -803,7 +811,7 @@ func recover_from_death() -> String:
 	if death == null or not death.visible:
 		return "no death screen to recover from"
 	# Recovery decisions now come from the visible death-screen choices, not hidden retry counters.
-	var observation := _screen_observation()
+	var observation := PlayerObservation.capture(death, driver.get_viewport())
 	var visible_buttons: Array = observation.get("buttons", [])
 	var choice_index := PlayerBrain.find_death_recovery_button(visible_buttons)
 	if choice_index < 0:
