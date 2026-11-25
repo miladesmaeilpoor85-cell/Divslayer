@@ -205,8 +205,14 @@ func run(m: Node) -> void:
 	check("puladvand_stays_locked_before_jamshid_turn_in", not locked_ignarok)
 
 	# The natural route from the Peaks gate to Anvilward must not run through the
-	# optional forge packs. Keep them available on the north/east flanks for exploration.
+	# optional forge packs. Keep a small, varied group available on the north/east flanks
+	# without spawning a full 13-add swarm into every boss attempt.
 	var forge_data: Dictionary = Game.map_data("emberforge").get("data", {})
+	var optional_forge_adds := 0
+	for spawn in forge_data.get("enemySpawns", []):
+		if str(spawn.get("type", "")) not in ["anvilward", "ignarok"]:
+			optional_forge_adds += 1
+	check("emberforge_boss_arena_optional_add_budget", optional_forge_adds <= 4, optional_forge_adds)
 	var route_start := Vector2(43, 534)
 	var route_end := Vector2(643, 950)
 	var route_delta := route_end - route_start
