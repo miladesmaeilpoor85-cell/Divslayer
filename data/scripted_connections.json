@@ -1,0 +1,10 @@
+{
+  "scriptedConnections": [
+    {
+      "from": "village",
+      "to": "trial",
+      "via": "Siavash dialogue: Enter the Arena",
+      "condition": "player chooses Enter the Arena"
+    }
+  ]
+}
