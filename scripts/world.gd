@@ -81,6 +81,13 @@ var stats := {"walls": 0, "objects": 0, "exits": 0, "npcs": 0, "enemies": 0, "ha
 var enemy_tactics_clock := 0.0
 var enemy_volley_ready_at := 0.0
 
+## The two forge bosses are sequential story encounters, not simultaneous arena hazards.
+static func should_spawn_forge_boss(enemy_type: String, brann_state: String) -> bool:
+	match enemy_type:
+		"anvilward": return brann_state == "anvil"
+		"ignarok": return brann_state == "ignarok"
+		_: return true
+
 func build(map_key: String) -> void:
 	key = map_key
 	Game.on_map_entered(map_key)
@@ -209,7 +216,10 @@ func build(map_key: String) -> void:
 	for s in _arr(data.get("enemySpawns")):
 		if rush and str(s["type"]) != str(Game.rush.get("type", "")):
 			continue
-		if not rush and str(s["type"]) == "boss" and key == "dungeon" and Game.q(1) == "active" and Game.quest_step("q1") != "boss_ready":
+		var spawn_type := str(s["type"])
+		if not rush and spawn_type in ["anvilward", "ignarok"] and not should_spawn_forge_boss(spawn_type, Game.brann_sync()):
+			continue
+		if not rush and spawn_type == "boss" and key == "dungeon" and Game.q(1) == "active" and Game.quest_step("q1") != "boss_ready":
 			continue
 		if not rush and Game.is_boss_type(str(s["type"])) and Game.is_defeated(str(s["type"])):
 			continue
