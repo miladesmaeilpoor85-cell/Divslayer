@@ -139,7 +139,13 @@ jobs:
           assert scenario[core_delivery].get("max_steps") == 1 and scenario[core_delivery].get("stop_after_interaction") is True, "Deliver the Warden Core through one real Jamshid interaction"
           jamshid_assertion = next(i for i in range(core_delivery + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "jamshid_core_delivered")
           assert scenario[jamshid_assertion].get("brann_state") == "anvil" and scenario[jamshid_assertion].get("brann_key") is True, "Require Jamshid to grant the Kindling Key through the dialogue"
-          pulad_route = next(i for i in range(jamshid_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert "با زال صحبت کن" in scenario[jamshid_assertion].get("objective_contains", ""), "The unopened Peaks story gate must send the player back to Zal"
+          zal_route = next(i for i in range(jamshid_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert scenario[zal_route].get("max_steps") == 1 and scenario[zal_route].get("stop_after_interaction") is True, "Start Q2 through one real Elder interaction before the Peaks trip"
+          zal_assertion = next(i for i in range(zal_route + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "zal_opens_ashen_peaks_for_pulad")
+          assert scenario[zal_assertion].get("quest_index") == 2 and scenario[zal_assertion].get("quest_status") == "active", "Require Zal to open the Peaks route by starting Q2"
+          assert scenario[zal_assertion].get("brann_state") == "anvil" and scenario[zal_assertion].get("brann_key") is True, "Keep the Kindling Key while starting Q2"
+          pulad_route = next(i for i in range(zal_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
           assert int(scenario[pulad_route].get("max_steps", 0)) >= 8 and float(scenario[pulad_route].get("boss_fight_sec", 0)) >= 180, "Require a natural round trip and a full Pulad combat window"
           pulad_assertion = next(i for i in range(pulad_route + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "pulad_of_ghandi_defeated_reward_claimed")
           assert scenario[pulad_assertion].get("foe_type") == "anvilward" and scenario[pulad_assertion].get("foe_defeated") is True, "Require Pulad's confirmed boss-kill-counter victory"
@@ -174,9 +180,12 @@ jobs:
           assert "if brann_key():" in game_source, "The Emberforge route must remain gated until the Kindling Key is earned"
           assert '["core", "anvil", "anvil_done", "ignarok", "ignarok_done"]' in game_source, "The HUD must display the active Pulad and Puladvand quest objectives"
           assert 'if ["anvil", "ignarok"].has(brann_sync()):' in game_source, "Active Pulad/Puladvand boss contracts must preempt the next-chapter Elder objective"
-          priority_pos = game_source.index('if ["anvil", "ignarok"].has(brann_sync()):')
+          target_function_pos = game_source.index("func quest_target() -> Dictionary:")
+          gate_priority_pos = game_source.index('if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_sync()):', target_function_pos)
+          priority_pos = game_source.index('if ["anvil", "ignarok"].has(brann_sync()):', target_function_pos)
+          assert gate_priority_pos < priority_pos, "The unopened Peaks story gate must route the player to Zal before the Jamshid boss"
           elder_fallback_pos = game_source.index('if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":', priority_pos)
-          assert priority_pos < elder_fallback_pos, "The Jamshid boss priority must precede legacy chapter objective routing"
+          assert priority_pos < elder_fallback_pos, "The Jamshid boss priority must precede legacy chapter routing after Zal opens Q2"
           world_source = Path("scripts/world.gd").read_text(encoding="utf-8")
           assert 'data = md.get("data", {}).duplicate()' in world_source, "Per-world exit data must be isolated from cached map resources"
           assert "dynamic_exits.append(emberforge_exit)" in world_source, "The Kindling door must be visible to local touch navigation"
