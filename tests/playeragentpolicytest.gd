@@ -20,6 +20,11 @@ func run(_main: Node) -> void:
 	check("break_two_of_three_pillars", PlayerAgent.should_prioritize_grave_pillars(3))
 	check("break_three_of_four_pillars", PlayerAgent.should_prioritize_grave_pillars(4))
 	check("invalid_negative_count_is_not_a_target", not PlayerAgent.should_prioritize_grave_pillars(-1))
+	check("anvilward_close_adds_get_priority", PlayerAgent.should_prioritize_focus_add("anvilward", "slagbrute", false, 200.0))
+	check("anvilward_adds_outside_pressure_radius_are_not_chased", not PlayerAgent.should_prioritize_focus_add("anvilward", "moltencore", false, 260.0))
+	check("anvilward_itself_is_never_classified_as_an_add", not PlayerAgent.should_prioritize_focus_add("anvilward", "anvilward", true, 40.0))
+	check("ordinary_boss_encounters_do_not_chase_unrelated_adds", not PlayerAgent.should_prioritize_focus_add("boss", "skeleton", false, 120.0))
+	check("ancient_wyrm_keeps_close_wyrmling_priority", PlayerAgent.should_prioritize_focus_add("ancientwyrm", "wyrmling", false, 180.0))
 
 	var had_brann := Game.state.has("brann")
 	var saved_brann: Variant = Game.state.get("brann", null)
