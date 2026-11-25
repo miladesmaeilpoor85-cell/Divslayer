@@ -6,26 +6,41 @@ static func capture(root: Node, viewport: Viewport) -> Dictionary:
 	var visible_texts: Array[Dictionary] = []
 	var visible_buttons: Array[Dictionary] = []
 	var visible_panels: Array[String] = []
+	var visible_meters: Dictionary = {}
+	var visible_resources: Dictionary = {}
 	if root == null or viewport == null:
 		return {
 			"captured_at_msec": Time.get_ticks_msec(),
 			"texts": visible_texts,
 			"buttons": visible_buttons,
-			"panels": visible_panels
+			"panels": visible_panels,
+			"meters": visible_meters,
+			"resources": visible_resources
 		}
-	_collect_visible(root, root, viewport, visible_texts, visible_buttons, visible_panels)
+	_collect_visible(root, root, viewport, visible_texts, visible_buttons, visible_panels, visible_meters, visible_resources)
 	return {
 		"captured_at_msec": Time.get_ticks_msec(),
 		"texts": visible_texts,
 		"buttons": visible_buttons,
-		"panels": visible_panels
+		"panels": visible_panels,
+		"meters": visible_meters,
+		"resources": visible_resources
 	}
 
-static func _collect_visible(node: Node, root: Node, viewport: Viewport, texts: Array, buttons: Array, panels: Array) -> void:
+static func _collect_visible(node: Node, root: Node, viewport: Viewport, texts: Array, buttons: Array, panels: Array, meters: Dictionary, resources: Dictionary) -> void:
 	if node is Control:
 		var control := node as Control
 		if _is_visible_on_screen(control, viewport):
-			var lower_name := str(control.name).to_lower()
+			var control_name := str(control.name)
+			if control_name in ["HealthMeter", "StaminaMeter", "ManaMeter"] and control.has_method("get_value"):
+				meters[control_name] = float(control.get("value"))
+			elif control_name in ["HealthMeter", "StaminaMeter", "ManaMeter"] and control.get("value") != null:
+				meters[control_name] = float(control.get("value"))
+			if control_name == "PotionChip":
+				var value_label := control.get_node_or_null("Value") as Label
+				if value_label != null and value_label.is_visible_in_tree():
+					resources["potions_text"] = value_label.text
+			var lower_name := control_name.to_lower()
 			if lower_name in ["dialogue", "shop", "death", "pause", "craft", "forge", "ending", "intro"]:
 				if not panels.has(lower_name):
 					panels.append(lower_name)
@@ -47,7 +62,7 @@ static func _collect_visible(node: Node, root: Node, viewport: Viewport, texts: 
 					"control": button
 				})
 	for child in node.get_children():
-		_collect_visible(child, root, viewport, texts, buttons, panels)
+		_collect_visible(child, root, viewport, texts, buttons, panels, meters, resources)
 
 static func _control_text(control: Control) -> String:
 	if control is Button:
