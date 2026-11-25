@@ -650,5 +650,19 @@
         318
       ]
     }
-  }
+  },
+  "scriptedConnections": [
+    {
+      "from": "village",
+      "to": "trial",
+      "via": "Siavash dialogue: Enter the Arena",
+      "condition": "player chooses Enter the Arena"
+    },
+    {
+      "from": "peaks",
+      "to": "emberforge",
+      "via": "Kindling door",
+      "condition": "Game.brann_key() is true"
+    }
+  ]
 }
