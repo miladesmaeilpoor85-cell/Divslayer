@@ -172,7 +172,7 @@ jobs:
           assert "PLAYER_AGENT_OBJECTIVE_BOSS type=%s defeated=%s" in agent_source, "Dynamic objective boss fights must report observed defeat state"
           assert "static func should_prioritize_focus_add" in agent_source, "Focused Anvilward combat must have a testable close-add priority policy"
           assert "is_alerted: bool" in agent_source and "not is_alerted" in agent_source, "Focused boss fights must not pull passive adds into active combat"
-          assert 'var pressure_radius := 270.0 if focus_type == "anvilward" else radius' in agent_source, "Anvilward add priority must respect normal enemy aggro distance"
+          assert 'var pressure_radius := 445.5 if focus_type == "anvilward" else radius' in agent_source, "Anvilward add priority must respect normal enemy aggro distance"
           assert "static func should_dodge_mage" in agent_source and "PlayerAgent.should_dodge_mage(" in playtest_source, "Mage must preserve stamina by reserving rolls for close or critical threats"
           assert "await prepare_route_supplies(3)" in agent_source, "The Pulad expedition must attempt a third real merchant potion when affordable"
           assert "Keep the authored boss target even when it begins farther" in playtest_source, "The named boss must remain targetable beyond the ordinary scan radius"

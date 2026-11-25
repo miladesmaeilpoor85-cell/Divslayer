@@ -32,13 +32,13 @@ static func should_dodge_mage(distance: float, hp: float, max_hp: float, stamina
 		return false
 	return distance <= 52.0 or (distance <= 120.0 and hp <= max_hp * 0.42)
 
-## Prioritize only enemies that have actually noticed the player and are close enough
-## to apply pressure. Emberforge's normal enemies acquire aggro at about 270 px.
-## Never pull passive packs across the arena while a focused boss is attacking.
+## Prioritize only enemies that have actually noticed the player and remain inside
+## their active chase envelope. Emberforge mobs acquire aggro at 270 px; squad calls
+## extend that envelope to 1.65x (445.5 px). Never pull passive packs into the duel.
 static func should_prioritize_focus_add(focus_type: String, enemy_type: String, is_boss: bool, distance: float, is_alerted: bool, radius: float = 240.0) -> bool:
 	if is_boss or distance < 0.0 or not is_alerted:
 		return false
-	var pressure_radius := 270.0 if focus_type == "anvilward" else radius
+	var pressure_radius := 445.5 if focus_type == "anvilward" else radius
 	if distance > pressure_radius:
 		return false
 	if focus_type in ["anvilward", "boss"]:
