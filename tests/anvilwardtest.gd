@@ -101,13 +101,22 @@ func run(m: Node) -> void:
 	var contact_hp_before: float = Game.hp
 	contact_boss._brain(1.0 / 60.0)
 	var contact_loss: float = contact_hp_before - Game.hp
-	var maximum_graze: int = Game.incoming(round(contact_boss.dmg * 0.25), "dungeon")
+	var maximum_graze: int = Game.incoming(round(contact_boss.dmg * 0.25), str(w.key))
 	check("anvilward_contact_uses_25_percent_graze",
 		bool(contact_boss.reworked) and contact_loss > 0.0 and contact_loss <= float(maximum_graze),
-		{"lost": contact_loss, "max_graze": maximum_graze, "boss_dmg": contact_boss.dmg})
+		{"lost": contact_loss, "max_graze": maximum_graze, "boss_dmg": contact_boss.dmg, "area": str(w.key)})
 	var after_first_graze: float = Game.hp
+	# take_hit grants ordinary contact i-frames; clear them explicitly so the next
+	# observation proves the boss graze cooldown itself is what prevents a second hit.
+	p.invuln = 0.0
 	contact_boss._brain(0.2)
-	check("anvilward_contact_graze_has_1_5_second_cooldown", is_equal_approx(Game.hp, after_first_graze), Game.hp)
+	check("anvilward_contact_graze_does_not_repeat_inside_cooldown", is_equal_approx(Game.hp, after_first_graze), Game.hp)
+	p.invuln = 0.0
+	contact_boss._brain(1.3)
+	var second_graze_loss: float = after_first_graze - Game.hp
+	check("anvilward_contact_graze_rearms_at_1_5_seconds",
+		second_graze_loss > 0.0 and second_graze_loss <= float(maximum_graze),
+		{"lost": second_graze_loss, "max_graze": maximum_graze})
 
 	# The new move is explicitly scoped to the Anvil Warden; another generic miniboss
 	# keeps its existing charge/volley behavior and never selects this skill.
