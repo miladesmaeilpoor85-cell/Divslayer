@@ -675,7 +675,7 @@ func recover_from_death() -> String:
 		return action
 	return "recovery choice was tapped but the player did not return to play"
 
-func follow_objective(max_steps := 8, stop_after_interaction := false) -> String:
+func follow_objective(max_steps := 8, stop_after_interaction := false, boss_fight_sec := 75.0) -> String:
 	var report: Array[String] = []
 	for step_index in max_steps:
 		var target: Dictionary = Game.quest_target()
@@ -739,9 +739,19 @@ func follow_objective(max_steps := 8, stop_after_interaction := false) -> String
 				break
 			await driver.walk_to(boss.global_position, 45.0, 110.0)
 			await driver.wait(0.3)
-			var outcome: String = await driver.fight(75.0, 0.0, str(boss.type))
-			report.append("boss %s: %s" % [str(boss.type), outcome])
-			if not is_instance_valid(boss) or boss.dead:
+			var boss_type := str(boss.type)
+			var fight_limit := clampf(float(boss_fight_sec), 30.0, 240.0)
+			await driver.shot("objective_boss_%s_start" % boss_type)
+			var outcome: String = await driver.fight(fight_limit, 0.0, boss_type)
+			var boss_defeated := not is_instance_valid(boss)
+			if is_instance_valid(boss):
+				boss_defeated = bool(boss.dead)
+			driver._log("PLAYER_AGENT_OBJECTIVE_BOSS type=%s defeated=%s duration_limit=%.1f outcome=%s" % [
+				boss_type, str(boss_defeated), fight_limit, outcome
+			])
+			await driver.shot("objective_boss_%s_end" % boss_type)
+			report.append("boss %s: %s" % [boss_type, outcome])
+			if boss_defeated:
 				continue
 			break
 		var candidate: Node2D = null

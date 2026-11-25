@@ -1642,6 +1642,24 @@ func world_graph() -> Dictionary:
 		_graph = g if typeof(g) == TYPE_DICTIONARY else {}
 	return _graph
 
+## A route graph that includes story doors only after the player has earned their key.
+## Keep the cached data/world_graph.json immutable; map geometry remains authored by World.
+func navigation_graph() -> Dictionary:
+	var graph: Dictionary = world_graph().duplicate(true)
+	if brann_key():
+		var peaks: Dictionary = graph.get("peaks", {})
+		var peaks_exits: Array = peaks.get("exits", [])
+		var forge_route_exists := false
+		for exit_data in peaks_exits:
+			if str(exit_data.get("to", "")) == "emberforge":
+				forge_route_exists = true
+				break
+		if not forge_route_exists:
+			peaks_exits.append({"to": "emberforge", "r": [520, 790, 110, 16]})
+		peaks["exits"] = peaks_exits
+		graph["peaks"] = peaks
+	return graph
+
 ## the place the current objective points at: {"map", "pos", "kind": "npc" | "boss"} or {} when free to explore
 func quest_target() -> Dictionary:
 	var tt: Dictionary = Tut.target()      # (v0.24) Rostam's yard first, while the training is offered or under way
@@ -1694,7 +1712,7 @@ static func _v(a) -> Vector2:
 func next_hop(from: String, to: String) -> String:
 	if from == to:
 		return to
-	var g := world_graph()
+	var g := navigation_graph()
 	var prev := {from: ""}
 	var queue := [from]
 	while not queue.is_empty():
@@ -1720,7 +1738,7 @@ func compass_point(map: String) -> Dictionary:
 	if t["map"] == map:
 		return {"pos": t["pos"], "kind": t["kind"], "exit": str(t.get("kind", "")) == "exit"}
 	var hop := next_hop(map, str(t["map"]))
-	for e in world_graph().get(map, {}).get("exits", []):
+	for e in navigation_graph().get(map, {}).get("exits", []):
 		if str(e["to"]) == hop:
 			var r: Array = e["r"]
 			return {"pos": Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]) * 0.5), "kind": "exit", "exit": true, "to": hop}

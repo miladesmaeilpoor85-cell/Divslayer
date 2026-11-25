@@ -153,6 +153,10 @@ func _assert_state(s: Dictionary) -> String:
 	var objective := str(snapshot.get("objective", ""))
 	if s.has("objective_contains") and objective.find(str(s["objective_contains"])) < 0:
 		failures.append("objective did not contain '%s': %s" % [str(s["objective_contains"]), objective])
+	if s.has("brann_state") and Game.brann() != str(s["brann_state"]):
+		failures.append("expected Jamshid quest state %s, got %s" % [str(s["brann_state"]), Game.brann()])
+	if s.has("brann_key") and Game.brann_key() != bool(s["brann_key"]):
+		failures.append("expected Kindling Key=%s, got %s" % [str(bool(s["brann_key"])), str(Game.brann_key())])
 	if bool(s.get("player_alive", false)) and bool(snapshot.get("dead", false)):
 		failures.append("player is dead")
 	if bool(s.get("game_unpaused", false)) and get_tree().paused:
@@ -1316,7 +1320,12 @@ func _step(s: Dictionary) -> Variant:
 		"agent_collect":
 			return await player_agent.collect_nearby_pickups(clampi(int(s.get("max_items", 8)), 1, 16))
 		"agent_objective":
-			return await player_agent.follow_objective(clampi(int(s.get("max_steps", 1)), 1, 12), bool(s.get("stop_after_interaction", false)))
+			var boss_fight_sec := clampf(float(s.get("boss_fight_sec", 75.0)), 30.0, 240.0)
+			return await player_agent.follow_objective(
+				clampi(int(s.get("max_steps", 1)), 1, 12),
+				bool(s.get("stop_after_interaction", false)),
+				boss_fight_sec
+			)
 		"agent_recover":
 			return await player_agent.recover_from_death()
 		"agent_talents":

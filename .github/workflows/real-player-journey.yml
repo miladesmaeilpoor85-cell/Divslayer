@@ -122,7 +122,7 @@ jobs:
           assert actions.count("agent_training") == 1, "Expected Rostam's touch-driven training"
           assert actions.count("agent_loadout") == 1, "Expected real shop and loadout actions"
           assert actions.count("agent_talents") >= 1, "Expected talent UI decisions after earning XP"
-          assert actions.count("agent_objective") >= 4, "Expected dynamic quest-target navigation"
+          assert actions.count("agent_objective") >= 8, "Expected Chapter I and the next Jamshid quest route to be navigated dynamically"
           assert actions.count("agent_collect") >= 2, "Expected ground-loot collection attempts"
           assert actions.count("agent_gear") >= 2, "Expected accessory comparison and equipment management"
           assert actions.count("agent_spells") >= 2, "Expected adaptive spell loadout decisions"
@@ -134,6 +134,16 @@ jobs:
           zal_return = next(i for i in range(boss_victory + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
           zal_assertion = next(i for i in range(zal_return + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "returned_to_zal")
           assert scenario[zal_assertion].get("map") == "village" and scenario[zal_assertion].get("quest_status") == "done", "Require the natural return to Zal and quest reward"
+          core_ready = next(i for i in range(zal_assertion + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "warden_core_ready_for_jamshid")
+          core_delivery = next(i for i in range(core_ready + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert scenario[core_delivery].get("max_steps") == 1 and scenario[core_delivery].get("stop_after_interaction") is True, "Deliver the Warden Core through one real Jamshid interaction"
+          jamshid_assertion = next(i for i in range(core_delivery + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "jamshid_core_delivered")
+          assert scenario[jamshid_assertion].get("brann_state") == "anvil" and scenario[jamshid_assertion].get("brann_key") is True, "Require Jamshid to grant the Kindling Key through the dialogue"
+          pulad_route = next(i for i in range(jamshid_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert int(scenario[pulad_route].get("max_steps", 0)) >= 8 and float(scenario[pulad_route].get("boss_fight_sec", 0)) >= 180, "Require a natural round trip and a full Pulad combat window"
+          pulad_assertion = next(i for i in range(pulad_route + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "pulad_of_ghandi_defeated_reward_claimed")
+          assert scenario[pulad_assertion].get("foe_type") == "anvilward" and scenario[pulad_assertion].get("foe_defeated") is True, "Require Pulad's confirmed boss-kill-counter victory"
+          assert scenario[pulad_assertion].get("brann_state") == "ignarok" and scenario[pulad_assertion].get("brann_key") is True, "Require the reward dialogue with Jamshid and the Puladvand objective"
           playtest_source = Path("tests/playtest.gd").read_text(encoding="utf-8")
           assert "func _fight_target_is_live(target: Variant)" in playtest_source, "Freed combat targets must be guarded before typed Node conversion"
           assert "var escape_dir := _avoid_exits(away.normalized())" in playtest_source, "Combat evasion must respect map exit boundaries"
@@ -148,6 +158,11 @@ jobs:
           agent_source = Path("tests/player_agent.gd").read_text(encoding="utf-8")
           assert "PLAYER_AGENT_PICKUP_SKIPPED_NEAR_EXIT" in agent_source, "Pickup scanning must skip loot in exit safety margins"
           assert "pickup route unexpectedly changed map" in agent_source, "Pickup movement must fail if it leaves the intended map"
+          assert "PLAYER_AGENT_OBJECTIVE_BOSS type=%s defeated=%s" in agent_source, "Dynamic objective boss fights must report observed defeat state"
+          game_source = Path("scripts/game.gd").read_text(encoding="utf-8")
+          assert "func navigation_graph() -> Dictionary:" in game_source, "Navigation must include a copy of the currently open story gates"
+          assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
+          assert "if brann_key():" in game_source, "The Emberforge route must remain gated until the Kindling Key is earned"
           forest_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("sec") == 12)
           next_forest_objective = next(i for i in range(forest_fight + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
           assert int(scenario[next_forest_objective].get("max_steps", 1)) >= 2, "Allow the post-fight forest map hop and clue interaction"
@@ -217,6 +232,10 @@ jobs:
           assert "PLAYER_AGENT_PILLAR_APPROACH" in log, "The agent did not reposition to make a grave pillar the nearest attack target"
           assert "ASSERTION_PASSED arzhang_defeated" in log, "The Arzhang victory checkpoint did not pass"
           assert "ASSERTION_PASSED returned_to_zal" in log, "The natural return-to-Zal checkpoint did not pass"
+          assert "ASSERTION_PASSED jamshid_core_delivered" in log, "The Warden Core was not handed to Jamshid through the real dialogue"
+          assert "ASSERTION_PASSED pulad_of_ghandi_defeated_reward_claimed" in log, "Pulad's defeat and Jamshid's return reward were not both confirmed"
+          assert re.search(r"FIGHT_EVIDENCE type=anvilward .* defeated=true", log), "Pulad of Ghandi's defeat was not confirmed by the real kill counter"
+          assert "PLAYER_AGENT_OBJECTIVE_BOSS type=anvilward defeated=true" in log, "The objective agent did not confirm the Pulad encounter victory"
           assert "PLAYER_AGENT_TRAINING_DONE" in log, "Rostam's real touch-control training did not finish"
           assert "PLAYER_AGENT_LOADOUT" in log, "The actual shop/loadout routine did not complete"
           loadout = re.search(r"PLAYER_AGENT_LOADOUT weapon=(\d+)->(\d+) armour=(\d+)->(\d+)", log)
