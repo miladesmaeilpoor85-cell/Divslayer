@@ -119,3 +119,54 @@ static func visual_dodge_direction(player_rect: Rect2, warnings: Array, confiden
 		return Vector2.ZERO
 	var away := center - nearest.get_center()
 	return away.normalized() if away.length_squared() > 0.0001 else Vector2.ZERO
+
+
+## Visual combat policy. Inputs are normalized detections produced from screenshots;
+## unknown/low-confidence detections never trigger attacks or defensive movement.
+static func select_visual_target(detections: Array, player_center: Vector2, prefer_boss := false) -> Dictionary:
+	var best: Dictionary = {}
+	var best_score := -INF
+	for item in detections:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var kind := str(item.get("kind", ""))
+		if kind not in ["enemy", "boss"]:
+			continue
+		var confidence := float(item.get("confidence", 0.0))
+		if confidence < 0.65:
+			continue
+		var center: Vector2 = item.get("center", Vector2(-1, -1))
+		if center.x < 0.0 or center.y < 0.0:
+			continue
+		var distance := player_center.distance_to(center)
+		var priority := 1.35 if prefer_boss and kind == "boss" else (1.15 if kind == "boss" else 1.0)
+		var score := confidence * priority / maxf(0.08, distance)
+		if score > best_score:
+			best_score = score
+			best = item
+	return best
+
+static func visible_evasion_vector(detections: Array, player_center: Vector2, minimum_confidence := 0.68) -> Vector2:
+	var weighted_away := Vector2.ZERO
+	var strongest := 0.0
+	for item in detections:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var kind := str(item.get("kind", ""))
+		if kind not in ["telegraph", "projectile"]:
+			continue
+		var confidence := float(item.get("confidence", 0.0))
+		if confidence < minimum_confidence:
+			continue
+		var center: Vector2 = item.get("center", Vector2(-1, -1))
+		if center.x < 0.0 or center.y < 0.0:
+			continue
+		var away := player_center - center
+		if away.length_squared() < 0.0001:
+			continue
+		var urgency := confidence * (1.25 if kind == "projectile" else 1.0)
+		weighted_away += away.normalized() * urgency
+		strongest = maxf(strongest, urgency)
+	if strongest <= 0.0 or weighted_away.length_squared() < 0.0001:
+		return Vector2.ZERO
+	return weighted_away.normalized()
