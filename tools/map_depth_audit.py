@@ -1,16 +1,5 @@
 """Measure region content density and accept real map-visit durations as evidence.
 
-
-def load_scripted_connections() -> list[dict]:
-    """Load scripted map links separately from the region graph."""
-    path = Path(__file__).resolve().parents[1] / "data" / "scripted_connections.json"
-    if not path.is_file():
-        raise FileNotFoundError(f"Missing scripted connection sidecar: {path}")
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    connections = payload.get("scriptedConnections")
-    if not isinstance(connections, list):
-        raise ValueError("scripted_connections.json must contain a scriptedConnections list")
-    return connections
 Map dimensions and base movement speed are layout diagnostics only. They are
 not estimates of campaign playtime; actual time is reported only from explicit
 map_visit records supplied by a manual or automated playtest.
@@ -30,6 +19,21 @@ PIXELS_PER_GAME_SPEED_UNIT = 62.5
 
 def _read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_scripted_connections(root: Path | None = None) -> list[dict[str, Any]]:
+    """Load separately authored map links, when the optional sidecar exists."""
+    repository_root = root if root is not None else Path(__file__).resolve().parents[1]
+    path = repository_root / "data" / "scripted_connections.json"
+    if not path.is_file():
+        return []
+    payload = _read_json(path)
+    connections = payload.get("scriptedConnections")
+    if not isinstance(connections, list) or any(
+        not isinstance(connection, dict) for connection in connections
+    ):
+        raise ValueError("scripted_connections.json must contain a scriptedConnections list")
+    return connections
 
 
 def _session_durations(path: Path | None) -> dict[str, Any]:
@@ -119,7 +123,15 @@ def _reachable_from(
 def build_report(root: Path, session_log: Path | None = None) -> dict[str, Any]:
     root = root.resolve()
     world_data = _read_json(root / "data/world_graph.json")
-    scripted_connections = world_data.get("scriptedConnections", [])
+    embedded_connections = world_data.get("scriptedConnections", [])
+    if not isinstance(embedded_connections, list) or any(
+        not isinstance(connection, dict) for connection in embedded_connections
+    ):
+        raise ValueError("world_graph.json scriptedConnections must be a list of objects")
+    scripted_connections = list(embedded_connections)
+    for connection in load_scripted_connections(root):
+        if connection not in scripted_connections:
+            scripted_connections.append(connection)
     graph = {key: value for key, value in world_data.items() if key != "scriptedConnections"}
     classes = _read_json(root / "data/Tables/CLASSES.json")
     quest_points = _read_json(root / "data/quest_points.json")
