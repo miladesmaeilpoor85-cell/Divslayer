@@ -7,11 +7,11 @@ const PlayerAgent = preload("res://tests/player_agent.gd")
 var results: Dictionary = {}
 var fails: Array[String] = []
 
-func check(label: String, ok: bool) -> void:
-	results[label] = ok
+func check(label: String, ok: bool, info = null) -> void:
+	results[label] = ok if info == null else {"ok": ok, "info": info}
 	if not ok:
 		fails.append(label)
-	printerr(("PASS " if ok else "FAIL ") + label)
+	printerr(("PASS " if ok else "FAIL ") + label + ("" if info == null else "  " + str(info)))
 
 func run(_main: Node) -> void:
 	check("no_pillars_do_not_trigger_pillar_chase", not PlayerAgent.should_prioritize_grave_pillars(0))
