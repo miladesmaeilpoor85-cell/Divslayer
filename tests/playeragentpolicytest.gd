@@ -38,8 +38,18 @@ func run(_main: Node) -> void:
 	]
 	check("screen_brain_prefers_a_visible_boss_rematch",
 		PlayerBrain.find_death_recovery_button(death_choices) == 1)
+	var adaptive_death_choices: Array = [
+		{"text": "Rematch — Anvilward", "enabled": true, "visible": true},
+		{"text": "Story difficulty — then fight again", "enabled": true, "visible": true}
+	]
+	check("screen_brain_adapts_when_story_difficulty_is_visibly_offered",
+		PlayerBrain.find_death_recovery_button(adaptive_death_choices) == 1)
+	check("screen_brain_recognizes_persian_story_difficulty",
+		PlayerBrain.find_death_recovery_button([{"text": "سختی را «داستانی» کن و دوباره بجنگ", "enabled": true, "visible": true}]) == 0)
+	check("screen_brain_uses_persian_respawn_label",
+		PlayerBrain.find_death_recovery_button([{"text": "زنده شدن در زابل", "enabled": true, "visible": true}]) == 0)
 	check("screen_brain_uses_visible_respawn_when_no_rematch_exists",
-		PlayerBrain.find_death_recovery_button([{"text": "Respawn", "enabled": true, "visible": true}]) == 0)
+		PlayerBrain.find_death_recovery_button([{"text": "Respawn in Zabol", "enabled": true, "visible": true}]) == 0)
 	check("screen_brain_refuses_unknown_death_actions",
 		PlayerBrain.find_death_recovery_button([{"text": "Quit", "enabled": true, "visible": true}]) == -1)
 	var brain_source := FileAccess.get_file_as_string("res://tests/player_brain.gd")
