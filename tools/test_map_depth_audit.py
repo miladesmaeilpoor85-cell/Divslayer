@@ -57,6 +57,54 @@ class MapDepthAuditTests(unittest.TestCase):
             village = next(item for item in report["maps"] if item["key"] == "village")
             self.assertGreater(village["shortest_straight_boundary_crossing_seconds_fastest_class"], 0)
 
+    def test_gated_world_exit_is_not_counted_as_static_reachability(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.make_repo(root)
+
+            graph_path = root / "data/world_graph.json"
+            graph = json.loads(graph_path.read_text(encoding="utf-8"))
+            graph["village"]["exits"].append({"to": "peaks"})
+            graph["peaks"] = {
+                "w": 1150,
+                "h": 920,
+                "exits": [{"to": "emberforge", "gate": "brann_key"}],
+                "bosses": {},
+            }
+            graph["emberforge"] = {
+                "w": 1250,
+                "h": 1000,
+                "exits": [{"to": "peaks"}],
+                "bosses": {},
+            }
+            graph_path.write_text(json.dumps(graph), encoding="utf-8")
+
+            for key, width, height in (("peaks", 1150, 920), ("emberforge", 1250, 1000)):
+                definition = {
+                    "objects": [],
+                    "data": {
+                        "name": key,
+                        "w": width,
+                        "h": height,
+                        "exits": [],
+                        "npcs": [],
+                        "enemySpawns": [],
+                        "items": [],
+                        "hazards": [],
+                    },
+                }
+                (root / "data/Maps" / f"{key}.json").write_text(
+                    json.dumps(definition), encoding="utf-8"
+                )
+
+            report = build_report(root)
+            summary = report["summary"]
+            self.assertEqual(summary["reachable_by_static_exits_count"], 2)
+            self.assertIn("emberforge", summary["unreachable_by_static_exits"])
+            self.assertEqual(summary["reachable_with_declared_scripted_gates_count"], 4)
+            self.assertEqual(summary["unreachable_after_declared_scripted_gates"], [])
+            self.assertEqual(summary["gated_exit_count"], 1)
+
     def test_explicit_map_visit_records_are_aggregated(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
