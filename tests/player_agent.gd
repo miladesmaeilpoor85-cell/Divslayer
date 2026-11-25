@@ -25,14 +25,20 @@ static func should_use_health_potion(hp: float, max_hp: float, stock: int, reser
 static func next_health_potion_time(now: float, cooldown: float = 1.6) -> float:
 	return now + maxf(0.5, cooldown)
 
-## During the Anvilward encounter, clear only adds already close enough to pressure the hero.
-## The named boss remains the objective even when it starts beyond the normal target scan radius.
-static func should_prioritize_focus_add(focus_type: String, enemy_type: String, is_boss: bool, distance: float, radius: float = 240.0) -> bool:
-	if is_boss or distance < 0.0:
+## Mage dodges only to escape immediate contact or a critical close-range threat.
+## Readable boss telegraphs are handled by the shared reaction policy above this branch.
+static func should_dodge_mage(distance: float, hp: float, max_hp: float, stamina: float, dodge_cd: float) -> bool:
+	if max_hp <= 0.0 or hp <= 0.0 or distance < 0.0 or stamina < 45.0 or dodge_cd > 0.0:
 		return false
-	# The forge adds begin farther out than a normal melee pack; include the closest
-	# ranged pressure sources instead of letting them fire freely throughout the duel.
-	var pressure_radius := 660.0 if focus_type == "anvilward" else radius
+	return distance <= 52.0 or (distance <= 120.0 and hp <= max_hp * 0.42)
+
+## Prioritize only enemies that have actually noticed the player and are close enough
+## to apply pressure. Emberforge's normal enemies acquire aggro at about 270 px.
+## Never pull passive packs across the arena while a focused boss is attacking.
+static func should_prioritize_focus_add(focus_type: String, enemy_type: String, is_boss: bool, distance: float, is_alerted: bool, radius: float = 240.0) -> bool:
+	if is_boss or distance < 0.0 or not is_alerted:
+		return false
+	var pressure_radius := 270.0 if focus_type == "anvilward" else radius
 	if distance > pressure_radius:
 		return false
 	if focus_type in ["anvilward", "boss"]:
@@ -446,7 +452,7 @@ func visit_shop(vendor: String, prioritize_health := false) -> String:
 	var selected: Dictionary = {}
 	# On a dangerous expedition, a player with fewer than two health potions
 	# can deliberately prioritize a visible consumable before another upgrade.
-	if vendor == "merchant" and prioritize_health and int(Game.state.get("potions", 0)) < 2:
+	if vendor == "merchant" and prioritize_health and int(Game.state.get("potions", 0)) < 3:
 		for item in catalog:
 			if str(item.get("id", "")) == "hp_potion" and int(Game.state.get("gold", 0)) >= int(item.get("price", 0)):
 				selected = item
@@ -462,7 +468,7 @@ func visit_shop(vendor: String, prioritize_health := false) -> String:
 
 	# If equipment is not yet affordable, keep enough gold for the next armour tier before
 	# buying consumables. Refill health supplies only when the carried stock is low.
-	if selected.is_empty() and vendor == "merchant" and int(Game.state.get("potions", 0)) < 2:
+	if selected.is_empty() and vendor == "merchant" and int(Game.state.get("potions", 0)) < 3:
 		var armor_next := 0
 		for armor_item in Game.table("SHOPS").get("smith", {}).get("items", []):
 			if armor_item.has("tier") and int(armor_item.get("tier", 0)) == int(Game.state.get("armor", 0)) + 1:
@@ -773,7 +779,7 @@ func prepare_route_supplies(minimum_potions := 2) -> String:
 	var target_stock := clampi(int(minimum_potions), 1, 3)
 	var report: Array[String] = []
 	var initial_stock := int(Game.state.get("potions", 0))
-	for purchase_index in range(2):
+	for purchase_index in range(3):
 		var stock_before := int(Game.state.get("potions", 0))
 		if stock_before >= target_stock:
 			break
@@ -904,7 +910,7 @@ func follow_objective(max_steps := 8, stop_after_interaction := false, boss_figh
 		driver._log("PLAYER_AGENT_OBJECTIVE map=%s target_map=%s kind=%s pos=%s" % [current_map, target_map, str(target.get("kind", "")), str(target.get("pos", Vector2.ZERO))])
 		if target_map != current_map:
 			if current_map == "village" and target_map == "emberforge" and Game.brann_sync() == "anvil":
-				report.append(await prepare_route_supplies(2))
+				report.append(await prepare_route_supplies(3))
 			var hop := Game.next_hop(current_map, target_map)
 			if hop == "":
 				report.append("no world-graph route from %s to %s" % [current_map, target_map])

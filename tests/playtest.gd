@@ -782,7 +782,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				dd += 400.0          # behind a wall: a player picks another foe first
 			# Close Anvilward adds and the Ancient Wyrm's wyrmlings can interrupt the
 			# boss approach, so clear those immediate threats before returning to the focus.
-			if PlayerAgent.should_prioritize_focus_add(focus_type, str(e.type), e.is_in_group("bosses"), dd) and dd < urgent_add_dist:
+			if PlayerAgent.should_prioritize_focus_add(focus_type, str(e.type), e.is_in_group("bosses"), dd, bool(e.get("alert"))) and dd < urgent_add_dist:
 				urgent_add_tgt = e
 				urgent_add_dist = dd
 			if dd < bd:
@@ -792,9 +792,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			tgt = urgent_add_tgt
 			var add_id := urgent_add_tgt.get_instance_id()
 			if add_id != last_add_priority_id:
-				_log("PLAYER_AGENT_ADD_PRIORITY type=%s distance=%d" % [str(urgent_add_tgt.type), int(urgent_add_dist)])
+				_log("PLAYER_AGENT_ADD_PRIORITY type=%s distance=%d alerted=%s" % [str(urgent_add_tgt.type), int(urgent_add_dist), str(bool(urgent_add_tgt.get("alert")))])
 				if focus_type == "anvilward":
-					_log("PLAYER_AGENT_ANVILWARD_ADD_PRIORITY type=%s distance=%d" % [str(urgent_add_tgt.type), int(urgent_add_dist)])
+					_log("PLAYER_AGENT_ANVILWARD_ADD_PRIORITY type=%s distance=%d alerted=%s" % [str(urgent_add_tgt.type), int(urgent_add_dist), str(bool(urgent_add_tgt.get("alert")))])
 			last_add_priority_id = add_id
 		elif focused_tgt != null:
 			last_add_priority_id = 0
@@ -958,9 +958,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 					int(to.length()), int(Game.hp), int(Game.max_hp())
 				])
 				last_mage_threat_id = threat_id
-			var should_dodge: bool = p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (
-				to.length() <= 95.0 or Game.hp < Game.max_hp() * 0.62
-			) and (randf() < 0.72 or Game.hp < Game.max_hp() * 0.40)
+			var should_dodge: bool = PlayerAgent.should_dodge_mage(
+				to.length(), Game.hp, Game.max_hp(), p.stamina, p.dodge_cd
+			)
 			if should_dodge:
 				await press("dodge")
 				dodges += 1
