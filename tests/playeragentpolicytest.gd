@@ -30,9 +30,11 @@ func run(_main: Node) -> void:
 	check("potion_cooldown_is_measured_from_current_fight_time", is_equal_approx(PlayerAgent.next_health_potion_time(3.0, 1.6), 4.6))
 
 	check("anvilward_close_adds_get_priority", PlayerAgent.should_prioritize_focus_add("anvilward", "slagbrute", false, 200.0))
-	check("anvilward_adds_outside_pressure_radius_are_not_chased", not PlayerAgent.should_prioritize_focus_add("anvilward", "moltencore", false, 260.0))
+	check("anvilward_nearby_ranged_adds_are_prioritized", PlayerAgent.should_prioritize_focus_add("anvilward", "moltencore", false, 620.0))
+	check("anvilward_adds_outside_extended_pressure_radius_are_not_chased", not PlayerAgent.should_prioritize_focus_add("anvilward", "moltencore", false, 700.0))
 	check("anvilward_itself_is_never_classified_as_an_add", not PlayerAgent.should_prioritize_focus_add("anvilward", "anvilward", true, 40.0))
-	check("ordinary_boss_encounters_do_not_chase_unrelated_adds", not PlayerAgent.should_prioritize_focus_add("boss", "skeleton", false, 120.0))
+	check("ordinary_boss_encounters_clear_immediate_pressure_adds", PlayerAgent.should_prioritize_focus_add("boss", "skeleton", false, 180.0))
+	check("ordinary_boss_encounters_do_not_chase_distant_adds", not PlayerAgent.should_prioritize_focus_add("boss", "skeleton", false, 260.0))
 	check("ancient_wyrm_keeps_close_wyrmling_priority", PlayerAgent.should_prioritize_focus_add("ancientwyrm", "wyrmling", false, 180.0))
 
 	var had_brann := Game.state.has("brann")
