@@ -5,6 +5,7 @@ extends RefCounted
 
 const PlayerObservation = preload("res://tests/player_observation.gd")
 const PlayerBrain = preload("res://tests/player_brain.gd")
+const PlayerVisualPerception = preload("res://tests/player_visual_perception.gd")
 
 var driver: Node
 
@@ -175,6 +176,9 @@ func _screen_observation() -> Dictionary:
 
 func visible_combat_status() -> Dictionary:
 	return PlayerBrain.read_visible_combat_status(_screen_observation())
+
+func visible_visual_frame() -> Dictionary:
+	return PlayerVisualPerception.capture_frame(driver.get_viewport())
 
 func _visible_screen_texts() -> Array[String]:
 	var result: Array[String] = []
