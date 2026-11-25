@@ -109,6 +109,13 @@ func run(_main: Node) -> void:
 		PlayerAgent.should_skip_route_threat_near_exit(Vector2(700, 798), forge_exit))
 	check("peaks_imp_spawn_path_is_deferred_from_forge_exit",
 		PlayerAgent.should_skip_route_threat_near_exit(Vector2(360, 620), forge_exit))
+
+	check("second_peaks_imp_chase_path_crossing_forge_exit_is_deferred",
+		PlayerAgent.should_skip_route_path_near_exit(Vector2(200, 850), Vector2(850, 650), forge_exit))
+	check("peaks_spawn_to_second_imp_route_is_deferred",
+		PlayerAgent.should_skip_route_path_near_exit(Vector2(560, 856), Vector2(850, 650), forge_exit))
+	check("route_far_from_forge_exit_remains_engageable",
+		not PlayerAgent.should_skip_route_path_near_exit(Vector2(180, 200), Vector2(250, 280), forge_exit))
 	check("enemy_outside_forge_exit_safety_margin_remains_engageable",
 		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 1000), forge_exit))
 	check("empty_exit_list_does_not_hide_route_threats",
