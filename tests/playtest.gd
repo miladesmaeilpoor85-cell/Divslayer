@@ -694,8 +694,11 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	if focus_type != "":
 		_log("PLAYER_AGENT_POLICY target=%s telegraph_read=75%% projectile_prediction=enabled reaction=humanized shield_parry=enabled spells=adaptive" % focus_type)
 	if Game.cls == "mage":
-		_log("PLAYER_AGENT_MAGE_POLICY potion_reserve=%d preferred_range=210 retreat_distance=%d spell_interval=%.1f-%.1fs" % [
-			potion_reserve, 180 if focus_type != "" else 150, spell_interval_min, spell_interval_max
+		_log("PLAYER_AGENT_MAGE_POLICY potion_reserve=%d preferred_range=%.0f retreat_distance=%.0f spell_interval=%.1f-%.1fs" % [
+			potion_reserve,
+			PlayerAgent.mage_boss_preferred_range() if focus_type != "" else 210.0,
+			PlayerAgent.mage_boss_retreat_distance() if focus_type != "" else 150.0,
+			spell_interval_min, spell_interval_max
 		])
 	var map0: String = main.world.key
 	var last := _feet()
@@ -913,22 +916,34 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			var parry_chance := 0.72 if Game.cls == "paladin" else (0.62 if Game.cls == "warrior" else 0.44)
 			var parry_attempt: bool = not must_evade and last_danger_eta <= 0.18 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
 			if must_evade:
-				# Circles are area slams: holding the shield only absorbs one third of their
-				# damage while leaving the hero in the marked blast. Move out and roll at impact.
-				var escape_dir := _avoid_exits(away.normalized())
-				await stick(escape_dir)
-				var dodge_window := 0.45
-				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (last_danger_eta <= dodge_window or Game.hp < Game.max_hp() * 0.55):
-					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=roll eta=%.2f distance=%d stamina=%.0f" % [
-						last_danger_kind, last_danger_eta, int(to.length()), p.stamina
-					])
-					await press("dodge")
-					dodges += 1
-				else:
-					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=step eta=%.2f distance=%d stamina=%.0f" % [
-						last_danger_kind, last_danger_eta, int(to.length()), p.stamina
-					])
-					await wait(randf_range(0.12, 0.22))
+				# Step out as soon as the mark appears, then roll only when the class's
+				# actual i-frames can cover impact. A 0.45 s early roll expires on Mage.
+				var escape := PlayerAgent.safe_evasion_direction(p.body_rect(), away.normalized(), main.world.wall_rects)
+			var escape_dir := _avoid_exits(escape)
+			await stick(escape_dir)
+			var roll_ready := p.dodge_cd <= 0.0 and p.stamina >= 30.0
+			var dodge_window := PlayerAgent.boss_dodge_window(str(Game.cls))
+			if roll_ready and last_danger_eta <= dodge_window:
+				_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=roll eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
+					last_danger_kind, last_danger_eta, dodge_window, int(to.length()), p.stamina
+				])
+				await press("dodge")
+				dodges += 1
+			elif PlayerAgent.should_guard_boss_telegraph(last_danger_kind, last_danger_eta, roll_ready, p.stamina, p.guard_broken):
+				# At the impact beat, a shield is the fallback only when a roll cannot fire.
+				# This preserves a chance to parry instead of letting a depleted Mage tank it.
+				await stick(Vector2.ZERO)
+				var guard_hold := maxf(0.18, last_danger_eta + 0.04)
+				await press("block", guard_hold)
+				block_actions += 1
+				_log("PLAYER_AGENT_EMERGENCY_GUARD kind=%s eta=%.2f stamina=%.0f" % [
+					last_danger_kind, last_danger_eta, p.stamina
+				])
+			else:
+				_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=step eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
+					last_danger_kind, last_danger_eta, dodge_window, int(to.length()), p.stamina
+				])
+				await wait(randf_range(0.10, 0.16))
 			elif parry_attempt:
 				await stick(Vector2.ZERO)
 				var parry_hold := maxf(0.22, last_danger_eta + 0.08)
@@ -946,8 +961,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			else:
 				var escape_dir := _avoid_exits(away.normalized())
 				await stick(escape_dir)
-				var dodge_window := 0.34
-				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and (last_danger_eta <= dodge_window or Game.hp < Game.max_hp() * 0.55):
+				var dodge_window := PlayerAgent.boss_dodge_window(str(Game.cls))
+				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and last_danger_eta <= dodge_window:
 					await press("dodge")
 					dodges += 1
 				else:
@@ -961,15 +976,16 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			await stick(Vector2.ZERO)
 			continue
 		var preferred_range := reach
-		var mage_retreat_distance := 180.0 if focus_type != "" else 150.0
+		var mage_retreat_distance := PlayerAgent.mage_boss_retreat_distance() if focus_type != "" else 150.0
 		if Game.cls == "mage" and not target_is_pillar:
-			preferred_range = maxf(reach + 130.0, 210.0)
+			preferred_range = maxf(reach + 130.0, PlayerAgent.mage_boss_preferred_range() if focus_type != "" else 210.0)
 		if Game.cls == "mage" and to.length() < mage_retreat_distance and away == Vector2.ZERO and not target_is_pillar:
 			# A mage keeps more room against ordinary melee threats; when pressure closes,
 			# retreat through the real movement control and sometimes roll to create space.
 			# The earlier 82 px threshold let several crypt foes overlap the light-armour Mage.
 			var retreat := (-to.normalized() + Vector2(randf_range(-0.18, 0.18), randf_range(-0.18, 0.18))).normalized()
-			await stick(_avoid_exits(retreat))
+			var safe_retreat := PlayerAgent.safe_evasion_direction(p.body_rect(), retreat, main.world.wall_rects)
+			await stick(_avoid_exits(safe_retreat))
 			var threat_id := tgt.get_instance_id()
 			if threat_id != last_mage_threat_id:
 				_log("PLAYER_AGENT_MAGE_EVASION kind=retreat distance=%d hp=%d/%d" % [

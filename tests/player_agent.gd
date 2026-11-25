@@ -37,6 +37,54 @@ static func should_dodge_mage(distance: float, hp: float, max_hp: float, stamina
 static func should_evade_boss_telegraph(kind: String) -> bool:
 	return kind in ["circle", "lane", "projectile"]
 
+## The roll's actual invulnerability differs by calling: Mage 0.32 s, Warrior/Paladin
+## 0.42 s, Rogue 0.58 s. Start the roll late enough for those frames to cover impact.
+static func boss_dodge_window(hero_class: String) -> float:
+	match hero_class:
+		"mage": return 0.22
+		"rogue": return 0.46
+		_: return 0.30
+
+## If the roll is cooling down or stamina is short, a just-in-time guard can parry
+## the marked area hit or at least reduce it. Do not spend stamina blocking early.
+static func should_guard_boss_telegraph(kind: String, eta: float, roll_ready: bool, stamina: float, guard_broken: float) -> bool:
+	return should_evade_boss_telegraph(kind) and eta >= 0.0 and eta <= 0.18 \
+		and not roll_ready and stamina >= 8.0 and guard_broken <= 0.0
+
+## Mage's Bolt/Chain reach allows it to fight outside Anvilward's close slam radius.
+static func mage_boss_preferred_range() -> float:
+	return 250.0
+
+static func mage_boss_retreat_distance() -> float:
+	return 230.0
+
+## If the direct escape vector runs into a wall or the map edge, sidestep around it.
+## Probe the player's real body rectangle; no teleporting or collision bypass is used.
+static func safe_evasion_direction(body_bounds: Rect2, desired: Vector2, wall_rects: Array, probe_distance := 72.0) -> Vector2:
+	if desired.length_squared() < 0.0001:
+		return Vector2.ZERO
+	var base := desired.normalized()
+	var step := maxf(24.0, probe_distance)
+	var candidates := [
+		base,
+		base.rotated(PI / 3.0),
+		base.rotated(-PI / 3.0),
+		base.rotated(PI / 2.0),
+		base.rotated(-PI / 2.0),
+	]
+	for candidate in candidates:
+		var probe := body_bounds
+		probe.position += candidate * step
+		var blocked := false
+		for wall_data in wall_rects:
+			var wall: Rect2 = wall_data
+			if probe.intersects(wall):
+				blocked = true
+				break
+		if not blocked:
+			return candidate.normalized()
+	return base.orthogonal()
+
 ## Prioritize only enemies that have actually noticed the player and remain inside
 ## their active chase envelope. Emberforge mobs acquire aggro at 270 px; squad calls
 ## extend that envelope to 1.65x (445.5 px). Never pull passive packs into the duel.
