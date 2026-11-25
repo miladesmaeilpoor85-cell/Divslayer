@@ -3,6 +3,9 @@ extends RefCounted
 ## It never edits Game.state, grants currency, teleports the hero, or applies test presets.
 ## All menu/shop/talent actions are delivered as screen touches through the existing playtest driver.
 
+const PlayerObservation = preload("res://tests/player_observation.gd")
+const PlayerBrain = preload("res://tests/player_brain.gd")
+
 var driver: Node
 
 const TALENT_ORDER := {
@@ -162,6 +165,22 @@ static func should_skip_route_path_near_exit(origin: Vector2, destination: Vecto
 
 func attach(playtest_driver: Node) -> void:
 	driver = playtest_driver
+
+## Capture only text and controls that are visible in the rendered viewport.
+## Decisions consume this snapshot; hidden game telemetry remains in the QA driver.
+func _screen_observation() -> Dictionary:
+	if driver == null:
+		return {}
+	return PlayerObservation.capture(driver.get_tree().root, driver.get_viewport())
+
+func _visible_screen_texts() -> Array[String]:
+	var result: Array[String] = []
+	var observation := _screen_observation()
+	for item in observation.get("texts", []):
+		var value := str(item.get("text", "")).strip_edges()
+		if not value.is_empty():
+			result.append(value)
+	return result
 
 func _first_button(node: Node) -> Button:
 	if node is Button and (node as Button).is_visible_in_tree():
@@ -333,7 +352,7 @@ func complete_training() -> String:
 func tap_text(label: String) -> String:
 	var control: Control = driver.find_text(label)
 	if control == null:
-		return "NOT FOUND. On screen: " + " | ".join(driver._texts().map(func(t): return str(t.get("t", ""))))
+		return "NOT FOUND. On screen: " + " | ".join(_visible_screen_texts())
 	if not await _tap_control(control):
 		return "visible text was found but its control did not receive a tap: " + label
 	return "tapped UI text through its actual control: " + label
@@ -384,25 +403,23 @@ func spend_talents() -> String:
 	return "spent %d/%d talent points through the Skills UI (%s)" % [spent, points_before, ", ".join(gained)]
 
 func _tap_dialogue_choice(terms: Array) -> String:
-	var dialogue = driver.main.hud.dialogue
-	if dialogue == null or not dialogue.visible or not dialogue.choosing():
-		return "no dialogue choice is currently visible"
-	var options: Array = dialogue._choice_box.get_children()
-	var visible_options: Array[String] = []
-	for option in options:
-		if not option is Button or not option.is_visible_in_tree() or option.disabled:
-			continue
-		var label := str(option.text)
-		visible_options.append(label)
-		for term in terms:
-			if label.to_lower().find(str(term).to_lower()) >= 0:
-				if not await _tap_control(option):
-					return "visible choice could not receive a touch: " + label
-				await driver.wait(0.35)
-				driver._log("PLAYER_AGENT_DIALOGUE_CHOICE " + label)
-				return "selected dialogue choice: " + label
-	return "matching choice not found; visible choices=%s" % " | ".join(visible_options)
-
+	var observation := _screen_observation()
+	var visible_buttons: Array = observation.get("buttons", [])
+	var selected_index := PlayerBrain.find_visible_button(visible_buttons, terms)
+	if selected_index < 0:
+		var labels: Array[String] = []
+		for item in visible_buttons:
+			if bool(item.get("visible", false)) and bool(item.get("enabled", false)):
+				labels.append(str(item.get("text", "")))
+		return "matching visible choice not found; enabled choices=%s" % " | ".join(labels)
+	var selected: Dictionary = visible_buttons[selected_index]
+	var choice := selected.get("control") as Button
+	var label := str(selected.get("text", ""))
+	if choice == null or not await _tap_control(choice):
+		return "visible choice could not receive a touch: " + label
+	await driver.wait(0.35)
+	driver._log("PLAYER_AGENT_DIALOGUE_CHOICE " + label)
+	return "selected dialogue choice: " + label
 
 func visit_shop(vendor: String, prioritize_health := false) -> String:
 	if vendor not in ["merchant", "smith", "hesk"]:
@@ -427,10 +444,7 @@ func visit_shop(vendor: String, prioritize_health := false) -> String:
 		interaction_pass += 1
 		var dialogue = driver.main.hud.dialogue
 		var visible_texts: Array[String] = []
-		for item in driver._texts():
-			var text_value := str(item.get("t", "")).strip_edges()
-			if not text_value.is_empty():
-				visible_texts.append(text_value)
+		visible_texts = _visible_screen_texts()
 		last_observation = "dialogue=%s choosing=%s near_npc=%s text=%s" % [
 			str(dialogue.visible),
 			str(dialogue.visible and dialogue.choosing()),
@@ -476,10 +490,7 @@ func visit_shop(vendor: String, prioritize_health := false) -> String:
 	if not shop.visible:
 		var dialogue = driver.main.hud.dialogue
 		var final_texts: Array[String] = []
-		for item in driver._texts():
-			var text_value := str(item.get("t", "")).strip_edges()
-			if not text_value.is_empty():
-				final_texts.append(text_value)
+		final_texts = _visible_screen_texts()
 		var failure := "talked to %s but its shop did not open after %d interaction passes; dialogue_visible=%s choosing=%s near_npc=%s visible_text=%s" % [
 			vendor,
 			interaction_pass,
@@ -772,62 +783,50 @@ func collect_nearby_pickups(max_items := 8) -> String:
 	return "collected %d ground pickups%s" % [collected.size(), " (" + ", ".join(collected) + ")" if not collected.is_empty() else ""]
 
 func _choose_dialogue_option() -> String:
-	var dialogue = driver.main.hud.dialogue
-	if dialogue == null or not dialogue.visible or not dialogue.choosing():
-		return "no dialogue choice pending"
+	var observation := _screen_observation()
+	var visible_buttons: Array = observation.get("buttons", [])
 	var preferred := ["Train with me", "با من تمرین کن", "Continue", "ادامه", "Accept", "قبول", "Enter", "ورود", "Take", "بگیر", "Begin", "شروع", "Investigate", "بررسی"]
-	var buttons: Array = dialogue._choice_box.get_children()
-	var picked: Button = null
-	for term in preferred:
-		for control in buttons:
-			if control is Button and (control as Button).is_visible_in_tree() and str((control as Button).text).find(term) >= 0:
-				picked = control as Button
-				break
-		if picked != null:
-			break
-	if picked == null:
-		for control in buttons:
-			if control is Button and not (control as Button).disabled:
-				picked = control as Button
-				break
-	if picked == null:
-		return "no enabled dialogue option"
-	var chosen_text := picked.text
-	if not await _tap_control(picked):
+	var selected_index := PlayerBrain.find_visible_button(visible_buttons, preferred, true)
+	if selected_index < 0:
+		return "no enabled visible dialogue option"
+	var selected: Dictionary = visible_buttons[selected_index]
+	var picked := selected.get("control") as Button
+	var chosen_text := str(selected.get("text", ""))
+	if picked == null or not await _tap_control(picked):
 		return "dialogue option failed to receive input"
 	await driver.wait(0.35)
-	driver._log("PLAYER_AGENT_DIALOGUE_CHOICE %s" % chosen_text)
+	driver._log("PLAYER_AGENT_DIALOGUE_CHOICE " + chosen_text)
 	return "selected dialogue option: " + chosen_text
 
 func recover_from_death() -> String:
 	var death = driver.main.hud.death
 	if death == null or not death.visible:
 		return "no death screen to recover from"
-	var is_boss_fight := not Game.fight.is_empty() and str(Game.fight.get("type", "")) != ""
-	var retries := int(Game.fight.get("retries", 0))
-	var choice: Button = null
-	var action := ""
-	if is_boss_fight:
-		if retries >= 1 and Game.diff() != "story" and death.story_btn.visible:
-			choice = death.story_btn
-			action = "lowered difficulty to Story through the death screen after a second defeat"
-		elif death.re_btn.visible:
-			choice = death.re_btn
-			action = "requested a boss rematch at the current arena"
-	else:
-		choice = death.home_btn
-		action = "respawned in Zabol after a field defeat"
+	# Recovery decisions now come from the visible death-screen choices, not hidden retry counters.
+	var observation := _screen_observation()
+	var visible_buttons: Array = observation.get("buttons", [])
+	var choice_index := PlayerBrain.find_death_recovery_button(visible_buttons)
+	if choice_index < 0:
+		var labels: Array[String] = []
+		for item in visible_buttons:
+			if bool(item.get("visible", false)) and bool(item.get("enabled", false)):
+				labels.append(str(item.get("text", "")))
+		driver._log("PLAYER_AGENT_RECOVERY_BLOCKED visible_buttons=%s" % " | ".join(labels))
+		return "death screen had no recognizable visible recovery action"
+	var choice_data: Dictionary = visible_buttons[choice_index]
+	var choice := choice_data.get("control") as Button
+	var label := str(choice_data.get("text", ""))
+	var is_rematch := PlayerBrain.find_visible_button(visible_buttons, ["rematch", "retry", "try again", "دوباره", "تلاش مجدد", "شروع دوباره"]) == choice_index
+	var action := "requested a rematch using the visible '%s' choice" % label if is_rematch else "used the visible respawn/home choice '%s'" % label
 	if choice == null or not await _tap_control(choice):
-		return "death screen choice was unavailable"
+		return "death screen choice could not receive a real touch: " + label
 	await driver.wait(1.2)
-	var recovered: bool = not driver.main.player.dead and not death.visible
+	var recovered: bool = driver.main.player != null and not driver.main.player.dead and not death.visible
 	if recovered:
-		driver._log("PLAYER_AGENT_RECOVERY retries=%d action=%s map=%s hp=%d" % [int(Game.fight.get("retries", 0)), action, str(driver.main.world.key), int(Game.hp)])
+		driver._log("PLAYER_AGENT_RECOVERY action=%s map=%s hp=%d" % [action, str(driver.main.world.key), int(Game.hp)])
 		return action
 	return "recovery choice was tapped but the player did not return to play"
 
-## Before the forge journey, a player checks provisions at Sindokht's visible shop.
-## Purchase through the shop UI only; never edit the potion counter or currency directly.
 func prepare_route_supplies(minimum_potions := 2) -> String:
 	var target_stock := clampi(int(minimum_potions), 1, 3)
 	var report: Array[String] = []
