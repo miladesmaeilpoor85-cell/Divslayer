@@ -177,6 +177,9 @@ func run(m: Node) -> void:
 	Game.state["c2"] = {"step": "done"}       # ... and with it done, Jamshid's objective shows
 	check("objective_slay_anvil", Game.objective().find("Pulad of Ghandi") >= 0, Game.objective())
 	check("compass_to_anvil", Game.quest_target().get("map", "") == "emberforge" and Game.quest_target().get("kind", "") == "boss", Game.quest_target())
+	check("peaks_route_to_forge_uses_kindling_door", Game.next_hop("peaks", "emberforge") == "emberforge", Game.next_hop("peaks", "emberforge"))
+	var forge_compass := Game.compass_point("peaks")
+	check("peaks_compass_points_to_kindling_door", forge_compass.get("to", "") == "emberforge" and bool(forge_compass.get("exit", false)), forge_compass)
 	talk("brann")
 	await frames(2)
 	await finish_dialogue()
