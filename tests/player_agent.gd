@@ -17,6 +17,14 @@ const TALENT_ORDER := {
 static func should_prioritize_grave_pillars(active_pillars: int) -> bool:
 	return active_pillars > 1
 
+## A real player cannot consume the whole potion stack in successive touch frames.
+## Keep a short human-use interval and respect the deliberately held reserve.
+static func should_use_health_potion(hp: float, max_hp: float, stock: int, reserve: int, now: float, ready_at: float, threshold: float) -> bool:
+	return max_hp > 0.0 and hp > 0.0 and stock > maxi(reserve, 0) and now >= ready_at and hp < max_hp * clampf(threshold, 0.0, 1.0)
+
+static func next_health_potion_time(now: float, cooldown: float = 1.6) -> float:
+	return now + maxf(0.5, cooldown)
+
 ## During the Anvilward encounter, clear only adds already close enough to pressure the hero.
 ## The named boss remains the objective even when it starts beyond the normal target scan radius.
 static func should_prioritize_focus_add(focus_type: String, enemy_type: String, is_boss: bool, distance: float, radius: float = 240.0) -> bool:
