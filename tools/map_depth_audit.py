@@ -72,13 +72,26 @@ def _session_durations(path: Path | None) -> dict[str, Any]:
     }
 
 
-def _reachable_from(start: str, graph: dict[str, Any]) -> set[str]:
+def _reachable_from(
+    start: str,
+    graph: dict[str, Any],
+    scripted_connections: list[dict[str, Any]] | None = None,
+) -> set[str]:
+    adjacency = {
+        key: [str(edge.get("to", "")) for edge in entry.get("exits", [])]
+        for key, entry in graph.items()
+    }
+    for connection in scripted_connections or []:
+        source = str(connection.get("from", ""))
+        target = str(connection.get("to", ""))
+        if source in adjacency and target in graph:
+            adjacency[source].append(target)
+
     reached = {start} if start in graph else set()
     queue = deque(reached)
     while queue:
         current = queue.popleft()
-        for edge in graph[current].get("exits", []):
-            target = str(edge.get("to", ""))
+        for target in adjacency[current]:
             if target in graph and target not in reached:
                 reached.add(target)
                 queue.append(target)
@@ -87,7 +100,9 @@ def _reachable_from(start: str, graph: dict[str, Any]) -> set[str]:
 
 def build_report(root: Path, session_log: Path | None = None) -> dict[str, Any]:
     root = root.resolve()
-    graph = _read_json(root / "data/world_graph.json")
+    world_data = _read_json(root / "data/world_graph.json")
+    scripted_connections = world_data.get("scriptedConnections", [])
+    graph = {key: value for key, value in world_data.items() if key != "scriptedConnections"}
     classes = _read_json(root / "data/Tables/CLASSES.json")
     quest_points = _read_json(root / "data/quest_points.json")
     class_speeds = {
@@ -155,7 +170,13 @@ def build_report(root: Path, session_log: Path | None = None) -> dict[str, Any]:
             ),
         })
 
-    reached = _reachable_from("village", graph)
+    static_reached = _reachable_from("village", graph)
+    for connection in scripted_connections:
+        source = str(connection.get("from", ""))
+        target = str(connection.get("to", ""))
+        if source not in graph or target not in graph:
+            errors.append(f"scripted connection references unknown map: {source} -> {target}")
+    reached = _reachable_from("village", graph, scripted_connections)
     shrines = [item for item in maps if item["kind"] == "shrine"]
     regions = [item for item in maps if item["kind"] == "region"]
     areas = [item["area"] for item in maps]
@@ -169,8 +190,11 @@ def build_report(root: Path, session_log: Path | None = None) -> dict[str, Any]:
             "map_count": len(maps),
             "region_count": len(regions),
             "shrine_count": len(shrines),
-            "reachable_from_village_count": len(reached),
-            "unreachable_from_village": sorted(set(graph) - reached),
+            "reachable_by_static_exits_count": len(static_reached),
+            "reachable_with_declared_scripted_gates_count": len(reached),
+            "unreachable_by_static_exits": sorted(set(graph) - static_reached),
+            "unreachable_after_declared_scripted_gates": sorted(set(graph) - reached),
+            "scripted_connection_count": len(scripted_connections),
             "smallest_map_area": min(areas) if areas else None,
             "largest_map_area": max(areas) if areas else None,
             "mean_width": round(sum(item["width"] for item in maps) / len(maps), 1) if maps else None,
