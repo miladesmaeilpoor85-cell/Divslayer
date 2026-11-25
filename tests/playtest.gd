@@ -918,7 +918,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 				var escape := PlayerAgent.safe_evasion_direction(p.body_rect(), away.normalized(), main.world.wall_rects)
 				var escape_dir := _avoid_exits(escape)
 				await stick(escape_dir)
-				var roll_ready := p.dodge_cd <= 0.0 and p.stamina >= 30.0
+				var roll_ready: bool = p.dodge_cd <= 0.0 and p.stamina >= 30.0
 				var area_dodge_window := PlayerAgent.boss_dodge_window(str(Game.cls))
 				if roll_ready and last_danger_eta <= area_dodge_window:
 					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=roll eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
