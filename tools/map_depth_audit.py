@@ -218,7 +218,14 @@ def main() -> int:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Maps analysed: {report['summary']['map_count']}")
-    print(f"Reachable from village: {report['summary']['reachable_from_village_count']}/{report['summary']['map_count']}")
+    print(
+        f"Reachable by static exits: "
+        f"{report['summary']['reachable_by_static_exits_count']}/{report['summary']['map_count']}"
+    )
+    print(
+        f"Reachable with declared scripted gates: "
+        f"{report['summary']['reachable_with_declared_scripted_gates_count']}/{report['summary']['map_count']}"
+    )
     print(f"Measured playtime: {report['actual_playtime']['status']}")
     for error in report["errors"]:
         print(f"ERROR: {error}", file=sys.stderr)
