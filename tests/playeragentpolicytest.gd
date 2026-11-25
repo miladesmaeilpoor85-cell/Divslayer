@@ -101,5 +101,15 @@ func run(_main: Node) -> void:
 	check("route_threat_at_radius_boundary_is_engaged", PlayerAgent.should_engage_route_threat(420.0))
 	check("route_threat_outside_radius_is_not_engaged", not PlayerAgent.should_engage_route_threat(420.1))
 	check("negative_route_distance_is_invalid", not PlayerAgent.should_engage_route_threat(-1.0))
+
+	var forge_exit := [{ "x": 520.0, "y": 790.0, "w": 110.0, "h": 16.0, "to": "emberforge" }]
+	check("enemy_on_forge_threshold_is_deferred_to_exit_travel",
+		PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 798), forge_exit))
+	check("enemy_inside_forge_exit_safety_margin_is_deferred",
+		PlayerAgent.should_skip_route_threat_near_exit(Vector2(700, 798), forge_exit))
+	check("enemy_outside_forge_exit_safety_margin_remains_engageable",
+		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 960), forge_exit))
+	check("empty_exit_list_does_not_hide_route_threats",
+		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 798), []))
 	print("PLAYERAGENTPOLICYTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit(1 if not fails.is_empty() else 0)
