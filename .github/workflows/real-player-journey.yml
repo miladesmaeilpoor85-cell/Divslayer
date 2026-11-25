@@ -162,6 +162,10 @@ jobs:
           assert "static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:" in agent_source, "Route combat must have a bounded nearby-threat policy"
           assert "func _clear_route_threats(max_rounds := 4, radius := 420.0) -> Dictionary:" in agent_source, "The natural player must clear nearby threats before map travel"
           assert "PLAYER_AGENT_ROUTE_THREAT" in agent_source and "PLAYER_AGENT_ROUTE_COMBAT" in agent_source, "Route combat must log observed nearby enemies and ordinary combat outcomes"
+          assert "func prepare_route_supplies(minimum_potions := 2) -> String:" in agent_source, "The forge journey must prepare health supplies when stock is low"
+          assert 'await visit_shop("merchant", true)' in agent_source, "Expedition supplies must be purchased through the merchant UI"
+          assert "PLAYER_AGENT_ROUTE_SUPPLIES_READY" in agent_source, "Expedition preparation must log the observed potion stock"
+          assert 'current_map == "village" and target_map == "emberforge" and Game.brann_sync() == "anvil"' in agent_source, "Supply preparation must be scoped to the active Pulad expedition"
           assert "var route_safety: Dictionary = await _clear_route_threats(4, 420.0)" in agent_source, "The agent must validate route safety before crossing map exits"
           assert 'var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0, boss_type)' in agent_source, "Route combat must preserve the live objective boss for its own evidenced encounter"
           game_source = Path("scripts/game.gd").read_text(encoding="utf-8")

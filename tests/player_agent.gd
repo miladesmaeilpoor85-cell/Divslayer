@@ -266,7 +266,7 @@ func _tap_dialogue_choice(terms: Array) -> String:
 	return "matching choice not found; visible choices=%s" % " | ".join(visible_options)
 
 
-func visit_shop(vendor: String) -> String:
+func visit_shop(vendor: String, prioritize_health := false) -> String:
 	if vendor not in ["merchant", "smith", "hesk"]:
 		return "unsupported vendor: " + vendor
 	var npc: Node = driver.npc_node(vendor)
@@ -365,13 +365,21 @@ func visit_shop(vendor: String) -> String:
 	driver._log("PLAYER_AGENT_SHOP_OPEN vendor=%s passes=%d" % [vendor, interaction_pass])
 	var catalog: Array = Game.shop_catalog(vendor)
 	var selected: Dictionary = {}
-	# A genuine buyer prefers the next equipment tier, but will not buy beyond the visible purse.
-	for item in catalog:
-		if str(item.get("state", "")) != "next" or not item.has("tier"):
-			continue
-		if int(Game.state.get("gold", 0)) >= int(item.get("price", 0)):
-			selected = item
-			break
+	# On a dangerous expedition, a player with fewer than two health potions
+	# can deliberately prioritize a visible consumable before another upgrade.
+	if vendor == "merchant" and prioritize_health and int(Game.state.get("potions", 0)) < 2:
+		for item in catalog:
+			if str(item.get("id", "")) == "hp_potion" and int(Game.state.get("gold", 0)) >= int(item.get("price", 0)):
+				selected = item
+				break
+	# Otherwise the normal buyer prefers the next equipment tier.
+	if selected.is_empty():
+		for item in catalog:
+			if str(item.get("state", "")) != "next" or not item.has("tier"):
+				continue
+			if int(Game.state.get("gold", 0)) >= int(item.get("price", 0)):
+				selected = item
+				break
 
 	# If equipment is not yet affordable, keep enough gold for the next armour tier before
 	# buying consumables. Refill health supplies only when the carried stock is low.
@@ -680,6 +688,35 @@ func recover_from_death() -> String:
 		return action
 	return "recovery choice was tapped but the player did not return to play"
 
+## Before the forge journey, a player checks provisions at Sindokht's visible shop.
+## Purchase through the shop UI only; never edit the potion counter or currency directly.
+func prepare_route_supplies(minimum_potions := 2) -> String:
+	var target_stock := clampi(int(minimum_potions), 1, 3)
+	var report: Array[String] = []
+	var initial_stock := int(Game.state.get("potions", 0))
+	for purchase_index in range(2):
+		var stock_before := int(Game.state.get("potions", 0))
+		if stock_before >= target_stock:
+			break
+		var purchase_result: String = await visit_shop("merchant", true)
+		report.append(purchase_result)
+		var stock_after := int(Game.state.get("potions", 0))
+		driver._log("PLAYER_AGENT_ROUTE_SUPPLIES pass=%d stock=%d->%d gold=%d" % [
+			purchase_index + 1, stock_before, stock_after, int(Game.state.get("gold", 0))
+		])
+		if stock_after <= stock_before:
+			break
+	var final_stock := int(Game.state.get("potions", 0))
+	if final_stock < target_stock:
+		driver._log("PLAYER_AGENT_ROUTE_SUPPLIES_LIMITED stock=%d target=%d gold=%d" % [
+			final_stock, target_stock, int(Game.state.get("gold", 0))
+		])
+	else:
+		driver._log("PLAYER_AGENT_ROUTE_SUPPLIES_READY stock=%d" % final_stock)
+	return "route supplies: potions %d->%d (target %d); %s" % [
+		initial_stock, final_stock, target_stock, " | ".join(report)
+	]
+
 ## Find living enemies close enough to threaten a normal map transition.
 ## This only reads the live scene; it does not change enemy or quest state.
 func _nearest_route_threat(radius: float = 420.0, excluded_type := "") -> Dictionary:
@@ -775,6 +812,8 @@ func follow_objective(max_steps := 8, stop_after_interaction := false, boss_figh
 		var current_map := str(driver.main.world.key)
 		driver._log("PLAYER_AGENT_OBJECTIVE map=%s target_map=%s kind=%s pos=%s" % [current_map, target_map, str(target.get("kind", "")), str(target.get("pos", Vector2.ZERO))])
 		if target_map != current_map:
+			if current_map == "village" and target_map == "emberforge" and Game.brann_sync() == "anvil":
+				report.append(await prepare_route_supplies(2))
 			var hop := Game.next_hop(current_map, target_map)
 			if hop == "":
 				report.append("no world-graph route from %s to %s" % [current_map, target_map])
