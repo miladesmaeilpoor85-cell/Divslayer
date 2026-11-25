@@ -168,6 +168,8 @@ jobs:
           assert "static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:" in agent_source, "Route combat must have a bounded nearby-threat policy"
           assert "static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, margin: float = 180.0) -> bool:" in agent_source, "Route combat must not chase enemies through a nearby map exit"
           assert "static func should_skip_route_path_near_exit(origin: Vector2, destination: Vector2, exits: Array, margin: float = 180.0) -> bool:" in agent_source, "Route combat must not chase an enemy along a path crossing an exit safety margin"
+          assert "static func route_exit_safety_candidates(map_key: String, exits: Array) -> Array:" in agent_source, "Exit-corridor deferral must be scoped to the Peaks map"
+          assert 'route_exit_safety_candidates(str(driver.main.world.key), driver.main.world.data.get("exits", []))' in agent_source, "Other maps must retain normal nearby-threat clearing"
           assert "PLAYER_AGENT_ROUTE_THREATS_DEFERRED_NEAR_EXIT" in agent_source, "Deferred exit-adjacent threats must be recorded as evidence"
           assert 'func _clear_route_threats(max_rounds := 4, radius := 420.0, excluded_type := "") -> Dictionary:' in agent_source, "The natural player must clear nearby threats before map travel while preserving the objective boss"
           assert "PLAYER_AGENT_ROUTE_THREAT" in agent_source and "PLAYER_AGENT_ROUTE_COMBAT" in agent_source, "Route combat must log observed nearby enemies and ordinary combat outcomes"
