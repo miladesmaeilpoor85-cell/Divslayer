@@ -5,6 +5,7 @@ extends Node
 const PlayerAgent = preload("res://tests/player_agent.gd")
 const PlayerBrain = preload("res://tests/player_brain.gd")
 const PlayerObservation = preload("res://tests/player_observation.gd")
+const PlayerVisualPerception = preload("res://tests/player_visual_perception.gd")
 
 var results: Dictionary = {}
 var fails: Array[String] = []
@@ -60,6 +61,22 @@ func run(_main: Node) -> void:
 	check("visible_potion_policy_uses_hud_health_and_stock", PlayerBrain.should_use_visible_potion(parsed_status, 1, 0.68))
 	check("visible_potion_policy_respects_reserve", not PlayerBrain.should_use_visible_potion(parsed_status, 3, 0.68))
 	check("visible_potion_policy_does_not_guess_missing_hud_values", not PlayerBrain.should_use_visible_potion({"health_ratio": -1.0, "potions": -1}, 0, 0.68))
+	var visual_candidates: Array = [
+		{"kind": "enemy", "confidence": 0.91, "rect": [0.2, 0.3, 0.1, 0.2]},
+		{"kind": "boss", "confidence": 0.88, "rect": [0.7, 0.3, 0.2, 0.3]},
+		{"kind": "telegraph", "confidence": 0.94, "rect": [0.45, 0.4, 0.2, 0.2]},
+		{"kind": "projectile", "confidence": 0.2, "rect": [0.4, 0.4, 0.03, 0.03]},
+		{"kind": "unknown", "confidence": 0.99, "rect": [0.1, 0.1, 0.2, 0.2]}
+	]
+	var visual_detections := PlayerVisualPerception.normalize_detections(visual_candidates, Vector2i(1600, 720))
+	check("visual_perception_rejects_low_confidence_and_unknown_classes", visual_detections.size() == 3)
+	check("visual_brain_selects_nearest_confident_target", str(PlayerBrain.select_visual_target(visual_detections, Vector2(0.5, 0.5)).get("kind", "")) == "enemy")
+	check("visual_brain_prefers_visible_boss_when_encounter_policy_requests_it", str(PlayerBrain.select_visual_target(visual_detections, Vector2(0.5, 0.5), true).get("kind", "")) == "boss")
+	var evade := PlayerBrain.visible_evasion_vector(visual_detections, Vector2(0.5, 0.5))
+	check("visual_brain_evades_away_from_visible_telegraph", evade.length() > 0.99 and evade.x < 0.0)
+	check("visual_brain_does_not_evade_on_low_confidence_threat", PlayerBrain.visible_evasion_vector([{"kind":"projectile","confidence":0.2,"center":Vector2(0.4,0.4)}], Vector2(0.5,0.5)) == Vector2.ZERO)
+	check("visual_perception_rejects_invalid_frame_dimensions", PlayerVisualPerception.normalize_detections(visual_candidates, Vector2i.ZERO).is_empty())
+
 	var brain_source := FileAccess.get_file_as_string("res://tests/player_brain.gd")
 	var observer_source := FileAccess.get_file_as_string("res://tests/player_observation.gd")
 	check("player_brain_has_no_game_state_or_world_queries",
