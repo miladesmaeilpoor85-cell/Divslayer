@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Enforce quality-first, lossless Godot imports for this 2D game's artwork."""
 from __future__ import annotations
 
