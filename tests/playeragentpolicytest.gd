@@ -51,7 +51,7 @@ func run(_main: Node) -> void:
 		not observer_source.contains("Game.") and not observer_source.contains("get_nodes_in_group")
 		and not observer_source.contains("quest_target"))
 	var test_layer := CanvasLayer.new()
-	_main.get_tree().root.add_child(test_layer)
+	add_child(test_layer)
 	var screen_button := Button.new()
 	screen_button.text = "PLAYER_OBSERVATION_VISIBLE_SENTINEL"
 	screen_button.position = Vector2(32, 32)
@@ -63,7 +63,7 @@ func run(_main: Node) -> void:
 	hidden_button.size = Vector2(240, 42)
 	hidden_button.visible = false
 	test_layer.add_child(hidden_button)
-	var captured_screen := PlayerObservation.capture(_main.get_tree().root, _main.get_viewport())
+	var captured_screen := PlayerObservation.capture(self, _main.get_viewport())
 	var saw_visible := false
 	var saw_hidden := false
 	for item in captured_screen.get("buttons", []):
