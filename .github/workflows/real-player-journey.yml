@@ -166,6 +166,8 @@ jobs:
           assert "pickup route unexpectedly changed map" in agent_source, "Pickup movement must fail if it leaves the intended map"
           assert "PLAYER_AGENT_OBJECTIVE_BOSS type=%s defeated=%s" in agent_source, "Dynamic objective boss fights must report observed defeat state"
           assert "static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:" in agent_source, "Route combat must have a bounded nearby-threat policy"
+          assert "static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, margin: float = 140.0) -> bool:" in agent_source, "Route combat must not chase enemies through a nearby map exit"
+          assert "PLAYER_AGENT_ROUTE_THREATS_DEFERRED_NEAR_EXIT" in agent_source, "Deferred exit-adjacent threats must be recorded as evidence"
           assert 'func _clear_route_threats(max_rounds := 4, radius := 420.0, excluded_type := "") -> Dictionary:' in agent_source, "The natural player must clear nearby threats before map travel while preserving the objective boss"
           assert "PLAYER_AGENT_ROUTE_THREAT" in agent_source and "PLAYER_AGENT_ROUTE_COMBAT" in agent_source, "Route combat must log observed nearby enemies and ordinary combat outcomes"
           assert "func prepare_route_supplies(minimum_potions := 2) -> String:" in agent_source, "The forge journey must prepare health supplies when stock is low"
