@@ -158,13 +158,13 @@ jobs:
           playtest_source = Path("tests/playtest.gd").read_text(encoding="utf-8")
           assert "func _fight_target_is_live(target: Variant)" in playtest_source, "Freed combat targets must be guarded before typed Node conversion"
           assert "var escape_dir := _avoid_exits(away.normalized())" in playtest_source, "Combat evasion must respect map exit boundaries"
-          assert "await stick(_avoid_exits(retreat))" in playtest_source, "Mage kiting must respect map exit boundaries"
+          assert "PlayerAgent.safe_evasion_direction(p.body_rect(), retreat, main.world.wall_rects)" in playtest_source and "await stick(_avoid_exits(safe_retreat))" in playtest_source, "Mage kiting must respect wall and map exit boundaries"
           assert "combat unexpectedly changed map from %s to %s" in playtest_source, "Combat must verify its final map boundary"
           assert "side=opposite_boss" in playtest_source, "The player must flank pillars so the game's own aim assist can select them"
           assert "PLAYER_AGENT_PILLAR_DAMAGED" in playtest_source, "Pillar attack results must be measured from actual HP changes"
           assert "PLAYER_AGENT_MAGE_EVASION" in playtest_source, "Mage must have a bounded close-range evasion policy"
           assert "potion_reserve := 1 if Game.cls == \"mage\" and focus_type == \"\"" in playtest_source, "Mage must preserve a health potion for the boss encounter"
-          assert "preferred_range = maxf(reach + 130.0, 210.0)" in playtest_source, "Mage must maintain a safer ranged boss distance"
+          assert "PlayerAgent.mage_boss_preferred_range()" in playtest_source and "PlayerAgent.mage_boss_retreat_distance()" in playtest_source, "Mage must maintain a safer ranged boss distance"
           assert "spell_interval_min := 1.0 if Game.cls == \"mage\" else 2.2" in playtest_source, "Mage must use its ranged spells at a useful cadence"
           agent_source = Path("tests/player_agent.gd").read_text(encoding="utf-8")
           assert "PLAYER_AGENT_PICKUP_SKIPPED_NEAR_EXIT" in agent_source, "Pickup scanning must skip loot in exit safety margins"

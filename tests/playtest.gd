@@ -909,64 +909,58 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		# campaign skirmishes preserve the imperfect 75% response of the original bot.
 		var away := _danger_away()
 		if away != Vector2.ZERO:
-			# A marked lane explicitly teaches a sideways roll; blocking it does not leave the
-			# damaging strip. Evade as soon as its 0.45 s warning is visible.
-			var lane_warning := last_danger_kind == "lane"
+			# Step clear of area telegraphs. Roll only when this class's own invulnerability
+			# frames will overlap impact; otherwise retain movement and guard at the last beat.
 			var must_evade := PlayerAgent.should_evade_boss_telegraph(last_danger_kind)
 			var parry_chance := 0.72 if Game.cls == "paladin" else (0.62 if Game.cls == "warrior" else 0.44)
 			var parry_attempt: bool = not must_evade and last_danger_eta <= 0.18 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
 			if must_evade:
-				# Step out as soon as the mark appears, then roll only when the class's
-				# actual i-frames can cover impact. A 0.45 s early roll expires on Mage.
 				var escape := PlayerAgent.safe_evasion_direction(p.body_rect(), away.normalized(), main.world.wall_rects)
-			var escape_dir := _avoid_exits(escape)
-			await stick(escape_dir)
-			var roll_ready := p.dodge_cd <= 0.0 and p.stamina >= 30.0
-			var dodge_window := PlayerAgent.boss_dodge_window(str(Game.cls))
-			if roll_ready and last_danger_eta <= dodge_window:
-				_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=roll eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
-					last_danger_kind, last_danger_eta, dodge_window, int(to.length()), p.stamina
-				])
-				await press("dodge")
-				dodges += 1
-			elif PlayerAgent.should_guard_boss_telegraph(last_danger_kind, last_danger_eta, roll_ready, p.stamina, p.guard_broken):
-				# At the impact beat, a shield is the fallback only when a roll cannot fire.
-				# This preserves a chance to parry instead of letting a depleted Mage tank it.
-				await stick(Vector2.ZERO)
-				var guard_hold := maxf(0.18, last_danger_eta + 0.04)
-				await press("block", guard_hold)
-				block_actions += 1
-				_log("PLAYER_AGENT_EMERGENCY_GUARD kind=%s eta=%.2f stamina=%.0f" % [
-					last_danger_kind, last_danger_eta, p.stamina
-				])
-				else:
-					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=step eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
-						last_danger_kind, last_danger_eta, dodge_window, int(to.length()), p.stamina
-					])
-					await wait(randf_range(0.10, 0.16))
-			elif parry_attempt:
-				await stick(Vector2.ZERO)
-				var parry_hold := maxf(0.22, last_danger_eta + 0.08)
-				await press("block", parry_hold)
-				block_actions += 1
-			elif to.length() <= 210.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0:
-				# Cones are narrow/front-loaded: a timed shield remains a valid response.
-				# If the parry window is already too close, hold through impact instead of
-				# tapping for 0.18 s and releasing before the attack lands.
-				await stick(Vector2.ZERO)
-				var shield_hold := maxf(0.18, last_danger_eta + 0.08)
-				await press("block", shield_hold)
-				block_actions += 1
-				_log("PLAYER_AGENT_BLOCK kind=%s eta=%.2f hold=%.2f" % [last_danger_kind, last_danger_eta, shield_hold])
-			else:
-				var escape_dir := _avoid_exits(away.normalized())
+				var escape_dir := _avoid_exits(escape)
 				await stick(escape_dir)
-				var dodge_window := PlayerAgent.boss_dodge_window(str(Game.cls))
-				if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and last_danger_eta <= dodge_window:
+				var roll_ready := p.dodge_cd <= 0.0 and p.stamina >= 30.0
+				var area_dodge_window := PlayerAgent.boss_dodge_window(str(Game.cls))
+				if roll_ready and last_danger_eta <= area_dodge_window:
+					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=roll eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
+						last_danger_kind, last_danger_eta, area_dodge_window, int(to.length()), p.stamina
+					])
 					await press("dodge")
 					dodges += 1
+				elif PlayerAgent.should_guard_boss_telegraph(last_danger_kind, last_danger_eta, roll_ready, p.stamina, p.guard_broken):
+					await stick(Vector2.ZERO)
+					var guard_hold := maxf(0.18, last_danger_eta + 0.04)
+					await press("block", guard_hold)
+					block_actions += 1
+					_log("PLAYER_AGENT_EMERGENCY_GUARD kind=%s eta=%.2f stamina=%.0f" % [
+						last_danger_kind, last_danger_eta, p.stamina
+					])
 				else:
-					await wait(randf_range(0.12, 0.22))
+					_log("PLAYER_AGENT_BOSS_EVADE kind=%s mode=step eta=%.2f window=%.2f distance=%d stamina=%.0f" % [
+						last_danger_kind, last_danger_eta, area_dodge_window, int(to.length()), p.stamina
+					])
+					await wait(randf_range(0.10, 0.16))
+			else:
+				if parry_attempt:
+					await stick(Vector2.ZERO)
+					var parry_hold := maxf(0.22, last_danger_eta + 0.08)
+					await press("block", parry_hold)
+					block_actions += 1
+				elif to.length() <= 210.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0:
+					# Cones are narrow/front-loaded: a timed shield remains a valid response.
+					await stick(Vector2.ZERO)
+					var shield_hold := maxf(0.18, last_danger_eta + 0.08)
+					await press("block", shield_hold)
+					block_actions += 1
+					_log("PLAYER_AGENT_BLOCK kind=%s eta=%.2f hold=%.2f" % [last_danger_kind, last_danger_eta, shield_hold])
+				else:
+					var escape_dir := _avoid_exits(away.normalized())
+					await stick(escape_dir)
+					var fallback_dodge_window := PlayerAgent.boss_dodge_window(str(Game.cls))
+					if p.dodge_cd <= 0.0 and p.stamina >= 30.0 and last_danger_eta <= fallback_dodge_window:
+						await press("dodge")
+						dodges += 1
+					else:
+						await wait(randf_range(0.12, 0.22))
 			# Do not let the normal attack branch below zero the joystick and cancel the
 			# escape movement in the very same frame as a boss telegraph.
 			await wait(0.1)
