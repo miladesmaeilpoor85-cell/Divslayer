@@ -289,9 +289,34 @@
     "map": "village",
     "brann_state": "anvil",
     "brann_key": true,
+    "objective_contains": "با زال صحبت کن",
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — Zal opens the Ashen Peaks route"
+  },
+  {
+    "do": "agent_objective",
+    "max_steps": 1,
+    "stop_after_interaction": true
+  },
+  {
+    "do": "assert_state",
+    "label": "zal_opens_ashen_peaks_for_pulad",
+    "map": "village",
+    "quest_index": 2,
+    "quest_status": "active",
+    "brann_state": "anvil",
+    "brann_key": true,
     "objective_contains": "پولادِ غندی",
     "player_alive": true,
     "game_unpaused": true
+  },
+  {
+    "do": "shot",
+    "name": "ch2_zal_opens_ashen_peaks"
   },
   {
     "do": "checkpoint",
