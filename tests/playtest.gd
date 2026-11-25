@@ -910,7 +910,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			# damaging strip. Evade as soon as its 0.45 s warning is visible.
 			var lane_warning := last_danger_kind == "lane"
 			var parry_chance := 0.72 if Game.cls == "paladin" else (0.62 if Game.cls == "warrior" else 0.44)
-			var parry_attempt: bool = not lane_warning and last_danger_eta <= 0.22 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
+			var parry_attempt: bool = not lane_warning and last_danger_eta <= 0.18 and to.length() <= 165.0 and p.guard_broken <= 0.0 and p.stamina >= 12.0 and randf() < parry_chance
 			if parry_attempt:
 				await stick(Vector2.ZERO)
 				var parry_hold := maxf(0.22, last_danger_eta + 0.08)
