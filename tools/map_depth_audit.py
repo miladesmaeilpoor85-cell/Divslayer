@@ -4,10 +4,13 @@
 def load_scripted_connections() -> list[dict]:
     """Load scripted map links separately from the region graph."""
     path = Path(__file__).resolve().parents[1] / "data" / "scripted_connections.json"
-    if not path.exists():
-        return []
+    if not path.is_file():
+        raise FileNotFoundError(f"Missing scripted connection sidecar: {path}")
     payload = json.loads(path.read_text(encoding="utf-8"))
-    return payload.get("scriptedConnections", [])
+    connections = payload.get("scriptedConnections")
+    if not isinstance(connections, list):
+        raise ValueError("scripted_connections.json must contain a scriptedConnections list")
+    return connections
 Map dimensions and base movement speed are layout diagnostics only. They are
 not estimates of campaign playtime; actual time is reported only from explicit
 map_visit records supplied by a manual or automated playtest.
