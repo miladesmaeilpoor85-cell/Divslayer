@@ -671,7 +671,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var hp_low := 1.0
 	# Mage keeps one health potion in reserve during ordinary encounters for the
 	# chapter boss. The boss encounter then uses the normal early-heal threshold.
-	var potion_threshold := 0.64 if Game.cls == "mage" and focus_type != "" else (0.42 if Game.cls == "mage" else (0.48 if focus_type != "" else 0.38))
+	var potion_threshold := 0.68 if focus_type == "anvilward" else (0.64 if Game.cls == "mage" and focus_type != "" else (0.42 if Game.cls == "mage" else (0.48 if focus_type != "" else 0.38)))
 	var potion_reserve := 1 if Game.cls == "mage" and focus_type == "" else 0
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
@@ -764,21 +764,24 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			if e.dead or e.world != main.world:
 				continue
 			var dd: float = e.center().distance_to(p.global_position + Vector2(0, -17))
+			# Keep the authored boss target even when it begins farther than the ordinary
+			# 650 px encounter scan. Otherwise a Rogue can clear every add and incorrectly
+			# conclude the arena is empty while Anvilward is still untouched.
+			if focus_type != "" and e.is_in_group("bosses") and str(e.type) == focus_type:
+				any_alive = true
+				if e.targetable():
+					focused_tgt = e
+				continue
 			if dd > 650.0:
 				continue
 			any_alive = true
 			if not e.targetable():
 				continue
-			# Boss samples pursue the named encounter instead of clearing the whole arena.
-			# The exception is an Ancient Wyrm wyrmling that closes within striking range.
-			if focus_type != "" and e.is_in_group("bosses") and str(e.type) == focus_type:
-				focused_tgt = e
-				continue
 			if not _clear_line(_feet(), e.global_position):
 				dd += 400.0          # behind a wall: a player picks another foe first
-			# The Ancient Wyrm's summoned wyrmlings are active threats, not background
-			# decoration. A real player clears one that closes to striking distance.
-			if focus_type == "ancientwyrm" and str(e.type) == "wyrmling" and dd <= 240.0 and dd < urgent_add_dist:
+			# Close Anvilward adds and the Ancient Wyrm's wyrmlings can interrupt the
+			# boss approach, so clear those immediate threats before returning to the focus.
+			if PlayerAgent.should_prioritize_focus_add(focus_type, str(e.type), e.is_in_group("bosses"), dd) and dd < urgent_add_dist:
 				urgent_add_tgt = e
 				urgent_add_dist = dd
 			if dd < bd:
@@ -789,6 +792,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			var add_id := urgent_add_tgt.get_instance_id()
 			if add_id != last_add_priority_id:
 				_log("PLAYER_AGENT_ADD_PRIORITY type=%s distance=%d" % [str(urgent_add_tgt.type), int(urgent_add_dist)])
+				if focus_type == "anvilward":
+					_log("PLAYER_AGENT_ANVILWARD_ADD_PRIORITY type=%s distance=%d" % [str(urgent_add_tgt.type), int(urgent_add_dist)])
 			last_add_priority_id = add_id
 		elif focused_tgt != null:
 			last_add_priority_id = 0
