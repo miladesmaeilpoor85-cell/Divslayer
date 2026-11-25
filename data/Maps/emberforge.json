@@ -131,27 +131,7 @@
     "enemySpawns": [
       {
         "type": "cinderhound",
-        "x": 200,
-        "y": 180
-      },
-      {
-        "type": "cinderhound",
-        "x": 280,
-        "y": 230
-      },
-      {
-        "type": "cinderhound",
         "x": 900,
-        "y": 200
-      },
-      {
-        "type": "cinderhound",
-        "x": 980,
-        "y": 250
-      },
-      {
-        "type": "moltencore",
-        "x": 520,
         "y": 200
       },
       {
@@ -160,39 +140,14 @@
         "y": 360
       },
       {
-        "type": "moltencore",
-        "x": 360,
-        "y": 220
-      },
-      {
-        "type": "bellowdrone",
-        "x": 500,
-        "y": 180
-      },
-      {
         "type": "bellowdrone",
         "x": 1120,
         "y": 520
       },
       {
-        "type": "bellowdrone",
-        "x": 1080,
-        "y": 240
-      },
-      {
-        "type": "slagbrute",
-        "x": 250,
-        "y": 200
-      },
-      {
         "type": "slagbrute",
         "x": 1170,
         "y": 650
-      },
-      {
-        "type": "slagbrute",
-        "x": 780,
-        "y": 250
       },
       {
         "type": "anvilward",
