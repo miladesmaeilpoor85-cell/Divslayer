@@ -177,8 +177,11 @@ jobs:
           assert 'await visit_shop("merchant", true)' in agent_source, "Expedition supplies must be purchased through the merchant UI"
           assert "PLAYER_AGENT_ROUTE_SUPPLIES_READY" in agent_source, "Expedition preparation must log the observed potion stock"
           assert 'current_map == "village" and target_map == "emberforge" and Game.brann_sync() == "anvil"' in agent_source, "Supply preparation must be scoped to the active Pulad expedition"
-          assert "var route_safety: Dictionary = await _clear_route_threats(4, 420.0)" in agent_source, "The agent must validate route safety before crossing map exits"
-          assert 'var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0, boss_type)' in agent_source, "Route combat must preserve the live objective boss for its own evidenced encounter"
+          assert "should_clear_route_threats_before_objective(current_map, target_map, str(target.get(\"kind\", \"\")))" in agent_source and "_clear_route_threats(4, 420.0)" in agent_source, "The agent must validate route safety on intermediate maps"
+          assert "static func should_clear_route_threats_before_objective(current_map: String, target_map: String, target_kind: String) -> bool:" in agent_source, "Boss arenas must not run generic route-threat sweeps before focused combat"
+          assert 'var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0, boss_type)' in agent_source, "Intermediate route combat must preserve the live objective boss"
+          assert "PLAYER_AGENT_BOSS_PRIORITY" in agent_source and "await driver.fight(fight_limit, 0.0, boss_type)" in agent_source, "Boss arenas must use focused live combat instead of nearest-threat sweeps"
+          assert "await driver.walk_to(boss.global_position, 45.0, 110.0)" not in agent_source, "The focused combat controller must approach the boss while handling active threats"
           game_source = Path("scripts/game.gd").read_text(encoding="utf-8")
           assert "func navigation_graph() -> Dictionary:" in game_source, "Navigation must include a copy of the currently open story gates"
           assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
