@@ -135,3 +135,26 @@ Keep the PR Draft until:
 5. The scope and limitations in the PR description match what the tests actually prove.
 
 Do not merge or label the agent "full game complete" until the V2/V3 completion rules are met.
+
+
+## Autonomy implementation update — 26 November 2026
+
+The first V2 foundation is separated into three responsibilities:
+
+- `player_observation.gd` collects only visible on-screen text and visible buttons within the viewport. It does not read `Game`, quests, enemy groups, health models, or world entities.
+- `player_brain.gd` is a pure choice policy that consumes those visible observations. It has no game-state, scene-tree, or world queries.
+- `player_agent.gd` uses that boundary for dialogue choice selection and death-screen recovery. QA-only post-action verification can still inspect the runtime to confirm whether the touch caused the expected transition.
+
+This is a first migration slice, not a claim that the agent is already an independent visual player. Combat targeting, health/resource decisions, telegraph interpretation, map routing, inventory/shop reasoning, and exploration still contain runtime/world reads and remain migration work. The current observer is an accessible-UI observer (visible controls/text), not image-recognition of arbitrary sprites or scenery.
+
+### Expanded non-merge gate
+
+PR #65 must remain Draft and unmerged until all of the following are true:
+
+1. Player decisions for navigation, quests, combat, resources, inventory, dialogue, recovery, and exploration are driven by visible observations and player memory—not hidden `Game`, enemy, or quest objects.
+2. All four classes complete fresh-save journeys through the currently implemented campaign slice using ordinary touch controls. Every required boss is actually defeated; the player returns to Jamshid, receives the real reward, and proceeds to the next unlocked objective. No preset, teleport, invulnerability, boss isolation, direct state mutation, or scripted victory may contribute to a pass.
+3. The agent demonstrates adaptive recovery: it changes strategy after repeated failures, handles death/rematch, blocked paths, interrupted dialogue, unavailable shops, and low resources, and can explain unresolved blockers with evidence.
+4. Evidence includes timestamped observations/actions, screenshots, map and optional-content coverage, purchases/equipment/skill decisions, deaths/retries, boss kill confirmations, and separate player/critic/QA reports for each class.
+5. The Godot CI, the four-class natural journey, all evidence-package checks, and human review of representative screenshots/logs pass on the same final head commit.
+
+Passing a narrow boss diagnostic, damaging a boss, reaching a map, or passing a scripted checkpoint is not equivalent to independent campaign completion. Any unvisited, inaccessible, or unverified content must remain explicitly labelled as such.
