@@ -163,8 +163,21 @@ jobs:
             exit 1
           fi
           if [[ "$status" -ne 0 ]]; then exit "$status"; fi
-          python3 tools/quality_first_audit.py
-          python3 tools/enforce_quality_first_imports.py --check
+
+          # Godot creates some image sidecars during its first import. Normalize
+          # those newly generated sidecars and re-import before the quality audit.
+          python3 tools/enforce_quality_first_imports.py 2>&1 | tee -a "$log_file"
+          set +e
+          "$RUNNER_TEMP/godot/godot" --headless --editor --path . --quit 2>&1 | tee -a "$log_file"
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$log_file"; then
+            echo "::error::Godot reported script parse/load errors during the Lossless re-import."
+            exit 1
+          fi
+          if [[ "$status" -ne 0 ]]; then exit "$status"; fi
+          python3 tools/quality_first_audit.py 2>&1 | tee -a "$log_file"
+          python3 tools/enforce_quality_first_imports.py --check 2>&1 | tee -a "$log_file"
 
       - name: Prepare the per-class touch scenario
         shell: bash
