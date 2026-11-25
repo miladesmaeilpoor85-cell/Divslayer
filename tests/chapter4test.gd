@@ -159,6 +159,11 @@ func run(m: Node) -> void:
 	# Enter the Alborz prototype; the map entry advances the quest and builds its wind controller and visual cues.
 	main.goto_map("alborz", Vector2(880, 1030))
 	await frames(10)
+	var wind_player: AudioStreamPlayer = Music.amb.get("wind")
+	check("alborz_uses_recorded_wind_ambience",
+		bool(Music._amb_want.get("wind", false)) and Music.amb_file.has("wind")
+		and wind_player != null and wind_player.stream is AudioStreamOggVorbis
+		and (wind_player.stream as AudioStreamOggVorbis).loop)
 	main.player.invuln = 99999.0
 	var w = main.world
 	check("alborz_world_builds", w.key == "alborz" and w.size == Vector2(1400, 1100), [w.key, w.size])
@@ -216,6 +221,7 @@ func run(m: Node) -> void:
 	# The report returns to Zal; the completed stage remains saved.
 	main.goto_map("village", Vector2(600, 300))
 	await frames(5)
+	check("wind_ambience_fades_after_leaving_high_altitude_region", not bool(Music._amb_want.get("wind", false)))
 	main.player.invuln = 99999.0
 	pages = await talk("elder")
 	check("zal_closes_the_rescue_chapter_and_unlocks_optional_hunt", pages >= 2 and C.step() == "done"
