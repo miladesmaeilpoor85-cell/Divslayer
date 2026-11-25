@@ -25,7 +25,11 @@ func run(_main: Node) -> void:
 	var wyrmhollow_case_relocated := false
 
 	for map_name in map_names:
-		var map_data: Dictionary = Game.map_data(map_name)
+		var map_record: Dictionary = Game.map_data(map_name)
+		var map_data: Dictionary = map_record.get("data", {})
+		if map_data.is_empty():
+			remaining_collisions.append("%s: map data is missing or empty" % map_name)
+			continue
 		probe.data = map_data
 		for spawn in map_data.get("enemySpawns", []):
 			var enemy_type := str(spawn.get("type", ""))
