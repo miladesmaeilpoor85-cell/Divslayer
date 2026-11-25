@@ -177,6 +177,9 @@ func _screen_observation() -> Dictionary:
 func visible_combat_status() -> Dictionary:
 	return PlayerBrain.read_visible_combat_status(_screen_observation())
 
+func visual_observation() -> Dictionary:
+	return _screen_observation().get("vision", {"valid": false, "warnings": []})
+
 func visible_visual_frame() -> Dictionary:
 	return PlayerVisualPerception.capture_frame(driver.get_viewport())
 
