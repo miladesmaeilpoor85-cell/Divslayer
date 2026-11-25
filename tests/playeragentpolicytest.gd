@@ -20,6 +20,15 @@ func run(_main: Node) -> void:
 	check("break_two_of_three_pillars", PlayerAgent.should_prioritize_grave_pillars(3))
 	check("break_three_of_four_pillars", PlayerAgent.should_prioritize_grave_pillars(4))
 	check("invalid_negative_count_is_not_a_target", not PlayerAgent.should_prioritize_grave_pillars(-1))
+
+	check("potion_is_used_when_below_threshold_and_ready", PlayerAgent.should_use_health_potion(55.0, 100.0, 2, 0, 3.0, 2.0, 0.68))
+	check("potion_reserve_is_never_spent", not PlayerAgent.should_use_health_potion(20.0, 100.0, 1, 1, 3.0, 2.0, 0.68))
+	check("potion_cooldown_prevents_rapid_reuse", not PlayerAgent.should_use_health_potion(20.0, 100.0, 3, 0, 3.0, 4.0, 0.68))
+	check("potion_is_not_wasted_above_health_threshold", not PlayerAgent.should_use_health_potion(80.0, 100.0, 3, 0, 3.0, 2.0, 0.68))
+	check("potion_is_not_used_without_stock", not PlayerAgent.should_use_health_potion(20.0, 100.0, 0, 0, 3.0, 2.0, 0.68))
+	check("potion_becomes_ready_at_cooldown_boundary", PlayerAgent.should_use_health_potion(20.0, 100.0, 2, 0, 4.0, 4.0, 0.68))
+	check("potion_cooldown_is_measured_from_current_fight_time", is_equal_approx(PlayerAgent.next_health_potion_time(3.0, 1.6), 4.6))
+
 	check("anvilward_close_adds_get_priority", PlayerAgent.should_prioritize_focus_add("anvilward", "slagbrute", false, 200.0))
 	check("anvilward_adds_outside_pressure_radius_are_not_chased", not PlayerAgent.should_prioritize_focus_add("anvilward", "moltencore", false, 260.0))
 	check("anvilward_itself_is_never_classified_as_an_add", not PlayerAgent.should_prioritize_focus_add("anvilward", "anvilward", true, 40.0))
