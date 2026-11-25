@@ -67,6 +67,7 @@ func _menu_backdrop() -> void:
 	menu_bg.atmos.calm = true
 	menu_bg.atmos.set_weather("")
 	Music.set_boss(false)
+	Music.ambience("wind", false)
 	Music.play_region("title")
 	var cam := Camera2D.new()
 	cam.position = Vector2(300, 330)
