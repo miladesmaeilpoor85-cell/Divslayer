@@ -790,26 +790,32 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			last_add_priority_id = 0
 			var pillar_target: Node = null
 			var pillar_distance := INF
-			# Arzhang's pillars absorb up to 45% of incoming damage. Treat the
-			# visible grave pillars as priority combat targets in later phases;
-			# destroy them with ordinary attacks rather than bypassing the mechanic.
+			var active_pillars := 0
+			# Arzhang's pillars each absorb 15% of incoming damage, up to 45%.
+			# Break the nearest pillars, but leave one standing: its small shield
+			# prevents another full wave from being summoned after the 17 s cooldown.
+			# A real player can then trade that 15% damage reduction for uninterrupted
+			# pressure on the boss instead of chasing a repeating set around the arena.
 			if focus_type == "boss" and int(focused_tgt.get("ph")) >= 2:
 				for pillar in get_tree().get_nodes_in_group("arena"):
 					if not _fight_target_is_live(pillar) or pillar.world != main.world or str(pillar.type) != "gravepillar":
 						continue
+					active_pillars += 1
 					var pillar_dist: float = pillar.center().distance_to(p.global_position + Vector2(0, -17))
 					if pillar_dist < pillar_distance:
 						pillar_distance = pillar_dist
 						pillar_target = pillar
-			if pillar_target != null:
+			if pillar_target != null and PlayerAgent.should_prioritize_grave_pillars(active_pillars):
 				tgt = pillar_target
 				var pillar_id := pillar_target.get_instance_id()
 				if pillar_id != last_pillar_priority_id:
-					_log("PLAYER_AGENT_PILLAR_PRIORITY type=gravepillar distance=%d hp=%d/%d" % [
-						int(pillar_distance), int(pillar_target.hp), int(pillar_target.max_hp)
+					_log("PLAYER_AGENT_PILLAR_PRIORITY type=gravepillar active=%d distance=%d hp=%d/%d" % [
+						active_pillars, int(pillar_distance), int(pillar_target.hp), int(pillar_target.max_hp)
 					])
 				last_pillar_priority_id = pillar_id
 			else:
+				if focus_type == "boss" and active_pillars == 1 and last_pillar_priority_id != 0:
+					_log("PLAYER_AGENT_PILLAR_POLICY remaining=1 action=engage_boss shield_reduction=15%")
 				tgt = focused_tgt
 				last_pillar_priority_id = 0
 		if tgt == null:

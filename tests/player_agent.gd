@@ -12,6 +12,11 @@ const TALENT_ORDER := {
 	"paladin": ["vit1", "swift", "str1"],
 }
 
+## Keep one Arzhang grave pillar alive once the shield is down to a single stack.
+## This leaves the boss at 15% damage reduction and stops its repeating 17-second summon cycle.
+static func should_prioritize_grave_pillars(active_pillars: int) -> bool:
+	return active_pillars > 1
+
 func attach(playtest_driver: Node) -> void:
 	driver = playtest_driver
 
