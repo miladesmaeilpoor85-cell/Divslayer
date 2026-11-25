@@ -178,14 +178,18 @@ jobs:
           assert "func navigation_graph() -> Dictionary:" in game_source, "Navigation must include a copy of the currently open story gates"
           assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
           assert "if brann_key():" in game_source, "The Emberforge route must remain gated until the Kindling Key is earned"
-          assert '["core", "anvil", "anvil_done", "ignarok", "ignarok_done"]' in game_source, "The HUD must display the active Pulad and Puladvand quest objectives"
-          assert 'if ["anvil", "ignarok"].has(brann_sync()):' in game_source, "Active Pulad/Puladvand boss contracts must preempt the next-chapter Elder objective"
+          objective_function_pos = game_source.index("func objective() -> String:")
+          objective_q1_pos = game_source.index('if q(1) == "active":', objective_function_pos)
+          objective_gate_pos = game_source.index('if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_stage):', objective_function_pos)
+          chapter2_intro_pos = game_source.index('if c2o != "" and Ch2.step() == "":', objective_function_pos)
+          objective_brann_pos = game_source.index('if bo != "" and ["anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann_stage):', objective_function_pos)
+          assert objective_q1_pos < objective_gate_pos < chapter2_intro_pos < objective_brann_pos, "HUD priorities must preserve Q1, Zal's Q2 gate, Chapter II introduction, then the active forge contract"
           target_function_pos = game_source.index("func quest_target() -> Dictionary:")
-          gate_priority_pos = game_source.index('if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_sync()):', target_function_pos)
-          priority_pos = game_source.index('if ["anvil", "ignarok"].has(brann_sync()):', target_function_pos)
-          assert gate_priority_pos < priority_pos, "The unopened Peaks story gate must route the player to Zal before the Jamshid boss"
-          elder_fallback_pos = game_source.index('if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":', priority_pos)
-          assert priority_pos < elder_fallback_pos, "The Jamshid boss priority must precede legacy chapter routing after Zal opens Q2"
+          target_q1_pos = game_source.index('if q(1) == "active":', target_function_pos)
+          gate_priority_pos = game_source.index('if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_stage):', target_function_pos)
+          chapter2_target_pos = game_source.index('if Ch2.open() and Ch2.step() == "":', target_function_pos)
+          target_brann_pos = game_source.index('if ["anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann_stage):', target_function_pos)
+          assert target_q1_pos < gate_priority_pos < chapter2_target_pos < target_brann_pos, "Compass priorities must preserve Q1, Zal's story gate, Chapter II introduction, then the active forge contract"
           world_source = Path("scripts/world.gd").read_text(encoding="utf-8")
           assert 'data = md.get("data", {}).duplicate()' in world_source, "Per-world exit data must be isolated from cached map resources"
           assert "dynamic_exits.append(emberforge_exit)" in world_source, "The Kindling door must be visible to local touch navigation"
