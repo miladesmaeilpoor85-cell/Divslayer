@@ -1168,37 +1168,62 @@ func _clear_line(a: Vector2, b: Vector2) -> bool:
 				return false
 	return true
 
-## a fighter does not walk out of the fight: steer along an exit's mouth, not into it
+## A fighter must not enter a portal while navigating or fighting. Treat each
+## non-target exit as a hard boundary and remove movement toward its safe zone.
 func _avoid_exits(dir: Vector2, intended_exit := "") -> Vector2:
 	var f := _feet()
 	for e in main.world.data.get("exits", []):
 		# A route may intentionally enter its selected exit. Every other portal is
-		# treated as a hard navigation boundary for combat and local exploration.
+		# protected during combat and local exploration.
 		if intended_exit != "" and str(e.get("to", "")) == intended_exit:
 			continue
 		var authored := Rect2(float(e["x"]), float(e["y"]), float(e["w"]), float(e["h"]))
-		var r := authored.grow(52.0)
-		var inside_buffer := r.has_point(f)
+		var safe_rect := authored.grow(52.0)
+		var inside_buffer := safe_rect.has_point(f)
 		var approaching_exit := inside_buffer
 		if not approaching_exit:
 			for distance in [24.0, 48.0, 72.0, 96.0]:
-				if r.has_point(f + dir * distance):
+				if safe_rect.has_point(f + dir * distance):
 					approaching_exit = true
 					break
 		if not approaching_exit:
 			continue
 
-		# Push away from the map edge along the portal's narrow axis. A weighted
-		# radial repulsion could still leave enough forward movement to cross a
-		# gate when a target stood directly beyond it (observed in the forest).
+		# Find the side of the portal from the player's actual position. Exit
+		# rectangles are not guaranteed to be aligned with the edge they occupy:
+		# the Sunken Crypt's west-side Shrine of Weight entrance is a horizontal
+		# strip, so deriving its escape direction from rectangle width/height is
+		# wrong and can leave a component of movement into the portal.
 		var outward := Vector2.ZERO
-		if authored.size.x >= authored.size.y:
-			outward = Vector2.DOWN if authored.get_center().y < main.world.size.y * 0.5 else Vector2.UP
+		if inside_buffer:
+			var edge_distances := [
+				{"distance": absf(f.x - safe_rect.position.x), "direction": Vector2.LEFT},
+				{"distance": absf(safe_rect.end.x - f.x), "direction": Vector2.RIGHT},
+				{"distance": absf(f.y - safe_rect.position.y), "direction": Vector2.UP},
+				{"distance": absf(safe_rect.end.y - f.y), "direction": Vector2.DOWN}
+			]
+			var nearest_distance := INF
+			for edge in edge_distances:
+				if float(edge["distance"]) < nearest_distance:
+					nearest_distance = float(edge["distance"])
+					outward = edge["direction"]
 		else:
-			outward = Vector2.RIGHT if authored.get_center().x < main.world.size.x * 0.5 else Vector2.LEFT
+			var nearest_point := Vector2(
+				clampf(f.x, safe_rect.position.x, safe_rect.end.x),
+				clampf(f.y, safe_rect.position.y, safe_rect.end.y)
+			)
+			outward = (f - nearest_point).normalized()
+		if outward.length_squared() < 0.5:
+			return dir
 		if inside_buffer:
 			return outward
-		return (dir + outward * 3.5).normalized()
+
+		# Outside the buffer, slide along its boundary and add a small outward
+		# bias. Merely adding a weighted repulsion preserved enough forward input
+		# to enter the trigger on long approaches and combat-flank detours.
+		var inward_component := minf(dir.dot(outward), 0.0)
+		var tangent := dir - outward * inward_component
+		return (tangent + outward * 0.35).normalized()
 	return dir
 
 # ---------------------------------------------------------------- one step
