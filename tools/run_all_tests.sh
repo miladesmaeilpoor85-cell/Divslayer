@@ -39,7 +39,7 @@ for t in windgusttest spawntest quittest achtest rushtest audiotest shrinetest c
   if (( current_index % shard_count != shard_index )); then
     continue
   fi
-  r=$(run_godot -- --test "res://tests/$t.gd")
+  r=$(run_godot -- --test "res://tests/$t.gd" 2>&1)
   status=$?
   passes=$(printf '%s\n' "$r" | grep -cE '^PASS' || true)
   fails=$(printf '%s\n' "$r" | grep -cE '^FAIL' || true)
