@@ -173,12 +173,10 @@ A second migration slice now reads the visible HUD resource presentation:
 This does **not** complete combat autonomy. Enemy identification, target selection, spacing, attack telegraphs/projectiles, dodge/block timing, class-specific offensive choices, stamina/mana expenditure, and combat recovery still need a player-observation path. Route threat scans and objective routing still read world/enemy/quest runtime data and remain explicitly out of bounds for the final independent-player acceptance gate.
 
 
-### Screenshot perception foundation — 26 November 2026
+### Sprite template matching foundation — 26 November 2026
 
-- Added `tests/player_vision.gd`, which reads pixels from the rendered viewport image and emits conservative warm/cold colour bounding-region candidates. It does not query enemy nodes, world coordinates, boss state, or quest state.
-- `player_observation.gd` now attaches that screenshot-derived candidate output to its observation; `player_agent.gd` exposes it through `visual_observation()`.
-- `player_brain.gd` now has pure policy functions for selecting a target from already-classified, confidence-scored actor detections (boss first, then nearest enemy) and choosing an escape vector from a visible warning rectangle. Low-confidence and unknown detections are refused.
-- Regression tests cover target confidence, boss priority, unknown labels, and conservative dodge behavior.
-- Fixed a Godot parse failure in the combat potion observation by explicitly typing the returned dictionaries.
+- Added a pixel-template matcher to `tests/player_visual_perception.gd`. It compares a supplied cropped Sprite image against the captured viewport image, ignores transparent template pixels, reports normalized screen-space bounds and confidence, and rejects weak/ambiguous matches through a configurable threshold.
+- The matcher accepts templates labelled as player, enemy, boss, telegraph, or projectile and feeds results through the existing strict normalized detection contract.
+- Added synthetic image regression coverage for exact match localization, normalized bounds, and threshold rejection.
 
-**Not yet implemented:** the current pixel pass only returns broad colour candidates. It does not yet localize or classify the player, ordinary enemies, or bosses; it does not separate multiple warning shapes into individual detections; and it does not produce a validated player bounding box. Therefore the new target/dodge policies are not yet wired into live combat and must not be treated as vision-autonomous play. The existing hidden-state target/telegraph controller remains a blocker. Next work is sprite/template or trained visual detection calibrated against real captured frames, per-object tracking, then a controlled live-combat migration with screenshot-backed tests.
+**Important boundary:** this commit implements the pixel matcher, not automatic extraction/registration of the game's live SpriteFrames. Templates must still be cropped from the actual atlas/frame and scaled to their rendered viewport size. No real boss screenshot has yet been evaluated, and the matcher is not wired into the live fight loop. Therefore it is not yet a real-sprite boss detector and must not drive live target or dodge actions. Next step: extract frame templates from `Sheets.enemy(...)` and the selected hero sheet, calibrate against actual boss-fight screenshots, add precision/recall evidence, then enable the visual policy behind a fail-closed feature flag in the combat loop.
