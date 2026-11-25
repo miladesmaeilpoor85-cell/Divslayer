@@ -260,6 +260,7 @@ jobs:
             build/android/Divslayer-QA.apk.sha256
             build/android/apk-badging.txt
             build/android/emulator-logcat.txt
+            build/android/emulator-activity.txt
             build/android/emulator-launch.png
           if-no-files-found: warn
           retention-days: 14

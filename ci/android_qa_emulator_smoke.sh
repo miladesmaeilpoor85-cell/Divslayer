@@ -16,6 +16,24 @@ app_is_foreground() {
   grep -E 'topResumedActivity|ResumedActivity' <<< "$activity_state" | grep -F 'com.example.divslayer.qa/' >/dev/null
 }
 
+## The emulator launcher can become ANR while installing/updating its own app index.
+## Do not misclassify that system process as a Divslayer hang: require the app to remain
+## resumed, the focused app to remain Divslayer, and the ANR window to name only Nexus Launcher.
+system_launcher_anr_only() {
+  local activity_state current_focus focused_app current_log
+  activity_state="$(timeout 20s adb shell dumpsys activity activities 2>/dev/null | tr -d '\r' || true)"
+  current_focus="$(grep -F 'mCurrentFocus=' <<< "$activity_state" | tail -1 || true)"
+  focused_app="$(grep -F 'mFocusedApp=' <<< "$activity_state" | tail -1 || true)"
+  current_log="$(timeout 20s adb logcat -d -v time 2>/dev/null || true)"
+  [[ "$current_focus" == *'Application Not Responding: com.google.android.apps.nexuslauncher'* ]] || return 1
+  [[ "$focused_app" == *'com.example.divslayer.qa/'* ]] || return 1
+  app_is_foreground || return 1
+  if grep -E 'ANR in com\.example\.divslayer\.qa|Application Not Responding: com\.example\.divslayer\.qa|FATAL EXCEPTION.*com\.example\.divslayer\.qa|Fatal signal' <<< "$current_log"; then
+    return 1
+  fi
+  return 0
+}
+
 godot_setup_completed() {
   local current_log
   current_log="$(timeout 20s adb logcat -d -v brief 2>/dev/null || true)"
@@ -123,8 +141,14 @@ case "$action" in
     sleep 8
     dump_ui
     if grep -Eiq "not responding|isn't responding" build/android/emulator-window.xml; then
-      echo "::error::The emulator system ANR dialog remained after selecting Wait."
-      exit 1
+      if system_launcher_anr_only; then
+        echo "::warning::Nexus Launcher still shows its own ANR dialog, but Divslayer remains the resumed foreground app and has no app-specific ANR or fatal error."
+        timeout 30s adb shell dumpsys activity activities > build/android/emulator-activity.txt
+        timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt
+      else
+        echo "::error::An ANR dialog remained and could not be isolated to the Android launcher; Divslayer foreground/runtime health is not verified."
+        exit 1
+      fi
     fi
     ;;
   *)
