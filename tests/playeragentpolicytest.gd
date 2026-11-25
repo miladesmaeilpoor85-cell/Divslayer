@@ -107,8 +107,10 @@ func run(_main: Node) -> void:
 		PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 798), forge_exit))
 	check("enemy_inside_forge_exit_safety_margin_is_deferred",
 		PlayerAgent.should_skip_route_threat_near_exit(Vector2(700, 798), forge_exit))
+	check("peaks_imp_spawn_path_is_deferred_from_forge_exit",
+		PlayerAgent.should_skip_route_threat_near_exit(Vector2(360, 620), forge_exit))
 	check("enemy_outside_forge_exit_safety_margin_remains_engageable",
-		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 960), forge_exit))
+		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 1000), forge_exit))
 	check("empty_exit_list_does_not_hide_route_threats",
 		not PlayerAgent.should_skip_route_threat_near_exit(Vector2(575, 798), []))
 	print("PLAYERAGENTPOLICYTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
