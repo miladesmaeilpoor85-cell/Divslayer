@@ -14,7 +14,7 @@ class MapDepthAuditTests(unittest.TestCase):
         (root / "data/Maps").mkdir(parents=True)
         (root / "data/Tables").mkdir(parents=True)
         graph = {
-            "village": {"w": 900, "h": 650, "exits": [{"to": "shrine_echoes"}], "bosses": {}},
+            "village": {"w": 900, "h": 650, "exits": [], "bosses": {}},
             "shrine_echoes": {"w": 680, "h": 520, "exits": [{"to": "village"}], "bosses": {}},
             "scriptedConnections": [
                 {"from": "village", "to": "shrine_echoes", "via": "test gate", "condition": "test"}
