@@ -956,28 +956,41 @@ func boss_defeated(type: String) -> String:
 func objective() -> String:
 	if not rush.is_empty():
 		return Rush.objective()
-	var tut := Tut.objective()          # (v0.24) Rostam's training, while it is offered or under way
+	var tut := Tut.objective()          # (v0.24) Rostam's training, while the training is offered or under way
 	if tut != "":
 		return tut
 	# Chapter IV owns the objective as soon as Chapter III is complete, before the old reward fallback.
 	var c4o: String = Ch4.objective()
 	if c4o != "":
 		return c4o
-	# (v0.24, playtest: after Arzhang the compass sent the hero to Jamshid first) Zal's reward and the tale lead
+	# Zal's unclaimed rewards and the tale lead.
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
 		return t("Return to Zal", "نزد زال برگرد")
-	# The eastern Peaks route stays sealed until Zal starts Q2, even after Jamshid grants the key.
-	if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_sync()):
-		return t("Speak with Zal", "با زال صحبت کن")
+
+	var brann_stage := brann_sync()
 	var bo := brann_objective()
-	if bo != "" and ["core", "anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann()):
+	# The Warden Core is a direct turn-in from Arzhang; keep the original reward path intact.
+	if brann_stage == "core":
 		return bo
+
+	# An active first quest must not be displaced by Jamshid's optional forge contract.
 	if q(1) == "not_started":
 		return t("Speak with Zal in the village", "با زال در دهکده صحبت کن")
 	if q(1) == "active":
 		return _q1_objective()
-	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
-		return t("Return to Zal", "نزد زال برگرد")
+
+	# The Kindling Key does not open the eastern Peaks route until Zal starts Q2.
+	if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_stage):
+		return t("Speak with Zal", "با زال صحبت کن")
+
+	# Once Zal's three first-chapter quests are done, begin Chapter II before returning to side contracts.
+	var c2o: String = Ch2.objective()
+	if c2o != "" and Ch2.step() == "":
+		return c2o
+
+	# After Q2 is active, the opened forge contract can lead the journey to Pulad.
+	if bo != "" and ["anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann_stage):
+		return bo
 	if q(2) == "not_started":
 		return t("Speak with Zal", "با زال صحبت کن")
 	if q(2) == "active":
@@ -986,7 +999,6 @@ func objective() -> String:
 		return t("Speak with Zal", "با زال صحبت کن")
 	if q(3) == "active":
 		return t("Hunt the Sorceress's echo in the Shadowfen (west of the peaks)", "پژواکِ زنِ جادو را در مردابِ سایه شکار کن (غربِ قله‌ها)")
-	var c2o: String = Ch2.objective()
 	if c2o != "":
 		return c2o
 	# (v0.23) chapter 3 under way leads; its first nudge ("speak with Kaveh") waits behind a side quest in progress
@@ -1676,20 +1688,33 @@ func quest_target() -> Dictionary:
 		return c4t
 	var g := world_graph()
 	var elder := {"map": "village", "pos": _v(g.get("village", {}).get("npcs", {}).get("elder", [443, 334])), "kind": "npc"}
-	# The Kindling Key does not bypass Zal's story gate: Q2 must be started before the Peaks exit opens.
-	if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_sync()):
-		return elder
-	# Once Zal opens the eastern route, the active Jamshid contract again targets its real boss encounter.
-	if ["anvil", "ignarok"].has(brann_sync()):
-		return brann_target()
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
-		return elder            # (v0.24) as the objective: Zal's reward first
-	if ["core", "anvil_done", "ignarok_done"].has(brann_sync()):
+		return elder            # Zal's unclaimed reward leads first
+
+	var brann_stage := brann_sync()
+	# Arzhang's Warden Core is a direct turn-in; keep this path for older and early-kill saves.
+	if brann_stage == "core":
 		return brann_target()
-	if q(1) == "not_started" or q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
-		return elder
+
+	# The first Elder quest and its boss must keep priority over the optional forge contract.
 	if q(1) == "active":
 		return _q1_target(g)
+
+	# The Kindling Key does not bypass Zal's story gate: Q2 must be started before the Peaks exit opens.
+	if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_stage):
+		return elder
+
+	# With Zal's three opening quests complete, Chapter II's introduction is the next story beat.
+	if Ch2.open() and Ch2.step() == "":
+		var chapter2_intro_target: Dictionary = Ch2.target()
+		if not chapter2_intro_target.is_empty():
+			return chapter2_intro_target
+
+	# Once Q2 has opened the eastern route, the active Jamshid contract targets its real boss/turn-in.
+	if ["anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann_stage):
+		return brann_target()
+	if q(1) == "not_started":
+		return elder
 	if q(2) == "not_started":
 		return elder
 	if q(2) == "active":
