@@ -164,6 +164,10 @@ jobs:
           assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
           assert "if brann_key():" in game_source, "The Emberforge route must remain gated until the Kindling Key is earned"
           assert '["core", "anvil", "anvil_done", "ignarok", "ignarok_done"]' in game_source, "The HUD must display the active Pulad and Puladvand quest objectives"
+          assert 'if ["anvil", "ignarok"].has(brann_sync()):' in game_source, "Active Pulad/Puladvand boss contracts must preempt the next-chapter Elder objective"
+          priority_pos = game_source.index('if ["anvil", "ignarok"].has(brann_sync()):')
+          elder_fallback_pos = game_source.index('if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":', priority_pos)
+          assert priority_pos < elder_fallback_pos, "The Jamshid boss priority must precede legacy chapter objective routing"
           world_source = Path("scripts/world.gd").read_text(encoding="utf-8")
           assert 'data = md.get("data", {}).duplicate()' in world_source, "Per-world exit data must be isolated from cached map resources"
           assert "dynamic_exits.append(emberforge_exit)" in world_source, "The Kindling door must be visible to local touch navigation"

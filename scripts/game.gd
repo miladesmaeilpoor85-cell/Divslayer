@@ -1673,6 +1673,10 @@ func quest_target() -> Dictionary:
 		return c4t
 	var g := world_graph()
 	var elder := {"map": "village", "pos": _v(g.get("village", {}).get("npcs", {}).get("elder", [443, 334])), "kind": "npc"}
+	# An active Jamshid forge contract must outrank the next-chapter Elder nudge.
+	# The Kindling Key changes the objective from a village interaction to a real boss encounter.
+	if ["anvil", "ignarok"].has(brann_sync()):
+		return brann_target()
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
 		return elder            # (v0.24) as the objective: Zal's reward first
 	if ["core", "anvil_done", "ignarok_done"].has(brann_sync()):

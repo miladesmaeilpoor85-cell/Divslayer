@@ -41,5 +41,46 @@ func run(_main: Node) -> void:
 		Game.state["defeated"] = saved_defeated
 	else:
 		Game.state.erase("defeated")
+
+	var saved_q1: Variant = Game.state.get("q1", null)
+	var had_q1 := Game.state.has("q1")
+	var saved_q2: Variant = Game.state.get("q2", null)
+	var had_q2 := Game.state.has("q2")
+	var saved_q3: Variant = Game.state.get("q3", null)
+	var had_q3 := Game.state.has("q3")
+	Game.state["q1"] = "done"
+	Game.state["q2"] = "not_started"
+	Game.state["q3"] = "not_started"
+	Game.state["defeated"] = {}
+	Game.state["brann"] = "anvil"
+	var pulad_target: Dictionary = Game.quest_target()
+	check("active_pulad_contract_preempts_next_chapter_elder_target",
+		str(pulad_target.get("map", "")) == "emberforge"
+		and str(pulad_target.get("kind", "")) == "boss")
+	Game.state["brann"] = "ignarok"
+	var puladvand_target: Dictionary = Game.quest_target()
+	check("active_puladvand_contract_preempts_next_chapter_elder_target",
+		str(puladvand_target.get("map", "")) == "emberforge"
+		and str(puladvand_target.get("kind", "")) == "boss")
+	if had_q1:
+		Game.state["q1"] = saved_q1
+	else:
+		Game.state.erase("q1")
+	if had_q2:
+		Game.state["q2"] = saved_q2
+	else:
+		Game.state.erase("q2")
+	if had_q3:
+		Game.state["q3"] = saved_q3
+	else:
+		Game.state.erase("q3")
+	if had_brann:
+		Game.state["brann"] = saved_brann
+	else:
+		Game.state.erase("brann")
+	if had_defeated:
+		Game.state["defeated"] = saved_defeated
+	else:
+		Game.state.erase("defeated")
 	print("PLAYERAGENTPOLICYTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit()
