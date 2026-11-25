@@ -160,6 +160,7 @@ func goto_map(key: String, feet: Vector2) -> void:
 	hud.refresh()
 	Music.set_boss(false)
 	Music.play_region(key)
+	Music.ambience("wind", key == "alborz" or key == "alborz_eyrie")
 	switching = false
 	if not hud.shop.bought.is_connected(player.refresh_look):
 		hud.shop.bought.connect(player.refresh_look)
