@@ -602,6 +602,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var seen := {}
 	var next_shot := shots_every
 	var spell_t := 2.0
+	var spell2_t := 2.0
 	var pots := 0
 	var dodges := 0
 	var blocks := 0
@@ -611,6 +612,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var potion_threshold := 0.55 if focus_type != "" else 0.35
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
+	var sigs0: int = p.sig_uses
+	var casts0: int = p.caster.casts
 	var boss_hp_before := {}
 	var focus_present_before := false
 	var focus_hp_before := 100.0
@@ -752,8 +755,20 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		if spell_t <= 0.0 and to.length() < 260.0:
 			spell_t = 3.5
 			await press("skill1")
+		# Use the full touch combat kit in focused boss tests: the second bound spell,
+		# the class signature (ward/lasso/arrow/fire), and the ultimate as soon as ready.
+		# This keeps class survival tests from measuring an attack-only bot.
+		if focus_type != "" and to.length() < 330.0:
+			spell2_t -= 0.1
+			if spell2_t <= 0.0:
+				spell2_t = 4.0
+				var bound_spells: Array = Game.slots()
+				if bound_spells.size() > 1 and p.caster.block(str(bound_spells[1])) == "":
+					await press("skill2")
 			if p.caster.ult_ready():
 				await press("ult")
+			if p.shove_cd <= 0.0 and p.stamina >= float(Game.Skills.sig().get("sta", 0.0)):
+				await press("shove")
 		await wait(0.1)
 		t += 0.1
 		next_shot -= 0.1
@@ -803,8 +818,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		detail += " · bosses " + ", ".join(boss_report)
 	if not arena_report.is_empty():
 		detail += " · arena " + ", ".join(arena_report)
-	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · guards %d · swings %d, hits %d%s" % [ended, t, kills,
-		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, blocks, p.swings - swings0, p.hits_landed - hits0, detail]
+	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · guards %d · signatures %d · spells %d · swings %d, hits %d%s" % [ended, t, kills,
+		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, blocks, p.sig_uses - sigs0, p.caster.casts - casts0, p.swings - swings0, p.hits_landed - hits0, detail]
 
 ## the way out of the nearest marked attack that is about to land on the hero (Vector2.ZERO: nothing to dodge)
 
