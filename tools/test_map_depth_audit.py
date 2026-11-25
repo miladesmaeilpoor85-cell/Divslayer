@@ -16,6 +16,9 @@ class MapDepthAuditTests(unittest.TestCase):
         graph = {
             "village": {"w": 900, "h": 650, "exits": [{"to": "shrine_echoes"}], "bosses": {}},
             "shrine_echoes": {"w": 680, "h": 520, "exits": [{"to": "village"}], "bosses": {}},
+            "scriptedConnections": [
+                {"from": "village", "to": "shrine_echoes", "via": "test gate", "condition": "test"}
+            ],
         }
         (root / "data/world_graph.json").write_text(json.dumps(graph), encoding="utf-8")
         (root / "data/Tables/CLASSES.json").write_text(
@@ -46,7 +49,9 @@ class MapDepthAuditTests(unittest.TestCase):
             report = build_report(root)
             self.assertEqual(report["summary"]["map_count"], 2)
             self.assertEqual(report["summary"]["shrine_count"], 1)
-            self.assertEqual(report["summary"]["reachable_from_village_count"], 2)
+            self.assertEqual(report["summary"]["reachable_by_static_exits_count"], 1)
+            self.assertEqual(report["summary"]["reachable_with_declared_scripted_gates_count"], 2)
+            self.assertEqual(report["summary"]["unreachable_after_declared_scripted_gates"], [])
             self.assertEqual(report["actual_playtime"]["status"], "not_measured")
             self.assertIsNone(report["actual_playtime"]["total_seconds"])
             village = next(item for item in report["maps"] if item["key"] == "village")
