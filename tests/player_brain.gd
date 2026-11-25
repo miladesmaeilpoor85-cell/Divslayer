@@ -72,3 +72,50 @@ static func should_use_visible_potion(status: Dictionary, reserve: int, threshol
 	var hp := float(status.get("health_ratio", -1.0))
 	var stock := int(status.get("potions", -1))
 	return hp >= 0.0 and stock > maxi(0, reserve) and hp <= clampf(threshold, 0.05, 0.95)
+
+## Select only from semantically classified image detections; unknown candidates are ignored.
+static func choose_visual_target(actors: Array) -> int:
+	var boss_index := -1
+	var boss_distance := INF
+	var enemy_index := -1
+	var enemy_distance := INF
+	for index in actors.size():
+		var actor: Variant = actors[index]
+		if typeof(actor) != TYPE_DICTIONARY or not bool(actor.get("visible", false)):
+			continue
+		var label := str(actor.get("label", "unknown"))
+		var confidence := float(actor.get("confidence", 0.0))
+		var distance := float(actor.get("distance", INF))
+		if confidence < 0.65 or distance < 0.0:
+			continue
+		if label == "boss" and distance < boss_distance:
+			boss_index = index
+			boss_distance = distance
+		elif label == "enemy" and distance < enemy_distance:
+			enemy_index = index
+			enemy_distance = distance
+	return boss_index if boss_index >= 0 else enemy_index
+
+## Return a screen-space escape direction only when both player bounds and a
+## sufficiently confident warning region are available.
+static func visual_dodge_direction(player_rect: Rect2, warnings: Array, confidence_floor := 0.65) -> Vector2:
+	if player_rect.size.x <= 0.0 or player_rect.size.y <= 0.0:
+		return Vector2.ZERO
+	var center := player_rect.get_center()
+	var nearest := Rect2()
+	var nearest_distance := INF
+	for warning in warnings:
+		if typeof(warning) != TYPE_DICTIONARY or float(warning.get("confidence", 0.0)) < confidence_floor:
+			continue
+		var candidate: Variant = warning.get("rect", Rect2())
+		if typeof(candidate) != TYPE_RECT2 and typeof(candidate) != TYPE_RECT2I:
+			continue
+		var rect := Rect2(candidate)
+		var distance := center.distance_to(rect.get_center())
+		if distance < nearest_distance:
+			nearest = rect
+			nearest_distance = distance
+	if nearest_distance == INF:
+		return Vector2.ZERO
+	var away := center - nearest.get_center()
+	return away.normalized() if away.length_squared() > 0.0001 else Vector2.ZERO
