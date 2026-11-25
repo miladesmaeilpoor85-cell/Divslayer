@@ -967,7 +967,7 @@ func objective() -> String:
 	if q(1) == "complete" or q(2) == "complete" or q(3) == "complete":
 		return t("Return to Zal", "نزد زال برگرد")
 	var bo := brann_objective()
-	if bo != "" and ["core", "anvil_done", "ignarok_done"].has(brann()):
+	if bo != "" and ["core", "anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann()):
 		return bo
 	if q(1) == "not_started":
 		return t("Speak with Zal in the village", "با زال در دهکده صحبت کن")

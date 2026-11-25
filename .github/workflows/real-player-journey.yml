@@ -163,6 +163,7 @@ jobs:
           assert "func navigation_graph() -> Dictionary:" in game_source, "Navigation must include a copy of the currently open story gates"
           assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
           assert "if brann_key():" in game_source, "The Emberforge route must remain gated until the Kindling Key is earned"
+          assert '["core", "anvil", "anvil_done", "ignarok", "ignarok_done"]' in game_source, "The HUD must display the active Pulad and Puladvand quest objectives"
           forest_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("sec") == 12)
           next_forest_objective = next(i for i in range(forest_fight + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
           assert int(scenario[next_forest_objective].get("max_steps", 1)) >= 2, "Allow the post-fight forest map hop and clue interaction"
