@@ -1,6 +1,7 @@
 extends Node
 
 const PlayerAgent = preload("res://tests/player_agent.gd")
+const PlayerBrain = preload("res://tests/player_brain.gd")
 ## The playtest runner (v0.23): plays the game the way a phone player does — through touches — from a scenario file,
 ## and writes what the player saw: screenshots, the text on screen, the hero's state, and a log of every step.
 ## Made for the playtest agents (a pro mobile gamer, a mobile-games critic); tools/playtest/play.sh runs it.
