@@ -260,6 +260,16 @@
           120,
           20
         ]
+      },
+      {
+        "to": "emberforge",
+        "r": [
+          520,
+          790,
+          110,
+          16
+        ],
+        "gate": "brann_key"
       }
     ],
     "npcs": {},
@@ -657,12 +667,6 @@
       "to": "trial",
       "via": "Siavash dialogue: Enter the Arena",
       "condition": "player chooses Enter the Arena"
-    },
-    {
-      "from": "peaks",
-      "to": "emberforge",
-      "via": "Kindling door",
-      "condition": "Game.brann_key() is true"
     }
   ]
 }
