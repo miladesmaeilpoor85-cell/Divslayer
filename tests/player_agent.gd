@@ -682,7 +682,7 @@ func recover_from_death() -> String:
 
 ## Find living enemies close enough to threaten a normal map transition.
 ## This only reads the live scene; it does not change enemy or quest state.
-func _nearest_route_threat(radius: float = 420.0) -> Dictionary:
+func _nearest_route_threat(radius: float = 420.0, excluded_type := "") -> Dictionary:
 	if driver == null or driver.main == null or driver.main.player == null or driver.main.world == null:
 		return {}
 	var origin: Vector2 = driver.main.player.global_position + Vector2(0, -17)
@@ -694,6 +694,8 @@ func _nearest_route_threat(radius: float = 420.0) -> Dictionary:
 		if not is_instance_valid(foe) or foe.get_parent() == null:
 			continue
 		if foe.world != driver.main.world or bool(foe.dead):
+			continue
+		if excluded_type != "" and str(foe.type) == excluded_type:
 			continue
 		var distance: float = foe.center().distance_to(origin)
 		if not should_engage_route_threat(distance, radius):
@@ -713,13 +715,13 @@ func _nearest_route_threat(radius: float = 420.0) -> Dictionary:
 ## A human player clears nearby pressure before crossing to another region.
 ## Every attack is an ordinary touch-driven combat action; no enemy is removed,
 ## isolated, or made invulnerable for route traversal.
-func _clear_route_threats(max_rounds := 4, radius := 420.0) -> Dictionary:
+func _clear_route_threats(max_rounds := 4, radius := 420.0, excluded_type := "") -> Dictionary:
 	var rounds := clampi(int(max_rounds), 1, 5)
 	var before_map := str(driver.main.world.key) if driver.main.world else "none"
 	for round_index in range(rounds):
 		if driver.main.player == null or driver.main.player.dead or driver.get_tree().paused:
 			return {"safe": false, "message": "route sweep stopped because the player is dead or the game is paused"}
-		var threat := _nearest_route_threat(float(radius))
+		var threat := _nearest_route_threat(float(radius), str(excluded_type))
 		if threat.is_empty() or int(threat.get("count", 0)) == 0:
 			if round_index == 0:
 				driver._log("PLAYER_AGENT_ROUTE_CLEAR map=%s nearby=0" % before_map)
@@ -747,10 +749,12 @@ func _clear_route_threats(max_rounds := 4, radius := 420.0) -> Dictionary:
 		driver._log("PLAYER_AGENT_ROUTE_COMBAT map=%s round=%d target=%s approach=%s result=%s hp=%d/%d" % [
 			before_map, round_index + 1, threat_type, approach, combat_result, int(Game.hp), int(Game.max_hp())
 		])
+		if driver.main.world == null or str(driver.main.world.key) != before_map:
+			return {"safe": false, "message": "route combat changed map unexpectedly from %s" % before_map}
 		if driver.main.player.dead or driver.get_tree().paused:
 			return {"safe": false, "message": "player fell while clearing route threats in %s" % before_map}
 		await driver.wait(0.25)
-	var remaining := _nearest_route_threat(260.0)
+	var remaining := _nearest_route_threat(260.0, str(excluded_type))
 	if not remaining.is_empty() and int(remaining.get("count", 0)) > 0:
 		var blocked := "route remains unsafe: %d nearby foes, nearest %s at %d px" % [
 			int(remaining.get("count", 0)), str(remaining.get("nearest_type", "unknown")),
@@ -827,13 +831,16 @@ func follow_objective(max_steps := 8, stop_after_interaction := false, boss_figh
 			if boss == null:
 				report.append("objective boss is not spawned on %s" % current_map)
 				break
-			var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0)
+			var boss_type := str(boss.type)
+			var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0, boss_type)
 			report.append(str(boss_route_safety.get("message", "boss route safety check unavailable")))
 			if not bool(boss_route_safety.get("safe", false)):
 				break
+			if not is_instance_valid(boss) or boss.dead:
+				report.append("objective boss %s was no longer available after route safety" % boss_type)
+				break
 			await driver.walk_to(boss.global_position, 45.0, 110.0)
 			await driver.wait(0.3)
-			var boss_type := str(boss.type)
 			var fight_limit := clampf(float(boss_fight_sec), 30.0, 240.0)
 			await driver.shot("objective_boss_%s_start" % boss_type)
 			var outcome: String = await driver.fight(fight_limit, 0.0, boss_type)
