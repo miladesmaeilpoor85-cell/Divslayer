@@ -224,6 +224,9 @@ const BOSS_CFG := {
 		"name": ["Pulad of Ghandi", "پولادِ غندی"],
 		"title": ["Keeper of the Forge Gate", "دربانِ دروازهٔ آهنگرخانه"],
 		"mini": true,
+		# Its slam, furrows and charge are explicitly telegraphed. Body overlap is a
+		# graze like the rebuilt bosses, not a repeated full-damage attack every 0.9 s.
+		"rework": true,
 		"rgb": Color8(255, 150, 60),
 		"weak": {"freeze": 1.4},
 	},

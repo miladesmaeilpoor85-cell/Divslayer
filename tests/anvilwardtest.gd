@@ -88,6 +88,27 @@ func run(m: Node) -> void:
 	check("anvilward_furrows_damage_once_and_burn", hp_lost > 0.0 and int(bfx.counts["hits"]) == hits_before + 1
 		and p.statuses.has("burn"), {"hp_lost": hp_lost, "statuses": p.statuses})
 
+	# The Warden's real attacks are all telegraphed. Contact is a short graze, so a
+	# melee hero is not hit repeatedly merely for entering the weapon's attack range.
+	printerr("STEP: Anvil Warden body contact is a 25% graze, throttled to once per 1.5 s")
+	p.global_position = player_feet
+	p.invuln = 0.0
+	p.dodge_iframes = 0.0
+	Game.hp = Game.max_hp()
+	var contact_boss: Node = w.spawn_enemy("anvilward", player_feet + Vector2(10, 0))
+	contact_boss.set_physics_process(false)
+	await frames(2)
+	var contact_hp_before: float = Game.hp
+	contact_boss._brain(1.0 / 60.0)
+	var contact_loss: float = contact_hp_before - Game.hp
+	var maximum_graze: int = Game.incoming(round(contact_boss.dmg * 0.25), "dungeon")
+	check("anvilward_contact_uses_25_percent_graze",
+		bool(contact_boss.reworked) and contact_loss > 0.0 and contact_loss <= float(maximum_graze),
+		{"lost": contact_loss, "max_graze": maximum_graze, "boss_dmg": contact_boss.dmg})
+	var after_first_graze: float = Game.hp
+	contact_boss._brain(0.2)
+	check("anvilward_contact_graze_has_1_5_second_cooldown", is_equal_approx(Game.hp, after_first_graze), Game.hp)
+
 	# The new move is explicitly scoped to the Anvil Warden; another generic miniboss
 	# keeps its existing charge/volley behavior and never selects this skill.
 	var other: Node = w.spawn_enemy("captain", player_feet + Vector2(-220, 25))

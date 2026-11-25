@@ -199,6 +199,9 @@ jobs:
           assert "PLAYER_AGENT_BOSS_PRIORITY" in agent_source and "await driver.fight(fight_limit, 0.0, boss_type)" in agent_source, "Boss arenas must use focused live combat instead of nearest-threat sweeps"
           assert "await driver.walk_to(boss.global_position, 45.0, 110.0)" not in agent_source, "The focused combat controller must approach the boss while handling active threats"
           game_source = Path("scripts/game.gd").read_text(encoding="utf-8")
+          anvilward_cfg_start = game_source.index('"anvilward": {')
+          anvilward_cfg_end = game_source.index('"kondrow": {', anvilward_cfg_start)
+          assert '"rework": true' in game_source[anvilward_cfg_start:anvilward_cfg_end], "Anvilward's telegraphed slam/furrows/charge must not add repeated full-damage body contact"
           assert "func navigation_graph() -> Dictionary:" in game_source, "Navigation must include a copy of the currently open story gates"
           assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
           assert "if brann_key():" in game_source, "The Emberforge route must remain gated until the Kindling Key is earned"
