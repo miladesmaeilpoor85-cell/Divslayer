@@ -171,3 +171,10 @@ A second migration slice now reads the visible HUD resource presentation:
 - Regression tests cover visible meter capture, Persian potion digits, reserve preservation, and unknown-value refusal.
 
 This does **not** complete combat autonomy. Enemy identification, target selection, spacing, attack telegraphs/projectiles, dodge/block timing, class-specific offensive choices, stamina/mana expenditure, and combat recovery still need a player-observation path. Route threat scans and objective routing still read world/enemy/quest runtime data and remain explicitly out of bounds for the final independent-player acceptance gate.
+
+
+### Screenshot perception and visual combat policy — 26 November 2026
+
+The next migration increment adds a screenshot-frame boundary (player_visual_perception.gd) and a strict normalized detection contract for player/enemy/boss/telegraph/projectile candidates. The contract rejects unknown classes, out-of-frame boxes, and low-confidence candidates. The pure player brain can now select a visible enemy/boss target and compute an evasion direction from visible telegraph/projectile detections; regression tests cover confidence gating and those choices.
+
+Important limitation: this commit captures the rendered viewport frame and defines/validates image-derived detections, but it does not yet contain a trained or template-based detector that derives those candidates from raw pixels. The combat loop is therefore not yet authorized to use these policies as its live source of truth. Until a real detector is implemented and validated against captured gameplay frames, the existing runtime-backed target/telegraph logic remains a migration blocker and must not be described as vision-autonomous.
