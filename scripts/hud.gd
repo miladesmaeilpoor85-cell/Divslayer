@@ -403,7 +403,7 @@ func refresh() -> void:
 		name_l.text += Game.t("  · NG+%d" % Game.ng(), "، نو+%s" % Game.num(Game.ng()))     # (v0.21) New Game+
 	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	gold_chip.get_node("Value").text = Game.num(int(Game.state.get("gold", 0)))
-	pot_chip.get_node("Value").text = Game.num(int(Game.state.get("potions", 0)))
+	pot_chip.get_node("Value").text = Game.num(int(Game.state.get("potions", 0)) + int(Game.state.get("greater", 0)))
 	quest_l.text = Game.objective()
 	quest_l.text_direction = Control.TEXT_DIRECTION_RTL if Game.lang == "fa" else Control.TEXT_DIRECTION_LTR
 	quest.reset_size()
