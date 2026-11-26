@@ -57,10 +57,11 @@ static func has_art(s: String) -> bool:
 	if USER_ART.has(key):
 		return USER_ART_ATLAS != null and USER_ART_ATLAS.get_width() == 384 and USER_ART_ATLAS.get_height() == 384
 	if key == "alborz_scout":
+		var all_parts_present := true
 		for relative_path in SCOUT_PORTRAIT_PARTS:
 			if not FileAccess.file_exists(Game.ART + "Portraits/" + relative_path):
-				return false
-		return true
+				all_parts_present = false
+		return all_parts_present or ResourceLoader.exists(art_path(key))
 	return ART.has(key) and ResourceLoader.exists(art_path(key))
 
 ## Shows the painted portrait for this sheet; false (and nothing changed) if there is none.
@@ -79,6 +80,8 @@ func show_art(s: String) -> bool:
 		var a: Array = ART[key]
 		if key == "alborz_scout":
 			_tex = Sheets.load_base64_webp_parts("Portraits", SCOUT_PORTRAIT_PARTS)
+			if _tex == null:
+				_tex = load(art_path(key))
 		else:
 			_tex = load(art_path(key))
 		if _tex == null:
