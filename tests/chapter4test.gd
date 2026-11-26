@@ -138,6 +138,28 @@ func run(m: Node) -> void:
 	check("zabol_tiled_ground_is_active_in_runtime",
 		main.world.get_node_or_null("Terrain") != null and zabol_world_ground != null
 		and not zabol_world_ground.visible)
+	var zabol_terrain_node: Node2D = main.world.get_node_or_null("Terrain") as Node2D
+	var zabol_material: ShaderMaterial = null
+	if zabol_terrain_node != null:
+		zabol_material = zabol_terrain_node.material as ShaderMaterial
+	var zabol_layers_ok := zabol_material != null
+	var zabol_layer_sizes: Array = []
+	for parameter in ["tex_base", "tex_r", "tex_g", "tex_b"]:
+		var value: Variant = zabol_material.get_shader_parameter(parameter) if zabol_material != null else null
+		var layer_texture := value as Texture2D
+		var layer_image: Image = layer_texture.get_image() if layer_texture != null else null
+		var layer_ok := layer_image != null and not layer_image.is_empty()
+		if layer_ok:
+			layer_ok = layer_image.get_width() >= 1024 and layer_image.get_height() >= 1024 and layer_image.has_mipmaps()
+		zabol_layers_ok = zabol_layers_ok and layer_ok
+		zabol_layer_sizes.append(layer_texture.get_size() if layer_texture != null else Vector2.ZERO)
+	check("zabol_four_painted_terrain_layers_load_with_mipmaps", zabol_layers_ok, zabol_layer_sizes)
+	var zabol_map_objects := {}
+	for object_data in zabol_art.get("objects", []):
+		zabol_map_objects[str(object_data.get("sprite", ""))] = true
+	check("zabol_dedicated_courtyard_props_are_used_in_map",
+		zabol_map_objects.has("g_zabol_awning") and zabol_map_objects.has("g_zabol_water_trough")
+		and zabol_map_objects.has("g_zabol_clay_jars"), zabol_map_objects.keys())
 	var pages := await talk("elder")
 	check("zal_starts_pass_objective", pages >= 3 and C.step() == "pass" and Game.region_open("alborz"), [pages, C.step()])
 	check("objective_points_to_peaks_exit", Game.objective() == C.line("o_pass") and C.target().get("map", "") == "peaks")
@@ -194,10 +216,23 @@ func run(m: Node) -> void:
 	main.goto_map("peaks", Vector2(980, 180))
 	await frames(4)
 	var peaks_ground_node: Sprite2D = main.world.get_node_or_null("Ground") as Sprite2D
+	var peaks_runtime_data := Game.map_data("peaks")
 	check("ashen_peaks_dedicated_ground_is_visible_at_runtime",
 		peaks_ground_node != null and peaks_ground_node.visible
 		and peaks_ground_node.texture != null
-		and str(Game.map_data("peaks").get("groundFile", "")) == "peaks_ground.svg")
+		and peaks_ground_node.texture.get_width() >= 2300
+		and peaks_ground_node.texture.get_height() >= 1840
+		and str(peaks_runtime_data.get("groundFile", "")) == "peaks_ground.svg")
+	var peak_vents := 0
+	var peak_bone_fields := 0
+	for object_data in peaks_runtime_data.get("objects", []):
+		var sprite_id := str(object_data.get("sprite", ""))
+		if sprite_id == "vent_80":
+			peak_vents += 1
+		elif sprite_id == "bones_79":
+			peak_bone_fields += 1
+	check("ashen_peaks_has_volcanic_vents_and_battlefield_remains",
+		peak_vents >= 5 and peak_bone_fields >= 3, [peak_vents, peak_bone_fields])
 	check("peaks_exit_opens_after_zal", exit_try("alborz") == "left")
 
 	# Enter the Alborz prototype; the map entry advances the quest and builds its wind controller and visual cues.
@@ -382,6 +417,28 @@ func run(m: Node) -> void:
 	check("whispering_forest_tiled_ground_is_active_at_runtime",
 		main.world.get_node_or_null("Terrain") != null and forest_ground_node != null
 		and not forest_ground_node.visible)
+	var forest_terrain_node: Node2D = main.world.get_node_or_null("Terrain") as Node2D
+	var forest_material: ShaderMaterial = null
+	if forest_terrain_node != null:
+		forest_material = forest_terrain_node.material as ShaderMaterial
+	var forest_layers_ok := forest_material != null
+	var forest_layer_sizes: Array = []
+	for parameter in ["tex_base", "tex_r", "tex_g", "tex_b"]:
+		var value: Variant = forest_material.get_shader_parameter(parameter) if forest_material != null else null
+		var layer_texture := value as Texture2D
+		var layer_image: Image = layer_texture.get_image() if layer_texture != null else null
+		var layer_ok := layer_image != null and not layer_image.is_empty()
+		if layer_ok:
+			layer_ok = layer_image.get_width() >= 1024 and layer_image.get_height() >= 1024 and layer_image.has_mipmaps()
+		forest_layers_ok = forest_layers_ok and layer_ok
+		forest_layer_sizes.append(layer_texture.get_size() if layer_texture != null else Vector2.ZERO)
+	check("whispering_forest_painted_terrain_layers_load_with_mipmaps", forest_layers_ok, forest_layer_sizes)
+	var forest_object_ids := {}
+	for object_data in Game.map_data("forest").get("objects", []):
+		forest_object_ids[str(object_data.get("sprite", ""))] = true
+	check("whispering_forest_unique_roots_mushrooms_and_glow_ferns_are_used",
+		forest_object_ids.has("g_forest_root") and forest_object_ids.has("g_forest_mushrooms")
+		and forest_object_ids.has("g_forest_glow_fern"), forest_object_ids.keys())
 	main.goto_map("alborz", Vector2(1290, 520))
 	await frames(5)
 
