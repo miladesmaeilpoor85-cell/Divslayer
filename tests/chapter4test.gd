@@ -188,7 +188,7 @@ func run(m: Node) -> void:
 		and scout_frames != null and scout_frames.has_animation("walk_down")
 		and scout_frames.get_frame_count("walk_down") == 4,
 		{"look": scout_look, "manifest": Game.manifest.get("npcs", {}).has("alborz_scout"),
-		 "walk_frames": scout_frames.get_frame_count("walk_down") if scout_frames != null and scout_frames.has_animation("walk_down") else 0})
+			"walk_frames": scout_frames.get_frame_count("walk_down") if scout_frames != null and scout_frames.has_animation("walk_down") else 0})
 
 	# Wind phase and cover are checked in logical map coordinates. The contribution never accumulates.
 	var controller = w.wind_zones[0]["controller"]
