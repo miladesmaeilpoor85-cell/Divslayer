@@ -140,11 +140,11 @@ class AnimationReviewTests(unittest.TestCase):
             manifest_path, output = self._project(root)
             payload = json.loads(manifest_path.read_text(encoding="utf-8"))
             payload["enemies"]["gale_warden"] = {
-                "cellW": 140,
+                "cellW": 136,
                 "cellH": 156,
                 "frames": 4,
                 "variants": 1,
-                "trailingPx": 2,
+                "trailingPx": 0,
                 "pivot": [0.5, 0.0128],
                 "timedMs": 160,
                 "file": "gale_warden",
@@ -152,10 +152,10 @@ class AnimationReviewTests(unittest.TestCase):
                 "base64Parts": ["gale_warden/part_00.b64", "gale_warden/part_01.b64"],
             }
             manifest_path.write_text(json.dumps(payload), encoding="utf-8")
-            atlas = Image.new("RGBA", (562, 156), (0, 0, 0, 0))
+            atlas = Image.new("RGBA", (544, 156), (0, 0, 0, 0))
             draw = ImageDraw.Draw(atlas)
             for frame in range(4):
-                x = frame * 140
+                x = frame * 136
                 draw.ellipse(
                     (x + 24 + frame * 2, 18 + frame * 4, x + 115, 143 - frame * 5),
                     fill=(100 + frame * 25, 150, 210, 255),
@@ -174,13 +174,13 @@ class AnimationReviewTests(unittest.TestCase):
             )
             self.assertFalse(report["errors"])
             entry = next(item for item in report["previews"] if item["id"] == "gale_warden")
-            self.assertEqual(entry["sheet_size"], [562, 156])
-            self.assertEqual(entry["expected_size"], [562, 156])
+            self.assertEqual(entry["sheet_size"], [544, 156])
+            self.assertEqual(entry["expected_size"], [544, 156])
             preview = output / "enemy-gale_warden-variant-0-loop.gif"
             self.assertTrue(preview.is_file())
             with Image.open(preview) as gif:
                 self.assertEqual(gif.n_frames, 4)
-                self.assertEqual(gif.size, (280, 312))
+                self.assertEqual(gif.size, (272, 312))
 
     def test_reports_sheet_dimensions_that_do_not_match_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

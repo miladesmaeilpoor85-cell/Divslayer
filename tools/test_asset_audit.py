@@ -161,7 +161,7 @@ class AssetAuditTests(unittest.TestCase):
             (
                 "assets/art/Enemies/alborzwarden",
                 ("part_00.b64", "part_01.b64", "part_02.b64", "part_03.b64", "part_04.b64", "part_05a.b64", "part_05b.b64"),
-                webp_vp8x_bytes(562, 156),
+                webp_vp8x_bytes(544, 156),
             ),
             (
                 "assets/art/Portraits/alborz_scout",
@@ -192,7 +192,7 @@ class AssetAuditTests(unittest.TestCase):
         root = self.make_repo()
         directory = root / "assets/art/Enemies/alborzwarden"
         directory.mkdir(parents=True)
-        encoded = base64.b64encode(webp_vp8x_bytes(562, 156)).decode("ascii")
+        encoded = base64.b64encode(webp_vp8x_bytes(544, 156)).decode("ascii")
         for name in ("part_00.b64", "part_02.b64"):
             (directory / name).write_text(encoded[:16], encoding="ascii")
         self.write_registry(root, [

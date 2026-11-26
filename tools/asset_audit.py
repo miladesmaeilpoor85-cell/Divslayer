@@ -27,7 +27,7 @@ ATLAS_PAYLOAD_ROOT = Path("assets/art/Heroes/attack_atlas_data")
 BASE64_ARTWORK_GROUPS = {
     Path("assets/art/Enemies/alborzwarden"): {
         "parts": ("part_00.b64", "part_01.b64", "part_02.b64", "part_03.b64", "part_04.b64", "part_05a.b64", "part_05b.b64"),
-        "dimensions": (562, 156),
+        "dimensions": (544, 156),
     },
     Path("assets/art/Portraits/alborz_scout"): {
         "parts": ("part_00.b64", "part_01.b64", "part_02.b64", "part_03.b64"),

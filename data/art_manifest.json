@@ -965,7 +965,8 @@
     "alborzwarden/part_05b.b64"
    ],
    "fallbackCellW": 204,
-   "fallbackCellH": 234
+   "fallbackCellH": 234,
+   "trailingPx": 0
   }
  },
  "heroes": {

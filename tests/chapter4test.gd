@@ -345,7 +345,7 @@ func run(m: Node) -> void:
 		var warden_sprite_image: Image = warden_sprite_texture.get_image() if warden_sprite_texture != null else null
 		check("gale_warden_webp_atlas_loads_with_transparent_pixels",
 			warden_sprite_image != null and not warden_sprite_image.is_empty()
-			and warden_sprite_image.get_width() == 562 and warden_sprite_image.get_height() == 156
+			and warden_sprite_image.get_width() == 544 and warden_sprite_image.get_height() == 156
 			and warden_sprite_image.detect_alpha() != Image.ALPHA_NONE)
 		var warden_frames: SpriteFrames = gale_warden.anim.sprite_frames if gale_warden.anim != null else null
 		check("gale_warden_has_three_health_phases_and_dedicated_four_frame_sprite",
