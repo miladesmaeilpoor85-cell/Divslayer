@@ -118,7 +118,7 @@ func run(main: Node) -> void:
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		if not is_instance_valid(enemy) or enemy.world != live_world or enemy.type != "frostknight":
 			continue
-		var distance := enemy.home.distance_to(expected_spawn)
+		var distance: float = enemy.home.distance_to(expected_spawn)
 		if distance < closest_distance:
 			closest_distance = distance
 			target_enemy = enemy
