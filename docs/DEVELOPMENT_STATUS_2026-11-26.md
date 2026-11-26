@@ -14,10 +14,11 @@ This report records repository evidence checked on 26 November 2026. It distingu
 
 ### PR #65 — natural player journey
 
-- The latest observed workflow was [run 45726750227](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45726750227).
-- Warrior and Rogue completed successfully in the retrieved job snapshot. Mage and Paladin were still in progress at that snapshot.
-- The test is a virtual-display automated agent, not a human usability study or a physical Android-device test.
-- It covers the title flow, class choice, Rostam training, the first armour purchase, talent allocation attempts and the natural Chapter I route through the forest/crypt to the Arzhang damage checkpoint. It is not a full-campaign completion test.
+- The latest workflow [run 45726750227](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45726750227) completed successfully on 26 November 2026. Warrior, Mage, Rogue and Paladin all passed.
+- Each class passed all **15/15 assertions**, with **0 failed assertions, 0 QA findings and 0 Godot engine-error lines**. Each report records 74 player-agent steps, all 7 planned Chapter I–II checkpoints reached, and 3 combat samples.
+- The evidence confirms Arzhang and Anvilward were defeated by all four class runs. The journeys covered the village, Whispering Forest, Sunken Crypt, Ashen Peaks and Emberforge, including the Warden Core turn-in, the Kindling Key route and Pulad reward. The four reports include 121 screenshots in total.
+- Evidence artifacts: [Mage 15076161282](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45726750227/artifacts/15076161282), [Paladin 15075332320](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45726750227/artifacts/15075332320), [Warrior 15075306476](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45726750227/artifacts/15075306476), [Rogue 15074044767](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45726750227/artifacts/15074044767). These artifacts expire on 10 December 2026.
+- This remains automated virtual-display testing, not a human usability study or physical Android-device test. Full-game completion is explicitly **not confirmed**; the run records only five observed maps and does not cover the remaining regions or the true ending.
 - A separate Android QA APK was exported from this PR branch: [run 45726750222](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45726750222), artifact [15075470879](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45726750222/artifacts/15075470879), 174,055,799 bytes, retained until 10 December 2026. The export, signature verification, emulator install and launch steps passed. This is a temporary debug-signed QA package, not a production build.
 
 ### PR #66 — Alborz art and Gale Warden
@@ -55,7 +56,7 @@ The checked main-branch production manifest contains 36 directional light-attack
 
 ## Acceptance gates
 
-1. Complete and review all four PR #65 natural-player reports and screenshots; keep the scope label limited to Chapter I unless more campaign stages are truly exercised.
+1. The four PR #65 reports and screenshots have been collected and reviewed for the Chapter I–II route. Keep the scope label limited to those five observed maps; full-game completion and physical-device acceptance remain unverified.
 2. Reject or revise PR #66 and #67 visual assets until frame-level and Android-scale review confirms style cohesion, readability and correct runtime behavior.
 3. Import genuine Mage Starter and Paladin Starter four-frame attack art in down/up/side directions; verify contact-frame timing, alpha, feet baseline, frame-to-frame continuity and interruption behavior.
 4. Keep PR #64's CI-green result, but add a targeted in-game Wyrm's Hollow spawn/encounter review on a physical Android device before marking runtime acceptance complete.
