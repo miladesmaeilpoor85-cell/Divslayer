@@ -800,8 +800,9 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		if focus_target != null and is_instance_valid(focus_target) and focus_target.world == main.world:
 			if PlayerAgent.should_keep_focus_boss(focus_type, str(focus_target.type), not bool(focus_target.dead)):
 				any_alive = true
-				if focus_target.targetable():
-					focused_tgt = focus_target
+				# Keep the requested boss selected through cloaked phases; the dedicated
+				# wait branch below prevents attacks while it is hidden.
+				focused_tgt = focus_target
 		if urgent_add_tgt != null:
 			tgt = urgent_add_tgt
 			var add_id := urgent_add_tgt.get_instance_id()
