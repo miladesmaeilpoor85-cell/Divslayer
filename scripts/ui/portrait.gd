@@ -18,13 +18,18 @@ var _tex: Texture2D
 var _src := Rect2()
 static var _shader: Shader
 
-## (v0.28) painted dialogue portraits. Key: the dialogue's sheet (or, for a hero of the tale, his look);
+## (v0.28+) painted dialogue portraits. Key: the dialogue's sheet (or, for a hero of the tale, his look);
 ## value: [file in assets/art/Portraits, which way the face turns: 1 = to the viewer's right, -1 = to the left]
 const ART := {
 	"elder": ["zal", 1], "merchant": ["sindokht", 1], "alchemist": ["rudabeh", -1], "brann": ["jamshid", 1],
 	"keeper": ["sorush", 1], "hesk": ["hom", 1], "smith": ["kavian", 1], "qaren": ["qaren", 1],
-	"npc_rostam": ["rostam", 1], "npc_siavash": ["siavash", 1], "npc_gordafarid": ["gordafarid", 1]}
-const ART_DIR := "res://assets/art/Portraits/%s.webp"
+	"npc_rostam": ["rostam", 1], "npc_siavash": ["siavash", 1], "npc_gordafarid": ["gordafarid", 1],
+	"alborz_scout": ["alborz_scout", 1]}
+const ART_DIR := "res://assets/art/Portraits/%s.%s"
+const ART_EXT := {"alborz_scout": "svg"}
+
+static func art_path(key: String) -> String:
+	return ART_DIR % [str(ART[key][0]), str(ART_EXT.get(key, "webp"))]
 const USER_ART := {
 	"npc_rostam": [Vector2(0, 0), 1],
 	"npc_siavash": [Vector2(192, 0), 1],
@@ -45,7 +50,7 @@ static func has_art(s: String) -> bool:
 	var key := art_key(s)
 	if USER_ART.has(key):
 		return USER_ART_ATLAS != null and USER_ART_ATLAS.get_width() == 384 and USER_ART_ATLAS.get_height() == 384
-	return ART.has(key) and ResourceLoader.exists(ART_DIR % ART[key][0])
+	return ART.has(key) and ResourceLoader.exists(art_path(key))
 
 ## Shows the painted portrait for this sheet; false (and nothing changed) if there is none.
 func show_art(s: String) -> bool:
@@ -61,7 +66,7 @@ func show_art(s: String) -> bool:
 		art_facing = int(user_spec[1])
 	else:
 		var a: Array = ART[key]
-		_tex = load(ART_DIR % a[0])
+		_tex = load(art_path(key))
 		if _tex == null:
 			return false
 		_src = Rect2(Vector2.ZERO, _tex.get_size())
