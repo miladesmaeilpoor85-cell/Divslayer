@@ -125,17 +125,17 @@
 </g>
 <g transform="translate(204,0)">
  <use href="#gw-wing-raised"/><use href="#gw-wing-raised" transform="translate(204,0) scale(-1,1)"/>
- <use href="#gw-body" transform="translate(0,-5) rotate(-7 102 158) scale(0.98,0.98)"/>
+ <use href="#gw-body" transform="translate(0,-8) rotate(-11 102 158) scale(0.94,1.04)"/>
  <path d="M67 63Q47 33 40 18M137 63Q157 33 164 18" fill="none" stroke="#95e8fa" stroke-width="2" opacity=".55"/>
 </g>
 <g transform="translate(408,0)">
  <use href="#gw-wing-down"/><use href="#gw-wing-down" transform="translate(204,0) scale(-1,1)"/>
- <use href="#gw-body" transform="translate(0,1) rotate(10 102 158) scale(1.02,1.0)"/>
+ <use href="#gw-body" transform="translate(0,7) rotate(16 102 158) scale(1.06,1.04)"/>
  <path d="M52 132Q40 145 36 163M152 132Q164 145 168 163" fill="none" stroke="#7ed8f0" stroke-width="2.4" opacity=".62"/>
 </g>
 <g transform="translate(612,0)">
  <use href="#gw-wing-fold"/><use href="#gw-wing-fold" transform="translate(204,0) scale(-1,1)"/>
- <use href="#gw-body" transform="translate(0,2) rotate(-8 102 158) scale(0.98,1.01)"/>
+ <use href="#gw-body" transform="translate(-3,4) rotate(-13 102 158) scale(0.94,0.98)"/>
  <path d="M54 97Q34 81 27 91Q38 103 52 106M150 97Q170 81 177 91Q166 103 152 106" fill="none" stroke="#83e0f5" stroke-width="2.5" opacity=".7"/>
 </g>
 </svg>
