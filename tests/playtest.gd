@@ -681,6 +681,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var focus_present_before := false
 	var focus_hp_before := 100.0
 	var focus_kills_before := 0
+	var focus_target: Node = null
 	if focus_type != "":
 		fight_evidence.erase(focus_type)
 		focus_kills_before = int(Game.v18().get("kills", {}).get(focus_type, 0))
@@ -690,6 +691,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			boss_hp_before[boss_type] = 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
 			if boss_type == focus_type and not boss.dead:
 				focus_present_before = true
+				focus_target = boss
 				focus_hp_before = boss_hp_before[boss_type]
 	var ended := "time"
 	if focus_type != "":
@@ -792,6 +794,14 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			if dd < bd:
 				bd = dd
 				tgt = e
+		# Resolve the requested objective from the authoritative boss group as well as the
+		# normal enemy scan. Some scripted bosses temporarily cloak during an attack; their
+		# reference must survive that interval so the agent does not forget the encounter.
+		if focus_target != null and is_instance_valid(focus_target) and focus_target.world == main.world:
+			if PlayerAgent.should_keep_focus_boss(focus_type, str(focus_target.type), not bool(focus_target.dead)):
+				any_alive = true
+				if focus_target.targetable():
+					focused_tgt = focus_target
 		if urgent_add_tgt != null:
 			tgt = urgent_add_tgt
 			var add_id := urgent_add_tgt.get_instance_id()
@@ -832,6 +842,10 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 					_log("PLAYER_AGENT_PILLAR_POLICY remaining=1 action=engage_boss shield_reduction=15%")
 				tgt = focused_tgt
 				last_pillar_priority_id = 0
+		if tgt == null and focus_target != null and is_instance_valid(focus_target) and focus_target.world == main.world:
+			if PlayerAgent.should_keep_focus_boss(focus_type, str(focus_target.type), not bool(focus_target.dead)):
+				tgt = focus_target
+				last_add_priority_id = 0
 		if tgt == null:
 			if any_alive and quiet < 4.0:
 				quiet += 0.2          # a foe out of reach for a moment (a boss between phases, a burrowed thing): wait for it
@@ -973,6 +987,14 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			continue
 		if not _fight_target_is_live(tgt):
 			await stick(Vector2.ZERO)
+			continue
+		if focus_target != null and tgt == focus_target and bool(focus_target.get("cloaked")):
+			# Matriarch's dive is a visible boss mechanic, not a reason to switch objective
+			# permanently to a nearby add. Evade the marked dive above, then wait briefly
+			# for the surface attack to expose the real hit window.
+			await stick(Vector2.ZERO)
+			await wait(0.1)
+			t += 0.1
 			continue
 		var preferred_range := reach
 		var mage_retreat_distance := PlayerAgent.mage_boss_retreat_distance() if focus_type != "" else 150.0
