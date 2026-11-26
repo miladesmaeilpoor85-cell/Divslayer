@@ -224,7 +224,7 @@ static func character(group: String, sheet: String) -> Dictionary:
 					loaded_row.append(frame_texture)
 				attack_frame_rows.append(loaded_row)
 	var sf := character_frames(tex, meta, attack_texture, attack_frame_rows)
-	var out := {"frames": sf, "offset": pivot_offset(runtime_meta), "meta": runtime_meta}
+	var out := {"frames": sf, "offset": pivot_offset(meta), "meta": meta}
 	_cache[key] = out
 	return out
 
@@ -275,7 +275,7 @@ static func enemy(type: String) -> Dictionary:
 		sf.set_animation_speed(a, fps)
 		for f in int(meta.get("frames", 1)):
 			sf.add_frame(a, _atlas(tex, f * cw, v * ch, cw, ch))
-	var out := {"frames": sf, "offset": pivot_offset(meta), "meta": meta}
+	var out := {"frames": sf, "offset": pivot_offset(runtime_meta), "meta": runtime_meta}
 	_cache[key] = out
 	return out
 
