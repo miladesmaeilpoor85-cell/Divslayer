@@ -42,6 +42,7 @@ func run(m: Node) -> void:
 	var missing := []
 	var left_out := []
 	var no_mip := []
+	var low_res_vector := []
 	var ex := excludes("Android")
 	for k in Portrait.ART:
 		var path: String = Portrait.art_path(k)
@@ -51,13 +52,17 @@ func run(m: Node) -> void:
 		for pat in ex:
 			if path.trim_prefix("res://").match(pat):
 				left_out.append(path)
-		var t: Texture2D = load(path)
-		if not t.get_image().has_mipmaps():
+		var tx: Texture2D = load(path)
+		if path.get_extension().to_lower() == "svg":
+			if tx == null or tx.get_width() < 768 or tx.get_height() < 768:
+				low_res_vector.append([path, tx.get_width() if tx else 0, tx.get_height() if tx else 0])
+		elif tx == null or not tx.get_image().has_mipmaps():
 			no_mip.append(path)
 	check("twelve_portraits_including_alborz_scout", Portrait.ART.size() == 12 and Portrait.has_art("alborz_scout"), Portrait.ART.size())
 	check("portrait_files_exist", missing.is_empty(), missing)
 	check("portraits_ship_on_android", left_out.is_empty(), left_out)
-	check("portraits_have_mipmaps", no_mip.is_empty(), no_mip)
+	check("raster_portraits_have_mipmaps", no_mip.is_empty(), no_mip)
+	check("scout_vector_portrait_imports_at_high_resolution", low_res_vector.is_empty(), low_res_vector)
 
 	# ---- (v0.30) the people of the tale walk the world in their own painted sheets
 	var bad_sheets := []
