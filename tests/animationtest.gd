@@ -69,6 +69,25 @@ func run(_main: Node) -> void:
 			showcase.texture == next_texture and overlay != null and overlay.texture == null)
 		showcase.free()
 
+	# Mage Starter's casting visual is a separate front-only one-shot; it must not
+	# alter the three existing directional walk/idle/attack clips.
+	var mage_cast_front := Sheets.mage_starter_cast_front_frames()
+	check("mage_starter_cast_front_atlas_loaded", mage_cast_front != null)
+	if mage_cast_front != null:
+		check("mage_starter_cast_front_has_twelve_frames",
+			mage_cast_front.has_animation("cast_front")
+			and mage_cast_front.get_frame_count("cast_front") == 12)
+		check("mage_starter_cast_front_uses_eight_fps_one_shot",
+			is_equal_approx(mage_cast_front.get_animation_speed("cast_front"), 8.0)
+			and not mage_cast_front.get_animation_loop("cast_front"))
+		var mage_cast_first := mage_cast_front.get_frame_texture("cast_front", 0) as AtlasTexture
+		var mage_cast_last := mage_cast_front.get_frame_texture("cast_front", 11) as AtlasTexture
+		check("mage_starter_cast_front_cells_are_160x285",
+			mage_cast_first != null and mage_cast_first.get_size() == Vector2(160, 285)
+			and mage_cast_last != null and mage_cast_last.get_size() == Vector2(160, 285))
+	check("mage_starter_cast_front_feet_pivot_is_centered",
+		Sheets.mage_starter_cast_front_offset() == Vector2(-80, -270))
+
 	var hero_manifest: Dictionary = Game.manifest.get("heroes", {})
 	var hero_names: Array = hero_manifest.keys()
 	hero_names.sort()
