@@ -20,6 +20,13 @@
  <pattern id="ferns" width="70" height="64" patternUnits="userSpaceOnUse">
   <path d="M12 54q4-30 23-42m-18 32l-9-8m12-3l-9-8m20 0l9-8m-13 25l10-7M54 60q-1-22 9-34m-8 21l-8-7m12-3l8-6" fill="none" stroke="#7e9a58" stroke-width="2" opacity=".5"/>
  </pattern>
+ <pattern id="bark-grain" width="58" height="42" patternUnits="userSpaceOnUse">
+  <path d="M3 8q12-8 21 1t18-2m-35 23q13-7 21 1t24-1" fill="none" stroke="#b28a5c" stroke-width="1.4" opacity=".24"/>
+  <path d="M12 16l5-3m22 17l7-4" stroke="#172a20" stroke-width="2" opacity=".38"/>
+ </pattern>
+ <radialGradient id="canopy-light">
+  <stop stop-color="#c2c87e" stop-opacity=".22"/><stop offset="1" stop-color="#8da45e" stop-opacity="0"/>
+ </radialGradient>
 </defs>
 <rect width="1100" height="850" fill="url(#forestFloor)"/>
 <rect width="1100" height="850" fill="url(#leafLitter)" opacity=".8"/>
@@ -42,4 +49,47 @@
 <g fill="#8ea25c" opacity=".8"><circle cx="84" cy="490" r="3"/><circle cx="95" cy="495" r="2"/><circle cx="1010" cy="260" r="3"/><circle cx="1018" cy="267" r="2"/><circle cx="730" cy="555" r="3"/><circle cx="740" cy="562" r="2"/><circle cx="245" cy="82" r="2.5"/></g>
 <g fill="#c0a27a" stroke="#514a36" stroke-width="2"><path d="M250 140l15-9 18 7 3 12-17 9-18-8z"/><path d="M420 650l16-8 17 6 2 12-20 9-18-7z"/><path d="M910 350l15-10 18 4 4 13-19 9-17-6z"/><path d="M95 575l12-8 15 5 2 10-15 7-13-5z"/><path d="M960 730l13-8 16 5 3 12-18 7-14-7z"/></g>
 <path d="M0 0H1100V850H0Z" fill="none" stroke="#14291f" stroke-width="24" opacity=".35"/>
+<!-- Layered roots, canopy shafts, damp moss and fallen wood add woodland depth without painting over the route lanes. -->
+<g id="forest-detail-pass">
+ <rect width="1100" height="850" fill="url(#bark-grain)" opacity=".56"/>
+ <ellipse cx="255" cy="180" rx="190" ry="150" fill="url(#canopy-light)"/>
+ <ellipse cx="830" cy="575" rx="220" ry="190" fill="url(#canopy-light)"/>
+ <ellipse cx="180" cy="720" rx="130" ry="110" fill="#17291f" opacity=".24"/>
+ <ellipse cx="930" cy="170" rx="150" ry="110" fill="#17291f" opacity=".26"/>
+ <g fill="none" stroke="#17271e" stroke-linecap="round" opacity=".66">
+  <path d="M-20 204q82-25 117 20t92 20q38-9 70 18" stroke-width="11"/>
+  <path d="M-18 218q66-20 99 13t76 21q39-9 69 13" stroke-width="3.5"/>
+  <path d="M1120 265q-79-20-110 22t-91 19q-39-11-73 17" stroke-width="10"/>
+  <path d="M1118 279q-65-16-96 16t-75 20q-38-10-68 12" stroke-width="3.5"/>
+  <path d="M75 870q33-80 94-94t80-56q14-29 48-42" stroke-width="9"/>
+  <path d="M88 866q30-67 84-78t72-50" stroke-width="3"/>
+  <path d="M1030 870q-46-75-98-84t-91-54q-20-27-54-35" stroke-width="10"/>
+ </g>
+ <g fill="none" stroke="#8fa56b" stroke-width="2.4" stroke-linecap="round" opacity=".55">
+  <path d="M30 115q28-28 55-15m-36 18l-8-15m26 7l8-14M1020 115q-27-28-54-15m34 18l8-15m-26 7l-8-14"/>
+  <path d="M160 615q25-23 48-11m-28 15l-7-13m25 8l8-13M900 740q25-23 48-11m-28 15l-7-13m25 8l8-13"/>
+ </g>
+ <g fill="#6f8a4e" stroke="#253c2a" stroke-width="2">
+  <path d="M85 585q-29-42-8-57q30 14 17 45q23-40 46-24q-5 34-43 44q35-8 45 18q-33 19-57-26z"/>
+  <path d="M910 290q-26-37-7-52q27 12 16 41q20-34 40-20q-3 28-37 38q30-7 39 15q-28 16-51-22z"/>
+  <path d="M280 765q-21-34-4-47q23 10 13 36q18-29 35-17q-3 24-32 33q26-6 34 13q-25 14-46-18z"/>
+  <path d="M1000 760q-22-35-5-48q24 11 14 37q18-30 36-17q-3 25-33 34q27-6 35 14q-26 14-47-20z"/>
+ </g>
+ <g fill="#c8b69a" stroke="#4b5541" stroke-width="2">
+  <path d="M115 370l14-10 20 5 5 13-17 11-19-7zM154 385l10-8 14 4 4 10-12 8-15-5z"/>
+  <path d="M760 100l14-10 19 5 5 14-17 10-19-6zM799 113l10-7 13 3 4 9-12 7-13-4z"/>
+  <path d="M850 765l13-9 18 5 4 12-15 10-18-6zM220 90l12-8 16 4 3 11-14 8-15-5z"/>
+ </g>
+ <g fill="#9b72a0" stroke="#45344a" stroke-width="1.5">
+  <path d="M395 730q-8-18 5-23q15 2 11 22zM410 733q-6-14 5-18q12 2 9 18z"/>
+  <path d="M940 470q-8-17 4-22q14 2 11 21zM954 473q-5-14 5-18q12 2 9 18z"/>
+ </g>
+ <g fill="#e2d2a0" opacity=".7">
+  <circle cx="390" cy="728" r="2"/><circle cx="404" cy="724" r="1.5"/><circle cx="936" cy="467" r="1.7"/>
+ </g>
+ <g fill="#d3d9a0" opacity=".48">
+  <circle cx="245" cy="245" r="1.8"/><circle cx="252" cy="250" r="1.2"/><circle cx="845" cy="610" r="2"/>
+  <circle cx="852" cy="616" r="1.2"/><circle cx="670" cy="92" r="1.6"/><circle cx="672" cy="102" r="1"/>
+ </g>
+</g>
 </svg>
