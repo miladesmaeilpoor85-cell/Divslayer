@@ -29,6 +29,7 @@ On 18 November 2026, the `main` branch history was rewritten to remove an old sa
 - [Art direction guide](docs/ART_DIRECTION_GUIDE.md) — visual identity, character/creature/environment design, and Godot sprite standards.
 - [Class visual design](docs/CLASS_VISUAL_DESIGN.md) — class identities, combat animation beats, and sprite-sheet requirements.
 - [Asset pipeline](docs/ASSET_PIPELINE.md) — image/audio integrity checks and the artwork rights-register workflow.
+- [Asset-rights evidence requirements](docs/ASSET_RIGHTS_EVIDENCE_REQUEST.md) — per-file proof needed for AI art, Suno/Hoosha music, CC0 audio, fonts and icons.
 - [Multi-tool production pipeline](docs/MULTITOOL_PIPELINE.md) — GDScript/Python analysis, FFmpeg audio checks, image inspection, and map-layout previews.
 - [Creative applications workflow](docs/CREATIVE_TOOLS.md) — Krita, Audacity, LMMS, and Blender smoke tests and source-project handling.
 - [Google Flow cinematic production pack](docs/GOOGLE_FLOW_PRODUCTION_PACK.md) — a bilingual teaser shot plan and prompt pack; generation remains a manual task in the owner's Flow account.
