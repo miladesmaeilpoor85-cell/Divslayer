@@ -30,33 +30,38 @@
   <circle cx="6" cy="7" r=".8" fill="#d8f4f7" opacity=".42"/>
  </pattern>
  <g id="gw-wing-open">
-  <path d="M79 78C60 54 36 32 9 29C22 51 18 66 5 82C25 88 24 105 13 121C42 117 59 131 81 151C92 129 93 100 79 78Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
+  <path d="M79 78C66 59 53 44 37 38Q27 29 9 29C17 42 24 50 22 58Q18 66 6 68Q22 75 19 85Q17 96 8 103Q26 105 29 116Q30 128 18 131C43 126 60 137 81 151C94 129 93 100 79 78Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
   <path d="M74 80C52 58 34 44 10 30C24 55 40 75 69 99" fill="none" stroke="#e5f9fb" stroke-width="2" opacity=".72"/>
   <path d="M67 92C43 72 25 71 7 82C29 93 44 103 73 111" fill="url(#gw-feather-light)" stroke="#6b9bb5" stroke-width="1.2"/>
   <path d="M72 107C49 100 31 109 14 123C41 124 58 132 81 145" fill="url(#gw-deep-feather)" stroke="#94c1d3" stroke-width="1.2"/>
   <path d="M61 72C43 50 31 41 17 36M56 90C36 77 25 76 13 81M62 112C43 111 30 117 19 124" fill="none" stroke="#d8f3f7" stroke-width="1.4" opacity=".62"/>
   <path d="M72 80Q54 64 31 52M72 98Q48 88 26 88M77 120Q53 115 37 124" fill="none" stroke="#284761" stroke-width="1" opacity=".65"/>
   <path d="M31 53q-9-12-17-15q7 19 18 30M27 86q-11-8-19-5q9 14 22 17M34 119q-10 1-17 7q16 5 27 2" fill="none" stroke="#effdff" stroke-width="1.2" opacity=".55"/>
+  <path d="M16 40Q29 50 44 67Q53 78 64 88M13 79Q29 83 46 96Q57 105 73 115M18 122Q36 119 51 129Q64 137 76 145" fill="none" stroke="#dff8ff" stroke-width="1.7" stroke-linecap="round" opacity=".78"/>
+  <path d="M7 68Q16 65 22 58M9 102Q18 99 28 103M18 131Q28 126 39 128" fill="none" stroke="#f4ffff" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
  </g>
  <g id="gw-wing-raised">
-  <path d="M80 81C59 58 51 28 24 5C28 34 12 44 5 60C25 65 19 84 12 101C41 97 61 119 82 145C91 123 92 99 80 81Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
+  <path d="M80 81C65 61 54 35 24 5Q29 23 19 37Q12 46 5 60Q23 63 20 73Q18 84 9 91Q29 92 25 106Q23 115 13 122C44 115 63 132 82 145C93 121 92 99 80 81Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
   <path d="M75 79C59 52 44 28 25 7C32 36 45 61 70 93" fill="none" stroke="#e9fbff" stroke-width="2" opacity=".7"/>
   <path d="M70 94C47 69 27 57 7 61C30 81 42 93 76 112" fill="url(#gw-feather-light)" stroke="#6b9bb5" stroke-width="1.2"/>
   <path d="M72 111C50 94 29 99 13 105C41 116 59 130 82 140" fill="url(#gw-deep-feather)" stroke="#94c1d3" stroke-width="1.2"/>
   <path d="M50 37L28 9M46 68L13 62M54 100L19 105" fill="none" stroke="#e5f8fb" stroke-width="1.4" opacity=".6"/>
   <path d="M65 88Q45 65 29 49M70 111Q45 99 27 103" fill="none" stroke="#284761" stroke-width="1" opacity=".68"/>
+  <path d="M25 13Q34 31 44 43Q58 61 71 83M10 61Q26 65 43 81Q58 96 75 111M16 112Q34 109 51 126Q65 137 79 144" fill="none" stroke="#eafcff" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>
  </g>
  <g id="gw-wing-down">
-  <path d="M78 78C54 75 28 86 7 111C29 111 34 128 29 148C51 138 67 150 85 166C96 138 94 105 78 78Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
+  <path d="M78 78C56 76 32 84 7 111Q26 109 29 120Q33 132 27 149C49 137 68 150 85 166C97 137 94 105 78 78Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
   <path d="M74 85C52 92 31 103 9 111C37 112 54 121 82 143" fill="none" stroke="#e9fbff" stroke-width="2" opacity=".68"/>
   <path d="M73 101C50 106 34 125 27 146C51 135 67 143 85 158" fill="url(#gw-feather-light)" stroke="#6b9bb5" stroke-width="1.2"/>
   <path d="M67 116C49 125 43 143 43 157C61 150 74 158 86 165" fill="url(#gw-deep-feather)" stroke="#94c1d3" stroke-width="1.2"/>
   <path d="M53 99Q33 108 15 119M60 122Q48 134 36 150M74 140Q64 151 58 160" fill="none" stroke="#e5f8fb" stroke-width="1.4" opacity=".58"/>
+  <path d="M11 111Q30 105 47 110Q65 117 82 145M29 145Q45 132 62 141Q73 147 84 160" fill="none" stroke="#e8fbff" stroke-width="1.8" stroke-linecap="round" opacity=".78"/>
  </g>
  <g id="gw-wing-fold">
-  <path d="M79 79C60 72 39 82 22 104C43 100 54 119 58 143C75 133 84 122 91 106Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
+  <path d="M79 79C60 72 40 82 22 104Q42 99 47 111Q54 122 58 143C76 134 85 122 91 106Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
   <path d="M77 84Q56 92 25 105Q53 105 78 130" fill="none" stroke="#e8fbff" stroke-width="1.8" opacity=".7"/>
   <path d="M73 102Q52 111 56 140M80 107Q67 117 68 139" fill="none" stroke="#6d9fba" stroke-width="2" opacity=".8"/>
+  <path d="M25 104Q42 98 60 109Q72 119 84 133M57 141Q65 132 82 128" fill="none" stroke="#e6f9ff" stroke-width="1.6" stroke-linecap="round" opacity=".76"/>
  </g>
  <g id="gw-body">
   <ellipse cx="102" cy="211" rx="59" ry="9" fill="#071522" opacity=".38"/>
@@ -86,7 +91,10 @@
   <path d="M99 140L103 149L107 140L103 144Z" fill="#b9e8f3" stroke="#e7ffff" stroke-width="1"/>
   <path d="M75 155Q66 157 63 170L72 182L88 169M130 154Q140 157 143 170L134 183L118 169" fill="none" stroke="#d9f3f7" stroke-width="3" stroke-linecap="round"/>
   <path d="M70 178L65 192L76 187L84 176M136 178L141 192L130 187L122 176" fill="none" stroke="#8ec3d7" stroke-width="2.2"/>
+  <path d="M78 150Q68 144 59 151Q67 151 68 161Q61 155 52 162Q63 160 69 171Q76 162 87 163M126 149Q137 143 147 151Q138 151 137 161Q145 155 154 162Q143 160 137 171Q130 162 119 163" fill="url(#gw-feather-light)" stroke="#8bbdd0" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M57 155Q69 158 76 168M148 155Q136 158 129 168" fill="none" stroke="#f2ffff" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>
   <path d="M79 147Q102 159 125 147" fill="none" stroke="url(#gw-gold)" stroke-width="1.6"/>
+  <path d="M80 184Q70 197 62 206Q77 203 83 194M124 184Q134 198 144 204Q132 204 120 194" fill="none" stroke="#9ed1e0" stroke-width="2.1" stroke-linecap="round" opacity=".9"/>
  </g>
 </defs>
 <g transform="translate(0,0)">
