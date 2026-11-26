@@ -119,9 +119,11 @@ func run(m: Node) -> void:
 	var map_data := Game.map_data("alborz")
 	var data: Dictionary = map_data.get("data", {})
 	var scout_entry_found := false
+	var scout_look := ""
 	for npc_data in data.get("npcs", []):
 		if str(npc_data.get("id", "")) == "alborz_scout":
 			scout_entry_found = true
+			scout_look = str(npc_data.get("look", ""))
 	check("map_data_has_wind_scout_and_guards",
 		data.get("windGusts", []).size() == 1
 		and scout_entry_found
@@ -177,6 +179,16 @@ func run(m: Node) -> void:
 	check("scout_and_three_guard_types_spawn", npc("alborz_scout") != null
 		and w.stats["enemies"] == 3
 		and w.wall_rects.size() >= 10, [w.stats, w.wall_rects.size()])
+	var scout_node := npc("alborz_scout")
+	var scout_sprite: AnimatedSprite2D = scout_node.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D if scout_node != null else null
+	var scout_frames: SpriteFrames = scout_sprite.sprite_frames if scout_sprite != null else null
+	check("alborz_scout_uses_its_own_registered_look",
+		scout_look == "alborz_scout" and Game.manifest.get("npcs", {}).has("alborz_scout")
+		and ResourceLoader.exists("res://assets/art/Npcs/alborz_scout.svg")
+		and scout_frames != null and scout_frames.has_animation("walk_down")
+		and scout_frames.get_frame_count("walk_down") == 4,
+		{"look": scout_look, "manifest": Game.manifest.get("npcs", {}).has("alborz_scout"),
+		 "walk_frames": scout_frames.get_frame_count("walk_down") if scout_frames != null and scout_frames.has_animation("walk_down") else 0})
 
 	# Wind phase and cover are checked in logical map coordinates. The contribution never accumulates.
 	var controller = w.wind_zones[0]["controller"]
@@ -291,6 +303,19 @@ func run(m: Node) -> void:
 			and gale_warden.over != null and gale_warden.anim != null and gale_warden.anim.visible
 			and warden_frames != null and warden_frames.has_animation("v0")
 			and warden_frames.get_frame_count("v0") == 4 and warden_frames.get_animation_speed("v0") > 0.0)
+		gale_warden.call("_warden_pose_start", 0.74)
+		check("gale_warden_attack_uses_anticipation_pose",
+			gale_warden.anim.frame == 1 and gale_warden.warden_pose_step == 0)
+		gale_warden.call("_warden_pose_tick", 0.75)
+		check("gale_warden_attack_transitions_to_downstroke",
+			gale_warden.anim.frame == 2 and gale_warden.warden_pose_step == 1)
+		gale_warden.call("_warden_pose_tick", 0.19)
+		check("gale_warden_attack_transitions_to_recovery",
+			gale_warden.anim.frame == 3 and gale_warden.warden_pose_step == 2)
+		gale_warden.call("_warden_pose_tick", 0.55)
+		check("gale_warden_returns_to_idle_wing_cycle",
+			gale_warden.warden_pose_step == -1 and gale_warden.anim.is_playing()
+			and gale_warden.anim.animation == "v0")
 	main.goto_map("alborz", Vector2(1290, 520))
 	await frames(5)
 
