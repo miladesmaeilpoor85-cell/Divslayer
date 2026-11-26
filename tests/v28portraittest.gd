@@ -1,5 +1,5 @@
 extends Node
-## v0.28 checks on the painted dialogue portraits (eleven since 0.28.1, with Qaren): every portrait file exists and ships on Android, each speaker shows his
+## Painted dialogue portrait checks, including the dedicated Alborz Scout portrait: every portrait file exists and ships on Android, each speaker shows his
 ## painting (heroes of the tale by their look), a speaker with no painting keeps his sprite face, the painted face turns
 ## toward the text in both languages, Jamshid's painting is not tinted twice, and the HUD's own hero portrait is untouched.
 ##   godot --headless --fixed-fps 60 --path . -- --test res://tests/v28portraittest.gd
@@ -44,7 +44,7 @@ func run(m: Node) -> void:
 	var no_mip := []
 	var ex := excludes("Android")
 	for k in Portrait.ART:
-		var path: String = Portrait.ART_DIR % Portrait.ART[k][0]
+		var path: String = Portrait.art_path(k)
 		if not ResourceLoader.exists(path):
 			missing.append(path)
 			continue
@@ -54,7 +54,7 @@ func run(m: Node) -> void:
 		var t: Texture2D = load(path)
 		if not t.get_image().has_mipmaps():
 			no_mip.append(path)
-	check("eleven_portraits", Portrait.ART.size() == 11, Portrait.ART.size())
+	check("twelve_portraits_including_alborz_scout", Portrait.ART.size() == 12 and Portrait.has_art("alborz_scout"), Portrait.ART.size())
 	check("portrait_files_exist", missing.is_empty(), missing)
 	check("portraits_ship_on_android", left_out.is_empty(), left_out)
 	check("portraits_have_mipmaps", no_mip.is_empty(), no_mip)
@@ -153,7 +153,7 @@ func run(m: Node) -> void:
 	var dl = main.hud.dialogue
 	var p = dl.portrait
 	var sheets := ["elder", "merchant", "alchemist", "brann", "keeper", "hesk", "smith", "qaren",
-		"hero:warrior_endgame:npc_rostam", "hero:paladin_endgame:npc_siavash", "hero:rogue_endgame:npc_gordafarid"]
+		"hero:warrior_endgame:npc_rostam", "hero:paladin_endgame:npc_siavash", "hero:rogue_endgame:npc_gordafarid", "alborz_scout"]
 	var wrong := []
 	for s in sheets:
 		dl.open("x", ["..."], s)
@@ -165,8 +165,8 @@ func run(m: Node) -> void:
 			var spec: Array = Portrait.USER_ART[key]
 			wrong_source = p._tex != Portrait.USER_ART_ATLAS or p._src != Rect2(spec[0], Vector2(192, 192))
 		else:
-			var want: String = Portrait.ART[key][0]
-			wrong_source = p._tex == null or not str(p._tex.resource_path).ends_with(want + ".webp")
+			var want: String = Portrait.art_path(key).trim_prefix("res://")
+			wrong_source = p._tex == null or not str(p._tex.resource_path).ends_with(want)
 		if p.art_facing == 0 or wrong_source or p.face.material != null:
 			wrong.append([s, p.art_facing, p._tex.resource_path if p._tex else null, p._src])
 		dl.visible = false
