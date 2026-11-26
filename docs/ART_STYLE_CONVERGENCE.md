@@ -27,3 +27,11 @@ Use one coherent, painterly 2D fantasy language across the game: hand-painted ma
 - Check all exits, landmarks, NPCs, and quest clues remain visible.
 - Confirm no text, watermark, UI, border, or external web resource is embedded in world art.
 - Record creator/source, tool/provider, date, terms, and proof reference in `docs/ASSET_RIGHTS_REGISTER.csv`. A successful import or CI run does not prove commercial-use rights.
+
+## Regional terrain refinement pass — 26 November 2026
+
+- **Zabol:** retain the readable central market and radial village lanes; deepen compacted-earth grain, worn road margins, scattered cobble, herb clumps and warm market light.
+- **Whispering Forest:** preserve the west–east and north–south route network; add root shelves, damp moss, fern banks, leaf litter, small fungi and restrained canopy light.
+- **Ashen Peaks:** preserve the exit-connected volcanic tracks; add broken basalt strata, scree, ash fractures, scattered cinder and restrained heat blooms away from the main lanes.
+
+The ground SVGs retain their map-sized viewBoxes and 2× authored pixel dimensions. They are environmental surface illustrations only: walls, collision, hazards, spawns, exits and quest objects remain separate map data. Their new decoration pass is a quality iteration, not final art sign-off. Use the clean and native-logical-size review renders to inspect texture readability; the final acceptance gate remains an in-game Android-scale visual review.
