@@ -180,7 +180,7 @@ func run(m: Node) -> void:
 		and w.stats["enemies"] == 3
 		and w.wall_rects.size() >= 10, [w.stats, w.wall_rects.size()])
 	var scout_node := npc("alborz_scout")
-	var scout_sprite: AnimatedSprite2D = scout_node.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D if scout_node != null else null
+	var scout_sprite: AnimatedSprite2D = scout_node.get_node_or_null("CharacterSprite") as AnimatedSprite2D if scout_node != null else null
 	var scout_frames: SpriteFrames = scout_sprite.sprite_frames if scout_sprite != null else null
 	var scout_sheet: Texture2D = load("res://assets/art/Npcs/alborz_scout.svg") as Texture2D
 	check("alborz_scout_uses_its_own_registered_look",
