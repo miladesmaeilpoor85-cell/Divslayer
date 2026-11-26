@@ -47,7 +47,7 @@ var fountain: Node = null        # (v0.20) Zabol's fountain
 
 const WALL_LAYER := 1
 const NATURAL := ["tree", "pine", "bush", "rock", "stump", "willow", "deadtree", "reeds", "boulders"]   # (v0.35) may be mirrored
-const NPC_LOOKS := ["elder", "smith", "merchant", "alchemist", "brann", "keeper", "hesk", "qaren"]
+const NPC_LOOKS := ["elder", "smith", "merchant", "alchemist", "brann", "keeper", "hesk", "qaren", "alborz_scout"]
 ## villagers who can have news ("!" over their heads): the Elder (his quests, chapters 2 and 3), Sorush, Jamshid, Hom,
 ## (v0.23) Kaveh and his son Qaren
 const NEWS_NPCS := ["elder", "keeper", "brann", "hesk", "smith", "qaren", "rostam", "alborz_scout"]
