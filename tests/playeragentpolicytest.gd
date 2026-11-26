@@ -158,6 +158,7 @@ func run(_main: Node) -> void:
 		and float(matched_rect[0]) >= 0.0 and float(matched_rect[1]) >= 0.0
 		and float(matched_rect[0]) + float(matched_rect[2]) <= 1.0
 		and float(matched_rect[1]) + float(matched_rect[3]) <= 1.0)
+	# Match scores cannot exceed 1.0; 1.01 therefore exercises the rejection boundary.
 	var wrong_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 1.01)
 	check("sprite_template_match_rejects_threshold_above_perfect_score", wrong_match.is_empty())
 
