@@ -18,7 +18,7 @@ jobs:
   headless-tests:
     name: Godot 4.7.2 headless tests (shard ${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 50
     strategy:
       fail-fast: false
       matrix:
@@ -99,3 +99,123 @@ jobs:
 
       - name: Run complete headless test suite
         run: bash tools/run_all_tests.sh ci-shard-${{ matrix.shard }}
+
+  # Deterministic touch-input playtests. These run only on pull requests and do not
+  # replace physical Android playtesting; they produce per-class logs and screenshots.
+  gameplay-touch-playtest:
+    name: Campaign playtest — ${{ matrix.hero }}
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        hero: [warrior, mage, rogue, paladin]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download and verify Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          expected="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --silent --show-error "$url" --output "$RUNNER_TEMP/godot.zip"
+          echo "$expected  $RUNNER_TEMP/godot.zip" | sha256sum --check -
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64"
+          ln -s "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64" "$RUNNER_TEMP/godot/godot"
+          "$RUNNER_TEMP/godot/godot" --version
+
+      - name: Import project resources before the touch playtest
+        shell: bash
+        run: |
+          set -euo pipefail
+          log_file="$RUNNER_TEMP/gameplay-godot-import.log"
+          set +e
+          "$RUNNER_TEMP/godot/godot" --headless --editor --path . --quit 2>&1 | tee "$log_file"
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$log_file"; then
+            echo "::error::Godot reported script parse/load errors during project import."
+            exit 1
+          fi
+          exit "$status"
+
+      - name: Prepare the per-class touch scenario
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null 2>&1 || ! command -v xauth >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes xvfb xauth
+          fi
+          mkdir -p "$RUNNER_TEMP/gameplay-playtest"
+          python3 - "$HERO" "$RUNNER_TEMP/gameplay-playtest/scenario.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          hero, destination = sys.argv[1], Path(sys.argv[2])
+          template = Path("tests/playtest_scenarios/chapter12_touch_review.template.json")
+          rendered = template.read_text(encoding="utf-8").replace("__CLASS__", hero)
+          parsed = json.loads(rendered)
+          assert len([step for step in parsed if step.get("do") == "fight"]) == 8
+          assert len([step for step in parsed if step.get("do") == "assert_state"]) == 13
+          destination.write_text(json.dumps(parsed, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Run Chapter I–II touch-input playtest
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/gameplay-playtest/$HERO"
+          profile="$RUNNER_TEMP/gameplay-playtest/profile-$HERO"
+          mkdir -p "$output/shots" "$profile"
+          set +e
+          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=10 900s xvfb-run -a -s "-screen 0 1067x480x24" \
+            "$RUNNER_TEMP/godot/godot" --path . --rendering-driver opengl3 --resolution 1067x480 --fixed-fps 60 --audio-driver Dummy \
+            -- --test res://tests/playtest.gd --playtest \
+            --script "$RUNNER_TEMP/gameplay-playtest/scenario.json" --out "$output" \
+            2>&1 | tee "$output/godot.txt"
+          status=${PIPESTATUS[0]}
+          set -e
+          cat "$output/log.txt"
+          if [[ "$status" -ne 0 ]]; then
+            echo "::error::Touch-input playtest exited with status $status."
+            exit "$status"
+          fi
+          python3 - "$output/log.txt" "$output/godot.txt" <<'PY'
+          import sys
+          from pathlib import Path
+
+          log = Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+          godot = Path(sys.argv[2]).read_text(encoding="utf-8", errors="replace")
+          fights = [line for line in log.splitlines() if '"do":"fight"' in line]
+          assert "PLAYTEST_DONE" in log, "Playtest did not reach its final step"
+          assert "PLAYTEST_ASSERTIONS_PASSED" in log, "Playtest scenario assertions did not all pass"
+          assert "ASSERTION_FAILED" not in log, "A campaign path or boss-combat assertion failed"
+          assert len(fights) == 8, f"Expected 8 combat samples, found {len(fights)}"
+          passed = log.count("ASSERTION_PASSED ")
+          assert passed == 13, f"Expected all 13 campaign checkpoint assertions, found {passed}"
+          errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
+          assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
+          print("PLAYTEST_COMBAT_SAMPLES")
+          print("\n".join(fights))
+          PY
+
+      - name: Upload class playtest logs and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Playtest-${{ matrix.hero }}
+          path: ${{ runner.temp }}/gameplay-playtest/${{ matrix.hero }}/
+          if-no-files-found: warn
+          retention-days: 14
+

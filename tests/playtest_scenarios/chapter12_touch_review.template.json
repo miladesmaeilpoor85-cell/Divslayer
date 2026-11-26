@@ -1,0 +1,555 @@
+[
+  {
+    "do": "lang",
+    "v": "fa"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Zabol, Rostam and Zal"
+  },
+  {
+    "do": "new",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "shot",
+    "name": "zabol_start"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "rostam",
+    "max_sec": 20
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "tap_text",
+    "text": "راه و رسمِ نبرد را می‌دانم",
+    "after": 0.6
+  },
+  {
+    "do": "dialog_all"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "elder",
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Buy provisions from Sindokht"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "merchant",
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "tap_text",
+    "text": "معجون جان"
+  },
+  {
+    "do": "tap_text",
+    "text": "معجون جان"
+  },
+  {
+    "do": "tap_text",
+    "text": "معجون جان"
+  },
+  {
+    "do": "tap_text",
+    "text": "معجون جان"
+  },
+  {
+    "do": "shot",
+    "name": "merchant_health_potions"
+  },
+  {
+    "do": "tap",
+    "x": 20,
+    "y": 20,
+    "after": 0.5
+  },
+  {
+    "do": "assert_state",
+    "label": "merchant_potions_purchased",
+    "potions_at_least": 5,
+    "game_unpaused": true,
+    "player_alive": true
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "forest",
+    "max_sec": 45
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Whispering Forest and its clues"
+  },
+  {
+    "do": "assert_state",
+    "label": "entered_whispering_forest",
+    "map": "forest",
+    "objective_contains": "(۰/۲)",
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch1_forest"
+  },
+  {
+    "do": "walk_to",
+    "x": 240,
+    "y": 240,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 420,
+    "y": 250,
+    "max_sec": 25
+  },
+  {
+    "do": "shot",
+    "name": "forest_skirmish_start"
+  },
+  {
+    "do": "fight",
+    "sec": 12,
+    "shots_every": 0
+  },
+  {
+    "do": "shot",
+    "name": "forest_skirmish_end"
+  },
+  {
+    "do": "walk_to",
+    "x": 620,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 690,
+    "y": 500,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 760,
+    "y": 560,
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "assert_state",
+    "label": "first_forest_clue_collected",
+    "map": "forest",
+    "objective_contains": "۱/۲"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "button",
+    "id": "potion"
+  },
+  {
+    "do": "walk_to",
+    "x": 680,
+    "y": 500,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 420,
+    "y": 250,
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "assert_state",
+    "label": "both_forest_clues_collected",
+    "map": "forest",
+    "objective_contains": "گذرگاه شمالی جنگل"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 300,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to",
+    "x": 520,
+    "y": 80,
+    "max_sec": 25
+  },
+  {
+    "do": "walk_to_exit",
+    "to": "dungeon",
+    "max_sec": 45
+  },
+  {
+    "do": "assert_state",
+    "label": "entered_sunken_crypt",
+    "map": "dungeon",
+    "objective_contains": "سنگ‌نوشتهٔ کهن"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Sunken Crypt and Arzhang"
+  },
+  {
+    "do": "shot",
+    "name": "ch1_crypt"
+  },
+  {
+    "do": "fight",
+    "sec": 25,
+    "shots_every": 5
+  },
+  {
+    "do": "button",
+    "id": "potion"
+  },
+  {
+    "do": "assert_state",
+    "label": "crypt_approach_survived",
+    "map": "dungeon",
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 760,
+    "y": 540,
+    "max_sec": 35
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "close_intro"
+  },
+  {
+    "do": "assert_state",
+    "label": "arzhang_encounter_unlocked",
+    "map": "dungeon",
+    "objective_contains": "ارژنگ",
+    "foe_type": "boss",
+    "foe_must_exist": true,
+    "foe_must_be_alive": true,
+    "player_alive": true,
+    "game_unpaused": true
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "walk_to",
+    "x": 800,
+    "y": 600,
+    "max_sec": 25
+  },
+  {
+    "do": "shot",
+    "name": "ch1_arzhang_start"
+  },
+  {
+    "do": "fight",
+    "sec": 20,
+    "shots_every": 5,
+    "target_foe": "boss"
+  },
+  {
+    "do": "assert_state",
+    "label": "boss_took_damage",
+    "map": "dungeon",
+    "foe_type": "boss",
+    "foe_hp_below": 100,
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch1_arzhang_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — King of Mazandaran"
+  },
+  {
+    "do": "preset",
+    "name": "act2",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "set",
+    "key": "brann",
+    "v": "done"
+  },
+  {
+    "do": "goto",
+    "map": "peaks",
+    "x": 560,
+    "y": 200
+  },
+  {
+    "do": "shot",
+    "name": "ch1_king_start"
+  },
+  {
+    "do": "fight",
+    "sec": 15,
+    "shots_every": 20,
+    "target_foe": "boss2"
+  },
+  {
+    "do": "assert_state",
+    "label": "boss2_took_damage",
+    "map": "peaks",
+    "foe_type": "boss2",
+    "foe_hp_below": 100,
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch1_king_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter I — Sorceress of Shadowfen"
+  },
+  {
+    "do": "preset",
+    "name": "act3",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "goto",
+    "map": "shadowfen",
+    "x": 660,
+    "y": 300
+  },
+  {
+    "do": "shot",
+    "name": "ch1_sorceress_start"
+  },
+  {
+    "do": "fight",
+    "sec": 15,
+    "shots_every": 20,
+    "target_foe": "matriarch"
+  },
+  {
+    "do": "assert_state",
+    "label": "matriarch_took_damage",
+    "map": "shadowfen",
+    "foe_type": "matriarch",
+    "foe_hp_below": 100,
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch1_sorceress_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — Zal reveals the seals"
+  },
+  {
+    "do": "preset",
+    "name": "ch2",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "elder",
+    "max_sec": 25
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — White Div at Crystal Sanctum"
+  },
+  {
+    "do": "goto",
+    "map": "sanctum",
+    "x": 600,
+    "y": 460
+  },
+  {
+    "do": "close_intro"
+  },
+  {
+    "do": "walk_to_npc",
+    "id": "keeper",
+    "max_sec": 30
+  },
+  {
+    "do": "talk"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "shot",
+    "name": "ch2_white_div_start"
+  },
+  {
+    "do": "fight",
+    "sec": 15,
+    "shots_every": 20,
+    "target_foe": "arbiter"
+  },
+  {
+    "do": "assert_state",
+    "label": "arbiter_took_damage",
+    "map": "sanctum",
+    "foe_type": "arbiter",
+    "foe_hp_below": 100,
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch2_white_div_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — Akvan at Hoarfrost Vale"
+  },
+  {
+    "do": "preset",
+    "name": "ch2",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "goto",
+    "map": "frostvale",
+    "x": 1000,
+    "y": 488
+  },
+  {
+    "do": "close_intro"
+  },
+  {
+    "do": "shot",
+    "name": "ch2_akvan_start"
+  },
+  {
+    "do": "fight",
+    "sec": 15,
+    "shots_every": 5,
+    "target_foe": "glaciertitan",
+    "verbose": true
+  },
+  {
+    "do": "assert_state",
+    "label": "glaciertitan_took_damage",
+    "map": "frostvale",
+    "foe_type": "glaciertitan",
+    "foe_hp_below": 100,
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch2_akvan_end"
+  },
+  {
+    "do": "state"
+  },
+  {
+    "do": "checkpoint",
+    "name": "Chapter II — Dragon of Kashaf"
+  },
+  {
+    "do": "preset",
+    "name": "ch2",
+    "class": "__CLASS__"
+  },
+  {
+    "do": "goto",
+    "map": "wyrmhollow",
+    "x": 350,
+    "y": 825
+  },
+  {
+    "do": "close_intro"
+  },
+  {
+    "do": "isolate_boss",
+    "target_foe": "ancientwyrm"
+  },
+  {
+    "do": "shot",
+    "name": "ch2_dragon_start"
+  },
+  {
+    "do": "fight",
+    "sec": 60,
+    "shots_every": 5,
+    "verbose": true,
+    "target_foe": "ancientwyrm"
+  },
+  {
+    "do": "assert_state",
+    "label": "ancientwyrm_took_damage",
+    "map": "wyrmhollow",
+    "foe_type": "ancientwyrm",
+    "foe_hp_below": 100,
+    "player_alive": true
+  },
+  {
+    "do": "shot",
+    "name": "ch2_dragon_end"
+  },
+  {
+    "do": "state"
+  }
+]

@@ -157,10 +157,13 @@ static func fire(n: CanvasItem, at: Vector2, s: float, t: float, seed: float, co
 		var ph: float = t / 0.12 + i * 2.1 + seed
 		var h: float = s * (1.6 + 0.4 * sin(ph))
 		var w: float = s * (0.75 - i * 0.15)
+		# Scale horizontal flicker with the flame. A fixed 1.5 px offset can
+		# fold the polygon into itself as a burning bramble flame shrinks.
+		var sway := minf(1.5, s * 0.2)
 		var pts := PackedVector2Array()
 		var p0 := Vector2(x - w, y)
-		var c1 := Vector2(x - w * 0.6 + sin(ph * 1.7) * 1.5, y - h * 0.6)
-		var p1 := Vector2(x + sin(ph) * 1.5, y - h)
+		var c1 := Vector2(x - w * 0.6 + sin(ph * 1.7) * sway, y - h * 0.6)
+		var p1 := Vector2(x + sin(ph) * sway, y - h)
 		var c2 := Vector2(x + w * 0.6, y - h * 0.55)
 		var p2 := Vector2(x + w, y)
 		for k in 7:

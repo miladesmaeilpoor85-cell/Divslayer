@@ -49,6 +49,13 @@ var stick_origin := Vector2.ZERO        # window pixels
 var log_f: FileAccess
 var t0 := 0
 var verbose := false
+var current_step := -1
+var current_action := ""
+var current_step_started_ms := 0
+var active_stage := "startup"
+var stage_started_ms := 0
+var assertion_failures: Array[String] = []
+var fight_evidence: Dictionary = {}
 
 const PRESETS := {
 	# level, weapon, armour, potions, gold
@@ -68,6 +75,7 @@ func _arg(k: String, d: String) -> String:
 func run(m: Node) -> void:
 	main = m
 	t0 = Time.get_ticks_msec()
+	stage_started_ms = t0
 	out = _arg("--out", "user://playtest")
 	DirAccess.make_dir_recursive_absolute(out.path_join("shots"))
 	log_f = FileAccess.open(out.path_join("log.txt"), FileAccess.WRITE)
@@ -79,6 +87,11 @@ func run(m: Node) -> void:
 		_finish()
 		return
 	steps = parsed
+	var heartbeat := Timer.new()
+	heartbeat.wait_time = 20.0
+	heartbeat.timeout.connect(_heartbeat)
+	add_child(heartbeat)
+	heartbeat.start()
 	var vs := get_viewport().get_visible_rect().size
 	var ws := get_tree().root.size
 	_log("PLAYTEST v%s  window %dx%d  layout %dx%d  lang %s  steps %d" % [Game.VERSION, ws.x, ws.y, vs.x, vs.y, Game.lang, steps.size()])
@@ -88,15 +101,93 @@ func run(m: Node) -> void:
 		if typeof(s) != TYPE_DICTIONARY:
 			_log("STEP %d  (not an object) skipped" % i)
 			continue
+		current_step = i
+		current_action = str(s.get("do", ""))
+		current_step_started_ms = Time.get_ticks_msec()
+		_log("STEP_START %d %s" % [i, current_action])
 		var res = await _step(s)
-		_log("STEP %d %s -> %s" % [i, JSON.stringify(s), str(res)])
+		var step_elapsed := (Time.get_ticks_msec() - current_step_started_ms) / 1000.0
+		_log("STEP %d %.2f s %s -> %s" % [i, step_elapsed, JSON.stringify(s), str(res)])
+		current_step = -1
+		current_action = ""
+		# Stop at the first failed checkpoint or required map transition. Continuing
+		# would execute later stages on the wrong map and waste the CI time budget.
+		if not assertion_failures.is_empty():
+			_log("PLAYTEST_STOPPED_EARLY after a failed required checkpoint")
+			break
 	_finish()
 
+func _heartbeat() -> void:
+	if current_step >= 0:
+		var elapsed := (Time.get_ticks_msec() - current_step_started_ms) / 1000.0
+		_log("PLAYTEST_HEARTBEAT step=%d action=%s elapsed=%.1f s" % [current_step, current_action, elapsed])
+
 func _finish() -> void:
+	if stage_started_ms > 0:
+		var stage_elapsed := (Time.get_ticks_msec() - stage_started_ms) / 1000.0
+		_log("STAGE_END %s wall=%.1f s potions_remaining=%d" % [active_stage, stage_elapsed, int(Game.state.get("potions", 0))])
+	if assertion_failures.is_empty():
+		_log("PLAYTEST_ASSERTIONS_PASSED")
+	else:
+		_log("PLAYTEST_ASSERTIONS_FAILED %d" % assertion_failures.size())
+		for failure in assertion_failures:
+			_log("PLAYTEST_ASSERTION: " + failure)
 	_log("PLAYTEST_DONE  %.1f s wall" % ((Time.get_ticks_msec() - t0) / 1000.0))
 	if log_f:
 		log_f.flush()
-	get_tree().quit()
+	get_tree().quit(1 if not assertion_failures.is_empty() else 0)
+
+func _assert_state(s: Dictionary) -> String:
+	var failures: Array[String] = []
+	var snapshot := state()
+	var label := str(s.get("label", "checkpoint"))
+	if s.has("map") and str(snapshot.get("map", "")) != str(s["map"]):
+		failures.append("expected map %s, got %s" % [str(s["map"]), str(snapshot.get("map", ""))])
+	var objective := str(snapshot.get("objective", ""))
+	if s.has("objective_contains") and objective.find(str(s["objective_contains"])) < 0:
+		failures.append("objective did not contain '%s': %s" % [str(s["objective_contains"]), objective])
+	if bool(s.get("player_alive", false)) and bool(snapshot.get("dead", false)):
+		failures.append("player is dead")
+	if bool(s.get("game_unpaused", false)) and get_tree().paused:
+		failures.append("game remained paused")
+	if s.has("potions_at_least") and int(snapshot.get("potions", 0)) < int(s["potions_at_least"]):
+		failures.append("expected at least %d health potions, got %d" % [int(s["potions_at_least"]), int(snapshot.get("potions", 0))])
+	var required_foe := str(s.get("foe_type", ""))
+	if required_foe != "":
+		var found := false
+		var foe_candidates: Array = get_tree().get_nodes_in_group("enemies")
+		for boss_candidate in get_tree().get_nodes_in_group("bosses"):
+			if not foe_candidates.has(boss_candidate):
+				foe_candidates.append(boss_candidate)
+		for e in foe_candidates:
+			if e.world != main.world or str(e.type) != required_foe:
+				continue
+			found = true
+			if bool(s.get("foe_must_be_alive", false)) and e.dead:
+				failures.append("%s was already defeated before its combat checkpoint" % required_foe)
+		if bool(s.get("foe_must_exist", false)) and not found:
+			failures.append("required foe %s was not present on %s" % [required_foe, str(snapshot.get("map", ""))])
+		if s.has("foe_hp_below"):
+			# A missing enemy node is not proof of victory: the scene might never have
+			# spawned the boss. Require evidence captured at the start/end of its fight.
+			var evidence: Dictionary = fight_evidence.get(required_foe, {})
+			if evidence.is_empty() or not bool(evidence.get("present_before", false)):
+				failures.append("no verified combat evidence: %s was not present when its fight began" % required_foe)
+			elif bool(evidence.get("defeated", false)):
+				_log("ASSERTION_INFO %s: %s defeat was confirmed by the boss kill counter" % [label, required_foe])
+			elif not bool(evidence.get("present_after", false)):
+				failures.append("%s disappeared during combat without a recorded boss defeat" % required_foe)
+			else:
+				var hp_percent := float(evidence.get("hp_after", 100.0))
+				if hp_percent >= float(s["foe_hp_below"]):
+					failures.append("%s health did not fall below %.0f%% (currently %.0f%%)" % [required_foe, float(s["foe_hp_below"]), hp_percent])
+	if failures.is_empty():
+		_log("ASSERTION_PASSED %s" % label)
+		return "assertion passed: " + label
+	var message := "ASSERTION_FAILED %s: %s" % [label, "; ".join(failures)]
+	assertion_failures.append(message)
+	_log(message)
+	return message
 
 func _log(s: String) -> void:
 	print(s)
@@ -230,6 +321,13 @@ func find_text(s: String, buttons_first := true) -> Control:
 			continue
 		if n is Button:
 			return c
+		# Shop item names are labels inside full-card Buttons. Resolve the matching
+		# label to its clickable Button so a touch taps the item card, not just text.
+		var ancestor: Node = n.get_parent()
+		while ancestor != null and ancestor != get_tree().root:
+			if ancestor is Button and (ancestor as Control).is_visible_in_tree():
+				return ancestor as Control
+			ancestor = ancestor.get_parent()
 		if best == null:
 			best = c
 	return best if not buttons_first or best != null else null
@@ -386,7 +484,7 @@ func _enter_world() -> void:
 func _feet() -> Vector2:
 	return main.player.global_position
 
-func walk_to(goal: Vector2, max_sec: float, near := 14.0) -> String:
+func walk_to(goal: Vector2, max_sec: float, near := 14.0, intended_exit := "") -> String:
 	var t := 0.0
 	var last := _feet()
 	var stuck := 0.0
@@ -408,6 +506,9 @@ func walk_to(goal: Vector2, max_sec: float, near := 14.0) -> String:
 		if detour > 0.0:
 			dir = dir.rotated(side * 1.2)
 			detour -= 0.1
+		# Keep collision detours from taking the touch bot through an unrelated
+		# map exit (notably the hidden shrine entrance in the Whispering Forest).
+		dir = _avoid_exits(dir, intended_exit)
 		await stick(dir)
 		await wait(0.1)
 		t += 0.1
@@ -451,7 +552,49 @@ func dialog_all() -> String:
 	return "read %d pages: %s" % [pages.size(), " // ".join(pages)]
 
 # ---------------------------------------------------------------- the fighting bot (a decent phone player, not a perfect one)
-func fight(sec: float, shots_every: float) -> String:
+## Test-only staging helper: a direct goto skips the map route, so unrelated roaming
+## foes must not pile into a boss-only combat sample. The boss and its later summons remain.
+func _isolate_boss(target_type: String) -> String:
+	if target_type == "":
+		return "isolate_boss requires target_foe"
+	var targets: Array = []
+	for candidate in get_tree().get_nodes_in_group("bosses"):
+		if candidate.world == main.world and not candidate.dead and str(candidate.type) == target_type:
+			targets.append(candidate)
+	if targets.size() != 1:
+		var failure := "isolate_boss expected exactly one live %s on %s, found %d" % [target_type, str(main.world.key), targets.size()]
+		assertion_failures.append(failure)
+		_log("ASSERTION_FAILED " + failure)
+		return "ASSERTION_FAILED " + failure
+	var target: Node = targets[0]
+	var foes: Array = get_tree().get_nodes_in_group("enemies")
+	for candidate in get_tree().get_nodes_in_group("bosses"):
+		if not foes.has(candidate):
+			foes.append(candidate)
+	var removed := 0
+	for foe in foes:
+		if not is_instance_valid(foe) or foe.world != main.world or foe.dead or foe == target:
+			continue
+		foe.queue_free()
+		removed += 1
+	await frames(2)
+	if not is_instance_valid(target) or target.dead:
+		var failure := "isolate_boss removed or lost the required %s target" % target_type
+		assertion_failures.append(failure)
+		_log("ASSERTION_FAILED " + failure)
+		return "ASSERTION_FAILED " + failure
+	var live_left := 0
+	var remaining: Array = get_tree().get_nodes_in_group("enemies")
+	for candidate in get_tree().get_nodes_in_group("bosses"):
+		if not remaining.has(candidate):
+			remaining.append(candidate)
+	for foe in remaining:
+		if is_instance_valid(foe) and foe.world == main.world and not foe.dead:
+			live_left += 1
+	_log("BOSS_ISOLATION type=%s removed_unrelated=%d live_at_start=%d" % [target_type, removed, live_left])
+	return "isolated %s; removed %d unrelated foes; %d live target(s) remain" % [target_type, removed, live_left]
+
+func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var p = main.player
 	var t := 0.0
 	var dmg0: float = p.damage_taken
@@ -459,18 +602,42 @@ func fight(sec: float, shots_every: float) -> String:
 	var seen := {}
 	var next_shot := shots_every
 	var spell_t := 2.0
+	var spell2_t := 2.0
 	var pots := 0
 	var dodges := 0
+	var blocks := 0
 	var hp_low := 1.0
+	# Focused boss samples use a cautious player policy; ordinary skirmishes keep
+	# the original potion threshold so this does not inflate campaign survivability.
+	var potion_threshold := 0.55 if focus_type != "" else 0.35
 	var swings0: int = p.swings
 	var hits0: int = p.hits_landed
+	var sigs0: int = p.sig_uses
+	var casts0: int = p.caster.casts
+	var boss_hp_before := {}
+	var focus_present_before := false
+	var focus_hp_before := 100.0
+	var focus_kills_before := 0
+	if focus_type != "":
+		fight_evidence.erase(focus_type)
+		focus_kills_before = int(Game.v18().get("kills", {}).get(focus_type, 0))
+	for boss in get_tree().get_nodes_in_group("bosses"):
+		if boss.world == main.world:
+			var boss_type := str(boss.type)
+			boss_hp_before[boss_type] = 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
+			if boss_type == focus_type and not boss.dead:
+				focus_present_before = true
+				focus_hp_before = boss_hp_before[boss_type]
 	var ended := "time"
+	if focus_type != "":
+		_log("BOSS_PLAYTEST_POLICY target=%s telegraph_response=100%% potion_threshold=55%%" % focus_type)
 	var map0: String = main.world.key
 	var last := _feet()
 	var stuck := 0.0
 	var detour := 0.0
 	var side := 1.0
 	var quiet := 0.0
+	var last_progress := -5.0
 	while t < sec:
 		if p.dead:
 			ended = "the hero fell"
@@ -492,6 +659,7 @@ func fight(sec: float, shots_every: float) -> String:
 			ended = "walked into an exit -> %s" % main.world.key
 			break
 		var tgt: Node = null
+		var focused_tgt: Node = null
 		var bd := INF
 		var any_alive := false
 		for e in get_tree().get_nodes_in_group("enemies"):
@@ -505,11 +673,18 @@ func fight(sec: float, shots_every: float) -> String:
 			any_alive = true
 			if not e.targetable():
 				continue
+			# For boss samples, deliberately pursue the named encounter instead of
+			# spending the short combat window clearing nearby adds.
+			if focus_type != "" and e.is_in_group("bosses") and str(e.type) == focus_type:
+				focused_tgt = e
+				continue
 			if not _clear_line(_feet(), e.global_position):
 				dd += 400.0          # behind a wall: a player picks another foe first
 			if dd < bd:
 				bd = dd
 				tgt = e
+		if focused_tgt != null:
+			tgt = focused_tgt
 		if tgt == null:
 			if any_alive and quiet < 4.0:
 				quiet += 0.2          # a foe out of reach for a moment (a boss between phases, a burrowed thing): wait for it
@@ -520,24 +695,41 @@ func fight(sec: float, shots_every: float) -> String:
 			ended = "no foe within reach — the area is clear"
 			break
 		quiet = 0.0
+		if t - last_progress >= 5.0:
+			var live_foes := 0
+			for progress_enemy in get_tree().get_nodes_in_group("enemies"):
+				if progress_enemy.world == main.world and not progress_enemy.dead:
+					live_foes += 1
+			_log("FIGHT_PROGRESS elapsed=%.1f/%.1f hp=%d/%d potions=%d live_foes=%d" % [t, sec, int(Game.hp), int(Game.max_hp()), int(Game.state.get("potions", 0)), live_foes])
+			last_progress = t
 		hp_low = min(hp_low, Game.hp / Game.max_hp())
-		if Game.hp < 0.35 * Game.max_hp() and int(Game.state.get("potions", 0)) > 0:
+		if Game.hp < potion_threshold * Game.max_hp() and int(Game.state.get("potions", 0)) > 0:
 			await press("potion")
 			pots += 1
 		var to: Vector2 = tgt.center() - (p.global_position + Vector2(0, -17))
 		if verbose and int(t * 10) % 5 == 0:
 			_log("  t %.1f feet %s joy %s tgt %s at %d reach %d" % [t, str(p.global_position.round()), str(p.joy), tgt.type, int(to.length()), int(46.0 + float(tgt.hit_rect().size.x) * 0.5)])
+		if verbose and tgt.is_in_group("bosses") and int(t * 10) % 5 == 0:
+			_log("BOSS_TARGET type=%s dist=%d hp=%.1f/%.1f targetable=%s hidden=%s inv=%.2f phase=%d busy=%.2f last_move=%s" % [
+				str(tgt.type), int(to.length()), float(tgt.hp), float(tgt.max_hp), tgt.targetable(),
+				bool(tgt.get("cloaked")), float(tgt.get("inv")), int(tgt.get("ph")),
+				float(tgt.get("busy")), str(tgt.get("last_move"))
+			])
 		var reach: float = 46.0 + (float(tgt.hit_rect().size.x) * 0.5 if tgt.has_method("hit_rect") else 12.0)
-		# (v0.23) a marked attack about to land where the hero stands: step or roll out of it, as a player reading the
-		# ground would (about three times in four — nobody reads every one)
-		var away := _danger_away()
+		# A boss-only diagnostic sample reacts to every readable telegraph; ordinary
+		# campaign skirmishes preserve the imperfect 75% response of the original bot.
+		var away := _danger_away(focus_type != "")
 		if away != Vector2.ZERO:
 			await stick(away.normalized())
 			if p.dodge_cd <= 0.0 and p.stamina >= 30.0:
 				await press("dodge")
 				dodges += 1
 			else:
-				await wait(0.15)
+				# When a roll is unavailable, keep the shield raised through the imminent
+				# impact instead of standing exposed. Touch movement remains active while
+				# the second finger holds Block.
+				await press("block", 0.5)
+				blocks += 1
 		elif to.length() > reach:
 			var dir := _avoid_exits(to.normalized())
 			if detour > 0.0:
@@ -563,8 +755,20 @@ func fight(sec: float, shots_every: float) -> String:
 		if spell_t <= 0.0 and to.length() < 260.0:
 			spell_t = 3.5
 			await press("skill1")
+		# Use the full touch combat kit in focused boss tests: the second bound spell,
+		# the class signature (ward/lasso/arrow/fire), and the ultimate as soon as ready.
+		# This keeps class survival tests from measuring an attack-only bot.
+		if focus_type != "" and to.length() < 330.0:
+			spell2_t -= 0.1
+			if spell2_t <= 0.0:
+				spell2_t = 4.0
+				var bound_spells: Array = Game.slots()
+				if bound_spells.size() > 1 and p.caster.block(str(bound_spells[1])) == "":
+					await press("skill2")
 			if p.caster.ult_ready():
 				await press("ult")
+			if p.shove_cd <= 0.0 and p.stamina >= float(Game.Skills.sig().get("sta", 0.0)):
+				await press("shove")
 		await wait(0.1)
 		t += 0.1
 		next_shot -= 0.1
@@ -576,19 +780,57 @@ func fight(sec: float, shots_every: float) -> String:
 		var e = seen[id].get_ref()
 		if e == null or e.dead:
 			kills += 1
-	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · swings %d, hits %d" % [ended, t, kills,
-		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, p.swings - swings0, p.hits_landed - hits0]
+	var boss_report: Array[String] = []
+	var boss_hp_after := {}
+	for boss in get_tree().get_nodes_in_group("bosses"):
+		if boss.world == main.world:
+			boss_hp_after[str(boss.type)] = 0.0 if boss.dead else 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
+	for boss_type in boss_hp_before:
+		var before_percent := float(boss_hp_before[boss_type])
+		var after_percent := float(boss_hp_after.get(boss_type, 0.0))
+		boss_report.append("%s %.0f%%→%.0f%%" % [str(boss_type), before_percent, after_percent])
+	if focus_type != "":
+		var focus_present_after := false
+		var focus_hp_after := 0.0
+		for boss in get_tree().get_nodes_in_group("bosses"):
+			if boss.world == main.world and str(boss.type) == focus_type:
+				focus_present_after = true
+				focus_hp_after = 0.0 if boss.dead else 100.0 * float(boss.hp) / maxf(1.0, float(boss.max_hp))
+				break
+		var focus_kills_after := int(Game.v18().get("kills", {}).get(focus_type, 0))
+		var focus_defeated := focus_kills_after > focus_kills_before
+		fight_evidence[focus_type] = {
+			"present_before": focus_present_before,
+			"hp_before": focus_hp_before,
+			"present_after": focus_present_after,
+			"hp_after": focus_hp_after,
+			"defeated": focus_defeated
+		}
+		_log("FIGHT_EVIDENCE type=%s present_before=%s hp_before=%.1f present_after=%s hp_after=%.1f defeated=%s" % [
+			focus_type, focus_present_before, focus_hp_before, focus_present_after, focus_hp_after, focus_defeated
+		])
+	var arena_report: Array[String] = []
+	for arena_obj in get_tree().get_nodes_in_group("arena"):
+		if arena_obj.world == main.world and not arena_obj.dead and str(arena_obj.type) == "gravepillar":
+			arena_report.append("gravepillar %d%%" % int(100.0 * float(arena_obj.hp) / maxf(1.0, float(arena_obj.max_hp))))
+	var detail := ""
+	if not boss_report.is_empty():
+		detail += " · bosses " + ", ".join(boss_report)
+	if not arena_report.is_empty():
+		detail += " · arena " + ", ".join(arena_report)
+	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · guards %d · signatures %d · spells %d · swings %d, hits %d%s" % [ended, t, kills,
+		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, blocks, p.sig_uses - sigs0, p.caster.casts - casts0, p.swings - swings0, p.hits_landed - hits0, detail]
 
 ## the way out of the nearest marked attack that is about to land on the hero (Vector2.ZERO: nothing to dodge)
 
-func _danger_away() -> Vector2:
+func _danger_away(perfect_telegraph_read := false) -> Vector2:
 	var bfx = main.world.get("bossfx") if main.world else null
 	if bfx == null:
 		return Vector2.ZERO
 	var pc: Vector2 = main.player.global_position + Vector2(0, -17)
 	for t in bfx.tele:
 		if not t.has("_pt"):
-			t["_pt"] = randf() < 0.75
+			t["_pt"] = randf() < (1.0 if perfect_telegraph_read else 0.75)
 		if not bool(t["_pt"]) or float(t["t"]) > 0.45 or not bfx.inside(t):
 			continue
 		match str(t["kind"]):
@@ -596,6 +838,15 @@ func _danger_away() -> Vector2:
 				var lv: Vector2 = t["b"] - t["pos"]
 				var sg := 1.0 if (pc - t["pos"]).cross(lv) >= 0.0 else -1.0
 				return Vector2(lv.y * sg, -lv.x * sg)
+			"cone":
+				var radial: Vector2 = pc - t["pos"]
+				if radial.length() < 28.0:
+					return radial.normalized() if radial.length() > 1.0 else Vector2.RIGHT
+				# Step sideways out of the cone's angle, rather than moving deeper
+				# along its centre line.
+				var axis := Vector2.from_angle(float(t["a"]))
+				var side := Vector2(-axis.y, axis.x)
+				return side if radial.dot(side) >= 0.0 else -side
 			_:
 				var aw: Vector2 = pc - t["pos"]
 				return aw if aw.length() > 1.0 else Vector2.RIGHT
@@ -615,9 +866,13 @@ func _clear_line(a: Vector2, b: Vector2) -> bool:
 	return true
 
 ## a fighter does not walk out of the fight: steer along an exit's mouth, not into it
-func _avoid_exits(dir: Vector2) -> Vector2:
+func _avoid_exits(dir: Vector2, intended_exit := "") -> Vector2:
 	var f := _feet()
 	for e in main.world.data.get("exits", []):
+		# Navigation to a named exit must be allowed to enter that exit. Other exits
+		# remain blocked so collision detours do not accidentally change maps.
+		if intended_exit != "" and str(e.get("to", "")) == intended_exit:
+			continue
 		var r := Rect2(float(e["x"]), float(e["y"]), float(e["w"]), float(e["h"])).grow(36.0)
 		if r.has_point(f + dir * 30.0):
 			var away: Vector2 = (f - r.get_center()).normalized()
@@ -628,6 +883,20 @@ func _avoid_exits(dir: Vector2) -> Vector2:
 func _step(s: Dictionary) -> Variant:
 	var what := str(s.get("do", ""))
 	match what:
+		"checkpoint":
+			var now := Time.get_ticks_msec()
+			var elapsed := (now - stage_started_ms) / 1000.0
+			_log("STAGE_END %s wall=%.1f s potions_remaining=%d" % [active_stage, elapsed, int(Game.state.get("potions", 0))])
+			active_stage = str(s.get("name", "unnamed stage"))
+			stage_started_ms = now
+			_log("STAGE_START %s potions=%d" % [active_stage, int(Game.state.get("potions", 0))])
+			return "stage checkpoint: " + active_stage
+		"close_intro":
+			if main.hud.intro.visible:
+				await tap(_win(get_viewport().get_visible_rect().get_center()))
+				await wait(0.6)
+				return "dismissed map intro"
+			return "no map intro"
 		"menu":
 			if main.menu == null:
 				main.show_menu()
@@ -715,11 +984,22 @@ func _step(s: Dictionary) -> Variant:
 			var r2 := await walk_to(npc.global_position + Vector2(0, 26), float(s.get("max_sec", 20.0)), 22.0)
 			return r2 + (" · Talk button showing" if main.player.near_npc else " · not close enough to talk")
 		"walk_to_exit":
+			var target_map := str(s.get("to", ""))
 			for e in main.world.data.get("exits", []):
-				if str(e.get("to", "")) == str(s.get("to", "")):
+				if str(e.get("to", "")) == target_map:
 					var c2 := Vector2(float(e["x"]) + float(e["w"]) * 0.5, float(e["y"]) + float(e["h"]) * 0.5)
-					return await walk_to(c2, float(s.get("max_sec", 40.0)), 6.0)
-			return "no exit to '%s' here" % str(s.get("to", ""))
+					# Ignore the destination exit while steering, but continue avoiding
+					# every unrelated exit. Confirm the world transition, not just arrival
+					# near the exit rectangle.
+					var route_result: String = await walk_to(c2, float(s.get("max_sec", 40.0)), 6.0, target_map)
+					var actual_map := str(main.world.key) if main.world else ""
+					if actual_map != target_map:
+						var failure := "walk_to_exit_%s: expected map %s, got %s (%s)" % [target_map, target_map, actual_map, route_result]
+						assertion_failures.append(failure)
+						_log("ASSERTION_FAILED " + failure)
+						return "ASSERTION_FAILED " + failure
+					return "entered map %s" % target_map
+			return "no exit to '%s' here" % target_map
 		"button":
 			return await press(str(s.get("id", "attack")), float(s.get("hold", 0.08)))
 		"talk":
@@ -735,7 +1015,7 @@ func _step(s: Dictionary) -> Variant:
 			return await dialog_all()
 		"fight":
 			verbose = bool(s.get("verbose", false))
-			return await fight(float(s.get("sec", 30.0)), float(s.get("shots_every", 0.0)))
+			return await fight(float(s.get("sec", 30.0)), float(s.get("shots_every", 0.0)), str(s.get("target_foe", "")))
 		"wait":
 			await wait(float(s.get("sec", 1.0)))
 			return "waited"
@@ -743,6 +1023,8 @@ func _step(s: Dictionary) -> Variant:
 			return await shot(str(s.get("name", "shot")))
 		"burst":
 			return await burst(str(s.get("name", "burst")), clampi(int(s.get("n", 6)), 2, 12), float(s.get("every", 0.2)))
+		"assert_state":
+			return _assert_state(s)
 		"state":
 			return JSON.stringify(state())
 		"ending":  # (test shortcut, v0.29) open a chapter's end card: {"do":"ending","ch":3}
@@ -761,6 +1043,8 @@ func _step(s: Dictionary) -> Variant:
 			main.goto_map(str(s.get("map", "village")), Vector2(float(s.get("x", 420)), float(s.get("y", 490))))
 			await wait(1.0)
 			return "on %s" % main.world.key
+		"isolate_boss":
+			return await _isolate_boss(str(s.get("target_foe", "")))
 		"invuln":
 			main.player.invuln = 999999.0 if bool(s.get("v", true)) else 0.0
 			return "invuln %s" % str(bool(s.get("v", true)))
