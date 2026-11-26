@@ -180,6 +180,11 @@ func run(_main: Node) -> void:
 	check("potion_becomes_ready_at_cooldown_boundary", PlayerAgent.should_use_health_potion(20.0, 100.0, 2, 0, 4.0, 4.0, 0.68))
 	check("potion_cooldown_is_measured_from_current_fight_time", is_equal_approx(PlayerAgent.next_health_potion_time(3.0, 1.6), 4.6))
 
+	check("mage_seeks_a_casting_lane_when_a_wall_blocks_spells", PlayerAgent.should_seek_casting_lane("mage", false, 150.0, 62.0, false))
+	check("mage_keeps_ranged_spacing_when_a_casting_lane_is_clear", not PlayerAgent.should_seek_casting_lane("mage", false, 180.0, 62.0, true))
+	check("mage_does_not_seek_a_lane_for_a_melee_pillar_target", not PlayerAgent.should_seek_casting_lane("mage", true, 180.0, 62.0, false))
+	check("non_mage_classes_do_not_use_mage_lane_policy", not PlayerAgent.should_seek_casting_lane("warrior", false, 180.0, 62.0, false))
+	check("mage_can_close_only_when_already_inside_melee_reach", not PlayerAgent.should_seek_casting_lane("mage", false, 68.0, 62.0, false))
 	check("mage_does_not_spam_dodge_at_safe_midrange", not PlayerAgent.should_dodge_mage(88.0, 77.0, 84.0, 57.0, 0.0))
 	check("mage_dodges_at_immediate_contact_range", PlayerAgent.should_dodge_mage(45.0, 77.0, 84.0, 60.0, 0.0))
 	check("mage_uses_emergency_dodge_when_critical_and_close", PlayerAgent.should_dodge_mage(110.0, 30.0, 84.0, 50.0, 0.0))
