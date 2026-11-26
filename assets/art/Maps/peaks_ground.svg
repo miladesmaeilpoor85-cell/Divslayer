@@ -17,6 +17,14 @@
   <path d="M18 20l8-8 3 11-6 10zM76 66l9-11 4 14-8 9z" fill="#c05b2b" opacity=".5"/>
   <circle cx="52" cy="41" r="1.8" fill="#fa8a43" opacity=".62"/><circle cx="93" cy="18" r="1.3" fill="#f3a05a" opacity=".55"/>
  </pattern>
+ <pattern id="shard-scree" width="74" height="62" patternUnits="userSpaceOnUse">
+  <path d="M8 8l10-6 9 9-5 11-12-4zM44 34l14-9 10 8-4 15-15 1z" fill="#1d1715" stroke="#705246" stroke-width="1.4" opacity=".72"/>
+  <path d="M11 10l7-4 4 5m25 26l10-8 7 6" fill="none" stroke="#c29a78" stroke-width="1.2" opacity=".46"/>
+  <circle cx="35" cy="12" r="1.6" fill="#d17b45" opacity=".5"/>
+ </pattern>
+ <radialGradient id="fumarole-glow">
+  <stop stop-color="#ff9a4a" stop-opacity=".3"/><stop offset=".35" stop-color="#bd4c27" stop-opacity=".16"/><stop offset="1" stop-color="#8d3020" stop-opacity="0"/>
+ </radialGradient>
 </defs>
 <rect width="1150" height="920" fill="url(#ash)"/>
 <rect width="1150" height="920" fill="url(#cinder)" opacity=".9"/>
@@ -52,4 +60,40 @@
 </g>
 <g fill="#d98148" opacity=".8"><circle cx="140" cy="345" r="2.2"/><circle cx="151" cy="353" r="1.5"/><circle cx="815" cy="220" r="2.4"/><circle cx="823" cy="227" r="1.3"/><circle cx="1020" cy="700" r="2"/><circle cx="1031" cy="709" r="1.5"/><circle cx="405" cy="92" r="1.8"/></g>
 <path d="M0 0H1150V920H0Z" fill="none" stroke="#17110f" stroke-width="20" opacity=".34"/>
+<!-- Additional basalt strata, scree fans and restrained volcanic heat; all painted cracks stay clear of authored collision walls and travel lanes. -->
+<g id="peaks-detail-pass">
+ <rect width="1150" height="920" fill="url(#shard-scree)" opacity=".66"/>
+ <ellipse cx="230" cy="205" rx="120" ry="82" fill="url(#fumarole-glow)"/>
+ <ellipse cx="900" cy="245" rx="150" ry="100" fill="url(#fumarole-glow)"/>
+ <ellipse cx="925" cy="770" rx="140" ry="92" fill="url(#fumarole-glow)"/>
+ <g fill="none" stroke-linecap="round" opacity=".64">
+  <path d="M34 88q88 34 137 2t112 10q36 21 70 12" stroke="#17110f" stroke-width="18"/>
+  <path d="M34 80q88 34 137 2t112 10q36 21 70 12" stroke="#92705d" stroke-width="4"/>
+  <path d="M760 95q72 27 119-2t128 7q39 15 84 2" stroke="#17110f" stroke-width="17"/>
+  <path d="M760 87q72 27 119-2t128 7q39 15 84 2" stroke="#99745e" stroke-width="4"/>
+  <path d="M42 845q75-35 142-8t123-8q36-21 88-5" stroke="#17110f" stroke-width="17"/>
+  <path d="M42 837q75-35 142-8t123-8q36-21 88-5" stroke="#8b6a59" stroke-width="4"/>
+ </g>
+ <g fill="#171311" stroke="#8c6d5c" stroke-width="2">
+  <path d="M80 410l26-18 32 8 8 26-28 21-34-12zM124 445l18-11 21 6 4 18-19 14-22-8z"/>
+  <path d="M1000 370l24-17 31 9 7 24-27 20-32-11zM1032 415l17-12 22 5 4 18-18 14-23-8z"/>
+  <path d="M420 110l23-15 27 8 6 21-24 17-28-10zM690 780l24-16 29 8 5 22-25 18-29-11z"/>
+ </g>
+ <g fill="none" stroke="#d17a46" stroke-width="3" stroke-linecap="round" opacity=".58">
+  <path d="M188 220l18 13-9 17 19 14-5 23m686-62l-16 18 12 17-15 20 18 15M860 780l-18-14 8-18-15-16"/>
+  <path d="M282 805l-10-15 12-17-7-14m660-540l13-14-5-12 12-13"/>
+ </g>
+ <g fill="#d48a56" opacity=".72">
+  <circle cx="224" cy="282" r="2.8"/><circle cx="236" cy="288" r="1.7"/><circle cx="922" cy="321" r="2.4"/>
+  <circle cx="930" cy="329" r="1.4"/><circle cx="1010" cy="720" r="2.7"/><circle cx="1020" cy="727" r="1.5"/>
+ </g>
+ <g fill="#988071" opacity=".68">
+  <path d="M310 90l7-15 8 4-3 15-7 6zM330 95l9-12 8 5-4 13-9 2z"/>
+  <path d="M720 360l8-14 9 5-4 13-8 4zM740 366l9-10 8 5-4 12-10 2z"/>
+  <path d="M500 845l8-15 9 4-3 14-9 4zM520 850l10-12 8 5-5 12-9 2z"/>
+ </g>
+ <g fill="none" stroke="#d5b49a" stroke-width="1.4" opacity=".5">
+  <path d="M88 410l17-12 20 7m879-34l17-11 18 7M424 110l20-12 20 8"/>
+ </g>
+</g>
 </svg>
