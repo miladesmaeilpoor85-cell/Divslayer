@@ -545,7 +545,7 @@
   },
   {
     "do": "fight",
-    "sec": 60,
+    "sec": 15,
     "shots_every": 5,
     "verbose": true,
     "target_foe": "ancientwyrm"
