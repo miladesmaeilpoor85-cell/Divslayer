@@ -8,9 +8,9 @@ import sys
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 from PIL import Image
-from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from map_preview import ground_image_path
