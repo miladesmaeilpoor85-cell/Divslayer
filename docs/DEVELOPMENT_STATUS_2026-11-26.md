@@ -39,8 +39,10 @@ This report records repository evidence checked on 26 November 2026. It distingu
 ### PR #64 — enemy spawn collision clearance
 
 - The PR adds a regression fixture for the real Frostknight spawn in Wyrm's Hollow and changes the clearance rectangle to cover the bottom-pivoted collision height plus margin.
-- Godot CI, multi-tool, creative-tools and Android QA workflows passed on head `c0142bf360459fd115ea2d2967dfb29f30eb5142`; the Android QA export and emulator launch also passed.
-- This confirms the new regression test and build path on that head. A physical-device route through Wyrm's Hollow and encounter review are still required. Do not describe emulator launch as physical gameplay validation.
+- On the updated head `194a38b919ec0d2669ecb50abbc38664ebd3d5fe`, all four Godot 4.7.2 headless shards passed in [run 45730424330](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45730424330). The test constructs Wyrm's Hollow through the live `World.build()` path, locates the spawned Frostknight and checks its actual `CollisionShape2D` against map walls; it reports an empty failure list.
+- The real Frostknight was relocated from blocked source feet `(654, 248)` to `(624, 196.0385)`. The instantiated collision shape measured `22.4 × 18` px; the live hitbox stayed inside the map and did not intersect walls.
+- Android QA [run 45730424400](https://github.com/miladesmaeilpoor85-cell/Divslayer/actions/runs/45730424400) also passed APK export, package/signature verification and emulator install/launch on the same head.
+- This is automated runtime and emulator evidence, not physical-device acceptance. A physical-device route through Wyrm's Hollow and visual encounter review are still required.
 
 ## Animation inventory
 
