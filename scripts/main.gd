@@ -442,7 +442,7 @@ func _on_interact(npc: Node) -> void:
 		"qaren":
 			_talk_qaren(who)
 		"alborz_scout":
-			hud.dialogue.open(who, Game.Ch4.scout_lines(world), "hesk")
+			hud.dialogue.open(who, Game.Ch4.scout_lines(world), "alborz_scout")
 			hud.dialogue.finished.connect(_after_alborz_scout.bind(world), CONNECT_ONE_SHOT)
 		"rostam":
 			_talk_rostam(who)
