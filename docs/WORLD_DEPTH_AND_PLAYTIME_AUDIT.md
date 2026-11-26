@@ -41,3 +41,11 @@ The report aggregates actual durations by map and across the supplied log. It do
 ## First terrain pass in this branch
 
 Dedicated, region-specific ground files are wired for Zabol, Whispering Forest, and Ashen Peaks. These three maps use their authored SVG ground images in gameplay rather than the shared tiled-terrain layer; other configured terrain maps (such as the camp) retain the tiled system. Their map dimensions, collision rectangles, exits, enemy placements, and quest progression are unchanged. SVG import, preview rendering, rights-register coverage, and map-depth reporting are included in CI; Godot import and on-device visual acceptance still need their run results and human review.
+
+## Terrain-preservation and review evidence — 26 November 2026
+
+A structural comparison against `main` confirms that `data/Maps/village.json`, `forest.json`, and `peaks.json` change only by adding their respective `groundFile` metadata values. Their dimensions, wall rectangles, exits, enemy/NPC/item/hazard placements, map objects, and progression data are unchanged. The terrain pass therefore changes the painted ground layer without moving collision geometry or route triggers.
+
+The three ground SVGs use logical viewBoxes matching their map dimensions and authored pixel dimensions at 2× scale. CI map previews now produce both the full diagnostic overlay (walls, exits, hazards, objects and spawn markers) and a separate clean art render, plus full logical-size clean renders for Zabol, Whispering Forest and Ashen Peaks. The new tests validate SVG canvas/viewBox dimensions and clean-preview output.
+
+The current checks establish asset integrity, map-data preservation and headless load/movement regression coverage. They do not establish player-perceived legibility on a physical handset; that visual playthrough is still required.
