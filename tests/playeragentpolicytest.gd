@@ -136,6 +136,31 @@ func run(_main: Node) -> void:
 		check("visual_perception_captures_a_real_viewport_image", not captured_frame.is_empty() and captured_frame.get("image") is Image)
 		check("visual_perception_records_frame_dimensions", int(captured_frame.get("width", 0)) > 0 and int(captured_frame.get("height", 0)) > 0)
 
+	# Template matching is image-only and remains testable in headless CI.
+	var sprite_template := Image.create(12, 12, false, Image.FORMAT_RGBA8)
+	sprite_template.fill(Color(0.0, 0.0, 0.0, 0.0))
+	for sy in 2:
+		for sx in 2:
+			sprite_template.set_pixel(3 + sx, 3 + sy, Color(1.0, 0.0, 0.0, 1.0))
+			sprite_template.set_pixel(7 + sx, 7 + sy, Color(0.0, 0.0, 1.0, 1.0))
+	var synthetic_frame := Image.create(48, 36, false, Image.FORMAT_RGBA8)
+	synthetic_frame.fill(Color(0.2, 0.2, 0.2, 1.0))
+	for sy in 12:
+		for sx in 12:
+			var pixel := sprite_template.get_pixel(sx, sy)
+			if pixel.a > 0.0:
+				synthetic_frame.set_pixel(21 + sx, 9 + sy, pixel)
+	var sprite_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 0.98)
+	check("sprite_template_match_finds_exact_rendered_frame", not sprite_match.is_empty() and str(sprite_match.get("kind", "")) == "boss")
+	var matched_rect: Array = sprite_match.get("rect", [])
+	check("sprite_template_match_returns_normalized_screen_bounds",
+		matched_rect.size() == 4
+		and float(matched_rect[0]) >= 0.0 and float(matched_rect[1]) >= 0.0
+		and float(matched_rect[0]) + float(matched_rect[2]) <= 1.0
+		and float(matched_rect[1]) + float(matched_rect[3]) <= 1.0)
+	var wrong_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 1.01)
+	check("sprite_template_match_rejects_threshold_above_perfect_score", wrong_match.is_empty())
+
 	test_layer.free()
 	hud_fixture.free()
 
