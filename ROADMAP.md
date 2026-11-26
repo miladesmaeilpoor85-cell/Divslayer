@@ -65,6 +65,18 @@ See [Alborz art production brief](docs/ALBORZ_ART_PRODUCTION_BRIEF.md).
 - [ ] Produce and verify a production AAB; do not substitute the QA package or key.
 - [ ] Complete physical-device install/update/save/lifecycle/touch/performance tests and owner approval before release.
 
+## Current quality iteration — 26 November 2026
+
+- [x] Record the owner-reported install and smoke test of the PR #65 QA APK on a physical Android phone; retain the limitation that this is not a complete device matrix.
+- [x] Diagnose the latest Mage agent failure as a blocked ranged casting lane and add a wall-aware reposition policy plus five regression assertions on PR #65.
+- [x] Add a first Warden material/body-motion revision while retaining the runtime sheet dimensions on PR #66.
+- [x] Refine the Zabol, Whispering Forest and Ashen Peaks ground-route drawings to reduce straight, broad path bands on PR #67.
+- [ ] Review fresh PR #65 all-four-class artifacts on the final head; the automated journey has not yet been confirmed after the Mage fix.
+- [ ] Review the revised Warden and terrain visuals from fresh contact sheets at native Android scale and in the physical-device encounter/map.
+- [ ] Add a dedicated Alborz Scout dialogue portrait and unique wind ambience; record provenance and rights before promotion.
+- [ ] Reconcile the open visual/test PRs with the current main branch and close only after CI, visual, rights and owner-acceptance gates are genuinely satisfied.
+- [ ] Keep all 403 image and 30 music entries unverified until per-item commercial-use evidence and qualified review are supplied.
+
 ## 7. Art, audio, and performance quality / کیفیت هنری، صوتی و کارایی
 
 - [x] Krita, Audacity, LMMS, and Blender smoke-test workflow available in CI.
