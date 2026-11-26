@@ -71,8 +71,10 @@ func run(m: Node) -> void:
 				ok = false
 		if ok:
 			var tx: Texture2D = load("res://" + sp)
-			var expected_width := int(nm.get("cellW", 0)) * nm.get("cols", []).size()
-			var expected_height := int(nm.get("cellH", 0)) * nm.get("rows", []).size()
+			var cols: Array = nm.get("cols", [])
+			var rows: Array = nm.get("rows", [])
+			var expected_width: int = int(nm.get("cellW", 0)) * cols.size()
+			var expected_height: int = int(nm.get("cellH", 0)) * rows.size()
 			ok = tx != null and tx.get_width() == expected_width and tx.get_height() == expected_height
 		if not ok:
 			bad_sheets.append(k)
