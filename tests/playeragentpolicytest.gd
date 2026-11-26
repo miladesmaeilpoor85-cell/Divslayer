@@ -130,8 +130,11 @@ func run(_main: Node) -> void:
 	check("screen_observer_captures_visible_health_meter", is_equal_approx(float(captured_screen.get("meters", {}).get("HealthMeter", -1.0)), 0.4))
 	check("screen_observer_captures_visible_potion_count", str(captured_screen.get("resources", {}).get("potions_text", "")) == "۳")
 	var captured_frame := PlayerVisualPerception.capture_frame(_main.get_viewport())
-	check("visual_perception_captures_a_real_viewport_image", not captured_frame.is_empty() and captured_frame.get("image") is Image)
-	check("visual_perception_records_frame_dimensions", int(captured_frame.get("width", 0)) > 0 and int(captured_frame.get("height", 0)) > 0)
+	if DisplayServer.get_name() == "headless":
+		check("visual_perception_refuses_viewport_readback_when_rendering_is_disabled", captured_frame.is_empty())
+	else:
+		check("visual_perception_captures_a_real_viewport_image", not captured_frame.is_empty() and captured_frame.get("image") is Image)
+		check("visual_perception_records_frame_dimensions", int(captured_frame.get("width", 0)) > 0 and int(captured_frame.get("height", 0)) > 0)
 
 	test_layer.free()
 	hud_fixture.free()
