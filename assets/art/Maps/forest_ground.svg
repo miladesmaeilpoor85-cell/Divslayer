@@ -36,9 +36,25 @@
 <g fill="#172c21" opacity=".72"><path d="M0 0H1100V90q-120 70-225 10q-100 66-206 6q-120 70-235 8q-110 65-220 5L0 160z"/><path d="M0 850V690q110-90 220-25q110-90 205-22q120-90 235-18q110-85 220-24q115-64 220 5v244z"/><path d="M0 120q80 90 35 180q-30 100 25 170q-70 130-10 240L0 750z"/><path d="M1100 95q-80 80-35 180q30 100-25 170q70 130 10 240l50 40z"/></g>
 <!-- path system: west-village to east-peaks; north crypt and southern camp; short spur to embers shrine -->
 <g fill="none" stroke-linecap="round" stroke-linejoin="round">
- <g stroke="#172a20" stroke-width="62" opacity=".55"><path d="M-20 320C180 340 280 420 520 430S900 420 1120 430"/><path d="M560 -20C550 150 575 275 540 430S590 680 600 870"/><path d="M540 430C440 420 390 410 330 408"/></g>
- <g stroke="url(#trail)" stroke-width="50"><path d="M-20 320C180 340 280 420 520 430S900 420 1120 430"/><path d="M560 -20C550 150 575 275 540 430S590 680 600 870"/><path d="M540 430C440 420 390 410 330 408"/></g>
- <g stroke="#c2a274" stroke-width="2.5" stroke-dasharray="3 18" opacity=".55"><path d="M-20 320C180 340 280 420 520 430S900 420 1120 430"/><path d="M560 -20C550 150 575 275 540 430S590 680 600 870"/></g>
+ <!-- The old north-south track wanders between root shelves; the cross-trail follows the forest floor contours. -->
+ <g stroke="#172a20" stroke-width="58" opacity=".58">
+  <path d="M-20 320C120 321 212 375 309 405S443 440 522 428S681 408 770 417S984 449 1120 430"/>
+  <path d="M560 -20C548 92 573 171 557 254S531 369 540 430S563 565 584 663S588 786 600 870"/>
+  <path d="M540 430C480 419 421 408 330 408"/>
+ </g>
+ <g stroke="url(#trail)" stroke-width="43">
+  <path d="M-20 320C120 321 212 375 309 405S443 440 522 428S681 408 770 417S984 449 1120 430"/>
+  <path d="M560 -20C548 92 573 171 557 254S531 369 540 430S563 565 584 663S588 786 600 870"/>
+ </g>
+ <g stroke="url(#trail)" stroke-width="34">
+  <path d="M540 430C480 419 421 408 330 408"/>
+ </g>
+ <!-- Uneven paired ruts sit near the trail shoulders; there is no painted centre-line marking. -->
+ <g fill="none" stroke="#d1b287" stroke-width="1.6" stroke-linecap="round" opacity=".26">
+  <path d="M-5 304q72 4 126 23m30 11q48 13 89 31m32 11q44 13 78 14m56 10q61 5 116-3"/>
+  <path d="M555 -4q-8 71-1 116m-3 34q6 39-1 72m-5 37q-4 42-8 77m9 43q3 47 13 89"/>
+  <path d="M605 515q7 45 13 72m4 30q6 46 4 77"/>
+ </g>
 </g>
 <rect width="1100" height="850" fill="url(#dirt)" opacity=".18"/>
 <!-- fern banks, root shelves, damp hollows and patches of old leaves -->
