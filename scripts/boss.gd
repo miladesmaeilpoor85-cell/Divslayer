@@ -54,6 +54,39 @@ var imm_t := 0.0
 var knock_t := 0.0
 var knock_v := Vector2.ZERO
 var face_x := 1.0
+# Gale Warden attack animation: open wings, lift for the telegraph, strike, then fold into recovery.
+var warden_pose_step := -1
+var warden_pose_t := 0.0
+
+func _warden_pose_start(anticipation: float) -> void:
+	if type != "alborzwarden" or anim == null or anim.sprite_frames == null or not anim.sprite_frames.has_animation("v0"):
+		return
+	warden_pose_step = 0
+	warden_pose_t = maxf(0.05, anticipation)
+	anim.stop()
+	anim.animation = "v0"
+	anim.frame = 1
+
+func _warden_pose_tick(dt: float) -> void:
+	if type != "alborzwarden" or warden_pose_step < 0 or anim == null:
+		return
+	warden_pose_t -= dt
+	if warden_pose_t > 0.0:
+		return
+	match warden_pose_step:
+		0:
+			warden_pose_step = 1
+			warden_pose_t = 0.18
+			anim.frame = 2
+		1:
+			warden_pose_step = 2
+			warden_pose_t = 0.54
+			anim.frame = 3
+		_:
+			warden_pose_step = -1
+			warden_pose_t = 0.0
+			anim.play("v0")
+			anim.frame = 0
 # per-boss state
 var cloaked := false
 var shadow_on := false
@@ -1414,6 +1447,7 @@ func _ai_generic(dt: float, d: float, to: Vector2) -> void:
 # ================================================================ chapter IV — the high eyrie
 ## Visible wind lanes, a close-range vortex and a final fan. A shared token caps each lane volley at one hit.
 func _ai_alborz(dt: float, d: float, to: Vector2) -> void:
+	_warden_pose_tick(dt)
 	if _brain(dt):
 		return
 	var c := center()
@@ -1424,6 +1458,7 @@ func _ai_alborz(dt: float, d: float, to: Vector2) -> void:
 	if gcd <= 0.0:
 		if ph >= 3 and d > 150.0 and d < 390.0 and _ready_move("gale_fan"):
 			_use("gale_fan", 10.5)
+			_warden_pose_start(0.74)
 			busy = 1.15
 			bfx.cone(c, 310.0, to.angle(), 0.55, 0.92, Color8(164, 222, 249), _fire_gale_fan, self)
 			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("HIGH-GALE SWEEP!", "یورشِ تندبادِ بلند!"), Color8(188, 232, 255), true)
@@ -1433,6 +1468,7 @@ func _ai_alborz(dt: float, d: float, to: Vector2) -> void:
 			return
 		if d < 175.0 and _ready_move("vortex"):
 			_use("vortex", 6.8)
+			_warden_pose_start(0.70)
 			busy = 1.0
 			bfx.circle(c, 148.0, 0.88, Color8(128, 205, 241), _fire_gale_vortex, self)
 			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("EYE OF THE GALE!", "چشمِ تندباد!"), Color8(188, 232, 255), true)
@@ -1445,6 +1481,7 @@ func _ai_alborz(dt: float, d: float, to: Vector2) -> void:
 			var target: Vector2 = bfx.pc()
 			var volley: Dictionary = bfx.vol()
 			_use("crosswind", 8.2)
+			_warden_pose_start(0.78)
 			busy = 1.2
 			for offset in [-96.0, 0.0, 96.0]:
 				var shift: Vector2 = side * float(offset)
@@ -1459,6 +1496,7 @@ func _ai_alborz(dt: float, d: float, to: Vector2) -> void:
 		if d > 270.0 and d < 480.0 and _ready_move("gust_dash"):
 			var a := to.angle()
 			_use("gust_dash", 5.6)
+			_warden_pose_start(0.56)
 			busy = 0.8
 			bfx.lane(c, c + Vector2.from_angle(a) * minf(440.0, d + 110.0), 70.0, 0.74,
 				Color8(164, 222, 249), _fire_charge.bind(a, 6.8, 0.82), self)
