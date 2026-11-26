@@ -36,8 +36,15 @@ func _frames(count: int) -> void:
 		await get_tree().physics_frame
 
 
+func _collision_child(enemy: Node) -> CollisionShape2D:
+	for child in enemy.get_children():
+		if child is CollisionShape2D:
+			return child as CollisionShape2D
+	return null
+
+
 func _runtime_hitbox(enemy: Node) -> Rect2:
-	var collision := enemy.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	var collision := _collision_child(enemy)
 	if collision == null or not (collision.shape is RectangleShape2D):
 		return Rect2()
 	var shape := collision.shape as RectangleShape2D
@@ -125,7 +132,7 @@ func run(main: Node) -> void:
 
 	check("runtime_frostknight_spawn_found", target_enemy != null, closest_distance)
 	if target_enemy != null:
-		var live_collision := target_enemy.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		var live_collision := _collision_child(target_enemy)
 		check("runtime_collision_shape_exists", live_collision != null)
 		if live_collision != null and live_collision.shape is RectangleShape2D:
 			var live_shape := live_collision.shape as RectangleShape2D
