@@ -978,7 +978,34 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		var mage_retreat_distance := PlayerAgent.mage_boss_retreat_distance() if focus_type != "" else 150.0
 		if Game.cls == "mage" and not target_is_pillar:
 			preferred_range = maxf(reach + 130.0, PlayerAgent.mage_boss_preferred_range() if focus_type != "" else 210.0)
-		if Game.cls == "mage" and to.length() < mage_retreat_distance and away == Vector2.ZERO and not target_is_pillar:
+		var mage_needs_casting_lane := PlayerAgent.should_seek_casting_lane(
+			str(Game.cls), target_is_pillar, to.length(), reach, _clear_line(_feet(), target_center)
+		)
+		if mage_needs_casting_lane and away == Vector2.ZERO:
+			# A ranged Mage cannot damage an enemy through a wall. Move laterally around
+			# the obstruction instead of freezing at 150–210 px and repeatedly rejecting
+			# every spell for lack of line of sight. The wall-aware probe and exit guard
+			# keep this as ordinary movement; it does not bypass collision.
+			var lane_dir := PlayerAgent.safe_evasion_direction(p.body_rect(), to.normalized(), main.world.wall_rects, 72.0)
+			if detour > 0.0:
+				lane_dir = lane_dir.rotated(side * 1.3)
+				detour -= 0.1
+			await stick(_avoid_exits(lane_dir))
+			if _feet().distance_to(last) < 1.0:
+				stuck += 0.1
+				if stuck >= 0.4:
+					stuck = 0.0
+					detour = 0.9
+					if randf() < 0.4:
+						side = -side
+			else:
+				stuck = 0.0
+			last = _feet()
+			var lane_target_id := tgt.get_instance_id()
+			if lane_target_id != last_mage_threat_id:
+				_log("PLAYER_AGENT_MAGE_EVASION kind=seek_casting_lane distance=%d" % int(to.length()))
+				last_mage_threat_id = lane_target_id
+		elif Game.cls == "mage" and to.length() < mage_retreat_distance and away == Vector2.ZERO and not target_is_pillar:
 			# A mage keeps more room against ordinary melee threats; when pressure closes,
 			# retreat through the real movement control and sometimes roll to create space.
 			# The earlier 82 px threshold let several crypt foes overlap the light-armour Mage.
