@@ -26,6 +26,13 @@ static func load_terrain_texture(path: String) -> Texture2D:
 	var image := source.get_image()
 	if image == null or image.is_empty():
 		return source
+	if image.is_compressed():
+		var decompress_error := image.decompress()
+		if decompress_error != OK:
+			push_warning("could not decompress terrain texture for mipmaps: " + path)
+			return source
+	if image.get_format() != Image.FORMAT_RGBA8:
+		image.convert(Image.FORMAT_RGBA8)
 	if not image.has_mipmaps():
 		var error := image.generate_mipmaps()
 		if error != OK:

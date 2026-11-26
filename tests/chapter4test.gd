@@ -348,12 +348,21 @@ func run(m: Node) -> void:
 			and warden_sprite_image.get_width() == 544 and warden_sprite_image.get_height() == 156
 			and warden_sprite_image.detect_alpha() != Image.ALPHA_NONE)
 		var warden_frames: SpriteFrames = gale_warden.anim.sprite_frames if gale_warden.anim != null else null
-		check("gale_warden_has_three_health_phases_and_dedicated_four_frame_sprite",
-			Game.boss_cfg("alborzwarden").get("phases", []) == [0.66, 0.33]
-			and gale_warden.over != null and gale_warden.anim != null and gale_warden.anim.visible
-			and warden_frames != null and warden_frames.has_animation("v0")
+		var warden_phases: Array = Game.boss_cfg("alborzwarden").get("phases", [])
+		check("gale_warden_has_three_health_phases",
+			warden_phases.size() == 2 and is_equal_approx(float(warden_phases[0]), 0.66)
+			and is_equal_approx(float(warden_phases[1]), 0.33), warden_phases)
+		check("gale_warden_boss_overlay_and_sprite_are_visible",
+			gale_warden.over != null and gale_warden.anim != null and gale_warden.anim.visible,
+			{"overlay": gale_warden.over != null, "anim": gale_warden.anim != null,
+				"visible": gale_warden.anim.visible if gale_warden.anim != null else false})
+		check("gale_warden_dedicated_four_frame_sprite_and_2x_scale",
+			warden_frames != null and warden_frames.has_animation("v0")
 			and warden_frames.get_frame_count("v0") == 4 and warden_frames.get_animation_speed("v0") > 0.0
-			and is_equal_approx(gale_warden.anim.scale.x, 0.5))
+			and is_equal_approx(gale_warden.anim_base_scale.x, 0.5)
+			and absf(gale_warden.anim.scale.x - 0.5) < 0.08,
+			{"frames": warden_frames.get_frame_count("v0") if warden_frames else 0,
+				"base_scale": gale_warden.anim_base_scale, "current_scale": gale_warden.anim.scale})
 		gale_warden.call("_warden_pose_start", 0.74)
 		check("gale_warden_attack_uses_anticipation_pose",
 			gale_warden.anim.frame == 1 and gale_warden.warden_pose_step == 0)

@@ -136,16 +136,21 @@ func run(m: Node) -> void:
 			var sn := str(o.get("sprite", ""))
 			if sn == "":
 				continue
-			var fp := "assets/art/MapObjects/%s.png" % str(Game.obj_sprites.get(sn, {}).get("file", sn))
-			var shipped := ResourceLoader.exists("res://" + fp)
+			var sprite_meta: Dictionary = Game.obj_sprites.get(sn, {})
+			var sprite_file := str(sprite_meta.get("file", sn))
+			var sprite_ext := str(sprite_meta.get("extension", "png")).to_lower().trim_prefix(".")
+			var fp := "assets/art/MapObjects/%s.%s" % [sprite_file, sprite_ext]
+			var prop_path := "res://" + fp
+			var sprite_texture: Texture2D = load(prop_path) as Texture2D if sprite_ext in ["png", "webp", "jpg", "jpeg", "svg"] else null
+			var shipped := sprite_texture != null
 			for pat in ex:
 				if fp.match(pat):
 					shipped = false
 			if not sn.begins_with("g_") or not shipped:
-				bad_land.append(mk + ": " + sn)
+				bad_land.append([mk, sn, fp, sprite_texture != null, FileAccess.file_exists(prop_path)])
 	for tn in TerrainT.cfg().get("textures", {}):
 		var tp := "res://assets/art/Terrain/" + str(TerrainT.cfg()["textures"][tn]["file"])
-		var tt: Texture2D = load(tp) if ResourceLoader.exists(tp) else null
+		var tt: Texture2D = TerrainT.load_terrain_texture(tp) if ResourceLoader.exists(tp) else null
 		if tt == null or not tt.get_image().has_mipmaps():
 			bad_land.append(tp)
 	check("green_region_painted", bad_land.is_empty(), bad_land)
