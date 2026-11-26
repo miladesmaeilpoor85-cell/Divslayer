@@ -35,6 +35,12 @@ static func next_health_potion_time(now: float, cooldown: float = 1.6) -> float:
 static func should_seek_casting_lane(hero_class: String, target_is_pillar: bool, distance: float, melee_reach: float, has_clear_line: bool) -> bool:
 	return hero_class == "mage" and not target_is_pillar and distance > melee_reach + 8.0 and not has_clear_line
 
+## Keep the requested boss as the combat objective even when it temporarily hides or
+## is omitted from the ordinary-enemy scan. The caller must still respect its visible
+## invulnerability/telegraph state and must not attack while it is untargetable.
+static func should_keep_focus_boss(focus_type: String, boss_type: String, boss_alive: bool) -> bool:
+	return not focus_type.is_empty() and focus_type == boss_type and boss_alive
+
 ## Mage dodges only to escape immediate contact or a critical close-range threat.
 ## Readable boss telegraphs are handled by the shared reaction policy above this branch.
 static func should_dodge_mage(distance: float, hp: float, max_hp: float, stamina: float, dodge_cd: float) -> bool:
