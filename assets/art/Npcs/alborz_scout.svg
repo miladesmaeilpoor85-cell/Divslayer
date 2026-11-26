@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="468" viewBox="0 0 600 468">
+<title>Alborz Scout — three directional character atlas</title>
+<defs>
+ <linearGradient id="wool" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8197a0"/><stop offset=".32" stop-color="#405866"/><stop offset=".72" stop-color="#263b49"/><stop offset="1" stop-color="#152631"/></linearGradient>
+ <linearGradient id="cloak" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#536f78"/><stop offset=".43" stop-color="#304752"/><stop offset="1" stop-color="#1a2c36"/></linearGradient>
+ <linearGradient id="leather" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9d7650"/><stop offset=".35" stop-color="#62452f"/><stop offset="1" stop-color="#302b29"/></linearGradient>
+ <linearGradient id="rust" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d17b51"/><stop offset=".48" stop-color="#8d4937"/><stop offset="1" stop-color="#482b2b"/></linearGradient>
+ <linearGradient id="bronze" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0d19a"/><stop offset=".38" stop-color="#a87843"/><stop offset="1" stop-color="#61452f"/></linearGradient>
+ <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e2b58b"/><stop offset="1" stop-color="#a66c50"/></linearGradient>
+ <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d0c7ad"/><stop offset=".5" stop-color="#8c9188"/><stop offset="1" stop-color="#59676a"/></linearGradient>
+ <pattern id="stitch" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M1 1l2 1M5 5l2 1" stroke="#d5b889" stroke-width="1" opacity=".5"/></pattern>
+ <filter id="softShadow" x="-35%" y="-25%" width="170%" height="165%"><feGaussianBlur stdDeviation="2.4"/></filter>
+ <g id="front-legs-0">
+  <path d="M43 105Q39 119 40 136L51 140L58 115L62 108Z" fill="#34424a" stroke="#17262e" stroke-width="2"/>
+  <path d="M63 108L68 117L70 137L81 139L82 119L77 105Z" fill="#263a43" stroke="#17262e" stroke-width="2"/>
+  <path d="M38 134Q44 130 52 136L54 145Q48 151 33 149L29 145Z" fill="#3b302b" stroke="#171e23" stroke-width="2"/>
+  <path d="M69 134Q77 130 83 136L90 145Q85 151 70 149L66 144Z" fill="#3b302b" stroke="#171e23" stroke-width="2"/>
+  <path d="M34 144l13 1M72 144l13 1" stroke="#c59a68" stroke-width="1.4"/>
+ </g>
+ <g id="front-legs-1">
+  <path d="M42 105Q33 116 32 134L45 139L58 115L61 108Z" fill="#34424a" stroke="#17262e" stroke-width="2"/>
+  <path d="M64 108L72 117L79 134L88 133L83 113L77 105Z" fill="#263a43" stroke="#17262e" stroke-width="2"/>
+  <path d="M31 132Q38 129 46 136L47 145Q41 151 27 147L24 142Z" fill="#3b302b" stroke="#171e23" stroke-width="2"/>
+  <path d="M78 130Q87 126 91 135L96 143Q90 149 77 147L73 140Z" fill="#3b302b" stroke="#171e23" stroke-width="2"/>
+  <path d="M28 142l13 1M80 141l12 1" stroke="#c59a68" stroke-width="1.4"/>
+ </g>
+ <g id="front-legs-2">
+  <path d="M44 105L50 116L46 135L35 139L33 119L38 106Z" fill="#34424a" stroke="#17262e" stroke-width="2"/>
+  <path d="M65 108Q74 119 78 137L67 141L56 117L59 107Z" fill="#263a43" stroke="#17262e" stroke-width="2"/>
+  <path d="M32 135Q40 130 48 137L47 147Q39 152 26 148L24 143Z" fill="#3b302b" stroke="#171e23" stroke-width="2"/>
+  <path d="M67 135Q76 131 83 137L89 146Q83 151 68 149L64 144Z" fill="#3b302b" stroke="#171e23" stroke-width="2"/>
+  <path d="M29 144l13 1M69 144l13 1" stroke="#c59a68" stroke-width="1.4"/>
+ </g>
+ <g id="front-legs-3">
+  <path d="M45 106Q51 119 54 136L43 141L34 119L39 106Z" fill="#34424a" stroke="#17262e" stroke-width="2"/>
+  <path d="M64 108L69 117L68 135L79 140L84 120L77 105Z" fill="#263a43" stroke="#17262e" stroke-width="2"/>
+  <path d="M39 134Q47 130 54 138L53 147Q46 152 32 149L29 144Z" fill="#3b302b" stroke="#171e23" stroke-width="2"/>
+  <path d="M76 135Q84 131 90 138L94 146Q86 152 73 148L70 143Z" fill="#3b302b" stroke="#171e23" stroke-width="2"/>
+  <path d="M34 144l13 1M75 144l13 1" stroke="#c59a68" stroke-width="1.4"/>
+ </g>
+ <g id="front-torso">
+  <path d="M29 72Q34 58 47 55L75 55Q88 61 92 76L99 112Q79 123 58 121Q37 121 22 111Z" fill="url(#cloak)" stroke="#17252d" stroke-width="3"/>
+  <path d="M29 75Q23 83 18 103L29 109L43 91L49 73Z" fill="url(#leather)" stroke="#292b29" stroke-width="2"/>
+  <path d="M85 74Q97 83 101 101L91 111L78 91L74 72Z" fill="url(#leather)" stroke="#292b29" stroke-width="2"/>
+  <path d="M31 70Q36 59 49 60L72 59Q85 62 90 73L80 88L61 81L43 91Z" fill="url(#fur)" stroke="#48585b" stroke-width="2"/>
+  <path d="M31 69q-8-1-9 8q10-1 14 7q-2-10 4-14M83 66q12-3 14 7q-10 0-13 10q1-10-5-14" fill="#c0b7a2" stroke="#6c7776" stroke-width="1.6"/>
+  <path d="M38 81Q60 91 82 80L88 109Q63 117 34 108Z" fill="url(#leather)" stroke="#241f1c" stroke-width="2.5"/>
+  <path d="M42 86L59 96L77 84L79 101L61 111L41 102Z" fill="url(#stitch)" opacity=".95"/>
+  <path d="M47 87L62 100L76 88" fill="none" stroke="#d2b383" stroke-width="2"/>
+  <path d="M57 80L66 84L69 97L60 103L51 96Z" fill="#273d49" stroke="#d0ab72" stroke-width="2"/>
+  <path d="M60 86l3 5-3 5-3-5Z" fill="url(#bronze)"/>
+  <path d="M46 106L45 118M77 104L81 117" stroke="#d1b07d" stroke-width="2" stroke-linecap="round"/>
+  <path d="M33 112Q60 119 91 111L89 119Q59 128 32 119Z" fill="#3a2b27" stroke="#ba8a59" stroke-width="2"/>
+  <rect x="58" y="113" width="10" height="8" rx="2" fill="url(#bronze)" stroke="#362d26" stroke-width="1"/>
+  <path d="M31 119L24 130L36 126M87 119L96 130L85 127" fill="none" stroke="#263c48" stroke-width="5" stroke-linecap="round"/>
+  <path d="M21 104Q18 113 23 124" fill="none" stroke="#c0b18f" stroke-width="3" stroke-linecap="round"/>
+  <path d="M96 105Q103 114 100 124" fill="none" stroke="#c0b18f" stroke-width="3" stroke-linecap="round"/>
+  <path d="M22 101l-4 9 7-2M99 103l5 8-7-2" fill="none" stroke="#d7c7a7" stroke-width="2" stroke-linecap="round"/>
+  <path d="M23 99Q16 106 20 116" fill="none" stroke="#9eb3b4" stroke-width="1.5"/>
+  <path d="M97 99Q106 105 103 116" fill="none" stroke="#9eb3b4" stroke-width="1.5"/>
+  <path d="M35 70Q25 65 26 78L34 86" fill="none" stroke="#d4c5a5" stroke-width="3" stroke-linecap="round"/>
+  <path d="M84 69Q95 63 94 77L86 87" fill="none" stroke="#d4c5a5" stroke-width="3" stroke-linecap="round"/>
+  <path d="M38 62Q34 48 43 42L78 42Q87 50 83 65L75 79L46 78Z" fill="url(#wool)" stroke="#1a2a33" stroke-width="3"/>
+  <path d="M39 60Q29 49 35 35Q42 16 61 15Q81 17 86 36Q91 52 81 64L73 53L48 55Z" fill="url(#wool)" stroke="#1a2931" stroke-width="3"/>
+  <path d="M36 40Q47 28 60 29Q75 28 85 39" fill="none" stroke="#b0c0b9" stroke-width="3" stroke-linecap="round"/>
+  <path d="M42 47Q60 39 79 47L79 65Q71 79 59 80Q46 76 41 64Z" fill="url(#skin)" stroke="#5f4036" stroke-width="2"/>
+  <path d="M43 51Q59 45 77 51" fill="none" stroke="#4b3b34" stroke-width="3"/>
+  <path d="M48 57l5-1M66 56l6 1" stroke="#29292a" stroke-width="2.7" stroke-linecap="round"/>
+  <path d="M57 58l-2 8 5 1" fill="none" stroke="#96604a" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M53 70Q61 75 69 69" fill="none" stroke="#683f39" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M38 56Q29 56 32 69Q37 76 44 72L47 62M79 61L84 69Q91 69 89 58L82 51" fill="url(#rust)" stroke="#3a2929" stroke-width="2"/>
+  <path d="M37 66Q59 82 83 66L80 76Q59 92 40 76Z" fill="url(#rust)" stroke="#4a2d2c" stroke-width="2"/>
+  <path d="M42 75Q60 86 80 75" fill="none" stroke="#e0a079" stroke-width="2"/>
+  <path d="M45 32Q58 23 77 34" fill="none" stroke="#d4c4a7" stroke-width="2" stroke-linecap="round"/>
+  <path d="M34 49Q30 32 42 20Q52 10 65 12Q79 12 88 27Q92 36 85 49L81 39Q75 28 62 27Q48 27 41 39Z" fill="#263f4a" stroke="#b3c0b8" stroke-width="2"/>
+  <path d="M34 39Q25 51 31 62M87 38Q96 50 89 63" fill="none" stroke="#9aadb0" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M35 41q-6-7-10-2q4 2 4 7M86 39q7-7 11-2q-5 3-5 8" fill="#87999b" stroke="#445c64" stroke-width="1.4"/>
+ </g>
+ <g id="back-torso">
+  <path d="M30 67Q37 55 49 53L73 53Q88 58 91 75L98 112Q77 126 59 122Q38 123 21 111Z" fill="url(#cloak)" stroke="#182932" stroke-width="3"/>
+  <path d="M34 71Q59 83 86 70L93 111Q60 126 27 110Z" fill="url(#stitch)" opacity=".9"/>
+  <path d="M42 61Q51 67 61 68Q72 67 81 59L88 92L61 107L34 91Z" fill="#354d58" stroke="#182933" stroke-width="2"/>
+  <path d="M43 64L82 100M80 63L39 105" stroke="url(#leather)" stroke-width="5" stroke-linecap="round"/>
+  <path d="M42 66L80 102M78 66L41 103" stroke="#d1ae79" stroke-width="1.2"/>
+  <path d="M71 59Q90 51 94 66L87 81L77 76Z" fill="url(#leather)" stroke="#1f2b30" stroke-width="2"/>
+  <path d="M77 58Q88 47 96 58L92 99Q83 104 77 94Z" fill="#5a4033" stroke="#2a2926" stroke-width="2"/>
+  <path d="M83 62L91 91" stroke="#cba36f" stroke-width="2"/>
+  <path d="M29 65Q21 57 16 69Q22 79 31 84" fill="url(#fur)" stroke="#506065" stroke-width="2"/>
+  <path d="M28 72Q34 61 47 58L74 57Q85 62 91 73" fill="none" stroke="#d0c5ac" stroke-width="4" stroke-linecap="round"/>
+  <path d="M46 72Q59 82 75 72" fill="none" stroke="#92a7a7" stroke-width="2"/>
+  <path d="M47 79L38 95L47 107M73 79L83 95L74 108" fill="none" stroke="#b7c0b2" stroke-width="1.4"/>
+  <path d="M55 87l6 8 6-8" fill="none" stroke="#d0b27f" stroke-width="2"/>
+  <path d="M31 111Q60 121 91 110L88 120Q60 130 31 120Z" fill="#392c28" stroke="#ad8052" stroke-width="2"/>
+  <path d="M58 113h9v8h-9z" fill="url(#bronze)"/>
+  <path d="M39 22Q49 13 62 15Q80 17 86 34L83 57Q75 68 60 69Q43 66 36 54L33 36Z" fill="url(#wool)" stroke="#1b2b34" stroke-width="3"/>
+  <path d="M35 38Q49 28 62 29Q77 29 84 39L79 58Q62 67 43 57Z" fill="#314c58" stroke="#a6b4ad" stroke-width="2"/>
+  <path d="M40 41Q61 29 80 42" fill="none" stroke="#d4c6a7" stroke-width="2"/>
+  <path d="M42 55Q60 62 79 54" fill="none" stroke="#172d39" stroke-width="5"/>
+  <path d="M28 51Q23 38 34 24Q43 10 62 11Q81 12 91 27Q95 37 88 51L80 40Q72 31 61 30Q48 30 39 42Z" fill="#314b57" stroke="#bac2b5" stroke-width="2.4"/>
+  <path d="M30 30Q40 18 57 17Q78 16 88 32" fill="none" stroke="#e0d5b8" stroke-width="2"/>
+  <path d="M29 34Q19 47 28 61M89 34Q99 47 90 61" fill="none" stroke="#a5b5b4" stroke-width="2.5"/>
+ </g>
+ <g id="side-torso">
+  <path d="M47 65Q61 56 76 66Q87 77 86 111Q65 122 38 113L35 84Z" fill="url(#cloak)" stroke="#172730" stroke-width="3"/>
+  <path d="M44 74Q60 82 79 71L83 109L43 117Z" fill="url(#stitch)" opacity=".9"/>
+  <path d="M42 73Q28 78 26 101L39 108L54 87Z" fill="url(#leather)" stroke="#2b2926" stroke-width="2"/>
+  <path d="M74 72Q91 80 94 100L83 107L72 91Z" fill="url(#leather)" stroke="#2b2926" stroke-width="2"/>
+  <path d="M39 68Q49 56 64 60Q80 60 87 75L76 90L48 83Z" fill="url(#fur)" stroke="#59686a" stroke-width="2"/>
+  <path d="M45 84Q62 92 80 82L83 108Q59 120 38 109Z" fill="url(#leather)" stroke="#292522" stroke-width="2.4"/>
+  <path d="M47 90L66 101L80 90M46 104L60 111" fill="none" stroke="#d1b17d" stroke-width="1.7"/>
+  <path d="M57 91L67 97L64 106L54 102Z" fill="#2c414b" stroke="#d3b47d" stroke-width="2"/>
+  <path d="M61 96l3 4-4 3-3-4Z" fill="url(#bronze)"/>
+  <path d="M38 112Q60 122 85 111L82 120Q61 129 37 120Z" fill="#392b28" stroke="#aa7c4c" stroke-width="2"/>
+  <path d="M56 114h9v8h-9z" fill="url(#bronze)"/>
+  <path d="M42 20Q53 13 68 18Q82 23 81 42L74 62Q62 71 47 59L40 42Z" fill="url(#wool)" stroke="#192a32" stroke-width="3"/>
+  <path d="M45 34Q57 27 71 34L73 52Q65 64 50 55L42 45Z" fill="url(#skin)" stroke="#754b3d" stroke-width="2"/>
+  <path d="M57 35Q70 34 76 41L72 53L63 52Z" fill="#4a3932"/>
+  <path d="M60 42l9 1M65 49l6 1" stroke="#2a2928" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M41 35Q35 20 47 12Q64 3 78 20Q83 30 77 43L70 31Q59 25 47 34Z" fill="#2d4855" stroke="#aebcb4" stroke-width="2.2"/>
+  <path d="M40 31Q31 41 38 57M76 25Q86 36 78 51" fill="none" stroke="#c2c6b5" stroke-width="2"/>
+  <path d="M47 55Q63 69 78 53L82 65Q63 82 43 65Z" fill="url(#rust)" stroke="#4a2a2c" stroke-width="2"/>
+  <path d="M48 62Q63 73 78 60" fill="none" stroke="#e4a07a" stroke-width="2"/>
+  <path d="M85 79Q99 89 95 108L88 115L81 105" fill="none" stroke="#bd9a6f" stroke-width="3"/>
+  <path d="M26 96Q18 105 22 116" fill="none" stroke="#c2b18f" stroke-width="3" stroke-linecap="round"/>
+ </g>
+ <g id="front-gear">
+  <path d="M28 91Q20 103 23 119L34 121L42 101Z" fill="url(#leather)" stroke="#1e292d" stroke-width="2"/>
+  <path d="M26 103Q15 106 17 124L30 129L35 116Z" fill="#4b5960" stroke="#26333a" stroke-width="2"/>
+  <path d="M20 113l10 6" stroke="#d5b585" stroke-width="2"/>
+  <path d="M89 79Q101 84 104 98L97 106L86 92Z" fill="url(#leather)" stroke="#21292c" stroke-width="2"/>
+  <path d="M94 91L105 105L97 115L88 104Z" fill="url(#rust)" stroke="#432b29" stroke-width="2"/>
+ </g>
+ <g id="back-gear">
+  <path d="M81 62Q92 48 98 62L91 119L79 116Z" fill="url(#leather)" stroke="#232b2b" stroke-width="2"/>
+  <path d="M85 67Q89 62 93 68L88 108L82 106Z" fill="#c0a174" stroke="#4e4031" stroke-width="1.8"/>
+  <path d="M19 45Q13 67 24 90Q29 98 33 87L30 57Z" fill="none" stroke="#7e503d" stroke-width="4"/>
+  <path d="M20 47Q26 64 28 88" fill="none" stroke="#caa16c" stroke-width="1.6"/>
+ </g>
+ <g id="side-gear">
+  <path d="M78 75Q94 71 97 94L91 120L79 115Z" fill="url(#leather)" stroke="#1c282e" stroke-width="2"/>
+  <path d="M86 79l7 21-8 12-4-8Z" fill="#bd9869" stroke="#41372f" stroke-width="1.6"/>
+ </g>
+</defs>
+<!-- row 1: scout facing the player -->
+<g transform="translate(0,0)">
+ <ellipse cx="60" cy="149" rx="28" ry="4" fill="#09141b" opacity=".38" filter="url(#softShadow)"/>
+ <use href="#front-legs-0"/><use href="#front-torso"/><use href="#front-gear"/>
+ <path d="M42 119Q60 127 80 118" fill="none" stroke="#d2b17b" stroke-width="1.4"/>
+</g>
+<g transform="translate(120,0)"><use href="#front-legs-1"/><use href="#front-torso"/><use href="#front-gear"/><path d="M41 123q17 7 37-1" fill="none" stroke="#d2b17b" stroke-width="1.5"/></g>
+<g transform="translate(240,0)"><use href="#front-legs-2"/><use href="#front-torso"/><use href="#front-gear"/><path d="M41 123q17 7 37-1" fill="none" stroke="#d2b17b" stroke-width="1.5"/></g>
+<g transform="translate(360,0)"><use href="#front-legs-3"/><use href="#front-torso"/><use href="#front-gear"/><path d="M41 123q17 7 37-1" fill="none" stroke="#d2b17b" stroke-width="1.5"/></g>
+<g transform="translate(480,0)"><use href="#front-legs-2"/><use href="#front-torso"/><use href="#front-gear"/><path d="M87 81Q101 84 107 75L110 80L101 96L92 94Z" fill="url(#rust)" stroke="#3b2829" stroke-width="2"/><path d="M96 81l8-8" stroke="#e6c58c" stroke-width="2"/></g>
+<!-- row 2: scout facing away; the storm cloak, harness and bow become the defining silhouette -->
+<g transform="translate(0,156)"><ellipse cx="60" cy="149" rx="28" ry="4" fill="#09141b" opacity=".38" filter="url(#softShadow)"/><use href="#front-legs-0"/><use href="#back-torso"/><use href="#back-gear"/></g>
+<g transform="translate(120,156)"><use href="#front-legs-1"/><use href="#back-torso"/><use href="#back-gear"/></g>
+<g transform="translate(240,156)"><use href="#front-legs-2"/><use href="#back-torso"/><use href="#back-gear"/></g>
+<g transform="translate(360,156)"><use href="#front-legs-3"/><use href="#back-torso"/><use href="#back-gear"/></g>
+<g transform="translate(480,156)"><use href="#front-legs-2"/><use href="#back-torso"/><use href="#back-gear"/><path d="M79 74Q101 63 108 43Q111 65 97 88L87 99Z" fill="none" stroke="#9c7650" stroke-width="4" stroke-linecap="round"/></g>
+<!-- row 3: right-facing profile -->
+<g transform="translate(0,312)"><ellipse cx="60" cy="149" rx="28" ry="4" fill="#09141b" opacity=".38" filter="url(#softShadow)"/><use href="#front-legs-0"/><use href="#side-torso"/><use href="#side-gear"/></g>
+<g transform="translate(120,312)"><use href="#front-legs-1"/><use href="#side-torso"/><use href="#side-gear"/></g>
+<g transform="translate(240,312)"><use href="#front-legs-2"/><use href="#side-torso"/><use href="#side-gear"/></g>
+<g transform="translate(360,312)"><use href="#front-legs-3"/><use href="#side-torso"/><use href="#side-gear"/></g>
+<g transform="translate(480,312)"><use href="#front-legs-2"/><use href="#side-torso"/><use href="#side-gear"/><path d="M81 76Q97 76 105 65L109 72Q101 90 87 96Z" fill="url(#rust)" stroke="#3b2829" stroke-width="2"/></g>
+</svg>
