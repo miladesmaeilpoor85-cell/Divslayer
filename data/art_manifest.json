@@ -934,13 +934,13 @@
    }
   },
   "alborzwarden": {
-   "cellW": 204,
-   "cellH": 234,
+   "cellW": 136,
+   "cellH": 156,
    "frames": 4,
    "variants": 1,
    "logicalW": 68,
    "logicalH": 78,
-   "pxPerUnitLogical": 3,
+   "pxPerUnitLogical": 2,
    "pivot": [
     0.5,
     0.01282051282051282
@@ -953,7 +953,17 @@
     "h": 78
    },
    "file": "alborzwarden",
-   "extension": "svg"
+   "extension": "svg",
+   "fallbackPxPerUnitLogical": 3,
+   "base64Parts": [
+    "alborzwarden/part_00.b64",
+    "alborzwarden/part_01.b64",
+    "alborzwarden/part_02.b64",
+    "alborzwarden/part_03.b64",
+    "alborzwarden/part_04.b64",
+    "alborzwarden/part_05a.b64",
+    "alborzwarden/part_05b.b64"
+   ]
   }
  },
  "heroes": {

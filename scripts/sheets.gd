@@ -32,6 +32,30 @@ static func _load_base64_attack_sheet(folder: String, parts: Array) -> Texture2D
 		return null
 	return ImageTexture.create_from_image(image)
 
+## Load a WebP atlas from text-safe Base64 parts packaged in the Android PCK.
+static func load_base64_webp_parts(folder: String, parts: Array) -> Texture2D:
+	var encoded := ""
+	for relative_path in parts:
+		var path := Game.ART + folder + "/" + str(relative_path)
+		var source := FileAccess.open(path, FileAccess.READ)
+		if source == null:
+			push_error("base64 WebP asset part missing from the build: " + path)
+			return null
+		encoded += source.get_as_text().strip_edges()
+	if encoded.is_empty():
+		push_error("base64 WebP asset has no encoded data")
+		return null
+	var bytes := Marshalls.base64_to_raw(encoded)
+	if bytes.is_empty():
+		push_error("base64 WebP asset could not be decoded")
+		return null
+	var image := Image.new()
+	var error := image.load_webp_from_buffer(bytes)
+	if error != OK:
+		push_error("base64 data is not a valid WebP image (error " + str(error) + ")")
+		return null
+	return ImageTexture.create_from_image(image)
+
 static func _atlas(tex: Texture2D, x: float, y: float, w: float, h: float) -> AtlasTexture:
 	var a := AtlasTexture.new()
 	a.atlas = tex
@@ -200,7 +224,7 @@ static func character(group: String, sheet: String) -> Dictionary:
 					loaded_row.append(frame_texture)
 				attack_frame_rows.append(loaded_row)
 	var sf := character_frames(tex, meta, attack_texture, attack_frame_rows)
-	var out := {"frames": sf, "offset": pivot_offset(meta), "meta": meta}
+	var out := {"frames": sf, "offset": pivot_offset(runtime_meta), "meta": runtime_meta}
 	_cache[key] = out
 	return out
 
@@ -221,9 +245,19 @@ static func enemy(type: String) -> Dictionary:
 		return {}
 	var enemy_file := str(meta.get("file", type))
 	var enemy_extension := str(meta.get("extension", "png"))
-	var tex: Texture2D = load(Game.ART + "Enemies/" + enemy_file + "." + enemy_extension)
+	var base64_parts: Array = meta.get("base64Parts", [])
+	var tex: Texture2D = load_base64_webp_parts("Enemies", base64_parts) if not base64_parts.is_empty() else null
+	var source_density := float(meta.get("pxPerUnitLogical", 3.0))
 	if tex == null:
-		push_error("sheet missing from the build: Enemies/%s.png" % type)
+		# Existing SVG/PNG remains as a safe fallback; retain its original 3x density.
+		tex = load(Game.ART + "Enemies/" + enemy_file + "." + enemy_extension)
+		source_density = float(meta.get("fallbackPxPerUnitLogical", 3.0))
+	if tex == null:
+		push_error("sheet missing from the build: Enemies/" + enemy_file + "." + enemy_extension)
+		_cache[key] = {}
+		return {}
+	var runtime_meta: Dictionary = meta.duplicate(true)
+	runtime_meta["pxPerUnitLogical"] = source_density
 	var sf := SpriteFrames.new()
 	var cw := float(meta["cellW"])
 	var ch := float(meta["cellH"])

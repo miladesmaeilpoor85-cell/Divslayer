@@ -141,8 +141,10 @@ func setup(t: String, area: String, feet: Vector2, w: Node) -> void:
 		anim.sprite_frames = sh["frames"]
 		anim.centered = false
 		anim.offset = sh["offset"]
-		anim.scale = Vector2.ONE * Sheets.SCALE
 		var meta: Dictionary = sh["meta"]
+		# Most sheets are authored at 3x logical resolution; dedicated assets may declare another density.
+		var source_density := maxf(1.0, float(meta.get("pxPerUnitLogical", 3.0)))
+		anim.scale = Vector2.ONE / source_density
 		anim.modulate.a = float(meta.get("alpha", 1.0))
 		add_child(anim)
 		anim.play("v0")

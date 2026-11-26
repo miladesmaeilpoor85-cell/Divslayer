@@ -44,6 +44,14 @@ func talk(id: String) -> int:
 		return -1
 	main._on_interact(person)
 	await frames(2)
+	if id == "alborz_scout":
+		var scout_portrait = main.hud.dialogue.portrait
+		check("scout_dialogue_loads_dedicated_painted_portrait",
+			main.hud.dialogue.visible and scout_portrait.sheet == "alborz_scout"
+			and scout_portrait.art_facing == 1 and scout_portrait._tex != null
+			and scout_portrait._src.size == Vector2(256, 256),
+			{"sheet": scout_portrait.sheet, "loaded": scout_portrait._tex != null,
+				"source_size": scout_portrait._src.size, "art_facing": scout_portrait.art_facing})
 	var pages := await close_dialogue()
 	await frames(2)
 	return pages
@@ -298,17 +306,20 @@ func run(m: Node) -> void:
 		check("gale_warden_uses_three_separate_telegraphed_lanes",
 			gale_warden.moves.has("crosswind") and eyrie_world.bossfx.tele.size() == 3,
 			{"moves": gale_warden.moves, "telegraphs": eyrie_world.bossfx.tele.size()})
-		var warden_sprite_texture: Texture2D = load("res://assets/art/Enemies/alborzwarden.svg")
+		var warden_meta: Dictionary = Game.manifest.get("enemies", {}).get("alborzwarden", {})
+		var warden_sprite_texture: Texture2D = preload("res://scripts/sheets.gd").load_base64_webp_parts("Enemies", warden_meta.get("base64Parts", []))
 		var warden_sprite_image: Image = warden_sprite_texture.get_image() if warden_sprite_texture != null else null
-		check("gale_warden_svg_atlas_rasterizes_with_visible_pixels",
+		check("gale_warden_webp_atlas_loads_with_transparent_pixels",
 			warden_sprite_image != null and not warden_sprite_image.is_empty()
-			and warden_sprite_image.get_width() == 816 and warden_sprite_image.get_height() == 234)
+			and warden_sprite_image.get_width() == 544 and warden_sprite_image.get_height() == 156
+			and warden_sprite_image.detect_alpha() != Image.ALPHA_NONE)
 		var warden_frames: SpriteFrames = gale_warden.anim.sprite_frames if gale_warden.anim != null else null
 		check("gale_warden_has_three_health_phases_and_dedicated_four_frame_sprite",
 			Game.boss_cfg("alborzwarden").get("phases", []) == [0.66, 0.33]
 			and gale_warden.over != null and gale_warden.anim != null and gale_warden.anim.visible
 			and warden_frames != null and warden_frames.has_animation("v0")
-			and warden_frames.get_frame_count("v0") == 4 and warden_frames.get_animation_speed("v0") > 0.0)
+			and warden_frames.get_frame_count("v0") == 4 and warden_frames.get_animation_speed("v0") > 0.0
+			and is_equal_approx(gale_warden.anim.scale.x, 0.5))
 		gale_warden.call("_warden_pose_start", 0.74)
 		check("gale_warden_attack_uses_anticipation_pose",
 			gale_warden.anim.frame == 1 and gale_warden.warden_pose_step == 0)

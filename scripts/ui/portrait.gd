@@ -27,6 +27,12 @@ const ART := {
 	"alborz_scout": ["alborz_scout", 1]}
 const ART_DIR := "res://assets/art/Portraits/%s.%s"
 const ART_EXT := {"alborz_scout": "svg"}
+const SCOUT_PORTRAIT_PARTS := [
+	"alborz_scout/part_00.b64",
+	"alborz_scout/part_01.b64",
+	"alborz_scout/part_02.b64",
+	"alborz_scout/part_03.b64"
+]
 
 static func art_path(key: String) -> String:
 	return ART_DIR % [str(ART[key][0]), str(ART_EXT.get(key, "webp"))]
@@ -50,6 +56,11 @@ static func has_art(s: String) -> bool:
 	var key := art_key(s)
 	if USER_ART.has(key):
 		return USER_ART_ATLAS != null and USER_ART_ATLAS.get_width() == 384 and USER_ART_ATLAS.get_height() == 384
+	if key == "alborz_scout":
+		for relative_path in SCOUT_PORTRAIT_PARTS:
+			if not FileAccess.file_exists(Game.ART + "Portraits/" + relative_path):
+				return false
+		return true
 	return ART.has(key) and ResourceLoader.exists(art_path(key))
 
 ## Shows the painted portrait for this sheet; false (and nothing changed) if there is none.
@@ -66,7 +77,10 @@ func show_art(s: String) -> bool:
 		art_facing = int(user_spec[1])
 	else:
 		var a: Array = ART[key]
-		_tex = load(art_path(key))
+		if key == "alborz_scout":
+			_tex = Sheets.load_base64_webp_parts("Portraits", SCOUT_PORTRAIT_PARTS)
+		else:
+			_tex = load(art_path(key))
 		if _tex == null:
 			return false
 		_src = Rect2(Vector2.ZERO, _tex.get_size())
