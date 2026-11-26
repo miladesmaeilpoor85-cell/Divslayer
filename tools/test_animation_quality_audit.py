@@ -191,6 +191,73 @@ class AnimationQualityAuditTests(unittest.TestCase):
         attack_clips = [clip for clip in report["clips"] if clip["clip"].startswith("attack_")]
         self.assertTrue(all(clip["fps"] == 24.0 and clip["impact_frame"] == 2 for clip in attack_clips))
 
+    def test_audits_runtime_base64_warden_atlas_and_svg_fallback_separately(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.make_project(root)
+            manifest_path = root / "data/art_manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["enemies"]["gale_warden"] = {
+                "cellW": 136,
+                "cellH": 156,
+                "frames": 4,
+                "variants": 1,
+                "trailingPx": 0,
+                "fallbackCellW": 204,
+                "fallbackCellH": 234,
+                "fallbackPxPerUnitLogical": 3,
+                "pxPerUnitLogical": 2,
+                "pivot": [0.5, 0.0128],
+                "timedMs": 160,
+                "file": "alborzwarden",
+                "extension": "svg",
+                "base64Parts": [
+                    "alborzwarden/part_00.b64",
+                    "alborzwarden/part_01.b64",
+                    "alborzwarden/part_02.b64",
+                    "alborzwarden/part_03.b64",
+                ],
+            }
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            fallback_svg = """<svg xmlns="http://www.w3.org/2000/svg" width="816" height="234" viewBox="0 0 816 234">
+            <rect x="12" y="12" width="160" height="200" fill="#d0e0ef"/>
+            <rect x="216" y="12" width="160" height="195" fill="#8bc7df"/>
+            <rect x="420" y="12" width="160" height="188" fill="#6098b5"/>
+            <rect x="624" y="12" width="160" height="180" fill="#426680"/>
+            </svg>"""
+            (root / "assets/art/Enemies/alborzwarden.svg").write_text(fallback_svg, encoding="utf-8")
+
+            atlas = Image.new("RGBA", (544, 156), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(atlas)
+            for frame in range(4):
+                x = frame * 136
+                draw.ellipse(
+                    (x + 22 + frame * 2, 16 + frame * 4, x + 112, 144 - frame * 5),
+                    fill=(100 + frame * 25, 150, 210, 255),
+                )
+            buffer = io.BytesIO()
+            atlas.save(buffer, format="WEBP", lossless=True)
+            encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+            part_size = ((len(encoded) // 4) // 4) * 4
+            folder = root / "assets/art/Enemies/alborzwarden"
+            folder.mkdir(parents=True)
+            for index in range(4):
+                part = encoded[index * part_size : (index + 1) * part_size] if index < 3 else encoded[index * part_size :]
+                (folder / f"part_{index:02d}.b64").write_text(part, encoding="ascii")
+
+            report = audit(root)
+
+        self.assertFalse(report["errors"], report["errors"])
+        self.assertEqual(report["enemy_sprite_sheets"], 3)
+        warden_clips = [
+            clip for clip in report["clips"]
+            if clip["asset_id"] == "gale_warden"
+        ]
+        self.assertEqual(len(warden_clips), 1)
+        self.assertEqual(warden_clips[0]["frame_count"], 4)
+        self.assertGreater(warden_clips[0]["visible_alpha_ratio"], 0.0)
+
     def test_rejects_attack_frame_with_wrong_cell_dimensions(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

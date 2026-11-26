@@ -173,6 +173,39 @@ def _load_base64_attack_sheet(
         return opened.convert("RGBA")
 
 
+
+def _load_base64_enemy_sheet(
+    root: Path,
+    enemy_directory: Path,
+    parts: Any,
+    asset_id: str,
+) -> Image.Image:
+    """Load the runtime WebP enemy atlas from its ordered Base64 text parts."""
+    if not isinstance(parts, list) or not parts:
+        raise ValueError(f"{asset_id}.base64Parts must be a non-empty list")
+    safe_directory = enemy_directory.resolve()
+    encoded_parts: list[str] = []
+    for raw_path in parts:
+        if not isinstance(raw_path, str) or not raw_path.strip():
+            raise ValueError(f"{asset_id}.base64Parts contains an empty path")
+        relative_path = Path(raw_path)
+        if relative_path.is_absolute():
+            raise ValueError(f"{asset_id}.base64Parts paths must be relative")
+        part_path = (safe_directory / relative_path).resolve()
+        if not part_path.is_relative_to(safe_directory):
+            raise ValueError(f"{asset_id}.base64Parts path escapes the enemy asset directory")
+        if not part_path.is_file():
+            raise ValueError(f"missing enemy atlas payload: {part_path.relative_to(root).as_posix()}")
+        encoded_parts.append(part_path.read_text(encoding="ascii").strip())
+    try:
+        payload = base64.b64decode("".join(encoded_parts), validate=True)
+    except (ValueError, UnicodeError) as exc:
+        raise ValueError(f"{asset_id}.base64Parts is not valid Base64: {exc}") from exc
+    with Image.open(io.BytesIO(payload)) as opened:
+        opened.load()
+        return opened.convert("RGBA")
+
+
 def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> dict[str, Any]:
     root = root.resolve()
     manifest_file = manifest_file if manifest_file.is_absolute() else root / manifest_file
@@ -205,6 +238,21 @@ def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> d
                 if not source.is_file():
                     raise ValueError(f"missing sprite sheet: {source.relative_to(root).as_posix()}")
                 sheet = open_image(source)
+
+                if kind == "enemies" and meta.get("base64Parts"):
+                    fallback_width = positive_int(meta.get("fallbackCellW", width), f"{asset_id}.fallbackCellW")
+                    fallback_height = positive_int(meta.get("fallbackCellH", height), f"{asset_id}.fallbackCellH")
+                    fallback_count = positive_int(meta.get("frames"), f"{asset_id}.frames")
+                    fallback_variants = positive_int(meta.get("variants", 1), f"{asset_id}.variants")
+                    fallback_expected = (fallback_width * fallback_count, fallback_height * fallback_variants)
+                    if sheet.size != fallback_expected:
+                        raise ValueError(
+                            f"{asset_id} SVG fallback is {sheet.size}; expected "
+                            f"{fallback_expected[0]}x{fallback_expected[1]}"
+                        )
+                    sheet = _load_base64_enemy_sheet(
+                        root, root / "assets" / "art" / folder, meta["base64Parts"], asset_id
+                    )
 
                 if kind == "heroes":
                     rows, columns = meta.get("rows"), meta.get("cols")
@@ -308,7 +356,10 @@ def audit(root: Path, manifest_file: Path = Path("data/art_manifest.json")) -> d
                 else:
                     count = positive_int(meta.get("frames"), f"{asset_id}.frames")
                     variants = positive_int(meta.get("variants", 1), f"{asset_id}.variants")
-                    expected = (width * count, height * variants)
+                    trailing_px = int(meta.get("trailingPx", 0))
+                    if trailing_px < 0:
+                        raise ValueError(f"{asset_id}.trailingPx must not be negative")
+                    expected = (width * count + trailing_px, height * variants)
                     if sheet.size != expected:
                         raise ValueError(
                             f"{asset_id} is {sheet.size}; expected {expected[0]}x{expected[1]}"

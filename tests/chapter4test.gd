@@ -95,7 +95,7 @@ func run(m: Node) -> void:
 	await frames(8)
 	main.player.invuln = 99999.0
 
-	var terrain_script = preload("res://scripts/fx/terrain.gd")
+	var terrain_script = load("res://scripts/fx/terrain.gd")
 	var zabol_art := Game.map_data("village")
 	var forest_art := Game.map_data("forest")
 	var peaks_art := Game.map_data("peaks")
