@@ -552,7 +552,7 @@
    "sort": 462
   },
   {
-   "sprite": "zabol_awning",
+   "sprite": "g_zabol_awning",
    "x": 438,
    "y": 160,
    "sort": 160,
@@ -562,7 +562,7 @@
    "smoke": null
   },
   {
-   "sprite": "zabol_water_trough",
+   "sprite": "g_zabol_water_trough",
    "x": 735,
    "y": 455,
    "sort": 455,
@@ -572,7 +572,7 @@
    "smoke": null
   },
   {
-   "sprite": "zabol_clay_jars",
+   "sprite": "g_zabol_clay_jars",
    "x": 252,
    "y": 390,
    "sort": 390,

@@ -977,7 +977,7 @@
    "smoke": null
   },
   {
-   "sprite": "forest_root",
+   "sprite": "g_forest_root",
    "x": 364,
    "y": 650,
    "sort": 650,
@@ -987,7 +987,7 @@
    "smoke": null
   },
   {
-   "sprite": "forest_mushrooms",
+   "sprite": "g_forest_mushrooms",
    "x": 944,
    "y": 700,
    "sort": 700,
@@ -997,7 +997,7 @@
    "smoke": null
   },
   {
-   "sprite": "forest_glow_fern",
+   "sprite": "g_forest_glow_fern",
    "x": 836,
    "y": 245,
    "sort": 245,

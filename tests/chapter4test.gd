@@ -116,9 +116,9 @@ func run(m: Node) -> void:
 		and ResourceLoader.exists("res://assets/art/Terrain/whispering_path.svg")
 		and ResourceLoader.exists("res://assets/art/Terrain/whispering_leaflitter.svg"))
 	check("new_zabol_and_forest_props_are_registered",
-		Game.obj_sprites.has("zabol_awning") and Game.obj_sprites.has("zabol_water_trough")
-		and Game.obj_sprites.has("zabol_clay_jars") and Game.obj_sprites.has("forest_root")
-		and Game.obj_sprites.has("forest_mushrooms") and Game.obj_sprites.has("forest_glow_fern"))
+		Game.obj_sprites.has("g_zabol_awning") and Game.obj_sprites.has("g_zabol_water_trough")
+		and Game.obj_sprites.has("g_zabol_clay_jars") and Game.obj_sprites.has("g_forest_root")
+		and Game.obj_sprites.has("g_forest_mushrooms") and Game.obj_sprites.has("g_forest_glow_fern"))
 
 	# The fourth chapter is unavailable until the third chapter has its saved completion state.
 	Game.Ch3.set_step("bound")

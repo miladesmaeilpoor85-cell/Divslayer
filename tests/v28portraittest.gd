@@ -169,6 +169,13 @@ func run(m: Node) -> void:
 		if user_portrait:
 			var spec: Array = Portrait.USER_ART[key]
 			wrong_source = p._tex != Portrait.USER_ART_ATLAS or p._src != Rect2(spec[0], Vector2(192, 192))
+		elif key == "alborz_scout":
+			wrong_source = (
+				p._tex == null
+				or p._tex.get_width() != 256
+				or p._tex.get_height() != 256
+				or p._src != Rect2(Vector2.ZERO, Vector2(256, 256))
+			)
 		else:
 			var want: String = Portrait.art_path(key).trim_prefix("res://")
 			wrong_source = p._tex == null or not str(p._tex.resource_path).ends_with(want)

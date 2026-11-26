@@ -9,9 +9,31 @@ const DIR := "res://assets/art/Terrain/"
 const PATH := "res://data/terrain.json"
 
 static var _cfg := {}
+static var _texture_cache: Dictionary = {}
 
 var size := Vector2.ZERO
 var margin := 0.0
+
+
+## SVG terrain tiles are rasterized by Godot at their authored 2x resolution.
+## Generate mipmaps once so the painted textures stay sharp and do not shimmer at phone scale.
+static func load_terrain_texture(path: String) -> Texture2D:
+	if _texture_cache.has(path):
+		return _texture_cache[path]
+	var source := load(path) as Texture2D
+	if source == null:
+		return null
+	var image := source.get_image()
+	if image == null or image.is_empty():
+		return source
+	if not image.has_mipmaps():
+		var error := image.generate_mipmaps()
+		if error != OK:
+			push_warning("could not generate terrain mipmaps for " + path)
+			return source
+	var result := ImageTexture.create_from_image(image)
+	_texture_cache[path] = result
+	return result
 
 static func cfg() -> Dictionary:
 	if _cfg.is_empty() and FileAccess.file_exists(PATH):
@@ -44,8 +66,8 @@ func setup(key: String, map_size: Vector2, apron: float) -> bool:
 	var texs: Dictionary = cfg()["textures"]
 	var mat := ShaderMaterial.new()
 	mat.shader = SHADER
-	mat.set_shader_parameter("splat", load(DIR + "splat/" + key + ".png"))
-	mat.set_shader_parameter("noise", load(DIR + "noise.png"))
+	mat.set_shader_parameter("splat", load_terrain_texture(DIR + "splat/" + key + ".png"))
+	mat.set_shader_parameter("noise", load_terrain_texture(DIR + "noise.png"))
 	mat.set_shader_parameter("map_size", map_size)
 	var u := Vector4(340, 340, 340, 340)
 	var gains := Vector4.ONE
@@ -54,7 +76,7 @@ func setup(key: String, map_size: Vector2, apron: float) -> bool:
 	for ch in slots:
 		var tname: String = str(m.get(ch, m["base"]))
 		var t: Dictionary = texs[tname]
-		mat.set_shader_parameter(slots[ch][0], load(DIR + str(t["file"])))
+		mat.set_shader_parameter(slots[ch][0], load_terrain_texture(DIR + str(t["file"])))
 		u[slots[ch][1]] = float(t.get("units", 340))
 		gains[slots[ch][1]] = float(t.get("gain", 1.0))
 		if ch != "base" and m.has(ch):

@@ -34,6 +34,7 @@ var applies := {}
 var hover := []
 var hover_t := 0.0
 var anim: AnimatedSprite2D
+var anim_base_scale := Vector2.ONE * Sheets.SCALE
 var bar_bg: ColorRect
 var bar: ColorRect
 var own_bar := true
@@ -144,7 +145,8 @@ func setup(t: String, area: String, feet: Vector2, w: Node) -> void:
 		var meta: Dictionary = sh["meta"]
 		# Most sheets are authored at 3x logical resolution; dedicated assets may declare another density.
 		var source_density := maxf(1.0, float(meta.get("pxPerUnitLogical", 3.0)))
-		anim.scale = Vector2.ONE / source_density
+		anim_base_scale = Vector2.ONE / source_density
+		anim.scale = anim_base_scale
 		anim.modulate.a = float(meta.get("alpha", 1.0))
 		add_child(anim)
 		anim.play("v0")
@@ -698,7 +700,7 @@ func _process(dt: float) -> void:
 		var pop := sin(progress * PI) * hit_pulse_strength
 		sx *= 1.0 + pop
 		sy *= 1.0 - pop * 0.78
-	anim.scale = Vector2(sx, sy) * Sheets.SCALE
+	anim.scale = Vector2(sx, sy) * anim_base_scale
 	anim.rotation = clamp(-knock.x / Game.PXS * 0.035, -0.16, 0.16) if knock.length() > 1.0 else 0.0
 
 func hurt(amount: float, crit: bool, from_dir: Vector2, heavy := false) -> void:
