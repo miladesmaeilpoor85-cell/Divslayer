@@ -975,6 +975,36 @@
    "isWall": false,
    "animated": false,
    "smoke": null
+  },
+  {
+   "sprite": "forest_root",
+   "x": 364,
+   "y": 650,
+   "sort": 650,
+   "kind": "rock",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "forest_mushrooms",
+   "x": 944,
+   "y": 700,
+   "sort": 700,
+   "kind": "bush",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
+  },
+  {
+   "sprite": "forest_glow_fern",
+   "x": 836,
+   "y": 245,
+   "sort": 245,
+   "kind": "bush",
+   "isWall": false,
+   "animated": false,
+   "smoke": null
   }
  ],
  "lights": [],
@@ -1223,5 +1253,6 @@
    },
    "mapKey": "forest"
   }
- ]
+ ],
+ "groundFile": "whispering_forest_ground.svg"
 }

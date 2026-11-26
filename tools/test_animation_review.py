@@ -1,6 +1,8 @@
 """Unit tests for sprite-sheet animation review previews."""
 from __future__ import annotations
 
+import base64
+import io
 import json
 import tempfile
 import unittest
@@ -131,6 +133,54 @@ class AnimationReviewTests(unittest.TestCase):
             with Image.open(preview) as gif:
                 self.assertEqual(gif.n_frames, 4)
                 self.assertEqual(gif.size, (24, 20))
+
+    def test_exports_base64_webp_warden_atlas_with_trailing_padding(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path, output = self._project(root)
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+            payload["enemies"]["gale_warden"] = {
+                "cellW": 140,
+                "cellH": 156,
+                "frames": 4,
+                "variants": 1,
+                "trailingPx": 2,
+                "pivot": [0.5, 0.0128],
+                "timedMs": 160,
+                "file": "gale_warden",
+                "extension": "svg",
+                "base64Parts": ["gale_warden/part_00.b64", "gale_warden/part_01.b64"],
+            }
+            manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+            atlas = Image.new("RGBA", (562, 156), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(atlas)
+            for frame in range(4):
+                x = frame * 140
+                draw.ellipse(
+                    (x + 24 + frame * 2, 18 + frame * 4, x + 115, 143 - frame * 5),
+                    fill=(100 + frame * 25, 150, 210, 255),
+                )
+            buffer = io.BytesIO()
+            atlas.save(buffer, format="WEBP", lossless=True)
+            encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+            split = (len(encoded) // 2) // 4 * 4
+            folder = root / "assets" / "art" / "Enemies" / "gale_warden"
+            folder.mkdir(parents=True)
+            (folder / "part_00.b64").write_text(encoded[:split], encoding="ascii")
+            (folder / "part_01.b64").write_text(encoded[split:], encoding="ascii")
+
+            report = animation_review.review_sheets(
+                root, Path("data/art_manifest.json"), Path("artifacts/animation-review")
+            )
+            self.assertFalse(report["errors"])
+            entry = next(item for item in report["previews"] if item["id"] == "gale_warden")
+            self.assertEqual(entry["sheet_size"], [562, 156])
+            self.assertEqual(entry["expected_size"], [562, 156])
+            preview = output / "enemy-gale_warden-variant-0-loop.gif"
+            self.assertTrue(preview.is_file())
+            with Image.open(preview) as gif:
+                self.assertEqual(gif.n_frames, 4)
+                self.assertEqual(gif.size, (280, 312))
 
     def test_reports_sheet_dimensions_that_do_not_match_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

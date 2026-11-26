@@ -3403,5 +3403,77 @@
   ],
   "file": "eyrie_spire_rock",
   "extension": "svg"
+ },
+ "zabol_awning": {
+  "w": 270,
+  "h": 180,
+  "logicalW": 90,
+  "logicalH": 60,
+  "pivot": [
+   0.5,
+   0.055
+  ],
+  "file": "zabol_awning",
+  "extension": "svg"
+ },
+ "zabol_water_trough": {
+  "w": 210,
+  "h": 120,
+  "logicalW": 70,
+  "logicalH": 40,
+  "pivot": [
+   0.5,
+   0.08
+  ],
+  "file": "zabol_water_trough",
+  "extension": "svg"
+ },
+ "zabol_clay_jars": {
+  "w": 150,
+  "h": 120,
+  "logicalW": 50,
+  "logicalH": 40,
+  "pivot": [
+   0.5,
+   0.08
+  ],
+  "file": "zabol_clay_jars",
+  "extension": "svg"
+ },
+ "forest_root": {
+  "w": 210,
+  "h": 135,
+  "logicalW": 70,
+  "logicalH": 45,
+  "pivot": [
+   0.5,
+   0.055
+  ],
+  "file": "forest_root",
+  "extension": "svg"
+ },
+ "forest_mushrooms": {
+  "w": 150,
+  "h": 120,
+  "logicalW": 50,
+  "logicalH": 40,
+  "pivot": [
+   0.5,
+   0.07
+  ],
+  "file": "forest_mushrooms",
+  "extension": "svg"
+ },
+ "forest_glow_fern": {
+  "w": 120,
+  "h": 150,
+  "logicalW": 40,
+  "logicalH": 50,
+  "pivot": [
+   0.5,
+   0.06
+  ],
+  "file": "forest_glow_fern",
+  "extension": "svg"
  }
 }

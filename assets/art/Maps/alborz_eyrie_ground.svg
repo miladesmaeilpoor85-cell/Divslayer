@@ -47,11 +47,16 @@
 <g fill="#93a9a8" opacity=".34">
  <path d="M88 250l36-12 30 18-22 25-38-9zM890 235l-32-13-31 21 24 25 34-8zM83 732l42-16 27 22-30 27-37-8zM880 731l-41-16-27 23 31 26 36-8z"/>
 </g>
-<rect width="1000" height="820" opacity=".6"/>
+<rect width="1000" height="820" fill="url(#storm)" opacity=".2"/>
 <g fill="#a9bec2" opacity=".18">
  <circle cx="74" cy="312" r="2"/><circle cx="924" cy="302" r="2.2"/><circle cx="142" cy="592" r="2.1"/>
  <circle cx="868" cy="608" r="2.4"/><circle cx="490" cy="158" r="1.8"/><circle cx="628" cy="660" r="2.2"/>
 </g>
 <g fill="none" stroke="#dbe7e3" stroke-width="2" opacity=".15"><path d="M64 182l44-10m-24 27 31-8M925 181l-44-11m22 28-32-8M57 680l48-12m-23 29 32-9M940 680l-46-11m21 28-31-8"/></g>
 <rect x="3" y="3" width="994" height="814" fill="none" stroke="#b5c4c6" stroke-opacity=".15" stroke-width="6"/>
+<g fill="none" stroke-linecap="round" opacity=".28">
+ <path d="M116 126l32-16 26 7m-12 19 33-10M885 128l-30-16-25 7m12 19-34-9M106 704l40-14 29 9m-13 17 32-9M900 706l-38-15-27 8m13 18-30-8" stroke="#d8e5e3" stroke-width="4"/>
+ <path d="M270 90l18-7 14 4m398 9 21-8 14 4M180 565l25-9 21 4m390-17 24-8 17 5" stroke="#142c3b" stroke-width="7"/>
+ </g>
+ <g fill="#cedddc" opacity=".17"><circle cx="246" cy="370" r="2.5"/><circle cx="735" cy="386" r="3"/><circle cx="430" cy="625" r="2"/><circle cx="650" cy="150" r="2.2"/></g>
 </svg>

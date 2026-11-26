@@ -248,19 +248,24 @@ static func enemy(type: String) -> Dictionary:
 	var base64_parts: Array = meta.get("base64Parts", [])
 	var tex: Texture2D = load_base64_webp_parts("Enemies", base64_parts) if not base64_parts.is_empty() else null
 	var source_density := float(meta.get("pxPerUnitLogical", 3.0))
+	var used_fallback := false
 	if tex == null:
-		# Existing SVG/PNG remains as a safe fallback; retain its original 3x density.
+		# Existing SVG/PNG remains as a safe fallback with its original atlas cell geometry and density.
 		tex = load(Game.ART + "Enemies/" + enemy_file + "." + enemy_extension)
 		source_density = float(meta.get("fallbackPxPerUnitLogical", 3.0))
+		used_fallback = true
 	if tex == null:
 		push_error("sheet missing from the build: Enemies/" + enemy_file + "." + enemy_extension)
 		_cache[key] = {}
 		return {}
 	var runtime_meta: Dictionary = meta.duplicate(true)
 	runtime_meta["pxPerUnitLogical"] = source_density
+	if used_fallback:
+		runtime_meta["cellW"] = int(meta.get("fallbackCellW", meta["cellW"]))
+		runtime_meta["cellH"] = int(meta.get("fallbackCellH", meta["cellH"]))
 	var sf := SpriteFrames.new()
-	var cw := float(meta["cellW"])
-	var ch := float(meta["cellH"])
+	var cw := float(runtime_meta["cellW"])
+	var ch := float(runtime_meta["cellH"])
 	var fps := 7.0
 	if meta.get("timedMs", null) != null:
 		fps = 1000.0 / float(meta["timedMs"])

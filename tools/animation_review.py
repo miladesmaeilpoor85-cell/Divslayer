@@ -7,9 +7,11 @@ single-frame poses, composited over a checkerboard with a pivot guide.
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import sys
-from pathlib import Path
+from io import BytesIO
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from image_assets import open_image
@@ -127,6 +129,32 @@ def _cell(
     )
 
 
+
+def _open_base64_sheet(root: Path, folder: str, parts: list[Any]) -> Image.Image:
+    """Decode a text-safe, ordered Base64 image atlas packaged with an Android build."""
+    encoded_parts: list[str] = []
+    for item in parts:
+        relative = PurePosixPath(str(item))
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError("base64Parts contains an unsafe path")
+        path = root / "assets" / "art" / folder / Path(*relative.parts)
+        encoded_parts.append(path.read_text(encoding="ascii").strip())
+    payload = base64.b64decode("".join(encoded_parts), validate=True)
+    with Image.open(BytesIO(payload)) as opened:
+        opened.load()
+        return opened.convert("RGBA")
+
+
+def _nonnegative_int(value: Any, field: str) -> int:
+    try:
+        number = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{field} must be an integer") from exc
+    if number < 0:
+        raise ValueError(f"{field} must not be negative")
+    return number
+
+
 def review_sheets(
     root: Path,
     manifest_path: Path,
@@ -181,11 +209,20 @@ def review_sheets(
                 continue
             relative = Path("assets") / "art" / folder / f"{source_name}.{extension}"
             source = root / relative
+            sheet_source = relative.as_posix()
+            base64_parts = meta.get("base64Parts", [])
             try:
                 cell_w, cell_h, pivot = _validate_metadata(key, meta, kind)
-                if not source.is_file():
-                    raise ValueError(f"missing sprite sheet: {relative.as_posix()}")
-                sheet = open_image(source)
+                if base64_parts:
+                    if not isinstance(base64_parts, list):
+                        raise ValueError(f"{key}.base64Parts must be a list")
+                    sheet = _open_base64_sheet(root, folder, base64_parts)
+                    part_directory = PurePosixPath(str(base64_parts[0])).parent
+                    sheet_source = f"assets/art/{folder}/{part_directory.as_posix()}/*.b64"
+                else:
+                    if not source.is_file():
+                        raise ValueError(f"missing sprite sheet: {relative.as_posix()}")
+                    sheet = open_image(source)
 
                 if kind == "heroes":
                     rows, cols = meta["rows"], meta["cols"]
@@ -234,7 +271,8 @@ def review_sheets(
                     variants = _positive_int(
                         meta.get("variants", 1), f"{key}.variants"
                     )
-                    expected = (cell_w * frames_count, cell_h * variants)
+                    trailing_px = _nonnegative_int(meta.get("trailingPx", 0), f"{key}.trailingPx")
+                    expected = (cell_w * frames_count + trailing_px, cell_h * variants)
                     walk_indices = list(range(frames_count))
                     attack_indices = []
                     timed_ms = meta.get("timedMs")
@@ -248,7 +286,7 @@ def review_sheets(
 
                 if sheet.size != expected:
                     raise ValueError(
-                        f"{relative.as_posix()} is {sheet.width}x{sheet.height}; "
+                        f"{sheet_source} is {sheet.width}x{sheet.height}; "
                         f"expected {expected[0]}x{expected[1]}"
                     )
 
@@ -320,7 +358,7 @@ def review_sheets(
                     {
                         "kind": kind,
                         "id": key,
-                        "source": relative.as_posix(),
+                        "source": sheet_source,
                         "cell_size": [cell_w, cell_h],
                         "sheet_size": list(sheet.size),
                         "expected_size": list(expected),
@@ -330,7 +368,7 @@ def review_sheets(
                     }
                 )
             except (OSError, ValueError, TypeError, ZeroDivisionError) as exc:
-                report["errors"].append(f"{relative.as_posix()}: {exc}")
+                report["errors"].append(f"{sheet_source}: {exc}")
 
     report_path = output_dir / "animation-review.json"
     report_path.write_text(

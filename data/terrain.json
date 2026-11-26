@@ -2,40 +2,89 @@
  "textures": {
   "meadow": {
    "file": "meadow.webp",
-   "units": 300.0,
+   "units": 300,
    "gain": 0.9
   },
   "dirtpath": {
    "file": "dirtpath.webp",
-   "units": 320.0
+   "units": 320
   },
   "cobble": {
    "file": "cobble.webp",
-   "units": 210.0
+   "units": 210
   },
   "forestfloor": {
    "file": "forestfloor.webp",
-   "units": 260.0,
+   "units": 260,
    "gain": 1.22
+  },
+  "zabol_sandstone": {
+   "file": "zabol_sandstone.svg",
+   "units": 360,
+   "gain": 1.02
+  },
+  "zabol_dustpath": {
+   "file": "zabol_dustpath.svg",
+   "units": 310,
+   "gain": 1
+  },
+  "zabol_cobble": {
+   "file": "zabol_cobble.svg",
+   "units": 230,
+   "gain": 1.03
+  },
+  "zabol_drygarden": {
+   "file": "zabol_drygarden.svg",
+   "units": 270,
+   "gain": 0.96
+  },
+  "whispering_moss": {
+   "file": "whispering_moss.svg",
+   "units": 330,
+   "gain": 0.96
+  },
+  "whispering_path": {
+   "file": "whispering_path.svg",
+   "units": 300,
+   "gain": 0.98
+  },
+  "whispering_leaflitter": {
+   "file": "whispering_leaflitter.svg",
+   "units": 285,
+   "gain": 1
   }
  },
  "maps": {
   "village": {
-   "base": "meadow",
-   "r": "dirtpath",
-   "g": "cobble",
-   "b": "forestfloor",
-   "sat": 0.84
+   "base": "zabol_sandstone",
+   "r": "zabol_dustpath",
+   "g": "zabol_cobble",
+   "b": "zabol_drygarden",
+   "sat": 0.91,
+   "rough": 0.34,
+   "macro": 0.09,
+   "edges": [
+    0.15,
+    0.11,
+    0.39
+   ]
   },
   "forest": {
-   "base": "meadow",
-   "r": "dirtpath",
-   "b": "forestfloor",
-   "sat": 0.84,
+   "base": "whispering_moss",
+   "r": "whispering_path",
+   "b": "whispering_leaflitter",
+   "sat": 0.79,
+   "rough": 0.44,
+   "macro": 0.13,
    "edges": [
-    0.18,
+    0.16,
     0.18,
     0.42
+   ],
+   "tint": [
+    0.97,
+    1.02,
+    0.94
    ]
   },
   "camp": {

@@ -95,6 +95,31 @@ func run(m: Node) -> void:
 	await frames(8)
 	main.player.invuln = 99999.0
 
+	var terrain_script = preload("res://scripts/fx/terrain.gd")
+	var zabol_art := Game.map_data("village")
+	var forest_art := Game.map_data("forest")
+	var peaks_art := Game.map_data("peaks")
+	check("biome_ground_art_sources_are_registered",
+		str(zabol_art.get("groundFile", "")) == "zabol_ground.svg"
+		and str(forest_art.get("groundFile", "")) == "whispering_forest_ground.svg"
+		and str(peaks_art.get("groundFile", "")) == "peaks_ground.svg"
+		and ResourceLoader.exists("res://assets/art/Maps/zabol_ground.svg")
+		and ResourceLoader.exists("res://assets/art/Maps/whispering_forest_ground.svg")
+		and ResourceLoader.exists("res://assets/art/Maps/peaks_ground.svg"))
+	check("zabol_and_forest_have_dedicated_tiled_terrain",
+		terrain_script.has_terrain("village") and terrain_script.has_terrain("forest")
+		and ResourceLoader.exists("res://assets/art/Terrain/zabol_sandstone.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/zabol_dustpath.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/zabol_cobble.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/zabol_drygarden.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/whispering_moss.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/whispering_path.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/whispering_leaflitter.svg"))
+	check("new_zabol_and_forest_props_are_registered",
+		Game.obj_sprites.has("zabol_awning") and Game.obj_sprites.has("zabol_water_trough")
+		and Game.obj_sprites.has("zabol_clay_jars") and Game.obj_sprites.has("forest_root")
+		and Game.obj_sprites.has("forest_mushrooms") and Game.obj_sprites.has("forest_glow_fern"))
+
 	# The fourth chapter is unavailable until the third chapter has its saved completion state.
 	Game.Ch3.set_step("bound")
 	check("previous_chapter_dialogue_cannot_start_ch4", C.elder_lines().is_empty()
@@ -109,6 +134,10 @@ func run(m: Node) -> void:
 	main.goto_map("village", Vector2(600, 300))
 	await frames(4)
 	main.player.invuln = 99999.0
+	var zabol_world_ground: Sprite2D = main.world.get_node_or_null("Ground") as Sprite2D
+	check("zabol_tiled_ground_is_active_in_runtime",
+		main.world.get_node_or_null("Terrain") != null and zabol_world_ground != null
+		and not zabol_world_ground.visible)
 	var pages := await talk("elder")
 	check("zal_starts_pass_objective", pages >= 3 and C.step() == "pass" and Game.region_open("alborz"), [pages, C.step()])
 	check("objective_points_to_peaks_exit", Game.objective() == C.line("o_pass") and C.target().get("map", "") == "peaks")
@@ -164,6 +193,11 @@ func run(m: Node) -> void:
 	# The Peaks -> Alborz gate is truly connected, not just a graph-only link.
 	main.goto_map("peaks", Vector2(980, 180))
 	await frames(4)
+	var peaks_ground_node: Sprite2D = main.world.get_node_or_null("Ground") as Sprite2D
+	check("ashen_peaks_dedicated_ground_is_visible_at_runtime",
+		peaks_ground_node != null and peaks_ground_node.visible
+		and peaks_ground_node.texture != null
+		and str(Game.map_data("peaks").get("groundFile", "")) == "peaks_ground.svg")
 	check("peaks_exit_opens_after_zal", exit_try("alborz") == "left")
 
 	# Enter the Alborz prototype; the map entry advances the quest and builds its wind controller and visual cues.
@@ -311,7 +345,7 @@ func run(m: Node) -> void:
 		var warden_sprite_image: Image = warden_sprite_texture.get_image() if warden_sprite_texture != null else null
 		check("gale_warden_webp_atlas_loads_with_transparent_pixels",
 			warden_sprite_image != null and not warden_sprite_image.is_empty()
-			and warden_sprite_image.get_width() == 544 and warden_sprite_image.get_height() == 156
+			and warden_sprite_image.get_width() == 562 and warden_sprite_image.get_height() == 156
 			and warden_sprite_image.detect_alpha() != Image.ALPHA_NONE)
 		var warden_frames: SpriteFrames = gale_warden.anim.sprite_frames if gale_warden.anim != null else null
 		check("gale_warden_has_three_health_phases_and_dedicated_four_frame_sprite",
@@ -333,6 +367,12 @@ func run(m: Node) -> void:
 		check("gale_warden_returns_to_idle_wing_cycle",
 			gale_warden.warden_pose_step == -1 and gale_warden.anim.is_playing()
 			and gale_warden.anim.animation == "v0")
+	main.goto_map("forest", Vector2(550, 425))
+	await frames(5)
+	var forest_ground_node: Sprite2D = main.world.get_node_or_null("Ground") as Sprite2D
+	check("whispering_forest_tiled_ground_is_active_at_runtime",
+		main.world.get_node_or_null("Terrain") != null and forest_ground_node != null
+		and not forest_ground_node.visible)
 	main.goto_map("alborz", Vector2(1290, 520))
 	await frames(5)
 

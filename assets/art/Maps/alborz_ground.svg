@@ -6,6 +6,7 @@
  <linearGradient id="snow" x2=".2" y2="1"><stop stop-color="#d5e0df" stop-opacity=".9"/><stop offset=".45" stop-color="#91a9b4" stop-opacity=".7"/><stop offset="1" stop-color="#526977" stop-opacity="0"/></linearGradient>
  <linearGradient id="trail" x2="0" y2="1"><stop stop-color="#77858a"/><stop offset=".5" stop-color="#59686e"/><stop offset="1" stop-color="#3c515d"/></linearGradient>
  <radialGradient id="coldGlow"><stop stop-color="#8eafbf" stop-opacity=".24"/><stop offset="1" stop-color="#8eafbf" stop-opacity="0"/></radialGradient>
+ <radialGradient id="snowdust" cx="50%" cy="50%" r="50%"><stop stop-color="#dce9e5" stop-opacity=".09"/><stop offset=".58" stop-color="#9cb7c0" stop-opacity=".045"/><stop offset="1" stop-color="#9cb7c0" stop-opacity="0"/></radialGradient>
 </defs>
 <rect width="1400" height="1100" fill="url(#ground)"/>
 <ellipse cx="720" cy="470" rx="630" ry="470" fill="url(#coldGlow)"/>
@@ -78,4 +79,9 @@
  <path d="M50 770l55-12m-18 32 33-9M1320 760l-50-10m-12 32-35-8M95 300l38-9m-12 21 29-7M1310 300l-44-8m20 23-30-4"/>
 </g>
 <rect x="3" y="3" width="1394" height="1094" fill="none" stroke="#a7b8b8" stroke-opacity=".16" stroke-width="6"/>
+<g fill="none" stroke-linecap="round" opacity=".22">
+ <path d="M75 790l52-18 34 8m-28 19 34-8M1290 792l-50-18-36 9m21 18-35-8M202 85l36-12 24 8m-10 18 28-6M1196 95l-34-12-25 9m8 16-25-7" stroke="#e4eeea" stroke-width="4"/>
+ <path d="M520 820l31-9 28 5m-18 17 35-8M924 860l34-8 24 7M384 265l30-8 21 5M1020 270l-28-8-24 5" stroke="#1a2d37" stroke-width="7"/>
+ </g>
+ <g fill="#d9e5e0" opacity=".2"><circle cx="265" cy="576" r="3"/><circle cx="304" cy="594" r="2"/><circle cx="1084" cy="642" r="3"/><circle cx="1130" cy="610" r="2"/><circle cx="506" cy="265" r="2.5"/><circle cx="705" cy="920" r="3"/></g>
 </svg>

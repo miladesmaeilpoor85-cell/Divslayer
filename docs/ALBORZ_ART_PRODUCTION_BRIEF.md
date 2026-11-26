@@ -53,3 +53,7 @@ A separate three-direction `alborz_scout` character atlas is wired through the N
 ## Gale Warden attack-state animation — 2026-11-26
 
 The four-frame Warden sprite now has a timed attack sequence: raised-wing anticipation, downstroke impact, folded-wing recovery, then return to the idle wing cycle. Each of the four signature attacks starts the sequence against its own telegraph timing. Regression checks cover the three pose transitions. This is a functional animation pass; visual review at actual mobile size remains required.
+
+## Dedicated biome art pass — 2026-11-26
+
+The Alborz Pass and High Eyrie ground compositions have received a detail pass, including snow/stone surface accents and a correction to the High Eyrie's opaque overlay that previously darkened the whole arena. The Zabol settlement and Whispering Forest now have dedicated ground reference illustrations, dedicated repeating terrain textures for their base/path/cover layers, and additional Persian-settlement / forest-floor props. Ashen Peaks now has a dedicated volcanic basalt-and-ash ground composition. The original map dimensions, exits, spawn points and collision geometry are unchanged; all new art remains internal QA material pending Godot/mobile-scale review and owner-side rights confirmation.
