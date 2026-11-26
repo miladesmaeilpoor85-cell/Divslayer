@@ -47,7 +47,7 @@ See [Alborz art production brief](docs/ALBORZ_ART_PRODUCTION_BRIEF.md).
 ## 5. Asset rights and legal readiness / حقوق دارایی‌ها
 
 - [x] Create a per-image rights register covering the current image files.
-- [ ] Verify provenance and commercial-use status for all 399 currently registered image entries.
+- [ ] Verify provenance and commercial-use status for all 403 currently registered image entries.
 - [ ] Collect Suno/Hoosha receipts, generation IDs, dates, paid-plan evidence, API/download authorization, and dated terms for all 30 soundtrack tracks; current commercial-use evidence remains unverified.
 - [ ] Verify CC0 source/notice for each ambience and SFX file without extending those terms to unrelated assets.
 - [ ] Obtain qualified legal review of the license, CLA, privacy statements, and distribution terms before public contributions or commercial release.
