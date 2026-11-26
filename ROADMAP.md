@@ -71,9 +71,11 @@ See [Alborz art production brief](docs/ALBORZ_ART_PRODUCTION_BRIEF.md).
 - [x] Diagnose the latest Mage agent failure as a blocked ranged casting lane and add a wall-aware reposition policy plus five regression assertions on PR #65.
 - [x] Add a first Warden material/body-motion revision while retaining the runtime sheet dimensions on PR #66.
 - [x] Refine the Zabol, Whispering Forest and Ashen Peaks ground-route drawings to reduce straight, broad path bands on PR #67.
-- [ ] Review fresh PR #65 all-four-class artifacts on the final head; the automated journey has not yet been confirmed after the Mage fix.
+- [ ] Review fresh PR #65 all-four-class artifacts on the final head; the latest journey attempt failed before gameplay on a parse error, now corrected.
+- [ ] Review the Warden portrait/artwork and terrain revisions on a physical device; automated CI and clean-map previews are not final visual acceptance.
 - [ ] Review the revised Warden and terrain visuals from fresh contact sheets at native Android scale and in the physical-device encounter/map.
-- [ ] Add a dedicated Alborz Scout dialogue portrait and unique wind ambience; record provenance and rights before promotion.
+- [x] Add a dedicated Alborz Scout dialogue portrait and wire it to the actual dialogue; register provenance with rights status `UNVERIFIED`.
+- [ ] Add unique Alborz wind ambience; verify commercial-use rights before promotion.
 - [ ] Reconcile the open visual/test PRs with the current main branch and close only after CI, visual, rights and owner-acceptance gates are genuinely satisfied.
 - [ ] Keep all 403 image and 30 music entries unverified until per-item commercial-use evidence and qualified review are supplied.
 
