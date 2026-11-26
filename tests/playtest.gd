@@ -798,7 +798,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		# normal enemy scan. Some scripted bosses temporarily cloak during an attack; their
 		# reference must survive that interval so the agent does not forget the encounter.
 		if focus_target != null and is_instance_valid(focus_target) and focus_target.get("world") == main.world:
-			if PlayerAgent.should_keep_focus_boss(focus_type, str(focus_target.get("type", "")), not bool(focus_target.get("dead", false))):
+			if PlayerAgent.should_keep_focus_boss(focus_type, str(focus_target.get("type")), not bool(focus_target.get("dead"))):
 				any_alive = true
 				# Keep the requested boss selected through cloaked phases; the dedicated
 				# wait branch below prevents attacks while it is hidden.
