@@ -1501,6 +1501,33 @@
    ],
    "flipSideForLeft": true
   },
+  "alborz_scout": {
+   "cellW": 120,
+   "cellH": 156,
+   "rows": [
+    "down",
+    "up",
+    "side"
+   ],
+   "cols": [
+    "walk0",
+    "walk1",
+    "walk2",
+    "walk3",
+    "attack"
+   ],
+   "logicalW": 40,
+   "logicalH": 52,
+   "pxPerUnitLogical": 3,
+   "pivot": [
+    0.5,
+    0.038461538461538464
+   ],
+   "flipSideForLeft": true,
+   "walkFps": 7.5,
+   "attackFps": 12,
+   "extension": "svg"
+  },
   "rostam": {
    "cellW": 120,
    "cellH": 156,
