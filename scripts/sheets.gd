@@ -171,7 +171,11 @@ static func character(group: String, sheet: String) -> Dictionary:
 	if group == "heroes" and sheet == "warrior_starter":
 		tex = WarriorStarterArt.atlas_texture()
 	if tex == null:
-		tex = load(Game.ART + folder + "/" + sheet + ".png")
+		var sheet_extension := str(meta.get("extension", "png")).to_lower().trim_prefix(".")
+		if sheet_extension not in ["png", "webp", "jpg", "jpeg", "svg"]:
+			push_error("unsupported character sheet extension for " + group + "/" + sheet)
+			return {"frames": SpriteFrames.new(), "offset": Vector2.ZERO, "meta": meta}
+		tex = load(Game.ART + folder + "/" + sheet + "." + sheet_extension)
 	var attack_texture: Texture2D = null
 	if meta.has("attackSheetBase64Parts"):
 		attack_texture = _load_base64_attack_sheet(folder, meta["attackSheetBase64Parts"])
