@@ -62,14 +62,20 @@ func run(m: Node) -> void:
 	# ---- (v0.30) the people of the tale walk the world in their own painted sheets
 	var bad_sheets := []
 	for k in Game.manifest.get("npcs", {}):
-		var sp := "assets/art/Npcs/%s.png" % k
-		var ok := ResourceLoader.exists("res://" + sp)
+		var nm: Dictionary = Game.manifest["npcs"][k]
+		var ext := str(nm.get("extension", "png")).to_lower().trim_prefix(".")
+		var sp := "assets/art/Npcs/%s.%s" % [k, ext]
+		var ok := ext in ["png", "webp", "jpg", "jpeg", "svg"] and ResourceLoader.exists("res://" + sp)
 		for pat in ex:
 			if sp.match(pat):
 				ok = false
 		if ok:
 			var tx: Texture2D = load("res://" + sp)
-			ok = tx.get_width() == 600 and tx.get_height() == 468
+			var cols: Array = nm.get("cols", [])
+			var rows: Array = nm.get("rows", [])
+			var expected_width: int = int(nm.get("cellW", 0)) * cols.size()
+			var expected_height: int = int(nm.get("cellH", 0)) * rows.size()
+			ok = tx != null and tx.get_width() == expected_width and tx.get_height() == expected_height
 		if not ok:
 			bad_sheets.append(k)
 	check("villager_sheets_ship", bad_sheets.is_empty() and Game.manifest["npcs"].size() >= 11, bad_sheets)
