@@ -182,14 +182,18 @@ func run(m: Node) -> void:
 	var scout_node := npc("alborz_scout")
 	var scout_sprite: AnimatedSprite2D = scout_node.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D if scout_node != null else null
 	var scout_frames: SpriteFrames = scout_sprite.sprite_frames if scout_sprite != null else null
+	var scout_sheet: Texture2D = load("res://assets/art/Npcs/alborz_scout.svg") as Texture2D
 	check("alborz_scout_uses_its_own_registered_look",
 		scout_look == "alborz_scout" and Game.manifest.get("npcs", {}).has("alborz_scout")
 		and ResourceLoader.exists("res://assets/art/Npcs/alborz_scout.svg")
 		and scout_frames != null and scout_frames.has_animation("walk_down")
 		and scout_frames.get_frame_count("walk_down") == 4,
 		{"look": scout_look, "manifest": Game.manifest.get("npcs", {}).has("alborz_scout"),
-		 "sprite_exists": scout_sprite != null, "sprite_frames": scout_frames != null,
+		 "sprite_exists": scout_sprite != null, "sprite_name": scout_sprite.name if scout_sprite != null else "",
+		 "sprite_frames": scout_frames != null, "animation_names": scout_frames.get_animation_names() if scout_frames != null else [],
 		 "sheet_exists": ResourceLoader.exists("res://assets/art/Npcs/alborz_scout.svg"),
+		 "sheet_loaded": scout_sheet != null,
+		 "sheet_size": [scout_sheet.get_width(), scout_sheet.get_height()] if scout_sheet != null else [],
 		 "walk_frames": scout_frames.get_frame_count("walk_down") if scout_frames != null and scout_frames.has_animation("walk_down") else 0})
 
 	# Wind phase and cover are checked in logical map coordinates. The contribution never accumulates.
