@@ -29,6 +29,12 @@ static func should_use_health_potion(hp: float, max_hp: float, stock: int, reser
 static func next_health_potion_time(now: float, cooldown: float = 1.6) -> float:
 	return now + maxf(0.5, cooldown)
 
+## A Mage should reposition around opaque map geometry when an enemy is inside spell range
+## but no clear casting lane exists. Do not keep retreating at a safe distance while every
+## projectile spell is rejected by line-of-sight checks.
+static func should_seek_casting_lane(hero_class: String, target_is_pillar: bool, distance: float, melee_reach: float, has_clear_line: bool) -> bool:
+	return hero_class == "mage" and not target_is_pillar and distance > melee_reach + 8.0 and not has_clear_line
+
 ## Mage dodges only to escape immediate contact or a critical close-range threat.
 ## Readable boss telegraphs are handled by the shared reaction policy above this branch.
 static func should_dodge_mage(distance: float, hp: float, max_hp: float, stamina: float, dodge_cd: float) -> bool:
