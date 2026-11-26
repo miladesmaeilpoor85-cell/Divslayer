@@ -7,6 +7,10 @@ const MIN_CONFIDENCE := 0.55
 const KINDS := ["player", "enemy", "boss", "telegraph", "projectile"]
 
 static func capture_frame(viewport: Viewport) -> Dictionary:
+	# Godot's --headless mode disables rendering; ViewportTexture readback has no
+	# backing texture there. Real screenshot capture is exercised by the Xvfb journey.
+	if DisplayServer.get_name() == "headless":
+		return {}
 	if viewport == null or viewport.get_texture() == null:
 		return {}
 	var frame := viewport.get_texture().get_image()
