@@ -427,6 +427,7 @@ func _npc(n: Dictionary) -> void:
 			hero_sheet = str(HERO_NPCS[id][0])
 	var ch: Dictionary = Sheets.character("heroes", hero_sheet) if hero_sheet != "" else Sheets.character("npcs", look)
 	var spr := AnimatedSprite2D.new()
+	spr.name = "CharacterSprite"
 	spr.sprite_frames = ch["frames"]
 	spr.animation = "idle_down"
 	spr.centered = false
