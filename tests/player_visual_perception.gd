@@ -106,10 +106,10 @@ static func detect_sprite_templates(frame: Image, templates: Array, sample_step 
 		var sprite_image: Variant = entry.get("image")
 		if not (sprite_image is Image):
 			continue
-		var match := match_template(frame, sprite_image, str(entry.get("kind", "")), sample_step, threshold)
-		if not match.is_empty():
-			match["template_id"] = str(entry.get("id", ""))
-			candidates.append(match)
+		var match_result := match_template(frame, sprite_image, str(entry.get("kind", "")), sample_step, threshold)
+		if not match_result.is_empty():
+			match_result["template_id"] = str(entry.get("id", ""))
+			candidates.append(match_result)
 	return normalize_detections(candidates, frame.get_size())
 
 static func observation(frame: Dictionary, candidates: Array) -> Dictionary:
