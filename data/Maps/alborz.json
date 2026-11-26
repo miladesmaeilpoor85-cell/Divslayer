@@ -130,7 +130,7 @@
     "npcs": [
       {
         "id": "alborz_scout",
-        "look": "hesk",
+        "look": "alborz_scout",
         "x": 226,
         "y": 520,
         "w": 26,
