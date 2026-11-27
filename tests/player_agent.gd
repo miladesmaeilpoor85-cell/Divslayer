@@ -7,9 +7,12 @@ const PlayerObservation = preload("res://tests/player_observation.gd")
 const PlayerBrain = preload("res://tests/player_brain.gd")
 const PlayerVisualPerception = preload("res://tests/player_visual_perception.gd")
 const PlayerMemory = preload("res://tests/player_memory.gd")
+const Sheets = preload("res://scripts/sheets.gd")
 
 var driver: Node
 var memory
+var _visual_templates: Array[Dictionary] = []
+var _visual_template_types: Array[String] = []
 
 const TALENT_ORDER := {
 	"warrior": ["vit1", "str1", "swift"],
@@ -227,6 +230,77 @@ func visual_observation() -> Dictionary:
 
 func visible_visual_frame() -> Dictionary:
 	return PlayerVisualPerception.capture_frame(driver.get_viewport())
+
+## Build the candidate catalog from the player's own SpriteFrames and the map's
+## authored spawn catalogue. Spawn records name possible art only; they never prove
+## an actor is alive, visible, targetable, or currently present.
+func prepare_visual_templates(enemy_types: Array, focus_type := "") -> int:
+	_visual_templates.clear()
+	_visual_template_types.clear()
+	if driver == null or driver.main == null or driver.main.player == null:
+		return 0
+	var hero_frames: SpriteFrames = driver.main.player.anim.sprite_frames
+	var hero_animations := ["idle_down", "idle_up", "idle_side", "walk_down", "walk_up", "walk_side"]
+	_visual_templates.append_array(PlayerVisualPerception.build_sprite_templates(
+		hero_frames, hero_animations, "player", "hero", Sheets.SCALE, 1
+	))
+	var unique_types: Array[String] = []
+	if not focus_type.strip_edges().is_empty():
+		unique_types.append(focus_type.strip_edges())
+	for raw_type in enemy_types:
+		var enemy_type := str(raw_type).strip_edges()
+		if enemy_type.is_empty() or unique_types.has(enemy_type):
+			continue
+		unique_types.append(enemy_type)
+	# Keep the live image scan bounded; the focused objective is never dropped.
+	while unique_types.size() > 8:
+		unique_types.pop_back()
+	for enemy_type in unique_types:
+		var sheet: Dictionary = Sheets.enemy(enemy_type)
+		var frames: SpriteFrames = sheet.get("frames") as SpriteFrames
+		if frames == null:
+			continue
+		var meta: Dictionary = sheet.get("meta", {})
+		var variants := maxi(1, int(meta.get("variants", 1)))
+		var animation_names: Array[String] = ["v0"]
+		if variants > 1:
+			animation_names.append("v%d" % (variants - 1))
+		var definition: Dictionary = Game.enemy_def(enemy_type)
+		var kind := "boss" if bool(definition.get("boss", false)) or bool(definition.get("miniboss", false)) else "enemy"
+		var type_templates := PlayerVisualPerception.build_sprite_templates(
+			frames, animation_names, kind, "enemy:" + enemy_type, Sheets.SCALE, 1
+		)
+		if not type_templates.is_empty():
+			_visual_template_types.append(enemy_type)
+			_visual_templates.append_array(type_templates)
+	return _visual_templates.size()
+
+## One image-only combat sample. Colour warning regions remain low-confidence proposals;
+## they are surfaced for diagnostics but cannot independently trigger dodge decisions.
+func capture_visual_combat(prefer_boss := false) -> Dictionary:
+	var frame := visible_visual_frame()
+	if frame.is_empty():
+		return {"valid": false, "reason": "viewport_frame_unavailable", "detections": []}
+	var frame_size := Vector2i(int(frame.get("width", 0)), int(frame.get("height", 0)))
+	var image: Image = frame.get("image")
+	var detections := PlayerVisualPerception.detect_sprite_templates(image, _visual_templates, 2, 0.88)
+	var visible_vision: Dictionary = visual_observation()
+	var warning_candidates := PlayerVisualPerception.warning_proposals(
+		visible_vision.get("warnings", []), frame_size
+	)
+	detections.append_array(warning_candidates)
+	var normalized := PlayerVisualPerception.normalize_detections(detections, frame_size)
+	var plan := PlayerBrain.visual_combat_plan(normalized, prefer_boss)
+	return {
+		"valid": true,
+		"captured_at_msec": int(frame.get("captured_at_msec", Time.get_ticks_msec())),
+		"frame_size": frame_size,
+		"template_count": _visual_templates.size(),
+		"template_types": _visual_template_types.duplicate(),
+		"detections": normalized,
+		"plan": plan
+	}
+
 
 func _visible_screen_texts() -> Array[String]:
 	var result: Array[String] = []
