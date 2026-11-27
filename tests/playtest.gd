@@ -731,8 +731,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var pillar_damage_events := 0
 	while t < sec:
 		if focus_type != "" and t >= next_visual_sample_t:
-			next_visual_sample_t = t + 2.5
-			var visual_sample: Dictionary = player_agent.capture_visual_combat(true)
+			next_visual_sample_t = t + 5.0
+			var visual_sample: Dictionary = await player_agent.capture_visual_combat(true)
 			if bool(visual_sample.get("valid", false)):
 				var visual_detections: Array = visual_sample.get("detections", [])
 				var visual_plan: Dictionary = visual_sample.get("plan", {})
@@ -751,6 +751,16 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 					int(visual_sample.get("template_count", 0)), visual_players, visual_enemies, visual_bosses,
 					visual_warnings, str(bool(visual_plan.get("valid", false))), str(visual_plan.get("reason", ""))
 				])
+				for probe_data in visual_sample.get("diagnostics", []):
+					_log("PLAYER_AGENT_VISUAL_PROBE class=%s focus=%s scale=%.4f id=%s kind=%s size=%s best_score=%.3f rect=%s" % [
+						str(Game.cls), focus_type, float(visual_sample.get("rendered_scale", 0.0)),
+						str(probe_data.get("id", "")), str(probe_data.get("kind", "")),
+						str(probe_data.get("size", Vector2i.ZERO)), float(probe_data.get("best_score", -1.0)),
+						str(probe_data.get("best_rect", []))
+					])
+				var diagnostic_path := str(visual_sample.get("diagnostic_screenshot", ""))
+				if not diagnostic_path.is_empty():
+					_log("PLAYER_AGENT_VISUAL_FRAME path=%s" % diagnostic_path)
 				if bool(visual_plan.get("valid", false)):
 					var visual_target: Dictionary = visual_plan.get("target", {})
 					var visual_direction: Vector2 = visual_plan.get("target_direction_screen", Vector2.ZERO)
