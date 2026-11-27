@@ -13,6 +13,9 @@ var driver: Node
 var memory
 var _visual_templates: Array[Dictionary] = []
 var _visual_template_types: Array[String] = []
+var _visual_rendered_scale := 0.0
+var _visual_focus_type := ""
+var _visual_probe_logged := false
 
 const TALENT_ORDER := {
 	"warrior": ["vit1", "str1", "swift"],
@@ -237,6 +240,9 @@ func visible_visual_frame() -> Dictionary:
 func prepare_visual_templates(enemy_types: Array, focus_type := "") -> int:
 	_visual_templates.clear()
 	_visual_template_types.clear()
+	_visual_probe_logged = false
+	_visual_focus_type = focus_type.strip_edges()
+	_visual_rendered_scale = 0.0
 	if driver == null or driver.main == null or driver.main.player == null:
 		return 0
 	var hero_frames: SpriteFrames = driver.main.player.anim.sprite_frames
@@ -245,6 +251,7 @@ func prepare_visual_templates(enemy_types: Array, focus_type := "") -> int:
 	var rendered_scale := absf(driver.main.player.anim.get_global_transform_with_canvas().get_scale().x)
 	if rendered_scale <= 0.001:
 		rendered_scale = Sheets.SCALE
+	_visual_rendered_scale = rendered_scale
 	var hero_animations := ["idle_down", "idle_up", "idle_side", "walk_down", "walk_up", "walk_side"]
 	_visual_templates.append_array(PlayerVisualPerception.build_sprite_templates(
 		hero_frames, hero_animations, "player", "hero", rendered_scale, 1
@@ -283,11 +290,48 @@ func prepare_visual_templates(enemy_types: Array, focus_type := "") -> int:
 ## One image-only combat sample. Colour warning regions remain low-confidence proposals;
 ## they are surfaced for diagnostics but cannot independently trigger dodge decisions.
 func capture_visual_combat(prefer_boss := false) -> Dictionary:
+	# Read the viewport only after the renderer has finished a frame. The old
+	# synchronous readback could sample the previous/partially drawn frame.
+	await RenderingServer.frame_post_draw
 	var frame := visible_visual_frame()
 	if frame.is_empty():
 		return {"valid": false, "reason": "viewport_frame_unavailable", "detections": []}
 	var frame_size := Vector2i(int(frame.get("width", 0)), int(frame.get("height", 0)))
 	var image: Image = frame.get("image")
+	var diagnostics: Array[Dictionary] = []
+	var diagnostic_screenshot := ""
+	if not _visual_probe_logged:
+		_visual_probe_logged = true
+		var hero_probes := 0
+		var focus_probed := false
+		for entry in _visual_templates:
+			var entry_id := str(entry.get("id", ""))
+			var kind := str(entry.get("kind", ""))
+			var should_probe := kind == "player" and hero_probes < 6
+			should_probe = should_probe or (not focus_probed and not _visual_focus_type.is_empty() and entry_id.begins_with("enemy:" + _visual_focus_type + ":"))
+			if not should_probe:
+				continue
+			var probe_image: Image = entry.get("image")
+			if probe_image == null:
+				continue
+			var probe_kind := kind
+			var probe := PlayerVisualPerception.match_template(image, probe_image, probe_kind, 4, 0.0)
+			diagnostics.append({
+				"id": entry_id,
+				"kind": probe_kind,
+				"size": probe_image.get_size(),
+				"best_score": float(probe.get("confidence", -1.0)),
+				"best_rect": probe.get("rect", [])
+			})
+			if kind == "player":
+				hero_probes += 1
+			elif entry_id.begins_with("enemy:" + _visual_focus_type + ":"):
+				focus_probed = true
+		var output_directory := str(driver.get("out")) if driver != null else ""
+		if not output_directory.is_empty():
+			var diagnostic_name := "visual_probe_%s_%s.png" % [str(Game.cls), _visual_focus_type if not _visual_focus_type.is_empty() else "encounter"]
+			diagnostic_screenshot = output_directory.path_join("shots").path_join(diagnostic_name)
+			image.save_png(diagnostic_screenshot)
 	var detections := PlayerVisualPerception.detect_sprite_templates(image, _visual_templates, 4, 0.88)
 	var visible_vision: Dictionary = visual_observation()
 	var warning_candidates := PlayerVisualPerception.warning_proposals(
@@ -302,6 +346,9 @@ func capture_visual_combat(prefer_boss := false) -> Dictionary:
 		"frame_size": frame_size,
 		"template_count": _visual_templates.size(),
 		"template_types": _visual_template_types.duplicate(),
+		"rendered_scale": _visual_rendered_scale,
+		"diagnostics": diagnostics,
+		"diagnostic_screenshot": diagnostic_screenshot,
 		"detections": normalized,
 		"plan": plan
 	}
