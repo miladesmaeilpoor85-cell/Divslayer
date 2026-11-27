@@ -7,6 +7,7 @@ const PlayerBrain = preload("res://tests/player_brain.gd")
 const PlayerObservation = preload("res://tests/player_observation.gd")
 const PlayerVisualPerception = preload("res://tests/player_visual_perception.gd")
 const PlayerMemory = preload("res://tests/player_memory.gd")
+const Sheets = preload("res://scripts/sheets.gd")
 
 var results: Dictionary = {}
 var fails: Array[String] = []
@@ -197,6 +198,35 @@ func run(_main: Node) -> void:
 		actual_sprite_detections.size() == 1
 		and str(actual_sprite_detections[0].get("template_id", "")) == "hero:test:idle_down:0"
 		and str(actual_sprite_detections[0].get("kind", "")) == "player")
+
+	var anvilward_sheet: Dictionary = Sheets.enemy("anvilward")
+	var anvilward_frames: SpriteFrames = anvilward_sheet.get("frames") as SpriteFrames
+	var anvilward_templates := PlayerVisualPerception.build_sprite_templates(
+		anvilward_frames, ["v0", "v1"], "boss", "boss:anvilward", Sheets.SCALE * 1.15, 1
+	)
+	check("sprite_template_builder_extracts_actual_anvilward_game_art",
+		not anvilward_templates.is_empty()
+		and str(anvilward_templates[0].get("kind", "")) == "boss"
+		and str(anvilward_templates[0].get("id", "")).begins_with("boss:anvilward:"))
+	var actual_anvilward_image: Image = anvilward_templates[0].get("image")
+	var anvilward_render_fixture := Image.create(
+		actual_anvilward_image.get_width() + 32,
+		actual_anvilward_image.get_height() + 24,
+		false, Image.FORMAT_RGBA8
+	)
+	anvilward_render_fixture.fill(Color(0.12, 0.13, 0.14, 1.0))
+	for sy in actual_anvilward_image.get_height():
+		for sx in actual_anvilward_image.get_width():
+			var boss_pixel := actual_anvilward_image.get_pixel(sx, sy)
+			if boss_pixel.a > 0.0:
+				anvilward_render_fixture.set_pixel(13 + sx, 9 + sy, boss_pixel)
+	var actual_anvilward_match := PlayerVisualPerception.detect_sprite_templates(
+		anvilward_render_fixture, [anvilward_templates[0]], 1, 0.98
+	)
+	check("sprite_template_match_locates_actual_anvilward_sprite_art",
+		actual_anvilward_match.size() == 1
+		and str(actual_anvilward_match[0].get("template_id", "")) == str(anvilward_templates[0].get("id", ""))
+		and str(actual_anvilward_match[0].get("kind", "")) == "boss")
 	var heuristic_warning := PlayerVisualPerception.warning_proposals([
 		{"kind": "warm_telegraph_candidate", "rect": Rect2i(40, 30, 20, 12), "confidence": 0.9}
 	], Vector2i(160, 90))
