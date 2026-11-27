@@ -246,7 +246,7 @@ func run(_main: Node) -> void:
 			actual_sprite_detections.size() == 1
 			and str(actual_sprite_detections[0].get("template_id", "")) == "hero:test:idle_down:0"
 			and str(actual_sprite_detections[0].get("kind", "")) == "player")
-	
+
 		var anvilward_sheet: Dictionary = Sheets.enemy("anvilward")
 		var anvilward_frames: SpriteFrames = anvilward_sheet.get("frames") as SpriteFrames
 		var anvilward_templates := PlayerVisualPerception.build_sprite_templates(
@@ -280,7 +280,7 @@ func run(_main: Node) -> void:
 			actual_anvilward_match.size() == 1
 			and str(actual_anvilward_match[0].get("template_id", "")) == str(anvilward_templates[0].get("id", ""))
 			and str(actual_anvilward_match[0].get("kind", "")) == "boss")
-	
+
 	var heuristic_warning := PlayerVisualPerception.warning_proposals([
 		{"kind": "warm_telegraph_candidate", "rect": Rect2i(40, 30, 20, 12), "confidence": 0.9}
 	], Vector2i(160, 90))
