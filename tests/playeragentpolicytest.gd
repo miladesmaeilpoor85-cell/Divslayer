@@ -6,6 +6,7 @@ const PlayerAgent = preload("res://tests/player_agent.gd")
 const PlayerBrain = preload("res://tests/player_brain.gd")
 const PlayerObservation = preload("res://tests/player_observation.gd")
 const PlayerVisualPerception = preload("res://tests/player_visual_perception.gd")
+const PlayerMemory = preload("res://tests/player_memory.gd")
 
 var results: Dictionary = {}
 var fails: Array[String] = []
@@ -369,5 +370,89 @@ func run(_main: Node) -> void:
 	check("visual_dodge_refuses_unknown_player_bounds", PlayerBrain.visual_dodge_direction(
 		Rect2(), [{"rect": Rect2(40, 100, 30, 30), "confidence": 0.9}]
 	) == Vector2.ZERO)
+
+	var memory := PlayerMemory.new()
+	var visible_observation := {
+		"texts": [{"text": "Anvilward", "kind": "text"}, {"text": "Potion ۳", "kind": "text"}],
+		"panels": ["combat"],
+		"meters": {"HealthMeter": 0.45, "StaminaMeter": 0.7, "ManaMeter": 0.8},
+		"resources": {"potions_text": "۳"},
+		"vision": {"warnings": [{"kind": "warm_telegraph_candidate"}]}
+	}
+	var memory_observation_result: Dictionary = {}
+	for observation_index in PlayerMemory.STAGNATION_SAMPLE_COUNT:
+		memory_observation_result = memory.observe(visible_observation)
+	check("player_memory_detects_repeated_unchanged_visible_state",
+		bool(memory_observation_result.get("stagnant", false))
+		and int(memory_observation_result.get("repeat_count", 0)) >= PlayerMemory.STAGNATION_SAMPLE_COUNT)
+	var first_action_failure: Dictionary = memory.record_action("ui_tap:/root/Shop/Buy", false, "button did not activate")
+	var second_action_failure: Dictionary = memory.record_action("ui_tap:/root/Shop/Buy", false, "button still did not activate")
+	check("player_memory_waits_for_repeated_failure_before_replanning",
+		str(first_action_failure.get("recovery_hint", "")).is_empty()
+		and str(second_action_failure.get("recovery_hint", "")) == "reobserve_controls")
+	memory.record_action("ui_tap:/root/Shop/Buy", true, "button activated")
+	check("player_memory_clears_action_failure_after_verified_success",
+		int(memory.record_action("ui_tap:/root/Shop/Buy", false, "later unrelated failure").get("failure_count", 0)) == 1)
+	var anvilward_death: Dictionary = memory.record_combat({
+		"encounter": "anvilward",
+		"hero_class": "mage",
+		"boss_hp_before": 100.0,
+		"boss_hp_after": 18.0,
+		"player_alive": false,
+		"boss_defeated": false,
+		"hits_landed": 3,
+		"swings": 10,
+		"damage_taken": 206.0,
+		"duration_sec": 113.5
+	})
+	check("player_memory_classifies_boss_damage_without_player_survival_as_failure",
+		str(anvilward_death.get("status", "")) == "survival_failure"
+		and str(anvilward_death.get("hint", "")) == "survival_priority")
+	check("player_memory_exposes_learned_survival_hint",
+		memory.combat_hint("anvilward") == "survival_priority")
+	var no_contact: Dictionary = memory.record_combat({
+		"encounter": "matriarch",
+		"hero_class": "mage",
+		"boss_hp_before": 100.0,
+		"boss_hp_after": 100.0,
+		"player_alive": true,
+		"boss_defeated": false,
+		"hits_landed": 0,
+		"swings": 0,
+		"damage_taken": 12.0,
+		"duration_sec": 15.0
+	})
+	check("player_memory_turns_zero_contact_into_reposition_recommendation",
+		str(no_contact.get("status", "")) == "no_boss_damage"
+		and str(no_contact.get("hint", "")) == "reposition_and_reacquire")
+	check("player_memory_retains_a_separate_hint_per_encounter",
+		memory.combat_hint("matriarch") == "reposition_and_reacquire"
+		and memory.combat_hint("anvilward") == "survival_priority")
+	var successful_boss: Dictionary = memory.record_combat({
+		"encounter": "anvilward",
+		"hero_class": "mage",
+		"boss_hp_before": 18.0,
+		"boss_hp_after": 0.0,
+		"player_alive": true,
+		"boss_defeated": true,
+		"hits_landed": 5,
+		"swings": 8,
+		"damage_taken": 30.0,
+		"duration_sec": 35.0
+	})
+	check("player_memory_stops_retry_adaptation_after_confirmed_boss_victory",
+		str(successful_boss.get("status", "")) == "victory"
+		and memory.combat_hint("anvilward") == "encounter_complete")
+	var memory_report := memory.summary()
+	check("player_memory_emits_bounded_evidence_summary",
+		int(memory_report.get("observations", 0)) <= PlayerMemory.MAX_OBSERVATIONS
+		and int(memory_report.get("combat_samples", 0)) == 3
+		and int(memory_report.get("actions", 0)) >= 3)
+	var memory_source := FileAccess.get_file_as_string("res://tests/player_memory.gd")
+	check("player_memory_cannot_read_hidden_game_or_world_state",
+		not memory_source.contains("Game.")
+		and not memory_source.contains("get_nodes_in_group")
+		and not memory_source.contains("quest_target"))
+
 	print("PLAYERAGENTPOLICYTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit(1 if not fails.is_empty() else 0)
