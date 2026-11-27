@@ -263,6 +263,9 @@ func _mouse_tap(window_point: Vector2) -> void:
 func _tap_control(control: Control) -> bool:
 	if control == null or not is_instance_valid(control) or not control.is_visible_in_tree():
 		return false
+	# Capture the visible control identity before input: successful taps may close
+	# the panel and free the Control before the post-action observation is recorded.
+	var action_key := "ui_tap:" + str(driver.get_tree().root.get_path_to(control))
 	# Give Container-based menus one layout pass before computing the touch target.
 	await driver.frames(2)
 	var canvas_point: Vector2 = control.get_global_transform_with_canvas() * (control.size * 0.5)
@@ -279,7 +282,6 @@ func _tap_control(control: Control) -> bool:
 		# Fall back to a mouse click at the same visible control centre, then verify
 		# that the real Button.pressed signal fired.
 		await _mouse_tap(window_point)
-	var action_key := "ui_tap:" + str(driver.get_tree().root.get_path_to(control))
 	if button != null:
 		if is_instance_valid(button) and button.pressed.is_connected(callback):
 			button.pressed.disconnect(callback)
