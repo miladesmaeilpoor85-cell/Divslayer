@@ -240,9 +240,12 @@ func prepare_visual_templates(enemy_types: Array, focus_type := "") -> int:
 	if driver == null or driver.main == null or driver.main.player == null:
 		return 0
 	var hero_frames: SpriteFrames = driver.main.player.anim.sprite_frames
+	var rendered_scale := Sheets.SCALE
+	if driver.main.player.cam != null:
+		rendered_scale *= float(driver.main.player.cam.zoom.x)
 	var hero_animations := ["idle_down", "idle_up", "idle_side", "walk_down", "walk_up", "walk_side"]
 	_visual_templates.append_array(PlayerVisualPerception.build_sprite_templates(
-		hero_frames, hero_animations, "player", "hero", Sheets.SCALE, 1
+		hero_frames, hero_animations, "player", "hero", rendered_scale, 1
 	))
 	var unique_types: Array[String] = []
 	if not focus_type.strip_edges().is_empty():
@@ -268,7 +271,7 @@ func prepare_visual_templates(enemy_types: Array, focus_type := "") -> int:
 		var definition: Dictionary = Game.enemy_def(enemy_type)
 		var kind := "boss" if bool(definition.get("boss", false)) or bool(definition.get("miniboss", false)) else "enemy"
 		var type_templates := PlayerVisualPerception.build_sprite_templates(
-			frames, animation_names, kind, "enemy:" + enemy_type, Sheets.SCALE, 1
+			frames, animation_names, kind, "enemy:" + enemy_type, rendered_scale, 1
 		)
 		if not type_templates.is_empty():
 			_visual_template_types.append(enemy_type)
