@@ -6,8 +6,10 @@ extends RefCounted
 const PlayerObservation = preload("res://tests/player_observation.gd")
 const PlayerBrain = preload("res://tests/player_brain.gd")
 const PlayerVisualPerception = preload("res://tests/player_visual_perception.gd")
+const PlayerMemory = preload("res://tests/player_memory.gd")
 
 var driver: Node
+var memory
 
 const TALENT_ORDER := {
 	"warrior": ["vit1", "str1", "swift"],
@@ -178,13 +180,44 @@ static func should_skip_route_path_near_exit(origin: Vector2, destination: Vecto
 
 func attach(playtest_driver: Node) -> void:
 	driver = playtest_driver
+	memory = PlayerMemory.new()
+
+func record_action_outcome(action_key: String, succeeded: bool, outcome: String = "", context: Dictionary = {}) -> Dictionary:
+	if memory == null:
+		memory = PlayerMemory.new()
+	var feedback: Dictionary = memory.record_action(action_key, succeeded, outcome, context)
+	if not str(feedback.get("recovery_hint", "")).is_empty() and driver != null:
+		driver._log("PLAYER_AGENT_MEMORY_ACTION_FAILURE action=%s failures=%d hint=%s" % [
+			action_key, int(feedback.get("failure_count", 0)), str(feedback.get("recovery_hint", ""))
+		])
+	return feedback
+
+func record_combat_outcome(sample: Dictionary) -> Dictionary:
+	if memory == null:
+		memory = PlayerMemory.new()
+	var feedback: Dictionary = memory.record_combat(sample)
+	if bool(feedback.get("recorded", false)) and driver != null:
+		driver._log("PLAYER_AGENT_MEMORY_COMBAT encounter=%s status=%s hint=%s boss_damage=%.1f hits=%d" % [
+			str(feedback.get("encounter", "")), str(feedback.get("status", "")),
+			str(feedback.get("hint", "")), float(feedback.get("boss_damage", 0.0)), int(feedback.get("hits_landed", 0))
+		])
+	return feedback
+
+func combat_memory_hint(encounter: String) -> String:
+	return str(memory.combat_hint(encounter)) if memory != null else "continue"
+
+func memory_summary() -> Dictionary:
+	return memory.summary() if memory != null else {}
 
 ## Capture only text and controls that are visible in the rendered viewport.
 ## Decisions consume this snapshot; hidden game telemetry remains in the QA driver.
 func _screen_observation() -> Dictionary:
 	if driver == null:
 		return {}
-	return PlayerObservation.capture(driver.get_tree().root, driver.get_viewport())
+	var observation := PlayerObservation.capture(driver.get_tree().root, driver.get_viewport())
+	if memory != null:
+		memory.observe(observation)
+	return observation
 
 func visible_combat_status() -> Dictionary:
 	return PlayerBrain.read_visible_combat_status(_screen_observation())
@@ -246,12 +279,16 @@ func _tap_control(control: Control) -> bool:
 		# Fall back to a mouse click at the same visible control centre, then verify
 		# that the real Button.pressed signal fired.
 		await _mouse_tap(window_point)
+	var action_key := "ui_tap:" + str(driver.get_tree().root.get_path_to(control))
 	if button != null:
 		if is_instance_valid(button) and button.pressed.is_connected(callback):
 			button.pressed.disconnect(callback)
 		await driver.wait(0.15)
-		return bool(signal_state["pressed"])
+		var pressed_ok := bool(signal_state["pressed"])
+		record_action_outcome(action_key, pressed_ok, "visible control tap")
+		return pressed_ok
 	await driver.wait(0.15)
+	record_action_outcome(action_key, true, "visible control tap without Button signal")
 	return true
 
 func _named_control(wanted: String) -> Control:
