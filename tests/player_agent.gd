@@ -240,9 +240,11 @@ func prepare_visual_templates(enemy_types: Array, focus_type := "") -> int:
 	if driver == null or driver.main == null or driver.main.player == null:
 		return 0
 	var hero_frames: SpriteFrames = driver.main.player.anim.sprite_frames
-	var rendered_scale := Sheets.SCALE
-	if driver.main.player.cam != null:
-		rendered_scale *= float(driver.main.player.cam.zoom.x)
+	# Use the actual canvas transform so the template scale includes camera zoom,
+	# viewport stretch and the current emulator/window dimensions.
+	var rendered_scale := absf(driver.main.player.anim.get_global_transform_with_canvas().get_scale().x)
+	if rendered_scale <= 0.001:
+		rendered_scale = Sheets.SCALE
 	var hero_animations := ["idle_down", "idle_up", "idle_side", "walk_down", "walk_up", "walk_side"]
 	_visual_templates.append_array(PlayerVisualPerception.build_sprite_templates(
 		hero_frames, hero_animations, "player", "hero", rendered_scale, 1
