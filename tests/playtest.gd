@@ -748,7 +748,7 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 						ended = "respawned in %s after defeat; objective route must be followed again" % main.world.key
 						break
 					p = main.player
-					var learned_hint := player_agent.combat_memory_hint(focus_type) if focus_type != "" else "continue"
+					var learned_hint: String = str(player_agent.combat_memory_hint(focus_type)) if focus_type != "" else "continue"
 					if learned_hint == "survival_priority":
 						potion_threshold = maxf(potion_threshold, 0.78)
 						potion_reserve = 0
@@ -1240,19 +1240,6 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		_log("FIGHT_EVIDENCE type=%s present_before=%s hp_before=%.1f present_after=%s hp_after=%.1f defeated=%s" % [
 			focus_type, focus_present_before, focus_hp_before, focus_present_after, focus_hp_after, focus_defeated
 		])
-	var arena_report: Array[String] = []
-	for arena_obj in get_tree().get_nodes_in_group("arena"):
-		if arena_obj.world == main.world and not arena_obj.dead and str(arena_obj.type) == "gravepillar":
-			arena_report.append("gravepillar %d%%" % int(100.0 * float(arena_obj.hp) / maxf(1.0, float(arena_obj.max_hp))))
-	var detail := ""
-	if pillar_damage_events > 0:
-		detail += " · grave-pillar HP reductions %d" % pillar_damage_events
-	if not boss_report.is_empty():
-		detail += " · bosses " + ", ".join(boss_report)
-	if not arena_report.is_empty():
-		detail += " · arena " + ", ".join(arena_report)
-	if focus_type != "":
-		var final_focus_alive := focus_present_after and not focus_defeated
 		player_agent.record_combat_outcome({
 			"encounter": focus_type,
 			"hero_class": str(Game.cls),
@@ -1264,8 +1251,19 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			"swings": p.swings - swings0,
 			"damage_taken": p.damage_taken - dmg0,
 			"duration_sec": t,
-			"target_still_present": final_focus_alive
+			"target_still_present": focus_present_after and not focus_defeated
 		})
+	var arena_report: Array[String] = []
+	for arena_obj in get_tree().get_nodes_in_group("arena"):
+		if arena_obj.world == main.world and not arena_obj.dead and str(arena_obj.type) == "gravepillar":
+			arena_report.append("gravepillar %d%%" % int(100.0 * float(arena_obj.hp) / maxf(1.0, float(arena_obj.max_hp))))
+	var detail := ""
+	if pillar_damage_events > 0:
+		detail += " · grave-pillar HP reductions %d" % pillar_damage_events
+	if not boss_report.is_empty():
+		detail += " · bosses " + ", ".join(boss_report)
+	if not arena_report.is_empty():
+		detail += " · arena " + ", ".join(arena_report)
 	_log("PLAYER_AGENT_ACTIONS class=%s blocks=%d parries_total=%d rolls=%d sneak_uses=%d signatures=%d spells=%d ultimates=%d heavy=%d" % [Game.cls, block_actions, p.parries, dodges, sneak_actions, signature_actions, spell_actions, ult_actions, heavy_actions])
 	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · blocks %d · signatures %d · spells %d · ultimates %d · heavy %d · swings %d, hits %d%s" % [ended, t, kills,
 		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, block_actions, signature_actions, spell_actions, ult_actions, heavy_actions, p.swings - swings0, p.hits_landed - hits0, detail]
