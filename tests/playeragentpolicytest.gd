@@ -207,8 +207,8 @@ func run(_main: Node) -> void:
 		and heuristic_warning[0].get("rect", Rect2()).position.distance_to(Vector2(0.25, 0.333333)) < 0.01)
 	var visual_plan_detections: Array = [
 		{"kind":"player","confidence":0.96,"rect":[0.45,0.40,0.06,0.12]},
-		{"kind":"enemy","confidence":0.92,"rect":[0.58,0.40,0.08,0.13]},
-		{"kind":"boss","confidence":0.94,"rect":[0.72,0.38,0.12,0.2]}
+		{"kind":"enemy","confidence":0.92,"rect":[0.68,0.40,0.08,0.13]},
+		{"kind":"boss","confidence":0.94,"rect":[0.56,0.38,0.08,0.2]}
 	]
 	var visual_plan := PlayerBrain.visual_combat_plan(visual_plan_detections, true)
 	check("visual_combat_plan_requires_player_sprite_and_prefers_visible_boss",
