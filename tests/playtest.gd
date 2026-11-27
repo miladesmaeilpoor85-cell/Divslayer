@@ -140,6 +140,8 @@ func _finish() -> void:
 		_log("PLAYTEST_ASSERTIONS_FAILED %d" % assertion_failures.size())
 		for failure in assertion_failures:
 			_log("PLAYTEST_ASSERTION: " + failure)
+	if player_agent != null:
+		_log("PLAYER_AGENT_MEMORY_SUMMARY " + JSON.stringify(player_agent.memory_summary()))
 	_log("PLAYTEST_DONE  %.1f s wall" % ((Time.get_ticks_msec() - t0) / 1000.0))
 	if log_f:
 		log_f.flush()
@@ -721,6 +723,22 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			ended = "defeated %s through the live combat encounter" % focus_type
 			break
 		if p.dead:
+			if focus_type != "":
+				var death_boss_hp_after := 100.0
+				if focus_target != null and is_instance_valid(focus_target):
+					death_boss_hp_after = 0.0 if bool(focus_target.dead) else 100.0 * float(focus_target.hp) / maxf(1.0, float(focus_target.max_hp))
+				player_agent.record_combat_outcome({
+					"encounter": focus_type,
+					"hero_class": str(Game.cls),
+					"boss_hp_before": focus_hp_before,
+					"boss_hp_after": death_boss_hp_after,
+					"player_alive": false,
+					"boss_defeated": false,
+					"hits_landed": p.hits_landed - hits0,
+					"swings": p.swings - swings0,
+					"damage_taken": p.damage_taken - dmg0,
+					"duration_sec": t
+				})
 			if main.hud.death.visible and recovery_attempts < 3:
 				recovery_attempts += 1
 				var recovery_result: String = await player_agent.recover_from_death()
@@ -730,6 +748,19 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 						ended = "respawned in %s after defeat; objective route must be followed again" % main.world.key
 						break
 					p = main.player
+					var learned_hint := player_agent.combat_memory_hint(focus_type) if focus_type != "" else "continue"
+					if learned_hint == "survival_priority":
+						potion_threshold = maxf(potion_threshold, 0.78)
+						potion_reserve = 0
+						spell_interval_min = maxf(0.65, spell_interval_min * 0.8)
+						spell_interval_max = maxf(1.0, spell_interval_max * 0.8)
+						_log("PLAYER_AGENT_ADAPTATION encounter=%s change=earlier_healing faster_spell_cadence" % focus_type)
+					elif learned_hint == "reposition_and_reacquire":
+						detour = maxf(detour, 1.3)
+						_log("PLAYER_AGENT_ADAPTATION encounter=%s change=reposition_and_reacquire" % focus_type)
+					elif learned_hint == "inspect_target_window":
+						detour = maxf(detour, 0.7)
+						_log("PLAYER_AGENT_ADAPTATION encounter=%s change=inspect_target_window" % focus_type)
 					last = _feet()
 					t += 1.2
 					continue
@@ -1220,6 +1251,21 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 		detail += " · bosses " + ", ".join(boss_report)
 	if not arena_report.is_empty():
 		detail += " · arena " + ", ".join(arena_report)
+	if focus_type != "":
+		var final_focus_alive := focus_present_after and not focus_defeated
+		player_agent.record_combat_outcome({
+			"encounter": focus_type,
+			"hero_class": str(Game.cls),
+			"boss_hp_before": focus_hp_before,
+			"boss_hp_after": focus_hp_after,
+			"player_alive": not p.dead and Game.hp > 0.0,
+			"boss_defeated": focus_defeated,
+			"hits_landed": p.hits_landed - hits0,
+			"swings": p.swings - swings0,
+			"damage_taken": p.damage_taken - dmg0,
+			"duration_sec": t,
+			"target_still_present": final_focus_alive
+		})
 	_log("PLAYER_AGENT_ACTIONS class=%s blocks=%d parries_total=%d rolls=%d sneak_uses=%d signatures=%d spells=%d ultimates=%d heavy=%d" % [Game.cls, block_actions, p.parries, dodges, sneak_actions, signature_actions, spell_actions, ult_actions, heavy_actions])
 	return "%s after %.1f s · foes down %d · damage taken %d · lowest hp %d%% · potions %d · rolls %d · blocks %d · signatures %d · spells %d · ultimates %d · heavy %d · swings %d, hits %d%s" % [ended, t, kills,
 		int(p.damage_taken - dmg0), int(hp_low * 100.0), pots, dodges, block_actions, signature_actions, spell_actions, ult_actions, heavy_actions, p.swings - swings0, p.hits_landed - hits0, detail]
