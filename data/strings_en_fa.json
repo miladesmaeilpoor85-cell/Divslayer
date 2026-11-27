@@ -53,7 +53,7 @@
   },
   {
     "en": "Defeat Arzhang the Div in the crypt north of the forest, then report to Zal.",
-    "fa": "ارژنگ دیو در شمالِ جنگل را شکست بده، سپس به زال گزارش بده."
+    "fa": "در سردابِ شمال جنگل، ارژنگ‌دیو را شکست بده و نزد زال برگرد."
   },
   {
     "en": "The King of Mazandaran",
@@ -900,20 +900,12 @@
     "fa": "پشتیبان بازگشت. «ادامه» را بزن."
   },
   {
-    "en": "Emberfall Edition",
-    "fa": "نسخهٔ Emberfall"
-  },
-  {
     "en": "From Zabol to the Forge of the First Flame. Four classes, a talent tree, forged gear, and bosses that fight back.",
     "fa": "از زابل تا کورهٔ نخستین شعله. چهار کلاس، درخت استعداد، تجهیزات آهنگری‌شده و سرکرده‌هایی که کوتاه نمی‌آیند."
   },
   {
     "en": "Left thumb: drag anywhere to move. Right thumb: attack and skills. Hold attack to charge it. Everything else is in Menu, top right.",
     "fa": "شست چپ: هر جا بکشی حرکت می‌کنی. شست راست: حمله و مهارت‌ها. حمله را نگه داری شارژ می‌شود. بقیه در «فهرست» بالا سمت راست است."
-  },
-  {
-    "en": "WASD to move, Space to attack, Shift and X for skills, V to dodge, F to dash, E to talk, M for the menu.",
-    "fa": "WASD حرکت، Space حمله، Shift و X مهارت‌ها، V جاخالی، F دش، E گفتگو، M فهرست."
   },
   {
     "en": "New Adventure",

@@ -126,12 +126,14 @@ func stagger(sec := 0.0, label := "") -> void:
 	busy = 0.0
 	windup = false
 	var text := label if label != "" else Game.t("STAGGERED!", "گیج شد!")
-	world.float_text(global_position + Vector2(0, -box.y - 24), text, Color(1, 0.88, 0.54), true)
+	if not has_node("Arzhang3D"):
+		world.float_text(global_position + Vector2(0, -box.y - 24), text, Color(1, 0.88, 0.54), true)
 	world.burst(center(), Color(1, 0.88, 0.54), 18, 150.0)
 	world.shake(8.0)
 	Sfx.play("crit")
 	Sfx.play("stun", -2.0)
-	world.tip("stagger", "Staggered! It takes 50% more damage for a moment — strike now.", "گیج شد! چند لحظه ۵۰٪ آسیب بیشتر می‌خورد — حالا بزن.")
+	if not has_node("Arzhang3D"):
+		world.tip("stagger", "Staggered! It takes 50% more damage for a moment — strike now.", "گیج شد! چند لحظه ۵۰٪ آسیب بیشتر می‌خورد — حالا بزن.")
 
 func _cc_ready(kind: String) -> bool:
 	if float(cc.get(kind, 0.0)) > 0.0:
@@ -191,7 +193,7 @@ func hurt(amount: float, crit: bool, from_dir: Vector2, heavy := false) -> void:
 		if dazed > 0.0:
 			g *= 1.8
 		add_stagger(g)
-	if shield > 0 and not dead and randf() < 0.25:       # (v0.24, playtest: it still said so over his body)
+	if shield > 0 and not has_node("Arzhang3D") and not dead and randf() < 0.25:       # (v0.24, playtest: it still said so over his body)
 		world.float_text(global_position + Vector2(0, -box.y - 2), Game.t("Shielded — break the pillars", "سپر دارد — ستون‌ها را بشکن"), Color(0.72, 0.56, 1.0))
 
 func _check_phase() -> void:
@@ -290,7 +292,7 @@ func _clamp() -> void:
 ## slew drag a pale after-image: close behind when they move, drifting off them when they stand
 var _echo_t := 0.0
 func _echo_look(dt: float) -> void:
-	if not bool(cfg.get("echo", false)) or anim == null or world == null or world.fx == null or world.fx.quality == 0:
+	if has_node("Arzhang3D") or not bool(cfg.get("echo", false)) or anim == null or world == null or world.fx == null or world.fx.quality == 0:
 		return
 	_echo_t -= dt
 	if _echo_t > 0.0:
@@ -326,6 +328,8 @@ func _physics_process(dt: float) -> void:
 		return
 	_flash(dt)
 	_hover(dt)
+	if type == "boss":
+		shield = _alive_pillars()
 	_echo_look(dt)
 	hit_cd = max(0.0, hit_cd - dt)
 	imm_t = max(0.0, imm_t - dt)
@@ -355,7 +359,8 @@ func _physics_process(dt: float) -> void:
 			staggered -= dt
 			if staggered <= 0.0:
 				staggered = 0.0
-				world.float_text(global_position + Vector2(0, -box.y - 18), Game.t("Recovers", "به خود آمد"), Color(0.78, 0.78, 0.85))
+				if not has_node("Arzhang3D"):
+					world.float_text(global_position + Vector2(0, -box.y - 18), Game.t("Recovers", "به خود آمد"), Color(0.78, 0.78, 0.85))
 		if knock_t > 0.0:
 			knock_t -= dt
 			_step(knock_v * 0.3)
@@ -550,7 +555,8 @@ func _ai_guardian(dt: float, d: float, to: Vector2) -> void:
 		if ph >= 2 and _ready_move("pillars") and shield == 0:
 			_use("pillars", 17.0)
 			busy = 1.0
-			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("Rise, stones of the dead!", "برخیزید، نگهبانان!"), Color(0.78, 0.66, 1.0), true)
+			if not has_node("Arzhang3D"):
+				world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("Rise, stones of the dead!", "برخیزید، نگهبانان!"), Color(0.78, 0.66, 1.0), true)
 			Sfx.play("roar", -4.0)
 			pillars.clear()
 			for spot in world.ring(c, 4 if ph >= 3 else 3, 130.0, 240.0, Vector2(30, 40)):
@@ -558,7 +564,12 @@ func _ai_guardian(dt: float, d: float, to: Vector2) -> void:
 			shield = _alive_pillars()
 			# (v0.23, playtest) every time, not only the first: what to do, where the hero is looking; (v0.24) one message, not
 			# a banner, a tip and the bar all at once — the tip's advice is the banner's second line
-			world.banner.emit(Game.t("BREAK THE PILLARS", "ستون‌ها را بشکن"), Game.t("they shield him — or bait his charge into one", "سپرِ اویند — یا یورشش را به یکی بکوبان"), Color(0.78, 0.66, 1.0), 2.2)
+			if not has_node("Arzhang3D"):
+				world.banner.emit(Game.t("BREAK THE PILLARS", "ستون‌ها را بشکن"), Game.t("they shield him — or bait his charge into one", "سپرِ اویند — یا یورشش را به یکی بکوبان"), Color(0.78, 0.66, 1.0), 2.2)
+			return
+		# In the shield lesson the player can concentrate on lining up a charge.
+		if shield > 0 and Game.get("practice_stage") == "DuelQuickStart":
+			_chase(to, d, 0.65, 80.0)
 			return
 		# final phase: he vanishes and strikes from where you stand
 		if ph >= 3 and _ready_move("eclipse") and d < 420.0:
@@ -583,7 +594,8 @@ func _ai_guardian(dt: float, d: float, to: Vector2) -> void:
 			_use("charge", 2.6 if ph >= 3 else 3.6)
 			busy = ms + 0.05
 			bfx.lane(c, c + Vector2.from_angle(a) * span, 50.0, ms, Color8(255, 80, 60), _fire_charge.bind(a, 7.6, 0.9), self)
-			world.tip("bait", "Dodge his charge so he slams into a wall — he will be stunned.", "از یورشش جاخالی بده تا به دیوار بکوبد — گیج می‌شود.")
+			if not has_node("Arzhang3D"):
+				world.tip("bait", "Dodge his charge so he slams into a wall — he will be stunned.", "از یورشش جاخالی بده تا به دیوار بکوبد — گیج می‌شود.")
 			return
 		if _ready_move("bolts"):
 			_use("bolts", 4.2)
@@ -955,7 +967,8 @@ func _ai_titan(dt: float, d: float, to: Vector2) -> void:
 		if ph >= 2 and _ready_move("call") and _alive_minions() < 2:
 			_use("call", 16.0)
 			busy = 1.0
-			world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("Rise from the snow!", "از برف برخیزید!"), Color(0.75, 0.9, 1.0), true)
+			if not has_node("Arzhang3D"):
+				world.float_text(global_position + Vector2(0, -box.y - 20), Game.t("Rise from the snow!", "از برف برخیزید!"), Color(0.75, 0.9, 1.0), true)
 			Sfx.play("roar", -2.0)
 			_call("iceling", 3, Color(0.8, 0.94, 1.0))
 			world.tip("titan_call", "The icelings come for you — or stay on Akvan and burn it down.", "یخچه‌ها سراغت می‌آیند — یا روی اکوان بمان و با آتش آبش کن.")

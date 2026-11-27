@@ -713,7 +713,7 @@ func _resolve_attack_impact(data: Dictionary) -> void:
 			Game.vibrate(28 if heavy else 20, 0.8)
 		else:
 			Game.vibrate(10, 0.45)
-	if lv >= 2:
+	if lv >= 2 and Game.fight.get("type", "") != "boss":
 		world.float_text(body_c + Vector2(0, -30), Game.t("Combo x%d" % (lv + 1), "ترکیب ×%s" % Game.num(lv + 1)), Color(1, 0.82, 0.48))
 
 func _tick_attack_impact(dt: float) -> void:
@@ -907,7 +907,7 @@ func take_hit(raw: float, from_status := false) -> void:
 			return
 		guarded = blocking      # false when the guard just broke: the blow lands in full
 	var dmg: int = Game.incoming(raw, world.key, from_status)
-	Game.hp -= dmg
+	Game.hp = maxf(0.0, Game.hp - dmg)
 	if dmg > 0 and not Game.fight.is_empty():
 		Game.fight["hurt"] = true        # (v0.20) "Untouched": a boss beaten without a scratch
 	if not from_status and caster and not caster.ult_active():

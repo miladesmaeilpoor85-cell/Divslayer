@@ -23,10 +23,12 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Game="*res://scripts/game.gd"
+Game="*res://visual3d/session.gd"
 Sfx="*res://scripts/sfx.gd"
 UI="*res://scripts/ui.gd"
 Music="*res://scripts/music.gd"
+
+VisualPlaytest="*res://visual3d/addition.gd"
 
 [display]
 

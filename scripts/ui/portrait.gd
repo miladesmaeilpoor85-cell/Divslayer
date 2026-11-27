@@ -98,6 +98,13 @@ func _ready() -> void:
 func show_sheet(g: String, s: String, look := "") -> void:
 	group = g
 	sheet = s
+	if not square and g == "heroes" and Game.cls == "warrior":
+		_tex = Game.call("pahlavan_portrait")
+		_src = Rect2(Vector2.ZERO, _tex.get_size())
+		if face:
+			face.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		_layout()
+		return
 	var ch: Dictionary = Sheets.character(g, s)
 	if ch.is_empty():
 		return

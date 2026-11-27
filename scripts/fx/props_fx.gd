@@ -159,7 +159,7 @@ static func fire(n: CanvasItem, at: Vector2, s: float, t: float, seed: float, co
 		var w: float = s * (0.75 - i * 0.15)
 		var pts := PackedVector2Array()
 		var p0 := Vector2(x - w, y)
-		var c1 := Vector2(x - w * 0.6 + sin(ph * 1.7) * 1.5, y - h * 0.6)
+		var c1 := Vector2(x - w * 0.6 + sin(ph * 1.7) * minf(1.5, w * 0.5), y - h * 0.6)
 		var p1 := Vector2(x + sin(ph) * 1.5, y - h)
 		var c2 := Vector2(x + w * 0.6, y - h * 0.55)
 		var p2 := Vector2(x + w, y)

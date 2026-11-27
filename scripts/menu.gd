@@ -264,18 +264,9 @@ func _card(c: String, mx: Dictionary) -> Control:
 	face.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(face)
 	face.texture = CLASS_CARD_ART[c]
-	# Owner-supplied Mage/Rogue/Paladin artwork is a single class-card portrait,
-	# not a sequence of directional combat frames. Keep those portraits static here;
-	# only Warrior retains the existing six-pose menu-card preview.
-	var motion_frames: Array[Texture2D] = ClassCardArt.frames_for(c)
-	if c == "warrior" and motion_frames.size() == 6:
-		face.texture = motion_frames[0]
-		_card_animations.append({
-			"face": face,
-			"frames": motion_frames,
-			"frame": 0,
-			"clock": 0.0,
-		})
+	if c == "warrior":
+		face.texture = Game.call("pahlavan_portrait")
+		face.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	var nh := HBoxContainer.new()
 	nh.alignment = BoxContainer.ALIGNMENT_CENTER
 	nh.add_theme_constant_override("separation", 6)

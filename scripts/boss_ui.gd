@@ -139,6 +139,8 @@ func _process(_dt: float) -> void:
 	# (v0.23, playtest: "Shielded" and nobody knew why) the shield and what breaks it, on the bar itself
 	if int(boss.get("shield")) > 0:
 		nm += Game.t("  · shielded: break the pillars (%d)" % int(boss.shield), "، سپر دارد: ستون‌ها را بشکن (%s)" % Game.num(int(boss.shield)))
+	elif boss.type == "boss" and full:
+		nm += Game.t("  · Strike now", "، اکنون ضربه بزن")
 	elif boss.type == "zahhak" and boss.has_method("zh_chains") and boss.zh_chains() > 0:
 		nm += Game.t("  · chains %d" % boss.zh_chains(), "، زنجیرها %s" % Game.num(boss.zh_chains()))
 	if not Game.rush.is_empty():

@@ -39,17 +39,17 @@ for t in windgusttest quittest achtest rushtest audiotest shrinetest chapter2tes
   if (( current_index % shard_count != shard_index )); then
     continue
   fi
-  r=$(run_godot -- --test "res://tests/$t.gd")
+  r=$(run_godot -- --test "res://tests/$t.gd" 2>&1)
   status=$?
   passes=$(printf '%s\n' "$r" | grep -cE '^PASS' || true)
   fails=$(printf '%s\n' "$r" | grep -cE '^FAIL' || true)
   crashes=$(printf '%s\n' "$r" | grep -c 'signal 11' || true)
-  errors=$(printf '%s\n' "$r" | grep -Ec 'SCRIPT ERROR|Parse Error' || true)
+  errors=$(printf '%s\n' "$r" | grep -Ec 'SCRIPT ERROR|Parse Error|Invalid polygon data' || true)
   printf '== %s exit=%s pass=%s fail=%s crash=%s errors=%s\n' "$t" "$status" "$passes" "$fails" "$crashes" "$errors" >> "$out"
-  printf '%s\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11' | head -10 >> "$out" || true
+  printf '%s\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|Invalid polygon data|signal 11' | head -10 >> "$out" || true
   if [[ $status -ne 0 || $fails -gt 0 || $crashes -gt 0 || $errors -gt 0 ]]; then
     failed=1
-    printf '%s\\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11|ERROR:' | head -30 | tee -a "$out" || true
+    printf '%s\\n' "$r" | grep -E '^FAIL|SCRIPT ERROR|Parse Error|Invalid polygon data|signal 11|ERROR:' | head -30 | tee -a "$out" || true
     if [[ -z "$r" ]]; then echo "No test output was produced before exit." | tee -a "$out"; fi
   fi
 done
@@ -64,13 +64,13 @@ if (( shard_index == 0 )); then
   json_count=$(grep -c 'AUTOTEST_JSON' "$test_log" || true)
   fails=$(grep -cE '^FAIL' "$test_log" || true)
   crashes=$(grep -c 'signal 11' "$test_log" || true)
-  errors=$(grep -Ec 'SCRIPT ERROR|Parse Error' "$test_log" || true)
+  errors=$(grep -Ec 'SCRIPT ERROR|Parse Error|Invalid polygon data' "$test_log" || true)
   timed_out=0
   [[ $status -eq 124 || $status -eq 137 ]] && timed_out=1
   printf '== autotest exit=%s elapsed=%ss json=%s fail=%s crash=%s errors=%s timeout=%s\n' "$status" "$elapsed" "$json_count" "$fails" "$crashes" "$errors" "$timed_out" | tee -a "$out"
   if [[ $status -ne 0 || $json_count -eq 0 || $fails -gt 0 || $crashes -gt 0 || $errors -gt 0 ]]; then
     failed=1
-    grep -E '^FAIL|SCRIPT ERROR|Parse Error|signal 11|ERROR:' "$test_log" | head -30 | tee -a "$out" || true
+    grep -E '^FAIL|SCRIPT ERROR|Parse Error|Invalid polygon data|signal 11|ERROR:' "$test_log" | head -30 | tee -a "$out" || true
   fi
 else
   echo "AUTOTEST_ASSIGNED_TO_SHARD_0" | tee -a "$out"
