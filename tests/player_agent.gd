@@ -9,6 +9,24 @@ const PlayerVisualPerception = preload("res://tests/player_visual_perception.gd"
 const PlayerMemory = preload("res://tests/player_memory.gd")
 const Sheets = preload("res://scripts/sheets.gd")
 
+# Calibrated from Xvfb gameplay probes: Mage hero templates scored 0.831-0.833
+# and the focused Arzhang boss scored 0.767. Keep this observer-only until
+# real positive/negative screenshot fixtures establish a production-safe threshold.
+const VISUAL_PLAYER_MATCH_THRESHOLD := 0.80
+const VISUAL_ENEMY_MATCH_THRESHOLD := 0.80
+const VISUAL_BOSS_MATCH_THRESHOLD := 0.75
+
+static func visual_match_threshold(kind: String) -> float:
+	match kind:
+		"player":
+			return VISUAL_PLAYER_MATCH_THRESHOLD
+		"boss":
+			return VISUAL_BOSS_MATCH_THRESHOLD
+		"enemy":
+			return VISUAL_ENEMY_MATCH_THRESHOLD
+		_:
+			return 0.88
+
 var driver: Node
 var memory
 var _visual_templates: Array[Dictionary] = []
@@ -332,7 +350,20 @@ func capture_visual_combat(prefer_boss := false) -> Dictionary:
 			var diagnostic_name := "visual_probe_%s_%s.png" % [str(Game.cls), _visual_focus_type if not _visual_focus_type.is_empty() else "encounter"]
 			diagnostic_screenshot = output_directory.path_join("shots").path_join(diagnostic_name)
 			image.save_png(diagnostic_screenshot)
-	var detections := PlayerVisualPerception.detect_sprite_templates(image, _visual_templates, 4, 0.88)
+	# Score each actor category with its own calibrated threshold. Small Mage sprites
+	# blend more strongly with the scene than large bosses; one global 0.88 cutoff
+	# rejected every Mage hero probe in the Arzhang journey (best score 0.833).
+	# Keep detections diagnostic/observe-only until screenshot precision is validated.
+	var detections: Array[Dictionary] = []
+	for kind in ["player", "enemy", "boss"]:
+		var kind_templates: Array[Dictionary] = []
+		for entry in _visual_templates:
+			if str(entry.get("kind", "")) == kind:
+				kind_templates.append(entry)
+		if not kind_templates.is_empty():
+			detections.append_array(PlayerVisualPerception.detect_sprite_templates(
+				image, kind_templates, 4, visual_match_threshold(kind)
+			))
 	var visible_vision: Dictionary = visual_observation()
 	var warning_candidates := PlayerVisualPerception.warning_proposals(
 		visible_vision.get("warnings", []), frame_size
