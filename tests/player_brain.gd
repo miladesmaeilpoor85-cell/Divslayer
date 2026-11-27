@@ -170,3 +170,34 @@ static func visible_evasion_vector(detections: Array, player_center: Vector2, mi
 	if strongest <= 0.0 or weighted_away.length_squared() < 0.0001:
 		return Vector2.ZERO
 	return weighted_away.normalized()
+
+## Build a target plan only when the player's own Sprite-derived template is detected.
+## Coordinates remain normalized screen-space values; no world/entity lookup is performed.
+static func visual_combat_plan(detections: Array, prefer_boss := false) -> Dictionary:
+	var player: Dictionary = {}
+	for item in detections:
+		if typeof(item) != TYPE_DICTIONARY or str(item.get("kind", "")) != "player":
+			continue
+		var confidence := float(item.get("confidence", 0.0))
+		if confidence >= 0.72 and confidence > float(player.get("confidence", 0.0)):
+			player = item
+	if player.is_empty():
+		return {"valid": false, "reason": "player_sprite_not_detected"}
+	var player_center: Vector2 = player.get("center", Vector2(-1, -1))
+	if player_center.x < 0.0 or player_center.y < 0.0:
+		return {"valid": false, "reason": "player_bounds_invalid"}
+	var target := select_visual_target(detections, player_center, prefer_boss)
+	if target.is_empty():
+		return {"valid": false, "reason": "no_confident_visible_target", "player": player}
+	var target_center: Vector2 = target.get("center", Vector2(-1, -1))
+	var delta := target_center - player_center
+	if target_center.x < 0.0 or target_center.y < 0.0 or delta.length_squared() < 0.0001:
+		return {"valid": false, "reason": "target_bounds_invalid", "player": player}
+	return {
+		"valid": true,
+		"player": player,
+		"target": target,
+		"target_direction_screen": delta.normalized(),
+		"target_distance_normalized": delta.length(),
+		"evasion_direction_screen": visible_evasion_vector(detections, player_center)
+	}
