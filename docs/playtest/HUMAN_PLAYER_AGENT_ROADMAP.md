@@ -180,3 +180,17 @@ This does **not** complete combat autonomy. Enemy identification, target selecti
 - Added synthetic image regression coverage for exact match localization, normalized bounds, and threshold rejection.
 
 **Important boundary:** this commit implements the pixel matcher, not automatic extraction/registration of the game's live SpriteFrames. Templates must still be cropped from the actual atlas/frame and scaled to their rendered viewport size. No real boss screenshot has yet been evaluated, and the matcher is not wired into the live fight loop. Therefore it is not yet a real-sprite boss detector and must not drive live target or dodge actions. Next step: extract frame templates from `Sheets.enemy(...)` and the selected hero sheet, calibrate against actual boss-fight screenshots, add precision/recall evidence, then enable the visual policy behind a fail-closed feature flag in the combat loop.
+
+
+## Episodic learning foundation — 27 November 2026
+
+The next implementation slice adds bounded, per-run memory without granting the agent hidden gameplay authority:
+
+- `tests/player_memory.gd` keeps a small rolling history of visible HUD/text/panel observations, repeated UI-action failures, and separately supplied combat outcomes.
+- The observer records only the rendered text, visible panel names, HUD meter buckets, potion label and coarse visual-warning labels. It does not read `Game`, world nodes, enemy objects, quest state or save data.
+- Two consecutive failures of the same visible UI action trigger a re-observation/replanning hint instead of silently repeating the same tap.
+- A focused fight records boss HP delta, actual registered hits, survival, damage taken and duration. Zero registered contact recommends reposition/reacquisition; death recommends earlier resource use; verified boss defeat clears the retry hint.
+- After a successful in-game recovery, the combat controller applies the learned hint using only ordinary controls: it can heal earlier, adjust spell cadence or increase a wall-aware reposition detour. It does not change player/boss stats, grant resources, bypass collision or mutate quest state.
+- The memory summary is written to the run log so each class artifact can be reviewed. This is session-local adaptation, not persistent model training across installations or classes.
+
+This remains an incremental foundation. The current fight controller still uses some runtime telemetry to select/measure test targets and verify outcomes; the next autonomy step is to replace target selection, enemy identity and telegraph decisions with calibrated detections from captured frames and actual sprite templates. The project must keep internal telemetry in the QA/evidence channel, separate from player-facing perception.
