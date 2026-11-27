@@ -194,3 +194,18 @@ The next implementation slice adds bounded, per-run memory without granting the 
 - The memory summary is written to the run log so each class artifact can be reviewed. This is session-local adaptation, not persistent model training across installations or classes.
 
 This remains an incremental foundation. The current fight controller still uses some runtime telemetry to select/measure test targets and verify outcomes; the next autonomy step is to replace target selection, enemy identity and telegraph decisions with calibrated detections from captured frames and actual sprite templates. The project must keep internal telemetry in the QA/evidence channel, separate from player-facing perception.
+
+
+## Visual player perception integration — 27 November 2026
+
+The next visual-autonomy slice now extracts image templates from the game's real rendered-art sources and samples them during focused combat:
+
+- `player_visual_perception.gd` can crop an `AtlasTexture` region from its source atlas, trim transparent borders, and resize with nearest-neighbour sampling to the same scale used by `AnimatedSprite2D`.
+- A bounded template bank is generated from the selected hero's actual `SpriteFrames` plus the authored enemy-spawn catalogue for the current map. Those spawn records are candidate asset identities only; they are not treated as evidence that an enemy is present or alive.
+- The pixel matcher uses a coarse scan followed by a pixel-accurate local refinement, so it can tolerate sprite origins that do not align to the coarse scan grid without evaluating every full-resolution position.
+- The visual brain now produces a fail-closed screen-space combat plan only when both the player's own sprite and a confident visible enemy/boss are detected. It does not query world coordinates or scene entities.
+- The focused combat harness records periodic image detections, template IDs, confidence, and the screen-space plan alongside its QA telemetry. This makes it possible to compare visual perception with the known test encounter without using runtime objects as the visual input.
+- Broad warm/cold colour regions are emitted as low-confidence telegraph proposals (capped at 0.64). They are diagnostic only and cannot trigger the brain's defensive response threshold. This prevents fire, UI glow, or ambient effects from causing an unverified dodge.
+- Regression coverage now exercises AtlasTexture cropping, alpha trimming, SpriteFrames template creation, image localization, screen-space boss selection, no-player fail-closed behaviour, and the warning confidence cap.
+
+**Safety boundary for this increment:** image detections are currently in observe-only mode. They are not yet allowed to issue movement, attacks, rolls, or blocks. The current coarse colour proposal is not a calibrated telegraph classifier, and the sprite matcher has not yet demonstrated precision/recall against saved boss-fight screenshots for all four hero classes. The next acceptance step is to inspect the emitted per-class screenshots/logs, measure true/false matches for hero, boss, adds and telegraphs, tune scale/threshold/scan cadence, and only then enable visual-assisted target positioning behind an explicit scenario flag. QA telemetry must remain a separate comparison channel and must never fill in a missing visual detection.
