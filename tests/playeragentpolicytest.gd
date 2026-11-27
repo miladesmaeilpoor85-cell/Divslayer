@@ -168,6 +168,33 @@ func run(_main: Node) -> void:
 	var wrong_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 1.01)
 	check("sprite_template_match_rejects_threshold_above_perfect_score", wrong_match.is_empty())
 
+	# Exercise the multi-resolution path with a sprite close to the game's rendered size.
+	var large_template := Image.create(40, 48, false, Image.FORMAT_RGBA8)
+	large_template.fill(Color(0.0, 0.0, 0.0, 0.0))
+	for sy in range(4, 44):
+		for sx in range(8, 32):
+			large_template.set_pixel(sx, sy, Color(
+				0.2 + float(sx - 8) / 48.0,
+				0.25 + float(sy - 4) / 64.0,
+				0.72 - float(sx - 8) / 120.0,
+				1.0
+			))
+	var large_frame := Image.create(240, 160, false, Image.FORMAT_RGBA8)
+	large_frame.fill(Color(0.08, 0.09, 0.1, 1.0))
+	for sy in large_template.get_height():
+		for sx in large_template.get_width():
+			var large_pixel := large_template.get_pixel(sx, sy)
+			if large_pixel.a > 0.0:
+				large_frame.set_pixel(123 + sx, 61 + sy, large_pixel)
+	var large_match := PlayerVisualPerception.match_template(large_frame, large_template, "player", 4, 0.98)
+	var large_rect: Array = large_match.get("rect", [])
+	check("sprite_template_multiresolution_match_refines_exact_large_sprite_position",
+		large_rect.size() == 4
+		and absf(float(large_rect[0]) - 123.0 / 240.0) < 0.005
+		and absf(float(large_rect[1]) - 61.0 / 160.0) < 0.005
+		and absf(float(large_rect[2]) - 40.0 / 240.0) < 0.005
+		and absf(float(large_rect[3]) - 48.0 / 160.0) < 0.005)
+
 	var actual_atlas_image := Image.create(32, 20, false, Image.FORMAT_RGBA8)
 	actual_atlas_image.fill(Color(0.0, 0.0, 0.0, 0.0))
 	for sy in range(5, 11):
