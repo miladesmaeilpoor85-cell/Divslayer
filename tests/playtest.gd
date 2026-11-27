@@ -713,7 +713,8 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			if not candidate_type.is_empty() and not visual_enemy_types.has(candidate_type):
 				visual_enemy_types.append(candidate_type)
 	var visual_template_count: int = int(player_agent.prepare_visual_templates(visual_enemy_types, focus_type))
-	var next_visual_sample_t := 0.0
+	# Avoid sampling while the boss-intro banner can cover the player sprite; take the first visual probe after the opening transition.
+	var next_visual_sample_t := 5.0
 	_log("PLAYER_AGENT_VISUAL_TEMPLATES map=%s hero=%s focus=%s authored_candidates=%d templates=%d mode=observe_only" % [
 		map0, str(Game.cls), focus_type, visual_enemy_types.size(), visual_template_count
 	])
