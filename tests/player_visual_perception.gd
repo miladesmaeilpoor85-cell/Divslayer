@@ -142,15 +142,16 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 	var step := maxi(2, sample_step)
 	var max_x := frame.get_width() - template.get_width()
 	var max_y := frame.get_height() - template.get_height()
-	var best_score := -1.0
+	var best_coarse_score := -1.0
 	var best_position := Vector2i.ZERO
+	var best_score := -1.0
 	var best_count := 0
 	# Coarse pass keeps the scan bounded for phone-sized viewports.
 	for y in range(0, max_y + 1, step):
 		for x in range(0, max_x + 1, step):
 			var coarse_score := _template_score_at(frame, template, Vector2i(x, y), step)
-			if coarse_score > best_score:
-				best_score = coarse_score
+			if coarse_score > best_coarse_score:
+				best_coarse_score = coarse_score
 				best_position = Vector2i(x, y)
 	# Pixel-accurate refinement around the best coarse location compensates for
 	# camera sub-pixel movement and sprite origins that do not align to the coarse grid.
