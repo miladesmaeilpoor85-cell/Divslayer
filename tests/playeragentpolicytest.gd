@@ -163,6 +163,63 @@ func run(_main: Node) -> void:
 	var wrong_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 1.01)
 	check("sprite_template_match_rejects_threshold_above_perfect_score", wrong_match.is_empty())
 
+	var actual_atlas_image := Image.create(32, 20, false, Image.FORMAT_RGBA8)
+	actual_atlas_image.fill(Color(0.0, 0.0, 0.0, 0.0))
+	for sy in range(5, 11):
+		for sx in range(6, 10):
+			actual_atlas_image.set_pixel(sx, sy, Color(0.2 + float(sx - 6) * 0.12, 0.3 + float(sy - 5) * 0.08, 0.85, 1.0))
+	var actual_atlas_texture := ImageTexture.create_from_image(actual_atlas_image)
+	var actual_sprite_region := AtlasTexture.new()
+	actual_sprite_region.atlas = actual_atlas_texture
+	actual_sprite_region.region = Rect2(4, 3, 10, 10)
+	var cropped_actual_sprite := PlayerVisualPerception.sprite_image_from_texture(actual_sprite_region, 1.0)
+	check("sprite_template_extractor_crops_real_atlas_region_and_trims_transparency",
+		cropped_actual_sprite != null and cropped_actual_sprite.get_width() == 4 and cropped_actual_sprite.get_height() == 6)
+	var actual_sprite_frames := SpriteFrames.new()
+	actual_sprite_frames.add_animation("idle_down")
+	actual_sprite_frames.add_frame("idle_down", actual_sprite_region)
+	var actual_sprite_templates := PlayerVisualPerception.build_sprite_templates(
+		actual_sprite_frames, ["idle_down"], "player", "hero:test", 1.0, 1
+	)
+	check("sprite_template_builder_reads_frames_from_actual_spriteframes",
+		actual_sprite_templates.size() == 1
+		and str(actual_sprite_templates[0].get("id", "")) == "hero:test:idle_down:0"
+		and actual_sprite_templates[0].get("image") is Image)
+	var actual_sprite_frame := Image.create(36, 28, false, Image.FORMAT_RGBA8)
+	actual_sprite_frame.fill(Color(0.08, 0.08, 0.08, 1.0))
+	for sy in cropped_actual_sprite.get_height():
+		for sx in cropped_actual_sprite.get_width():
+			actual_sprite_frame.set_pixel(17 + sx, 12 + sy, cropped_actual_sprite.get_pixel(sx, sy))
+	var actual_sprite_detections := PlayerVisualPerception.detect_sprite_templates(
+		actual_sprite_frame, actual_sprite_templates, 1, 0.98
+	)
+	check("sprite_template_builder_detects_a_cropped_atlas_sprite_in_screen_pixels",
+		actual_sprite_detections.size() == 1
+		and str(actual_sprite_detections[0].get("template_id", "")) == "hero:test:idle_down:0"
+		and str(actual_sprite_detections[0].get("kind", "")) == "player")
+	var heuristic_warning := PlayerVisualPerception.warning_proposals([
+		{"kind": "warm_telegraph_candidate", "rect": Rect2i(40, 30, 20, 12), "confidence": 0.9}
+	], Vector2i(160, 90))
+	check("heuristic_telegraph_proposal_is_screen_normalized_and_confidence_capped",
+		heuristic_warning.size() == 1
+		and str(heuristic_warning[0].get("kind", "")) == "telegraph"
+		and is_equal_approx(float(heuristic_warning[0].get("confidence", 1.0)), PlayerVisualPerception.MAX_HEURISTIC_WARNING_CONFIDENCE)
+		and heuristic_warning[0].get("rect", Rect2()).position.distance_to(Vector2(0.25, 0.333333)) < 0.01)
+	var visual_plan_detections: Array = [
+		{"kind":"player","confidence":0.96,"rect":[0.45,0.40,0.06,0.12]},
+		{"kind":"enemy","confidence":0.92,"rect":[0.58,0.40,0.08,0.13]},
+		{"kind":"boss","confidence":0.94,"rect":[0.72,0.38,0.12,0.2]}
+	]
+	var visual_plan := PlayerBrain.visual_combat_plan(visual_plan_detections, true)
+	check("visual_combat_plan_requires_player_sprite_and_prefers_visible_boss",
+		bool(visual_plan.get("valid", false))
+		and str(visual_plan.get("target", {}).get("kind", "")) == "boss"
+		and Vector2(visual_plan.get("target_direction_screen", Vector2.ZERO)).x > 0.9)
+	check("visual_combat_plan_fails_closed_without_player_sprite",
+		not bool(PlayerBrain.visual_combat_plan([{"kind":"boss","confidence":0.99,"rect":[0.7,0.4,0.1,0.2]}]).get("valid", false)))
+	check("heuristic_warning_never_directly_triggers_visual_evasion",
+		PlayerBrain.visible_evasion_vector(heuristic_warning, Vector2(0.5, 0.5)) == Vector2.ZERO)
+
 	test_layer.free()
 	hud_fixture.free()
 
