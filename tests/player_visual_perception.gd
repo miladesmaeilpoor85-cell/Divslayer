@@ -139,51 +139,85 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 		return {}
 	if kind not in KINDS or template.get_width() > frame.get_width() or template.get_height() > frame.get_height():
 		return {}
-	var step := maxi(1, sample_step)
-	# A coarse stride can skip almost every opaque pixel in a tiny or sparse sprite.
-	# Fall back to pixel sampling rather than losing the only valid match location.
-	if _visible_sample_count(template, step) < 8:
-		step = 1
-	var max_x := frame.get_width() - template.get_width()
-	var max_y := frame.get_height() - template.get_height()
+
+	# Search at half resolution first. Running a full pixel sweep for every sprite
+	# template on every combat sample starved the real-player simulation and caused
+	# the 15-minute touch-playtests to time out after only a few simulated seconds.
+	var reduced_frame := frame.duplicate()
+	var reduced_template := template.duplicate()
+	var reduced_scale := 1
+	if mini(template.get_width(), template.get_height()) >= 12:
+		reduced_scale = 2
+		var reduced_width := maxi(1, roundi(float(frame.get_width()) / float(reduced_scale)))
+		var reduced_height := maxi(1, roundi(float(frame.get_height()) / float(reduced_scale)))
+		var reduced_template_width := maxi(1, roundi(float(template.get_width()) / float(reduced_scale)))
+		var reduced_template_height := maxi(1, roundi(float(template.get_height()) / float(reduced_scale)))
+		reduced_frame.resize(reduced_width, reduced_height, Image.INTERPOLATE_NEAREST)
+		reduced_template.resize(reduced_template_width, reduced_template_height, Image.INTERPOLATE_NEAREST)
+
+	var coarse_step := maxi(2, sample_step)
+	if _visible_sample_count(reduced_template, coarse_step) < 8:
+		coarse_step = 1
+	var max_x := reduced_frame.get_width() - reduced_template.get_width()
+	var max_y := reduced_frame.get_height() - reduced_template.get_height()
+	if max_x < 0 or max_y < 0:
+		return {}
 	var best_coarse_score := -1.0
 	var best_position := Vector2i.ZERO
-	var best_score := -1.0
-	var best_count := 0
-	# Coarse pass keeps the scan bounded for phone-sized viewports.
-	for y in range(0, max_y + 1, step):
-		for x in range(0, max_x + 1, step):
-			var coarse_score := _template_score_at(frame, template, Vector2i(x, y), step)
+	for y in range(0, max_y + 1, coarse_step):
+		for x in range(0, max_x + 1, coarse_step):
+			var coarse_score := _template_score_at(reduced_frame, reduced_template, Vector2i(x, y), coarse_step)
 			if coarse_score > best_coarse_score:
 				best_coarse_score = coarse_score
 				best_position = Vector2i(x, y)
-	# Pixel-accurate refinement around the best coarse location compensates for
-	# camera sub-pixel movement and sprite origins that do not align to the coarse grid.
-	var refine_radius := step - 1
-	var refine_min_x := maxi(0, best_position.x - refine_radius)
-	var refine_max_x := mini(max_x, best_position.x + refine_radius)
-	var refine_min_y := maxi(0, best_position.y - refine_radius)
-	var refine_max_y := mini(max_y, best_position.y + refine_radius)
+
+	# Refine the candidate in the reduced image, then inspect only a small full-size
+	# neighbourhood. Nearest-neighbour resampling preserves pixel-art edges.
+	var reduced_refine_radius := coarse_step - 1
+	var reduced_min_x := maxi(0, best_position.x - reduced_refine_radius)
+	var reduced_max_x := mini(max_x, best_position.x + reduced_refine_radius)
+	var reduced_min_y := maxi(0, best_position.y - reduced_refine_radius)
+	var reduced_max_y := mini(max_y, best_position.y + reduced_refine_radius)
+	var reduced_best_score := -1.0
+	for y in range(reduced_min_y, reduced_max_y + 1):
+		for x in range(reduced_min_x, reduced_max_x + 1):
+			var score := _template_score_at(reduced_frame, reduced_template, Vector2i(x, y), 1)
+			if score > reduced_best_score:
+				reduced_best_score = score
+				best_position = Vector2i(x, y)
+
+	var scale_x := float(frame.get_width()) / float(reduced_frame.get_width())
+	var scale_y := float(frame.get_height()) / float(reduced_frame.get_height())
+	var full_position := Vector2i(roundi(float(best_position.x) * scale_x), roundi(float(best_position.y) * scale_y))
+	var full_max_x := frame.get_width() - template.get_width()
+	var full_max_y := frame.get_height() - template.get_height()
+	var full_radius_x := maxi(2, ceili(scale_x) + 1)
+	var full_radius_y := maxi(2, ceili(scale_y) + 1)
+	var refine_min_x := maxi(0, full_position.x - full_radius_x)
+	var refine_max_x := mini(full_max_x, full_position.x + full_radius_x)
+	var refine_min_y := maxi(0, full_position.y - full_radius_y)
+	var refine_max_y := mini(full_max_y, full_position.y + full_radius_y)
+	var best_score := -1.0
+	var best_full_position := full_position
 	for y in range(refine_min_y, refine_max_y + 1):
 		for x in range(refine_min_x, refine_max_x + 1):
 			var refined_score := _template_score_at(frame, template, Vector2i(x, y), 1)
 			if refined_score > best_score:
 				best_score = refined_score
-				best_position = Vector2i(x, y)
-				best_count = template.get_width() * template.get_height()
+				best_full_position = Vector2i(x, y)
 	if best_score < threshold:
 		return {}
 	return {
 		"kind": kind,
 		"confidence": clampf(best_score, 0.0, 1.0),
 		"rect": [
-			float(best_position.x) / float(frame.get_width()),
-			float(best_position.y) / float(frame.get_height()),
+			float(best_full_position.x) / float(frame.get_width()),
+			float(best_full_position.y) / float(frame.get_height()),
 			float(template.get_width()) / float(frame.get_width()),
 			float(template.get_height()) / float(frame.get_height())
 		],
-		"sample_count": best_count,
-		"method": "sprite_pixel_template"
+		"sample_count": _visible_sample_count(template, 1),
+		"method": "sprite_pixel_template_multires"
 	}
 
 static func _visible_sample_count(template: Image, sample_step: int) -> int:
