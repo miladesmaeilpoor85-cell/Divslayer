@@ -16,6 +16,12 @@ This document describes the repository-side asset checks. It requires no desktop
 
 The script intentionally treats `UNVERIFIED` or blank rights states as warnings, not as technical failures. That allows the team to keep improving the game without falsely claiming that unresolved artwork is commercially cleared. Missing or unsafe register entries and unreadable asset headers fail CI.
 
+## Quality-first asset rule
+
+The project follows [Quality-First Production Policy](QUALITY_FIRST_POLICY.md): package size is informational, never a reason to downscale, reduce bitrate, lower encoder quality, delete frames/layers, shorten meaningful content, or downmix source audio. The large-file and large-dimension notices reported by `tools/asset_audit.py` are warnings only; they do not trigger automatic compression, deletion, or CI rejection. Keep high-quality source masters and review every proposed lossy delivery conversion at native size / full playback quality and actual Android presentation scale.
+
+Asset integrity and provenance checks are not artistic quality checks. A file passing this audit does not establish that its resolution, fidelity, animation, composition, sound, or in-game presentation is good enough.
+
 ## Running it
 
 The project CI runs:

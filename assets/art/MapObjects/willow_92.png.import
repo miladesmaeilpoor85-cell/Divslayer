@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/willow_92.png-bcf7522384927e21f0511dc3332ef84
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

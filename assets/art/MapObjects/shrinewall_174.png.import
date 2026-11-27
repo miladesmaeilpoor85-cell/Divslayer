@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/shrinewall_174.png-79f585b6e4d2184b56d5ab1aab
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

@@ -7,7 +7,7 @@ extends Node
 ##   play("hit")            — a variation of "hit" (file) or the synthesised "hit"
 ##   step(map_key, quiet)   — one footstep on that map's ground (grass, stone or snow)
 
-const RATE := 22050
+const RATE := 44100
 const DIR := "res://assets/audio/sfx/"
 const MAX_VARIATIONS := 12
 ## the sounds that have recorded variations (<name>_0.ogg, <name>_1.ogg ...)

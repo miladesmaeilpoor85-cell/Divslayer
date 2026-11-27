@@ -6,6 +6,8 @@ const PlayerAgent = preload("res://tests/player_agent.gd")
 const PlayerBrain = preload("res://tests/player_brain.gd")
 const PlayerObservation = preload("res://tests/player_observation.gd")
 const PlayerVisualPerception = preload("res://tests/player_visual_perception.gd")
+const PlayerMemory = preload("res://tests/player_memory.gd")
+const Sheets = preload("res://scripts/sheets.gd")
 
 var results: Dictionary = {}
 var fails: Array[String] = []
@@ -130,8 +132,13 @@ func run(_main: Node) -> void:
 	check("screen_observer_captures_visible_health_meter", is_equal_approx(float(captured_screen.get("meters", {}).get("HealthMeter", -1.0)), 0.4))
 	check("screen_observer_captures_visible_potion_count", str(captured_screen.get("resources", {}).get("potions_text", "")) == "۳")
 	var captured_frame := PlayerVisualPerception.capture_frame(_main.get_viewport())
-	check("visual_perception_captures_a_real_viewport_image", not captured_frame.is_empty() and captured_frame.get("image") is Image)
-	check("visual_perception_records_frame_dimensions", int(captured_frame.get("width", 0)) > 0 and int(captured_frame.get("height", 0)) > 0)
+	if DisplayServer.get_name() == "headless":
+		check("visual_perception_refuses_viewport_readback_when_rendering_is_disabled", captured_frame.is_empty())
+	else:
+		check("visual_perception_captures_a_real_viewport_image", not captured_frame.is_empty() and captured_frame.get("image") is Image)
+		check("visual_perception_records_frame_dimensions", int(captured_frame.get("width", 0)) > 0 and int(captured_frame.get("height", 0)) > 0)
+
+	# Template matching is image-only and remains testable in headless CI.
 	var sprite_template := Image.create(12, 12, false, Image.FORMAT_RGBA8)
 	sprite_template.fill(Color(0.0, 0.0, 0.0, 0.0))
 	for sy in 2:
@@ -147,10 +154,158 @@ func run(_main: Node) -> void:
 				synthetic_frame.set_pixel(21 + sx, 9 + sy, pixel)
 	var sprite_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 0.98)
 	check("sprite_template_match_finds_exact_rendered_frame", not sprite_match.is_empty() and str(sprite_match.get("kind", "")) == "boss")
-	check("sprite_template_match_returns_normalized_screen_bounds", not sprite_match.is_empty() and Rect2(sprite_match.get("rect", [])).end.x <= 1.0)
-	var wrong_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 1.0)
-	check("sprite_template_match_rejects_non_perfect_threshold", wrong_match.is_empty())
+	var sparse_coarse_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 3, 0.98)
+	check("sprite_template_match_falls_back_when_coarse_stride_skips_sparse_pixels",
+		not sparse_coarse_match.is_empty()
+		and Vector2(sparse_coarse_match.get("rect", [0.0, 0.0])[0], sparse_coarse_match.get("rect", [0.0, 0.0])[1]).distance_to(Vector2(21.0 / 48.0, 9.0 / 36.0)) < 0.001)
+	var matched_rect: Array = sprite_match.get("rect", [])
+	check("sprite_template_match_returns_normalized_screen_bounds",
+		matched_rect.size() == 4
+		and float(matched_rect[0]) >= 0.0 and float(matched_rect[1]) >= 0.0
+		and float(matched_rect[0]) + float(matched_rect[2]) <= 1.0
+		and float(matched_rect[1]) + float(matched_rect[3]) <= 1.0)
+	# Match scores cannot exceed 1.0; 1.01 therefore exercises the rejection boundary.
+	var wrong_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 1.01)
+	check("sprite_template_match_rejects_threshold_above_perfect_score", wrong_match.is_empty())
 
+	# Exercise the multi-resolution path with a sprite close to the game's rendered size.
+	var large_template := Image.create(40, 48, false, Image.FORMAT_RGBA8)
+	large_template.fill(Color(0.0, 0.0, 0.0, 0.0))
+	for sy in range(4, 44):
+		for sx in range(8, 32):
+			large_template.set_pixel(sx, sy, Color(
+				0.2 + float(sx - 8) / 48.0,
+				0.25 + float(sy - 4) / 64.0,
+				0.72 - float(sx - 8) / 120.0,
+				1.0
+			))
+	var large_frame := Image.create(240, 160, false, Image.FORMAT_RGBA8)
+	large_frame.fill(Color(0.08, 0.09, 0.1, 1.0))
+	for sy in large_template.get_height():
+		for sx in large_template.get_width():
+			var large_pixel := large_template.get_pixel(sx, sy)
+			if large_pixel.a > 0.0:
+				large_frame.set_pixel(123 + sx, 61 + sy, large_pixel)
+	var large_match := PlayerVisualPerception.match_template(large_frame, large_template, "player", 4, 0.98)
+	var large_rect: Array = large_match.get("rect", [])
+	check("sprite_template_multiresolution_match_refines_exact_large_sprite_position",
+		large_rect.size() == 4
+		and absf(float(large_rect[0]) - 123.0 / 240.0) < 0.005
+		and absf(float(large_rect[1]) - 61.0 / 160.0) < 0.005
+		and absf(float(large_rect[2]) - 40.0 / 240.0) < 0.005
+		and absf(float(large_rect[3]) - 48.0 / 160.0) < 0.005)
+
+	if DisplayServer.get_name() == "headless":
+		for label in [
+			"sprite_template_extractor_crops_real_atlas_region_and_trims_transparency",
+			"sprite_template_builder_reads_frames_from_actual_spriteframes",
+			"sprite_template_builder_detects_a_cropped_atlas_sprite_in_screen_pixels",
+			"sprite_template_builder_extracts_actual_anvilward_game_art",
+			"sprite_template_match_locates_actual_anvilward_sprite_art"
+		]:
+			results[label] = {"skipped": "requires a rendering backend; covered by Xvfb player journey"}
+			printerr("SKIP " + label + " (headless renderer has no texture readback)")
+	else:
+		var actual_atlas_image := Image.create(32, 20, false, Image.FORMAT_RGBA8)
+		actual_atlas_image.fill(Color(0.0, 0.0, 0.0, 0.0))
+		for sy in range(5, 11):
+			for sx in range(6, 10):
+				actual_atlas_image.set_pixel(sx, sy, Color(0.2 + float(sx - 6) * 0.12, 0.3 + float(sy - 5) * 0.08, 0.85, 1.0))
+		var actual_atlas_texture := ImageTexture.create_from_image(actual_atlas_image)
+		var actual_sprite_region := AtlasTexture.new()
+		actual_sprite_region.atlas = actual_atlas_texture
+		actual_sprite_region.region = Rect2(4, 3, 10, 10)
+		var cropped_actual_sprite := PlayerVisualPerception.sprite_image_from_texture(actual_sprite_region, 1.0)
+		var sprite_image_fixture := cropped_actual_sprite
+		if sprite_image_fixture == null:
+			sprite_image_fixture = Image.create(4, 6, false, Image.FORMAT_RGBA8)
+			sprite_image_fixture.fill(Color(0.2, 0.3, 0.85, 1.0))
+		check("sprite_template_extractor_crops_real_atlas_region_and_trims_transparency",
+			cropped_actual_sprite != null and cropped_actual_sprite.get_width() == 4 and cropped_actual_sprite.get_height() == 6)
+		var actual_sprite_frames := SpriteFrames.new()
+		actual_sprite_frames.add_animation("idle_down")
+		actual_sprite_frames.add_frame("idle_down", actual_sprite_region)
+		var actual_sprite_templates := PlayerVisualPerception.build_sprite_templates(
+			actual_sprite_frames, ["idle_down"], "player", "hero:test", 1.0, 1
+		)
+		check("sprite_template_builder_reads_frames_from_actual_spriteframes",
+			actual_sprite_templates.size() == 1
+			and str(actual_sprite_templates[0].get("id", "")) == "hero:test:idle_down:0"
+			and actual_sprite_templates[0].get("image") is Image)
+		var actual_sprite_frame := Image.create(36, 28, false, Image.FORMAT_RGBA8)
+		actual_sprite_frame.fill(Color(0.08, 0.08, 0.08, 1.0))
+		for sy in sprite_image_fixture.get_height():
+			for sx in sprite_image_fixture.get_width():
+				actual_sprite_frame.set_pixel(17 + sx, 12 + sy, sprite_image_fixture.get_pixel(sx, sy))
+		var actual_sprite_detections: Array[Dictionary] = []
+		if not actual_sprite_templates.is_empty():
+			actual_sprite_detections = PlayerVisualPerception.detect_sprite_templates(
+				actual_sprite_frame, actual_sprite_templates, 1, 0.98
+			)
+		check("sprite_template_builder_detects_a_cropped_atlas_sprite_in_screen_pixels",
+			actual_sprite_detections.size() == 1
+			and str(actual_sprite_detections[0].get("template_id", "")) == "hero:test:idle_down:0"
+			and str(actual_sprite_detections[0].get("kind", "")) == "player")
+
+		var anvilward_sheet: Dictionary = Sheets.enemy("anvilward")
+		var anvilward_frames: SpriteFrames = anvilward_sheet.get("frames") as SpriteFrames
+		var anvilward_templates := PlayerVisualPerception.build_sprite_templates(
+			anvilward_frames, ["v0", "v1"], "boss", "boss:anvilward", Sheets.SCALE * 1.15, 1
+		)
+		check("sprite_template_builder_extracts_actual_anvilward_game_art",
+			not anvilward_templates.is_empty()
+			and str(anvilward_templates[0].get("kind", "")) == "boss"
+			and str(anvilward_templates[0].get("id", "")).begins_with("boss:anvilward:"))
+		var actual_anvilward_image: Image = Image.create(4, 4, false, Image.FORMAT_RGBA8)
+		actual_anvilward_image.fill(Color(0.8, 0.3, 0.2, 1.0))
+		if not anvilward_templates.is_empty():
+			actual_anvilward_image = anvilward_templates[0].get("image")
+		var anvilward_render_fixture := Image.create(
+			actual_anvilward_image.get_width() + 32,
+			actual_anvilward_image.get_height() + 24,
+			false, Image.FORMAT_RGBA8
+		)
+		anvilward_render_fixture.fill(Color(0.12, 0.13, 0.14, 1.0))
+		for sy in actual_anvilward_image.get_height():
+			for sx in actual_anvilward_image.get_width():
+				var boss_pixel := actual_anvilward_image.get_pixel(sx, sy)
+				if boss_pixel.a > 0.0:
+					anvilward_render_fixture.set_pixel(13 + sx, 9 + sy, boss_pixel)
+		var actual_anvilward_match: Array[Dictionary] = []
+		if not anvilward_templates.is_empty():
+			actual_anvilward_match = PlayerVisualPerception.detect_sprite_templates(
+				anvilward_render_fixture, [anvilward_templates[0]], 1, 0.98
+			)
+		check("sprite_template_match_locates_actual_anvilward_sprite_art",
+			actual_anvilward_match.size() == 1
+			and str(actual_anvilward_match[0].get("template_id", "")) == str(anvilward_templates[0].get("id", ""))
+			and str(actual_anvilward_match[0].get("kind", "")) == "boss")
+
+	var heuristic_warning := PlayerVisualPerception.warning_proposals([
+		{"kind": "warm_telegraph_candidate", "rect": Rect2i(40, 30, 20, 12), "confidence": 0.9}
+	], Vector2i(160, 90))
+	check("heuristic_telegraph_proposal_is_screen_normalized_and_confidence_capped",
+		heuristic_warning.size() == 1
+		and str(heuristic_warning[0].get("kind", "")) == "telegraph"
+		and is_equal_approx(float(heuristic_warning[0].get("confidence", 1.0)), PlayerVisualPerception.MAX_HEURISTIC_WARNING_CONFIDENCE)
+		and heuristic_warning[0].get("rect", Rect2()).position.distance_to(Vector2(0.25, 0.333333)) < 0.01)
+	var visual_plan_detections: Array = [
+		{"kind":"player","confidence":0.96,"rect":[0.45,0.40,0.06,0.12]},
+		{"kind":"enemy","confidence":0.92,"rect":[0.68,0.40,0.08,0.13]},
+		{"kind":"boss","confidence":0.94,"rect":[0.56,0.38,0.08,0.2]}
+	]
+	var normalized_visual_plan_detections := PlayerVisualPerception.normalize_detections(
+		visual_plan_detections, Vector2i(1600, 720)
+	)
+	var visual_plan := PlayerBrain.visual_combat_plan(normalized_visual_plan_detections, true)
+	check("visual_combat_plan_requires_player_sprite_and_prefers_visible_boss",
+		bool(visual_plan.get("valid", false))
+		and str(visual_plan.get("target", {}).get("kind", "")) == "boss"
+		and Vector2(visual_plan.get("target_direction_screen", Vector2.ZERO)).x > 0.9)
+	check("visual_combat_plan_fails_closed_without_player_sprite",
+		not bool(PlayerBrain.visual_combat_plan([{"kind":"boss","confidence":0.99,"rect":[0.7,0.4,0.1,0.2]}]).get("valid", false)))
+	check("heuristic_warning_never_directly_triggers_visual_evasion",
+		PlayerBrain.visible_evasion_vector(heuristic_warning, Vector2(0.5, 0.5)) == Vector2.ZERO)
 
 	test_layer.free()
 	hud_fixture.free()
@@ -170,6 +325,15 @@ func run(_main: Node) -> void:
 	check("potion_becomes_ready_at_cooldown_boundary", PlayerAgent.should_use_health_potion(20.0, 100.0, 2, 0, 4.0, 4.0, 0.68))
 	check("potion_cooldown_is_measured_from_current_fight_time", is_equal_approx(PlayerAgent.next_health_potion_time(3.0, 1.6), 4.6))
 
+	check("focused_boss_is_kept_when_temporarily_cloaked", PlayerAgent.should_keep_focus_boss("matriarch", "matriarch", true))
+	check("focused_boss_is_not_kept_after_defeat", not PlayerAgent.should_keep_focus_boss("matriarch", "matriarch", false))
+	check("different_boss_cannot_replace_requested_objective", not PlayerAgent.should_keep_focus_boss("matriarch", "ancientwyrm", true))
+	check("empty_boss_focus_does_not_lock_target_selection", not PlayerAgent.should_keep_focus_boss("", "matriarch", true))
+	check("mage_seeks_a_casting_lane_when_a_wall_blocks_spells", PlayerAgent.should_seek_casting_lane("mage", false, 150.0, 62.0, false))
+	check("mage_keeps_ranged_spacing_when_a_casting_lane_is_clear", not PlayerAgent.should_seek_casting_lane("mage", false, 180.0, 62.0, true))
+	check("mage_does_not_seek_a_lane_for_a_melee_pillar_target", not PlayerAgent.should_seek_casting_lane("mage", true, 180.0, 62.0, false))
+	check("non_mage_classes_do_not_use_mage_lane_policy", not PlayerAgent.should_seek_casting_lane("warrior", false, 180.0, 62.0, false))
+	check("mage_can_close_only_when_already_inside_melee_reach", not PlayerAgent.should_seek_casting_lane("mage", false, 68.0, 62.0, false))
 	check("mage_does_not_spam_dodge_at_safe_midrange", not PlayerAgent.should_dodge_mage(88.0, 77.0, 84.0, 57.0, 0.0))
 	check("mage_dodges_at_immediate_contact_range", PlayerAgent.should_dodge_mage(45.0, 77.0, 84.0, 60.0, 0.0))
 	check("mage_uses_emergency_dodge_when_critical_and_close", PlayerAgent.should_dodge_mage(110.0, 30.0, 84.0, 50.0, 0.0))
@@ -350,5 +514,89 @@ func run(_main: Node) -> void:
 	check("visual_dodge_refuses_unknown_player_bounds", PlayerBrain.visual_dodge_direction(
 		Rect2(), [{"rect": Rect2(40, 100, 30, 30), "confidence": 0.9}]
 	) == Vector2.ZERO)
+
+	var memory := PlayerMemory.new()
+	var visible_observation := {
+		"texts": [{"text": "Anvilward", "kind": "text"}, {"text": "Potion ۳", "kind": "text"}],
+		"panels": ["combat"],
+		"meters": {"HealthMeter": 0.45, "StaminaMeter": 0.7, "ManaMeter": 0.8},
+		"resources": {"potions_text": "۳"},
+		"vision": {"warnings": [{"kind": "warm_telegraph_candidate"}]}
+	}
+	var memory_observation_result: Dictionary = {}
+	for observation_index in PlayerMemory.STAGNATION_SAMPLE_COUNT:
+		memory_observation_result = memory.observe(visible_observation)
+	check("player_memory_detects_repeated_unchanged_visible_state",
+		bool(memory_observation_result.get("stagnant", false))
+		and int(memory_observation_result.get("repeat_count", 0)) >= PlayerMemory.STAGNATION_SAMPLE_COUNT)
+	var first_action_failure: Dictionary = memory.record_action("ui_tap:/root/Shop/Buy", false, "button did not activate")
+	var second_action_failure: Dictionary = memory.record_action("ui_tap:/root/Shop/Buy", false, "button still did not activate")
+	check("player_memory_waits_for_repeated_failure_before_replanning",
+		str(first_action_failure.get("recovery_hint", "")).is_empty()
+		and str(second_action_failure.get("recovery_hint", "")) == "reobserve_controls")
+	memory.record_action("ui_tap:/root/Shop/Buy", true, "button activated")
+	check("player_memory_clears_action_failure_after_verified_success",
+		int(memory.record_action("ui_tap:/root/Shop/Buy", false, "later unrelated failure").get("failure_count", 0)) == 1)
+	var anvilward_death: Dictionary = memory.record_combat({
+		"encounter": "anvilward",
+		"hero_class": "mage",
+		"boss_hp_before": 100.0,
+		"boss_hp_after": 18.0,
+		"player_alive": false,
+		"boss_defeated": false,
+		"hits_landed": 3,
+		"swings": 10,
+		"damage_taken": 206.0,
+		"duration_sec": 113.5
+	})
+	check("player_memory_classifies_boss_damage_without_player_survival_as_failure",
+		str(anvilward_death.get("status", "")) == "survival_failure"
+		and str(anvilward_death.get("hint", "")) == "survival_priority")
+	check("player_memory_exposes_learned_survival_hint",
+		memory.combat_hint("anvilward") == "survival_priority")
+	var no_contact: Dictionary = memory.record_combat({
+		"encounter": "matriarch",
+		"hero_class": "mage",
+		"boss_hp_before": 100.0,
+		"boss_hp_after": 100.0,
+		"player_alive": true,
+		"boss_defeated": false,
+		"hits_landed": 0,
+		"swings": 0,
+		"damage_taken": 12.0,
+		"duration_sec": 15.0
+	})
+	check("player_memory_turns_zero_contact_into_reposition_recommendation",
+		str(no_contact.get("status", "")) == "no_boss_damage"
+		and str(no_contact.get("hint", "")) == "reposition_and_reacquire")
+	check("player_memory_retains_a_separate_hint_per_encounter",
+		memory.combat_hint("matriarch") == "reposition_and_reacquire"
+		and memory.combat_hint("anvilward") == "survival_priority")
+	var successful_boss: Dictionary = memory.record_combat({
+		"encounter": "anvilward",
+		"hero_class": "mage",
+		"boss_hp_before": 18.0,
+		"boss_hp_after": 0.0,
+		"player_alive": true,
+		"boss_defeated": true,
+		"hits_landed": 5,
+		"swings": 8,
+		"damage_taken": 30.0,
+		"duration_sec": 35.0
+	})
+	check("player_memory_stops_retry_adaptation_after_confirmed_boss_victory",
+		str(successful_boss.get("status", "")) == "victory"
+		and memory.combat_hint("anvilward") == "encounter_complete")
+	var memory_report := memory.summary()
+	check("player_memory_emits_bounded_evidence_summary",
+		int(memory_report.get("observations", 0)) <= PlayerMemory.MAX_OBSERVATIONS
+		and int(memory_report.get("combat_samples", 0)) == 3
+		and int(memory_report.get("actions", 0)) >= 3)
+	var memory_source := FileAccess.get_file_as_string("res://tests/player_memory.gd")
+	check("player_memory_cannot_read_hidden_game_or_world_state",
+		not memory_source.contains("Game.")
+		and not memory_source.contains("get_nodes_in_group")
+		and not memory_source.contains("quest_target"))
+
 	print("PLAYERAGENTPOLICYTEST_JSON " + JSON.stringify({"fails": fails, "results": results}))
 	get_tree().quit(1 if not fails.is_empty() else 0)

@@ -81,13 +81,20 @@ var stats := {"walls": 0, "objects": 0, "exits": 0, "npcs": 0, "enemies": 0, "ha
 var enemy_tactics_clock := 0.0
 var enemy_volley_ready_at := 0.0
 
+## The two forge bosses are sequential story encounters, not simultaneous arena hazards.
+static func should_spawn_forge_boss(enemy_type: String, brann_state: String) -> bool:
+	match enemy_type:
+		"anvilward": return brann_state == "anvil"
+		"ignarok": return brann_state == "ignarok"
+		_: return true
+
 func build(map_key: String) -> void:
 	key = map_key
 	Game.on_map_entered(map_key)
 	name = "World_" + map_key
 	rush = not Game.rush.is_empty() and str(Game.rush.get("map", "")) == map_key
 	var md: Dictionary = Game.map_data(map_key)
-	data = md.get("data", {})
+	data = md.get("data", {}).duplicate()
 	size = Vector2(float(data.get("w", 1000)), float(data.get("h", 800)))
 	configure_wind_zones(data.get("windGusts", []))
 	if not wind_zones.is_empty():
@@ -183,7 +190,18 @@ func build(map_key: String) -> void:
 		_ch2_sanctum()
 	if key == "peaks" and not rush:
 		# the Kindling door (v0.13): the road to the Emberforge, sealed until Jamshid hands over the key
-		_exit({"x": 520, "y": 790, "w": 110, "h": 16, "to": "emberforge", "spawnX": 30, "spawnY": 500, "dir": "up"})
+		# Expose this dynamic door to local player navigation as well as the Area2D collider.
+		var emberforge_exit := {"x": 520, "y": 790, "w": 110, "h": 16, "to": "emberforge", "spawnX": 30, "spawnY": 500, "dir": "up"}
+		var dynamic_exits: Array = _arr(data.get("exits")).duplicate(true)
+		var has_forge_exit := false
+		for exit_data in dynamic_exits:
+			if str(exit_data.get("to", "")) == "emberforge":
+				has_forge_exit = true
+				break
+		if not has_forge_exit:
+			dynamic_exits.append(emberforge_exit)
+		data["exits"] = dynamic_exits
+		_exit(emberforge_exit)
 		_door_visual()
 		_ch3_rubble()
 	if key == "damavand" and not rush:
@@ -198,7 +216,10 @@ func build(map_key: String) -> void:
 	for s in _arr(data.get("enemySpawns")):
 		if rush and str(s["type"]) != str(Game.rush.get("type", "")):
 			continue
-		if not rush and str(s["type"]) == "boss" and key == "dungeon" and Game.q(1) == "active" and Game.quest_step("q1") != "boss_ready":
+		var spawn_type := str(s["type"])
+		if not rush and spawn_type in ["anvilward", "ignarok"] and not should_spawn_forge_boss(spawn_type, Game.brann_sync()):
+			continue
+		if not rush and spawn_type == "boss" and key == "dungeon" and Game.q(1) == "active" and Game.quest_step("q1") != "boss_ready":
 			continue
 		if not rush and Game.is_boss_type(str(s["type"])) and Game.is_defeated(str(s["type"])):
 			continue

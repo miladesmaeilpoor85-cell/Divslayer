@@ -30,10 +30,11 @@ On 18 November 2026, the `main` branch history was rewritten to remove an old sa
 - [Art direction guide](docs/ART_DIRECTION_GUIDE.md) — visual identity, character/creature/environment design, and Godot sprite standards.
 - [Class visual design](docs/CLASS_VISUAL_DESIGN.md) — class identities, combat animation beats, and sprite-sheet requirements.
 - [Asset pipeline](docs/ASSET_PIPELINE.md) — image/audio integrity checks and the artwork rights-register workflow.
-- [Multi-tool production pipeline](docs/MULTITOOL_PIPELINE.md) — GDScript/Python analysis, FFmpeg audio checks, image inspection, and map-layout previews.
-- [Creative applications workflow](docs/CREATIVE_TOOLS.md) — Krita, Audacity, LMMS, and Blender smoke tests and source-project handling.
+- [Quality-first production policy](docs/QUALITY_FIRST_POLICY.md) — visual/audio/animation quality takes precedence over package size.
 - [Google Flow cinematic production pack](docs/GOOGLE_FLOW_PRODUCTION_PACK.md) — a bilingual teaser shot plan and prompt pack; generation remains a manual task in the owner's Flow account.
 - [Gemini Omni video generation](docs/GEMINI_OMNI_VIDEO_SETUP.md) — a manual, cost-controlled GitHub Actions workflow; generation requires an owner-configured `GEMINI_API_KEY` secret and is never triggered by pull-request validation.
+- [Multi-tool production pipeline](docs/MULTITOOL_PIPELINE.md) — GDScript/Python analysis, FFmpeg audio checks, image inspection, and map-layout previews.
+- [Creative applications workflow](docs/CREATIVE_TOOLS.md) — Krita, Audacity, LMMS, and Blender smoke tests and source-project handling.
 
 
 ## Current combat animation status / وضعیت فعلی انیمیشن مبارزه

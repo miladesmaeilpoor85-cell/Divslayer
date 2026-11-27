@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/bogegg.png-26bdd6c202fbb2f2b308b16e17c724ba.c
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

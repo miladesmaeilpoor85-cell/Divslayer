@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/lurker.png-73523c41fce254319f903c93cf489cc1.c
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

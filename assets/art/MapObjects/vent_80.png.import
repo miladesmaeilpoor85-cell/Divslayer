@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/vent_80.png-59aa7c369317270d1a9e9b50f5439935.
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

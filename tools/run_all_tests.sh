@@ -33,13 +33,14 @@ run_godot() {
 }
 
 test_index=0
-for t in windgusttest quittest achtest rushtest audiotest shrinetest chapter2test chapter3test chapter4test tutorialtest questpointtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest animationtest warriorreviewtest; do
+for t in windgusttest playeragentpolicytest quittest achtest rushtest audiotest shrinetest chapter2test chapter3test chapter4test tutorialtest questpointtest texttest v24fixtest sigtest v26fixtest v27fixtest v28portraittest trialtest contracttest elitetest anvilwardtest ashkbustest difftest storytest forgetest alchemytest geartest tolltest stealthtest blocktest uitest fxtest bossfxcleartest bosstest skilltest animationtest warriorreviewtest; do
   current_index=$test_index
   test_index=$((test_index + 1))
   if (( current_index % shard_count != shard_index )); then
     continue
   fi
-  r=$(run_godot -- --test "res://tests/$t.gd")
+  # Godot tests report PASS/FAIL through printerr(); capture stderr as well as stdout.
+  r=$(run_godot -- --test "res://tests/$t.gd" 2>&1)
   status=$?
   passes=$(printf '%s\n' "$r" | grep -cE '^PASS' || true)
   fails=$(printf '%s\n' "$r" | grep -cE '^FAIL' || true)
@@ -53,6 +54,16 @@ for t in windgusttest quittest achtest rushtest audiotest shrinetest chapter2tes
     if [[ -z "$r" ]]; then echo "No test output was produced before exit." | tee -a "$out"; fi
   fi
 done
+
+if (( shard_index == 0 )); then
+  printf 'START player report generator tests\n' | tee -a "$out"
+  if ! python3 -m py_compile tools/playtest/generate_player_reports.py tools/test_playtest_reports.py; then
+    failed=1
+  fi
+  if ! python3 -m unittest discover -s tools -p "test_playtest_reports.py" -v 2>&1 | tee -a "$out"; then
+    failed=1
+  fi
+fi
 
 if (( shard_index == 0 )); then
   test_log="/tmp/ei_tests/${label}.autotest.raw.log"

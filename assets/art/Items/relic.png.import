@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/relic.png-31e083cecd7765e8b3b3f39151e3e35e.ct
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

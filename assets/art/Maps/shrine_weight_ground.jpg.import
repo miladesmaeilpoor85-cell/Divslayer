@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/shrine_weight_ground.jpg-39f9d95cd87d744e9b09
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.62
 compress/uastc_level=0

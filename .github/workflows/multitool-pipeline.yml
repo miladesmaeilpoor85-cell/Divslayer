@@ -12,6 +12,7 @@ on:
       - "data/**"
       - "scenes/**"
       - "project.godot"
+      - "addons/**"
       - "gdlintrc"
       - "creative/animation/**"
   pull_request:
@@ -38,7 +39,7 @@ jobs:
       - name: Install pinned GDScript Toolkit
         run: python -m pip install --disable-pip-version-check "gdtoolkit==4.5.0"
       - name: Lint all GDScript source and tests
-        run: gdlint scripts tests
+        run: gdlint scripts tests addons/art_texture_quality
 
   python-static-analysis:
     name: Python lint — Ruff
@@ -53,8 +54,14 @@ jobs:
         run: python -m pip install --disable-pip-version-check "ruff==0.16.8"
       - name: Compile all project Python tools
         run: python -m py_compile tools/*.py tools/creative/*.py
+      - name: Test and enforce lossless 2D artwork imports
+        run: |
+          python -m unittest discover -s tools -p "test_enforce_quality_first_imports.py" -v
+          python -m unittest discover -s tools -p "test_quality_first_audit.py" -v
+          python tools/enforce_quality_first_imports.py
+          python tools/quality_first_audit.py
       - name: Lint the maintained pipeline tools
-        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/animation_review.py tools/test_animation_review.py tools/animation_quality_audit.py tools/test_animation_quality_audit.py tools/import_animation_atlas.py tools/test_import_animation_atlas.py tools/map_preview.py tools/test_map_preview.py tools/creative/*.py
+        run: ruff check tools/asset_audit.py tools/test_asset_audit.py tools/audio_audit.py tools/test_audio_audit.py tools/test_sprite_sheet.py tools/artwork_review.py tools/ci_map_previews.py tools/animation_review.py tools/test_animation_review.py tools/animation_quality_audit.py tools/test_animation_quality_audit.py tools/import_animation_atlas.py tools/test_import_animation_atlas.py tools/quality_first_audit.py tools/test_quality_first_audit.py tools/map_preview.py tools/test_map_preview.py tools/creative/*.py
 
   audio-quality:
     name: Audio decode and metadata — FFmpeg

@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/rogue_mid.png-0685aa2c9c2353abecbf6fcf44acf9a
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

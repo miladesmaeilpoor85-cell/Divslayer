@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/rudabeh.webp-4151c41ae3462c3b216f3765fbd609d2
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.9
 compress/uastc_level=0

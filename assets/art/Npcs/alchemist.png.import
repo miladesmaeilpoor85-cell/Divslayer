@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/alchemist.png-c2364c3af0e3190798d552e5cc57ad4
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

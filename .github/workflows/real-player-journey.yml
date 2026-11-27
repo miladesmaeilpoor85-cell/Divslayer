@@ -1,0 +1,389 @@
+name: Real player journey
+run-name: "Real player journey — ${{ github.event.pull_request.title || github.ref_name }}"
+
+on:
+  push:
+    branches: [qa/human-player-agent-v1-20261124]
+  pull_request:
+    branches: [main, qa/human-player-agent-v1-20261124]
+    paths:
+      - "tests/player_agent.gd"
+      - "tests/playtest.gd"
+      - "tests/playtest_scenarios/real_player_ch1.template.json"
+      - ".github/workflows/real-player-journey.yml"
+      - "project.godot"
+      - "addons/**"
+      - "tools/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: real-player-journey-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  natural-chapter-one:
+    name: Real player journey — ${{ matrix.hero }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        hero: [warrior, mage, rogue, paladin]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install virtual display
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null 2>&1 || ! command -v xauth >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes xvfb xauth
+          fi
+
+      - name: Download and verify Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          expected="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --silent --show-error "$url" --output "$RUNNER_TEMP/godot.zip"
+          echo "$expected  $RUNNER_TEMP/godot.zip" | sha256sum --check -
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64"
+          ln -s "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64" "$RUNNER_TEMP/godot/godot"
+          "$RUNNER_TEMP/godot/godot" --version
+          echo "$RUNNER_TEMP/godot" >> "$GITHUB_PATH"
+
+      - name: Import project and parse scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          log_file="$RUNNER_TEMP/real-player-import.log"
+          : > "$log_file"
+          python3 tools/enforce_quality_first_imports.py 2>&1 | tee -a "$log_file"
+          set +e
+          "$RUNNER_TEMP/godot/godot" --headless --editor --path . --quit 2>&1 | tee -a "$log_file"
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$log_file"; then
+            echo "::error::Godot reported script parse/load errors during import."
+            exit 1
+          fi
+          if [[ "$status" -ne 0 ]]; then exit "$status"; fi
+
+          # Godot creates some image sidecars during the first import. Normalize
+          # those generated files, then re-import so the engine applies Lossless.
+          python3 tools/enforce_quality_first_imports.py 2>&1 | tee -a "$log_file"
+          set +e
+          "$RUNNER_TEMP/godot/godot" --headless --editor --path . --quit 2>&1 | tee -a "$log_file"
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -E "SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Failed to create an autoload" "$log_file"; then
+            echo "::error::Godot reported script parse/load errors during the Lossless re-import."
+            exit 1
+          fi
+          if [[ "$status" -ne 0 ]]; then exit "$status"; fi
+          python3 tools/quality_first_audit.py 2>&1 | tee -a "$log_file"
+          python3 tools/enforce_quality_first_imports.py --check 2>&1 | tee -a "$log_file"
+
+      - name: Test player report generator
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/playtest/generate_player_reports.py tools/test_playtest_reports.py
+          python3 -m unittest discover -s tools -p "test_playtest_reports.py" -v
+
+      - name: Prepare a clean natural-progression scenario
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/real-player-journey"
+          python3 - "$HERO" "$RUNNER_TEMP/real-player-journey/scenario.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          hero, destination = sys.argv[1], Path(sys.argv[2])
+          template = Path("tests/playtest_scenarios/real_player_ch1.template.json")
+          scenario = json.loads(template.read_text(encoding="utf-8").replace("__CLASS__", hero))
+          actions = [step.get("do") for step in scenario]
+          forbidden = {"preset", "goto", "set", "invuln", "isolate_boss"}
+          used = forbidden.intersection(actions)
+          assert not used, f"Natural journey contains shortcuts: {sorted(used)}"
+          assert actions.count("new_real") == 1, "Expected one title-screen new-game flow"
+          assert actions.count("agent_training") == 1, "Expected Rostam's touch-driven training"
+          assert actions.count("agent_loadout") == 1, "Expected real shop and loadout actions"
+          assert actions.count("agent_talents") >= 1, "Expected talent UI decisions after earning XP"
+          assert actions.count("agent_objective") >= 8, "Expected Chapter I and the next Jamshid quest route to be navigated dynamically"
+          assert actions.count("agent_collect") >= 2, "Expected ground-loot collection attempts"
+          assert actions.count("agent_gear") >= 2, "Expected accessory comparison and equipment management"
+          assert actions.count("agent_spells") >= 2, "Expected adaptive spell loadout decisions"
+          assert actions.count("fight") == 3, "Expected forest, crypt and Arzhang combat samples"
+          boss_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("target_foe") == "boss")
+          assert float(scenario[boss_fight].get("sec", 0)) >= 120, "Arzhang must receive a full natural combat window"
+          boss_victory = next(i for i in range(boss_fight + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("foe_defeated") is True)
+          assert scenario[boss_victory].get("quest_status") == "complete", "Require the real q1 boss-defeat transition"
+          zal_return = next(i for i in range(boss_victory + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          zal_assertion = next(i for i in range(zal_return + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "returned_to_zal")
+          assert scenario[zal_assertion].get("map") == "village" and scenario[zal_assertion].get("quest_status") == "done", "Require the natural return to Zal and quest reward"
+          core_ready = next(i for i in range(zal_assertion + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "warden_core_ready_for_jamshid")
+          core_delivery = next(i for i in range(core_ready + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert scenario[core_delivery].get("max_steps") == 1 and scenario[core_delivery].get("stop_after_interaction") is True, "Deliver the Warden Core through one real Jamshid interaction"
+          jamshid_assertion = next(i for i in range(core_delivery + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "jamshid_core_delivered")
+          assert scenario[jamshid_assertion].get("brann_state") == "anvil" and scenario[jamshid_assertion].get("brann_key") is True, "Require Jamshid to grant the Kindling Key through the dialogue"
+          assert "با زال صحبت کن" in scenario[jamshid_assertion].get("objective_contains", ""), "The unopened Peaks story gate must send the player back to Zal"
+          zal_route = next(i for i in range(jamshid_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert scenario[zal_route].get("max_steps") == 1 and scenario[zal_route].get("stop_after_interaction") is True, "Start Q2 through one real Elder interaction before the Peaks trip"
+          zal_assertion = next(i for i in range(zal_route + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "zal_opens_ashen_peaks_for_pulad")
+          assert scenario[zal_assertion].get("quest_index") == 2 and scenario[zal_assertion].get("quest_status") == "active", "Require Zal to open the Peaks route by starting Q2"
+          assert scenario[zal_assertion].get("brann_state") == "anvil" and scenario[zal_assertion].get("brann_key") is True, "Keep the Kindling Key while starting Q2"
+          pulad_boss_route = next(i for i in range(zal_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective" and float(scenario[i].get("boss_fight_sec", 0)) >= 180)
+          assert int(scenario[pulad_boss_route].get("max_steps", 0)) == 4, "Use three natural map hops followed by the focused Pulad boss encounter"
+          anvilward_assertion = next(i for i in range(pulad_boss_route + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "anvilward_defeated_reward_pending")
+          assert scenario[anvilward_assertion].get("map") == "emberforge" and scenario[anvilward_assertion].get("brann_state") == "anvil_done", "Record Anvilward defeat before the separate Jamshid turn-in"
+          assert scenario[anvilward_assertion].get("foe_type") == "anvilward" and scenario[anvilward_assertion].get("foe_defeated") is True, "Require Pulad's confirmed boss-kill-counter victory"
+          jamshid_return = next(i for i in range(anvilward_assertion + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert int(scenario[jamshid_return].get("max_steps", 0)) >= 4 and scenario[jamshid_return].get("stop_after_interaction") is True, "Require the return route and a real Jamshid reward interaction"
+          pulad_assertion = next(i for i in range(jamshid_return + 1, len(scenario)) if scenario[i].get("do") == "assert_state" and scenario[i].get("label") == "pulad_of_ghandi_reward_claimed")
+          assert scenario[pulad_assertion].get("map") == "village" and scenario[pulad_assertion].get("brann_state") == "ignarok" and scenario[pulad_assertion].get("brann_key") is True, "Require the reward dialogue with Jamshid and the Puladvand objective"
+          assert "پولادوند" in scenario[pulad_assertion].get("objective_contains", ""), "Require the next Puladvand objective after the turn-in"
+          playtest_source = Path("tests/playtest.gd").read_text(encoding="utf-8")
+          assert "func _fight_target_is_live(target: Variant)" in playtest_source, "Freed combat targets must be guarded before typed Node conversion"
+          assert "var escape_dir := _avoid_exits(away.normalized())" in playtest_source, "Combat evasion must respect map exit boundaries"
+          assert "PlayerAgent.safe_evasion_direction(p.body_rect(), retreat, main.world.wall_rects)" in playtest_source and "await stick(_avoid_exits(safe_retreat))" in playtest_source, "Mage kiting must respect wall and map exit boundaries"
+          assert "combat unexpectedly changed map from %s to %s" in playtest_source, "Combat must verify its final map boundary"
+          assert "side=opposite_boss" in playtest_source, "The player must flank pillars so the game's own aim assist can select them"
+          assert "PLAYER_AGENT_PILLAR_DAMAGED" in playtest_source, "Pillar attack results must be measured from actual HP changes"
+          assert "PLAYER_AGENT_MAGE_EVASION" in playtest_source, "Mage must have a bounded close-range evasion policy"
+          assert "potion_reserve := 1 if Game.cls == \"mage\" and focus_type == \"\"" in playtest_source, "Mage must preserve a health potion for the boss encounter"
+          assert "PlayerAgent.mage_boss_preferred_range()" in playtest_source and "PlayerAgent.mage_boss_retreat_distance()" in playtest_source, "Mage must maintain a safer ranged boss distance"
+          assert "spell_interval_min := 1.0 if Game.cls == \"mage\" else 2.2" in playtest_source, "Mage must use its ranged spells at a useful cadence"
+          agent_source = Path("tests/player_agent.gd").read_text(encoding="utf-8")
+          assert "PLAYER_AGENT_PICKUP_SKIPPED_NEAR_EXIT" in agent_source, "Pickup scanning must skip loot in exit safety margins"
+          assert "pickup route unexpectedly changed map" in agent_source, "Pickup movement must fail if it leaves the intended map"
+          assert "PLAYER_AGENT_OBJECTIVE_BOSS type=%s defeated=%s" in agent_source, "Dynamic objective boss fights must report observed defeat state"
+          assert "static func should_prioritize_focus_add" in agent_source, "Focused Anvilward combat must have a testable close-add priority policy"
+          assert "is_alerted: bool" in agent_source and "not is_alerted" in agent_source, "Focused boss fights must not pull passive adds into active combat"
+          assert 'var pressure_radius := 445.5 if focus_type == "anvilward" else radius' in agent_source, "Anvilward add priority must respect normal enemy aggro distance"
+          assert "static func should_dodge_mage" in agent_source and "PlayerAgent.should_dodge_mage(" in playtest_source, "Mage must preserve stamina by reserving rolls for close or critical threats"
+          assert "static func should_evade_boss_telegraph" in agent_source and "PlayerAgent.should_evade_boss_telegraph(last_danger_kind)" in playtest_source, "Area slams, forge lanes and projectiles must force evasive movement rather than shield tanking"
+          assert "static func boss_dodge_window" in agent_source and "PlayerAgent.boss_dodge_window(str(Game.cls))" in playtest_source, "Boss rolls must be timed to each class's actual invulnerability frames"
+          assert "static func should_guard_boss_telegraph" in agent_source and "PLAYER_AGENT_EMERGENCY_GUARD" in playtest_source, "A just-in-time guard must cover area hits when dodge is unavailable"
+          assert "static func safe_evasion_direction" in agent_source and "PlayerAgent.safe_evasion_direction(" in playtest_source, "Retreat movement must sidestep blocked wall directions"
+          assert "PlayerAgent.mage_boss_preferred_range()" in playtest_source and "PlayerAgent.mage_boss_retreat_distance()" in playtest_source, "Mage must maintain a safe boss-casting distance"
+          assert "PLAYER_AGENT_BOSS_EVADE" in playtest_source, "Boss-area evasion decisions must be recorded for combat review"
+          assert "await prepare_route_supplies(3)" in agent_source, "The Pulad expedition must attempt a third real merchant potion when affordable"
+          assert "Keep the authored boss target even when it begins farther" in playtest_source, "The named boss must remain targetable beyond the ordinary scan radius"
+          assert "PLAYER_AGENT_ANVILWARD_ADD_PRIORITY" in playtest_source, "Anvilward close-add decisions must be recorded"
+          assert 'var potion_threshold := 0.68 if focus_type == "anvilward"' in playtest_source, "Anvilward combat must use earlier healing"
+          assert "static func should_engage_route_threat(distance: float, radius: float = 420.0) -> bool:" in agent_source, "Route combat must have a bounded nearby-threat policy"
+          assert "static func should_skip_route_threat_near_exit(position: Vector2, exits: Array, margin: float = 180.0) -> bool:" in agent_source, "Route combat must not chase enemies through a nearby map exit"
+          assert "static func should_skip_route_path_near_exit(origin: Vector2, destination: Vector2, exits: Array, margin: float = 180.0) -> bool:" in agent_source, "Route combat must not chase an enemy along a path crossing an exit safety margin"
+          assert "static func route_exit_safety_candidates(map_key: String, exits: Array) -> Array:" in agent_source, "Exit-corridor deferral must be scoped to the Peaks map"
+          assert 'route_exit_safety_candidates(str(driver.main.world.key), driver.main.world.data.get("exits", []))' in agent_source, "Other maps must retain normal nearby-threat clearing"
+          assert "PLAYER_AGENT_ROUTE_THREATS_DEFERRED_NEAR_EXIT" in agent_source, "Deferred exit-adjacent threats must be recorded as evidence"
+          assert 'func _clear_route_threats(max_rounds := 4, radius := 420.0, excluded_type := "") -> Dictionary:' in agent_source, "The natural player must clear nearby threats before map travel while preserving the objective boss"
+          assert "PLAYER_AGENT_ROUTE_THREAT" in agent_source and "PLAYER_AGENT_ROUTE_COMBAT" in agent_source, "Route combat must log observed nearby enemies and ordinary combat outcomes"
+          assert "func prepare_route_supplies(minimum_potions := 2) -> String:" in agent_source, "The forge journey must prepare health supplies when stock is low"
+          assert 'await visit_shop("merchant", true)' in agent_source, "Expedition supplies must be purchased through the merchant UI"
+          assert "PLAYER_AGENT_ROUTE_SUPPLIES_READY" in agent_source, "Expedition preparation must log the observed potion stock"
+          assert 'current_map == "village" and target_map == "emberforge" and Game.brann_sync() == "anvil"' in agent_source, "Supply preparation must be scoped to the active Pulad expedition"
+          assert "should_clear_route_threats_before_objective(current_map, target_map, objective_kind, Game.brann_sync())" in agent_source and "_clear_route_threats(4, 420.0)" in agent_source, "The agent must validate route safety on intermediate maps"
+          assert "static func should_clear_route_threats_before_objective(current_map: String, target_map: String, target_kind: String, brann_state := \"\") -> bool:" in agent_source, "Boss arenas must not run generic route-threat sweeps before focused combat"
+          assert "PLAYER_AGENT_ROUTE_CLEARANCE_SKIPPED" in agent_source and "priority Jamshid reward turn-in" in agent_source, "Forge reward returns must not divert into optional mobs"
+          assert 'var boss_route_safety: Dictionary = await _clear_route_threats(4, 420.0, boss_type)' in agent_source, "Intermediate route combat must preserve the live objective boss"
+          assert "PLAYER_AGENT_BOSS_PRIORITY" in agent_source and "await driver.fight(fight_limit, 0.0, boss_type)" in agent_source, "Boss arenas must use focused live combat instead of nearest-threat sweeps"
+          assert "await driver.walk_to(boss.global_position, 45.0, 110.0)" not in agent_source, "The focused combat controller must approach the boss while handling active threats"
+          game_source = Path("scripts/game.gd").read_text(encoding="utf-8")
+          anvilward_cfg_start = game_source.index('"anvilward": {')
+          anvilward_cfg_end = game_source.index('"kondrow": {', anvilward_cfg_start)
+          assert '"rework": true' in game_source[anvilward_cfg_start:anvilward_cfg_end], "Anvilward's telegraphed slam/furrows/charge must not add repeated full-damage body contact"
+          assert "func navigation_graph() -> Dictionary:" in game_source, "Navigation must include a copy of the currently open story gates"
+          assert "var g := navigation_graph()" in game_source, "Objective route planning must use the open story-gate graph"
+          assert "if brann_key():" in game_source, "The Emberforge route must remain gated until the Kindling Key is earned"
+          objective_function_pos = game_source.index("func objective() -> String:")
+          objective_q1_pos = game_source.index('if q(1) == "active":', objective_function_pos)
+          objective_gate_pos = game_source.index('if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_stage):', objective_function_pos)
+          chapter2_intro_pos = game_source.index('if c2o != "" and Ch2.step() == "":', objective_function_pos)
+          objective_brann_pos = game_source.index('if bo != "" and ["anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann_stage):', objective_function_pos)
+          assert objective_q1_pos < objective_gate_pos < chapter2_intro_pos < objective_brann_pos, "HUD priorities must preserve Q1, Zal's Q2 gate, Chapter II introduction, then the active forge contract"
+          target_function_pos = game_source.index("func quest_target() -> Dictionary:")
+          target_q1_pos = game_source.index('if q(1) == "active":', target_function_pos)
+          gate_priority_pos = game_source.index('if q(2) == "not_started" and ["anvil", "ignarok"].has(brann_stage):', target_function_pos)
+          chapter2_target_pos = game_source.index('if Ch2.open() and Ch2.step() == "":', target_function_pos)
+          target_brann_pos = game_source.index('if ["anvil", "anvil_done", "ignarok", "ignarok_done"].has(brann_stage):', target_function_pos)
+          assert target_q1_pos < gate_priority_pos < chapter2_target_pos < target_brann_pos, "Compass priorities must preserve Q1, Zal's story gate, Chapter II introduction, then the active forge contract"
+          world_source = Path("scripts/world.gd").read_text(encoding="utf-8")
+          assert 'data = md.get("data", {}).duplicate()' in world_source, "Per-world exit data must be isolated from cached map resources"
+          assert "dynamic_exits.append(emberforge_exit)" in world_source, "The Kindling door must be visible to local touch navigation"
+          assert 'data["exits"] = dynamic_exits' in world_source, "The opened Kindling door must be exposed to path steering and exit avoidance"
+          assert "_exit(emberforge_exit)" in world_source, "The dynamic Kindling door must retain its real collision/transition object"
+          forest_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("sec") == 12)
+          next_forest_objective = next(i for i in range(forest_fight + 1, len(scenario)) if scenario[i].get("do") == "agent_objective")
+          assert int(scenario[next_forest_objective].get("max_steps", 1)) >= 2, "Allow the post-fight forest map hop and clue interaction"
+          assert scenario[next_forest_objective].get("stop_after_interaction") is True, "Stop after the second forest clue; do not auto-follow the exit"
+          boss_fight = next(i for i, step in enumerate(scenario) if step.get("do") == "fight" and step.get("target_foe") == "boss")
+          assert not any(step.get("do") in {"agent_collect", "agent_gear", "agent_spells", "agent_talents"} for step in scenario[boss_fight + 1:]), "Do not run optional setup actions inside the active Arzhang encounter"
+          crypt_checkpoint = next(
+              i for i, step in enumerate(scenario)
+              if step.get("do") == "checkpoint" and "Sunken Crypt" in step.get("name", "")
+          )
+          crypt_fight = next(
+              i for i in range(crypt_checkpoint + 1, len(scenario))
+              if scenario[i].get("do") == "fight"
+          )
+          assert not any(
+              step.get("do") == "agent_collect"
+              for step in scenario[crypt_checkpoint + 1:crypt_fight]
+          ), "Fight active Sunken Crypt foes before optional loot scanning"
+          destination.write_text(json.dumps(scenario, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Run natural Chapter I player journey
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/real-player-journey/$HERO"
+          profile="$RUNNER_TEMP/real-player-journey/profile-$HERO"
+          mkdir -p "$output/shots" "$profile"
+          set +e
+          XDG_DATA_HOME="$profile" timeout --signal=TERM --kill-after=10 1800s xvfb-run -a -s "-screen 0 1067x480x24" \
+            "$RUNNER_TEMP/godot/godot" --path . --rendering-driver opengl3 --resolution 1067x480 --fixed-fps 60 --audio-driver Dummy \
+            -- --test res://tests/playtest.gd --playtest \
+            --script "$RUNNER_TEMP/real-player-journey/scenario.json" --out "$output" \
+            2>&1 | tee "$output/godot.txt"
+          status=${PIPESTATUS[0]}
+          set -e
+          cat "$output/log.txt"
+          if [[ "$status" -ne 0 ]]; then
+            echo "::error::Real player journey exited with status $status."
+            exit "$status"
+          fi
+
+      - name: Validate natural progression and player actions
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          python3 - "$RUNNER_TEMP/real-player-journey/$HERO/log.txt" "$RUNNER_TEMP/real-player-journey/$HERO/godot.txt" <<'PY'
+          import os
+          import re
+          import sys
+          from pathlib import Path
+
+          log = Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+          godot = Path(sys.argv[2]).read_text(encoding="utf-8", errors="replace")
+          fights = [line for line in log.splitlines() if '"do":"fight"' in line]
+          assert "PLAYTEST_DONE" in log, "Journey did not reach its last step"
+          assert "PLAYTEST_ASSERTIONS_PASSED" in log, "Journey assertions did not all pass"
+          assert "ASSERTION_FAILED" not in log, "A natural progression or gameplay assertion failed"
+          assert len(fights) == 3, f"Expected three natural combat samples, found {len(fights)}"
+          assert re.search(r"FIGHT_EVIDENCE type=boss .* defeated=true", log), "Arzhang's defeat was not confirmed by the real boss kill counter"
+          assert "PLAYER_AGENT_PILLAR_PRIORITY" in log, "The agent did not exercise Arzhang's grave-pillar mechanic"
+          assert re.search(r"PLAYER_AGENT_PILLAR_(?:DAMAGED|DESTROYED)", log), "The agent selected grave pillars but did not land a verified attack on one"
+          assert "PLAYER_AGENT_PILLAR_APPROACH" in log, "The agent did not reposition to make a grave pillar the nearest attack target"
+          assert "ASSERTION_PASSED arzhang_defeated" in log, "The Arzhang victory checkpoint did not pass"
+          assert "ASSERTION_PASSED returned_to_zal" in log, "The natural return-to-Zal checkpoint did not pass"
+          assert "ASSERTION_PASSED jamshid_core_delivered" in log, "The Warden Core was not handed to Jamshid through the real dialogue"
+          assert "ASSERTION_PASSED anvilward_defeated_reward_pending" in log, "Anvilward's real defeat checkpoint did not pass"
+          assert "ASSERTION_PASSED pulad_of_ghandi_reward_claimed" in log, "Pulad's defeat and Jamshid's return reward were not both confirmed"
+          assert re.search(r"FIGHT_EVIDENCE type=anvilward .* defeated=true", log), "Pulad of Ghandi's defeat was not confirmed by the real kill counter"
+          assert "PLAYER_AGENT_OBJECTIVE_BOSS type=anvilward defeated=true" in log, "The objective agent did not confirm the Pulad encounter victory"
+          assert "PLAYER_AGENT_TRAINING_DONE" in log, "Rostam's real touch-control training did not finish"
+          assert "PLAYER_AGENT_LOADOUT" in log, "The actual shop/loadout routine did not complete"
+          loadout = re.search(r"PLAYER_AGENT_LOADOUT weapon=(\d+)->(\d+) armour=(\d+)->(\d+)", log)
+          assert loadout, "Missing verified weapon/armour progression record"
+          assert int(loadout.group(4)) >= 1, "The fresh player did not buy the first armour tier"
+          assert "PLAYER_AGENT_ACTIONS" in log, "Humanized combat actions were not recorded"
+          if os.environ.get("HERO") == "mage":
+              assert "PLAYER_AGENT_MAGE_EVASION" in log, "Mage did not record a real close-range retreat or dodge response"
+          assert "PLAYER_AGENT_SPELL_POLICY" in log, "Class-aware spell policy was not exercised"
+          assert "PLAYER_AGENT_OBJECTIVE" in log, "Dynamic objective navigation was not exercised"
+          assert "PLAYER_AGENT_PICKUP_SCAN" in log, "Loot scanning was not exercised"
+          assert "PLAYER_AGENT_GEAR_SCAN" in log, "Accessory comparison was not exercised"
+          errors = ("SCRIPT ERROR:", "Parse Error:", "ERROR: Failed to load script")
+          assert not any(marker in godot for marker in errors), "Godot emitted a script/load error"
+          print("REAL_PLAYER_JOURNEY_VALIDATED")
+          print("\n".join(fights))
+          PY
+
+      - name: Generate evidence-backed player, critic, and QA reports
+        if: always()
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/real-player-journey/$HERO"
+          mkdir -p "$output/reports"
+          if [[ ! -s "$output/godot.txt" && -s "$RUNNER_TEMP/real-player-import.log" ]]; then
+            cp "$RUNNER_TEMP/real-player-import.log" "$output/godot.txt"
+          fi
+          python3 tools/playtest/generate_player_reports.py \
+            --class "$HERO" \
+            --log "$output/log.txt" \
+            --engine-log "$output/godot.txt" \
+            --scenario "$RUNNER_TEMP/real-player-journey/scenario.json" \
+            --out "$output/reports"
+
+      - name: Validate generated evidence package
+        if: always()
+        shell: bash
+        env:
+          HERO: ${{ matrix.hero }}
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/real-player-journey/$HERO"
+          reports="$output/reports"
+          test -s "$reports/run-evidence.json"
+          test -s "$reports/player-report.md"
+          test -s "$reports/critic-report.md"
+          test -s "$reports/qa-report.md"
+          python3 - "$reports/run-evidence.json" "$output/shots" "$HERO" "$output/log.txt" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          report_path = Path(sys.argv[1])
+          shot_dir = Path(sys.argv[2])
+          hero = sys.argv[3]
+          log_path = Path(sys.argv[4])
+          report = json.loads(report_path.read_text(encoding="utf-8"))
+          assert report.get("hero_class") == hero, f"Report class mismatch: {report.get('hero_class')} != {hero}"
+          assert report.get("journey_status") in {"passed", "failed", "incomplete", "not_run"}, "Invalid journey status"
+          assert isinstance(report.get("qa_issues"), list), "qa_issues must be a list"
+          assert isinstance(report.get("scenario_checkpoints_planned"), list), "planned checkpoints must be a list"
+          assert isinstance(report.get("scenario_checkpoints_reached"), list), "reached checkpoints must be a list"
+          assert isinstance(report.get("screenshots"), list), "screenshots must be a list"
+          if report["journey_status"] != "passed":
+              assert report["qa_issues"], "A non-passing journey report must include QA findings"
+          available = {p.name for p in shot_dir.glob("*.png")} if shot_dir.exists() else set()
+          for shot in report["screenshots"]:
+              assert isinstance(shot.get("file_present"), bool), "screenshot file_present must be boolean"
+              if shot["file_present"]:
+                  assert shot.get("file") in available, f"Report claims missing screenshot exists: {shot.get('file')}"
+          log = log_path.read_text(encoding="utf-8", errors="replace") if log_path.exists() else ""
+          true_ending = report.get("full_game_completion", {}).get("confirmed") is True
+          assert not true_ending or "PLAYER_AGENT_TRUE_ENDING_CONFIRMED" in log, "Unsubstantiated full-game completion claim"
+          print(f"EVIDENCE_PACKAGE_VALID class={hero} status={report['journey_status']} shots={sum(s['file_present'] for s in report['screenshots'])} issues={len(report['qa_issues'])}")
+          PY
+
+      - name: Upload journey logs and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Divslayer-Real-Player-Journey-${{ matrix.hero }}
+          path: ${{ runner.temp }}/real-player-journey/${{ matrix.hero }}/
+          if-no-files-found: warn
+          retention-days: 14

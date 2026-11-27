@@ -17,6 +17,13 @@ Obtain the current private production `export_presets.cfg` from the owner's trus
 
 Never substitute the QA identity `com.example.divslayer.qa` for the production package ID. Do not invent a package ID: a wrong application ID creates a separate app and cannot update an existing installation.
 
+### Android ABI policy
+
+- **Production/store build:** enable only `arm64-v8a`. Keep `armeabi-v7a`, `x86`, and `x86_64` disabled in the owner's private production export preset.
+- **CI QA build:** enable `arm64-v8a` and `x86_64`; keep `armeabi-v7a` and `x86` disabled. The `x86_64` library is included only so GitHub's x86_64 Android emulator can execute the QA APK.
+- This release policy intentionally excludes Android devices running a 32-bit-only system image. Do not assume every low-cost Android phone is 64-bit at the OS/ABI level; confirm the intended device coverage before publishing.
+- The private production `export_presets.cfg` is intentionally not stored in this repository. Apply the ARM64-only setting to that private preset and verify the signed APK/AAB's actual ABI metadata before release. The public QA preset is not a production preset.
+
 ## 2. Production signing key
 
 - The retired legacy test keystore/key material must never be reused.

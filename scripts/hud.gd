@@ -245,12 +245,14 @@ func _build_status_block() -> void:
 	name_l.size = Vector2(190, 16)
 	root.add_child(name_l)
 	hp_bar = Bar.new()
+	hp_bar.name = "HealthMeter"
 	hp_bar.position = Vector2(72, 25)
 	hp_bar.size = Vector2(180, 15)
 	hp_bar.radius = 5.0
 	hp_bar.text_size = 12
 	root.add_child(hp_bar)
 	mp_bar = Bar.new()
+	mp_bar.name = "ManaMeter"
 	mp_bar.position = Vector2(72, 43)
 	mp_bar.size = Vector2(180, 8)
 	mp_bar.fill = MANA
@@ -259,6 +261,7 @@ func _build_status_block() -> void:
 	mp_bar.radius = 3.0
 	root.add_child(mp_bar)
 	st_bar = Bar.new()
+	st_bar.name = "StaminaMeter"
 	st_bar.position = Vector2(72, 54)
 	st_bar.size = Vector2(180, 5)
 	st_bar.fill = UI.STAM
@@ -282,6 +285,7 @@ func _build_status_block() -> void:
 	gold_chip = UI.chip("coins", UI.GOLD_HI)
 	chips.add_child(gold_chip)
 	pot_chip = UI.chip("flask-conical", Color(1, 0.45, 0.55))
+	pot_chip.name = "PotionChip"
 	chips.add_child(pot_chip)
 	status_row = HBoxContainer.new()
 	status_row.add_theme_constant_override("separation", 8)
@@ -399,7 +403,7 @@ func refresh() -> void:
 		name_l.text += Game.t("  · NG+%d" % Game.ng(), "، نو+%s" % Game.num(Game.ng()))     # (v0.21) New Game+
 	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	gold_chip.get_node("Value").text = Game.num(int(Game.state.get("gold", 0)))
-	pot_chip.get_node("Value").text = Game.num(int(Game.state.get("potions", 0)))
+	pot_chip.get_node("Value").text = Game.num(int(Game.state.get("potions", 0)) + int(Game.state.get("greater", 0)))
 	quest_l.text = Game.objective()
 	quest_l.text_direction = Control.TEXT_DIRECTION_RTL if Game.lang == "fa" else Control.TEXT_DIRECTION_LTR
 	quest.reset_size()

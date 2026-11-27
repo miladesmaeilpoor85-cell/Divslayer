@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/spire_65.png-03ffe9ed62c14f29f9d73ae291b52215
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

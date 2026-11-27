@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/deadtree_99.png-1304c0cd7a25c478b5260902e87e1
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

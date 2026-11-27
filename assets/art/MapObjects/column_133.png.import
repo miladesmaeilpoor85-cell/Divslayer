@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/column_133.png-74cabf1f72f164d03906082c9ffa88
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

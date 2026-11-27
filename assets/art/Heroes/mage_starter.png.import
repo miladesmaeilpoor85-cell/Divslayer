@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/mage_starter.png-960fe8b4497c39d018a9f33d9a25
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

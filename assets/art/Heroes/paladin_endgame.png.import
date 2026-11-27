@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/paladin_endgame.png-166d70fc7a5b185355b05a4fd
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0

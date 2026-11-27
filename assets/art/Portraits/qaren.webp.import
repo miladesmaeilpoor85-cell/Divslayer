@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/qaren.webp-0e77654c3c5ec1ee0cb10c6719ef8bf2.c
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.9
 compress/uastc_level=0

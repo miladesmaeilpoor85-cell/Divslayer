@@ -6,15 +6,21 @@ on:
       - "main"
       - "feature/quest-point-framework"
       - "feat/animation-pipeline-warrior-attack"
+      - "qa/human-player-agent-v1-20261124"
     paths:
       - ".github/workflows/android-qa-apk.yml"
       - "ci/android-qa-export-presets.cfg"
       - "project.godot"
+      - "addons/**"
+      - "tools/**"
+      - "ci/**"
+      - "docs/QUALITY_FIRST_POLICY.md"
       - "icon.png"
       - "assets/**"
       - "data/**"
       - "scenes/**"
       - "scripts/**"
+      - "tests/**"
   pull_request:
     branches:
       - "main"
@@ -22,11 +28,16 @@ on:
       - ".github/workflows/android-qa-apk.yml"
       - "ci/android-qa-export-presets.cfg"
       - "project.godot"
+      - "addons/**"
+      - "tools/**"
+      - "ci/**"
+      - "docs/QUALITY_FIRST_POLICY.md"
       - "icon.png"
       - "assets/**"
       - "data/**"
       - "scenes/**"
       - "scripts/**"
+      - "tests/**"
   workflow_dispatch:
 
 permissions:
@@ -141,7 +152,13 @@ jobs:
             fi
             return "$status"
           }
+          python3 tools/enforce_quality_first_imports.py
           run_godot_checked import godot --headless --editor --path . --quit
+          # Godot's import pass can regenerate image sidecars with defaults.
+          # Re-apply the quality policy after import, then audit the final sidecars.
+          python3 tools/enforce_quality_first_imports.py
+          python3 tools/quality_first_audit.py
+          python3 tools/enforce_quality_first_imports.py --check
           run_godot_checked export godot --headless --path . --export-debug "Android QA" build/android/Divslayer-QA.apk
           test -s build/android/Divslayer-QA.apk
 
@@ -161,7 +178,26 @@ jobs:
           grep -F 'android.intent.action.MAIN' build/android/manifest-xmltree.txt
           grep -F 'android.intent.category.LAUNCHER' build/android/manifest-xmltree.txt
           grep -F 'android:exported(0x01010010)=(type 0x12)0xffffffff' build/android/manifest-xmltree.txt
-          grep -F "native-code: 'arm64-v8a'" build/android/apk-badging.txt
+          python3 - build/android/apk-badging.txt <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          badging = Path(sys.argv[1]).read_text(encoding="utf-8")
+          native_line = next(
+              (line for line in badging.splitlines() if line.startswith("native-code:")),
+              None,
+          )
+          if native_line is None:
+              raise SystemExit("APK has no native-code ABI metadata")
+          actual = set(re.findall(r"'([^']+)'", native_line))
+          expected = {"arm64-v8a", "x86_64"}
+          if actual != expected:
+              raise SystemExit(
+                  f"QA APK ABI mismatch: expected {sorted(expected)}, got {sorted(actual)}"
+              )
+          print(f"Verified QA APK ABIs: {', '.join(sorted(actual))}")
+          PY
           sha256sum build/android/Divslayer-QA.apk | tee build/android/Divslayer-QA.apk.sha256
 
       - name: Upload APK diagnostics if validation fails
@@ -201,8 +237,7 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           disable-linux-hw-accel: false
-          script: >-
-            set -eu; trap 'timeout 20s adb logcat -d -v time > build/android/emulator-logcat.txt 2>&1 || true; timeout 20s adb shell dumpsys activity activities > build/android/emulator-activity.txt 2>&1 || true' EXIT; echo "Installing Divslayer QA APK"; adb shell settings put secure immersive_mode_confirmations confirmed || true; adb logcat -c; timeout 240s adb install -r build/android/Divslayer-QA.apk; adb shell pm path com.example.divslayer.qa | grep -F 'package:'; launcher="$(timeout 30s adb shell cmd package resolve-activity --brief --user 0 -a android.intent.action.MAIN -c android.intent.category.LAUNCHER com.example.divslayer.qa | tr -d '\r')"; printf '%s\n' "$launcher"; printf '%s\n' "$launcher" | grep -F 'com.example.divslayer.qa/'; timeout 60s adb shell monkey -p com.example.divslayer.qa 1; sleep 20; timeout 30s adb logcat -d -v time > build/android/emulator-logcat.txt; if grep -E 'FATAL EXCEPTION|Fatal signal|SIGSEGV|SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' build/android/emulator-logcat.txt; then echo "::error::Android runtime reported a fatal or Godot script error."; exit 1; fi; grep -F 'OnGodotSetupCompleted' build/android/emulator-logcat.txt; timeout 30s adb shell dumpsys activity activities > build/android/emulator-activity.txt; foreground="$(grep -E 'topResumedActivity|ResumedActivity' build/android/emulator-activity.txt | grep -F 'com.example.divslayer.qa/' )"; test -n "$foreground"; printf '%s\n' "$foreground"; if timeout 30s adb shell screencap -p /sdcard/divslayer-qa-launch.png && timeout 30s adb pull /sdcard/divslayer-qa-launch.png build/android/emulator-launch.png && test -s build/android/emulator-launch.png; then echo "Captured Android QA launch screenshot."; else echo "::warning::Screenshot capture unavailable; app launch and foreground checks passed."; fi; echo 'Divslayer Godot setup completed and the QA app remained in the foreground.'
+          script: bash ci/android_qa_emulator_smoke.sh
 
       - name: Upload emulator diagnostics if launch validation fails
         if: failure()
@@ -225,6 +260,7 @@ jobs:
             build/android/Divslayer-QA.apk.sha256
             build/android/apk-badging.txt
             build/android/emulator-logcat.txt
+            build/android/emulator-activity.txt
             build/android/emulator-launch.png
           if-no-files-found: warn
           retention-days: 14

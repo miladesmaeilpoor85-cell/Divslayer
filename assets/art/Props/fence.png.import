@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/fence.png-498a944e8dc879f8cbcee721646dba84.ct
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.82
 compress/uastc_level=0
