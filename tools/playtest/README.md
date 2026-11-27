@@ -107,3 +107,9 @@ the first five minutes — you can test for real.
 ## Things that catch testers out
 - `preset` writes over your save: a later `continue` loads the preset's hero, not the one you started with `new` or `menu`.
 - Settings (`setting`, or changed in the game's menu) stay in your profile for later runs — set them back at the end of a run.
+
+### Fresh-game journey to Zal (Persian UI)
+
+After importing the project with Godot 4.7.2, run `tools/playtest/zal_journey.sh` (optional first argument: random seed, default 705). Each run gets its own temporary profile. The runner taps New Game, chooses the default warrior, follows visible objective changes and records the first death, unexpected modal or stalled objective. It sends ordinary touch events. Its observations use UI nodes, projected character artwork and the compass, so this is a semantic UI test. It does not require OCR. It never teleports the player or gifts health, equipment or experience.
+
+On the chapter build the goal is Zal's reward conversation and the resulting objective change. On a build with the Zabol memorial the goal is the visible lantern handoff acknowledgement. The evidence folder printed at startup contains `journey.json` (result, milestones, on-screen text and final diagnostic state), `touches.jsonl` (finger, coordinates and frame for each touch or drag), and `log.txt`. Display runs also capture checkpoint images. Headless runs omit image capture. Exit code 1 denotes a blocked journey; it is evidence to investigate, not a diagnosis of a game defect.

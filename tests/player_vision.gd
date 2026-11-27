@@ -5,7 +5,7 @@ const SAMPLE_STEP := 3
 const MIN_WARNING_PIXELS := 5
 
 static func capture(viewport: Viewport) -> Dictionary:
-	if viewport == null:
+	if viewport == null or DisplayServer.get_name() == "headless":
 		return {"valid": false, "size": Vector2i.ZERO, "warnings": []}
 	var image := viewport.get_texture().get_image()
 	if image == null or image.is_empty():

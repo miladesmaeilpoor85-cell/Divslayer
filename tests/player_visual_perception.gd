@@ -145,10 +145,13 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 	# Search at half resolution first. Running a full pixel sweep for every sprite
 	# template on every combat sample starved the real-player simulation and caused
 	# the 15-minute touch-playtests to time out after only a few simulated seconds.
-	var reduced_frame := frame.duplicate()
-	var reduced_template := template.duplicate()
+	var reduced_frame: Image = frame.duplicate()
+	var reduced_template: Image = template.duplicate()
 	var reduced_scale := 1
-	if mini(template.get_width(), template.get_height()) >= 12:
+	var candidates := (frame.get_width() - template.get_width() + 1) * (frame.get_height() - template.get_height() + 1)
+	# For small search windows check each original position, including odd pixel offsets.
+	var exact_window := candidates * template.get_width() * template.get_height() <= 8 * 1024 * 1024
+	if not exact_window and mini(template.get_width(), template.get_height()) >= 12:
 		reduced_scale = 2
 		var reduced_width := maxi(1, roundi(float(frame.get_width()) / float(reduced_scale)))
 		var reduced_height := maxi(1, roundi(float(frame.get_height()) / float(reduced_scale)))
@@ -163,7 +166,7 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 		reduced_frame = frame.duplicate()
 		reduced_template = template.duplicate()
 		reduced_scale = 1
-	var coarse_step := maxi(2, sample_step)
+	var coarse_step := 1 if exact_window else maxi(2, sample_step)
 	if _visible_sample_count(reduced_template, coarse_step) < 8:
 		coarse_step = 1
 	var max_x: int = reduced_frame.get_width() - reduced_template.get_width()
