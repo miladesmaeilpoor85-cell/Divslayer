@@ -158,8 +158,8 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 	var coarse_step := maxi(2, sample_step)
 	if _visible_sample_count(reduced_template, coarse_step) < 8:
 		coarse_step = 1
-	var max_x := reduced_frame.get_width() - reduced_template.get_width()
-	var max_y := reduced_frame.get_height() - reduced_template.get_height()
+	var max_x: int = reduced_frame.get_width() - reduced_template.get_width()
+	var max_y: int = reduced_frame.get_height() - reduced_template.get_height()
 	if max_x < 0 or max_y < 0:
 		return {}
 	var best_coarse_score := -1.0
