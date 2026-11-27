@@ -706,6 +706,17 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 			spell_interval_min, spell_interval_max
 		])
 	var map0: String = main.world.key
+	var visual_enemy_types: Array[String] = []
+	for spawn_data in main.world.data.get("enemySpawns", []):
+		if typeof(spawn_data) == TYPE_DICTIONARY:
+			var candidate_type := str(spawn_data.get("type", ""))
+			if not candidate_type.is_empty() and not visual_enemy_types.has(candidate_type):
+				visual_enemy_types.append(candidate_type)
+	var visual_template_count := player_agent.prepare_visual_templates(visual_enemy_types, focus_type)
+	var next_visual_sample_t := 0.0
+	_log("PLAYER_AGENT_VISUAL_TEMPLATES map=%s hero=%s focus=%s authored_candidates=%d templates=%d mode=observe_only" % [
+		map0, str(Game.cls), focus_type, visual_enemy_types.size(), visual_template_count
+	])
 	var last := _feet()
 	var stuck := 0.0
 	var detour := 0.0
@@ -719,6 +730,39 @@ func fight(sec: float, shots_every: float, focus_type := "") -> String:
 	var last_mage_threat_id := 0
 	var pillar_damage_events := 0
 	while t < sec:
+		if focus_type != "" and t >= next_visual_sample_t:
+			next_visual_sample_t = t + 2.5
+			var visual_sample: Dictionary = player_agent.capture_visual_combat(true)
+			if bool(visual_sample.get("valid", false)):
+				var visual_detections: Array = visual_sample.get("detections", [])
+				var visual_plan: Dictionary = visual_sample.get("plan", {})
+				var visual_players := 0
+				var visual_enemies := 0
+				var visual_bosses := 0
+				var visual_warnings := 0
+				for detection in visual_detections:
+					match str(detection.get("kind", "")):
+						"player": visual_players += 1
+						"enemy": visual_enemies += 1
+						"boss": visual_bosses += 1
+						"telegraph", "projectile": visual_warnings += 1
+				_log("PLAYER_AGENT_VISUAL_SAMPLE class=%s focus=%s frame=%s templates=%d players=%d enemies=%d bosses=%d warning_proposals=%d plan_valid=%s reason=%s" % [
+					str(Game.cls), focus_type, str(visual_sample.get("frame_size", Vector2i.ZERO)),
+					int(visual_sample.get("template_count", 0)), visual_players, visual_enemies, visual_bosses,
+					visual_warnings, str(bool(visual_plan.get("valid", false))), str(visual_plan.get("reason", ""))
+				])
+				if bool(visual_plan.get("valid", false)):
+					var visual_target: Dictionary = visual_plan.get("target", {})
+					var visual_direction: Vector2 = visual_plan.get("target_direction_screen", Vector2.ZERO)
+					_log("PLAYER_AGENT_VISUAL_PLAN kind=%s template=%s confidence=%.3f screen_direction=%s distance=%.3f" % [
+						str(visual_target.get("kind", "")), str(visual_target.get("template_id", "")),
+						float(visual_target.get("confidence", 0.0)), str(visual_direction),
+						float(visual_plan.get("target_distance_normalized", 0.0))
+					])
+			else:
+				_log("PLAYER_AGENT_VISUAL_SAMPLE class=%s focus=%s valid=false reason=%s" % [
+					str(Game.cls), focus_type, str(visual_sample.get("reason", "unknown"))
+				])
 		if focus_type != "" and int(Game.v18().get("kills", {}).get(focus_type, 0)) > focus_kills_before:
 			ended = "defeated %s through the live combat encounter" % focus_type
 			break
