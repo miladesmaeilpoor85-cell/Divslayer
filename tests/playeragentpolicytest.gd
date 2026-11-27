@@ -63,6 +63,10 @@ func run(_main: Node) -> void:
 	check("visible_potion_policy_uses_hud_health_and_stock", PlayerBrain.should_use_visible_potion(parsed_status, 1, 0.68))
 	check("visible_potion_policy_respects_reserve", not PlayerBrain.should_use_visible_potion(parsed_status, 3, 0.68))
 	check("visible_potion_policy_does_not_guess_missing_hud_values", not PlayerBrain.should_use_visible_potion({"health_ratio": -1.0, "potions": -1}, 0, 0.68))
+	check("visual_player_threshold_covers_observed_mage_probe", is_equal_approx(PlayerAgent.visual_match_threshold("player"), 0.80))
+	check("visual_boss_threshold_covers_observed_arzhang_probe", is_equal_approx(PlayerAgent.visual_match_threshold("boss"), 0.75))
+	check("visual_enemy_threshold_remains_conservative", is_equal_approx(PlayerAgent.visual_match_threshold("enemy"), 0.80))
+	check("unknown_visual_kind_keeps_strict_default_threshold", is_equal_approx(PlayerAgent.visual_match_threshold("unknown"), 0.88))
 	var visual_candidates: Array = [
 		{"kind": "enemy", "confidence": 0.91, "rect": [0.2, 0.3, 0.1, 0.2]},
 		{"kind": "boss", "confidence": 0.88, "rect": [0.7, 0.3, 0.2, 0.3]},
