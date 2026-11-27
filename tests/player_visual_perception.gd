@@ -139,7 +139,11 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 		return {}
 	if kind not in KINDS or template.get_width() > frame.get_width() or template.get_height() > frame.get_height():
 		return {}
-	var step := maxi(2, sample_step)
+	var step := maxi(1, sample_step)
+	# A coarse stride can skip almost every opaque pixel in a tiny or sparse sprite.
+	# Fall back to pixel sampling rather than losing the only valid match location.
+	if _visible_sample_count(template, step) < 8:
+		step = 1
 	var max_x := frame.get_width() - template.get_width()
 	var max_y := frame.get_height() - template.get_height()
 	var best_coarse_score := -1.0
@@ -181,6 +185,14 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 		"sample_count": best_count,
 		"method": "sprite_pixel_template"
 	}
+
+static func _visible_sample_count(template: Image, sample_step: int) -> int:
+	var count := 0
+	for y in range(0, template.get_height(), maxi(1, sample_step)):
+		for x in range(0, template.get_width(), maxi(1, sample_step)):
+			if template.get_pixel(x, y).a >= 0.35:
+				count += 1
+	return count
 
 static func _template_score_at(frame: Image, template: Image, position: Vector2i, sample_step: int) -> float:
 	var error_sum := 0.0
