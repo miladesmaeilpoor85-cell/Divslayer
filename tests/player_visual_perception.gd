@@ -139,31 +139,33 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 		return {}
 	if kind not in KINDS or template.get_width() > frame.get_width() or template.get_height() > frame.get_height():
 		return {}
-	var step := maxi(1, sample_step)
+	var step := maxi(2, sample_step)
+	var max_x := frame.get_width() - template.get_width()
+	var max_y := frame.get_height() - template.get_height()
 	var best_score := -1.0
 	var best_position := Vector2i.ZERO
 	var best_count := 0
-	var max_x := frame.get_width() - template.get_width()
-	var max_y := frame.get_height() - template.get_height()
+	# Coarse pass keeps the scan bounded for phone-sized viewports.
 	for y in range(0, max_y + 1, step):
 		for x in range(0, max_x + 1, step):
-			var error_sum := 0.0
-			var count := 0
-			for ty in range(0, template.get_height(), step):
-				for tx in range(0, template.get_width(), step):
-					var expected := template.get_pixel(tx, ty)
-					if expected.a < 0.35:
-						continue
-					var actual := frame.get_pixel(x + tx, y + ty)
-					error_sum += (absf(expected.r - actual.r) + absf(expected.g - actual.g) + absf(expected.b - actual.b)) / 3.0
-					count += 1
-			if count < 8:
-				continue
-			var score := 1.0 - error_sum / float(count)
-			if score > best_score:
-				best_score = score
+			var coarse_score := _template_score_at(frame, template, Vector2i(x, y), step)
+			if coarse_score > best_score:
+				best_score = coarse_score
 				best_position = Vector2i(x, y)
-				best_count = count
+	# Pixel-accurate refinement around the best coarse location compensates for
+	# camera sub-pixel movement and sprite origins that do not align to the coarse grid.
+	var refine_radius := step - 1
+	var refine_min_x := maxi(0, best_position.x - refine_radius)
+	var refine_max_x := mini(max_x, best_position.x + refine_radius)
+	var refine_min_y := maxi(0, best_position.y - refine_radius)
+	var refine_max_y := mini(max_y, best_position.y + refine_radius)
+	for y in range(refine_min_y, refine_max_y + 1):
+		for x in range(refine_min_x, refine_max_x + 1):
+			var refined_score := _template_score_at(frame, template, Vector2i(x, y), 1)
+			if refined_score > best_score:
+				best_score = refined_score
+				best_position = Vector2i(x, y)
+				best_count = template.get_width() * template.get_height()
 	if best_score < threshold:
 		return {}
 	return {
@@ -178,6 +180,21 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 		"sample_count": best_count,
 		"method": "sprite_pixel_template"
 	}
+
+static func _template_score_at(frame: Image, template: Image, position: Vector2i, sample_step: int) -> float:
+	var error_sum := 0.0
+	var count := 0
+	for ty in range(0, template.get_height(), sample_step):
+		for tx in range(0, template.get_width(), sample_step):
+			var expected := template.get_pixel(tx, ty)
+			if expected.a < 0.35:
+				continue
+			var actual := frame.get_pixel(position.x + tx, position.y + ty)
+			error_sum += (absf(expected.r - actual.r) + absf(expected.g - actual.g) + absf(expected.b - actual.b)) / 3.0
+			count += 1
+	if count < 8:
+		return -1.0
+	return 1.0 - error_sum / float(count)
 
 ## Convert broad colour proposals to screen-normalized candidates.
 ## These are intentionally capped below the brain's defensive-action threshold.
