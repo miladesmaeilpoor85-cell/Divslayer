@@ -283,7 +283,7 @@ func capture_visual_combat(prefer_boss := false) -> Dictionary:
 		return {"valid": false, "reason": "viewport_frame_unavailable", "detections": []}
 	var frame_size := Vector2i(int(frame.get("width", 0)), int(frame.get("height", 0)))
 	var image: Image = frame.get("image")
-	var detections := PlayerVisualPerception.detect_sprite_templates(image, _visual_templates, 2, 0.88)
+	var detections := PlayerVisualPerception.detect_sprite_templates(image, _visual_templates, 4, 0.88)
 	var visible_vision: Dictionary = visual_observation()
 	var warning_candidates := PlayerVisualPerception.warning_proposals(
 		visible_vision.get("warnings", []), frame_size
