@@ -154,6 +154,10 @@ func run(_main: Node) -> void:
 				synthetic_frame.set_pixel(21 + sx, 9 + sy, pixel)
 	var sprite_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 1, 0.98)
 	check("sprite_template_match_finds_exact_rendered_frame", not sprite_match.is_empty() and str(sprite_match.get("kind", "")) == "boss")
+	var sparse_coarse_match := PlayerVisualPerception.match_template(synthetic_frame, sprite_template, "boss", 3, 0.98)
+	check("sprite_template_match_falls_back_when_coarse_stride_skips_sparse_pixels",
+		not sparse_coarse_match.is_empty()
+		and Vector2(sparse_coarse_match.get("rect", [0.0, 0.0])[0], sparse_coarse_match.get("rect", [0.0, 0.0])[1]).distance_to(Vector2(21.0 / 48.0, 9.0 / 36.0)) < 0.001)
 	var matched_rect: Array = sprite_match.get("rect", [])
 	check("sprite_template_match_returns_normalized_screen_bounds",
 		matched_rect.size() == 4
@@ -251,7 +255,10 @@ func run(_main: Node) -> void:
 		{"kind":"enemy","confidence":0.92,"rect":[0.68,0.40,0.08,0.13]},
 		{"kind":"boss","confidence":0.94,"rect":[0.56,0.38,0.08,0.2]}
 	]
-	var visual_plan := PlayerBrain.visual_combat_plan(visual_plan_detections, true)
+	var normalized_visual_plan_detections := PlayerVisualPerception.normalize_detections(
+		visual_plan_detections, Vector2i(1600, 720)
+	)
+	var visual_plan := PlayerBrain.visual_combat_plan(normalized_visual_plan_detections, true)
 	check("visual_combat_plan_requires_player_sprite_and_prefers_visible_boss",
 		bool(visual_plan.get("valid", false))
 		and str(visual_plan.get("target", {}).get("kind", "")) == "boss"
