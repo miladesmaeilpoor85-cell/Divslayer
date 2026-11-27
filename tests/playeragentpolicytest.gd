@@ -174,6 +174,10 @@ func run(_main: Node) -> void:
 	actual_sprite_region.atlas = actual_atlas_texture
 	actual_sprite_region.region = Rect2(4, 3, 10, 10)
 	var cropped_actual_sprite := PlayerVisualPerception.sprite_image_from_texture(actual_sprite_region, 1.0)
+	var sprite_image_fixture := cropped_actual_sprite
+	if sprite_image_fixture == null:
+		sprite_image_fixture = Image.create(4, 6, false, Image.FORMAT_RGBA8)
+		sprite_image_fixture.fill(Color(0.2, 0.3, 0.85, 1.0))
 	check("sprite_template_extractor_crops_real_atlas_region_and_trims_transparency",
 		cropped_actual_sprite != null and cropped_actual_sprite.get_width() == 4 and cropped_actual_sprite.get_height() == 6)
 	var actual_sprite_frames := SpriteFrames.new()
@@ -188,12 +192,14 @@ func run(_main: Node) -> void:
 		and actual_sprite_templates[0].get("image") is Image)
 	var actual_sprite_frame := Image.create(36, 28, false, Image.FORMAT_RGBA8)
 	actual_sprite_frame.fill(Color(0.08, 0.08, 0.08, 1.0))
-	for sy in cropped_actual_sprite.get_height():
-		for sx in cropped_actual_sprite.get_width():
-			actual_sprite_frame.set_pixel(17 + sx, 12 + sy, cropped_actual_sprite.get_pixel(sx, sy))
-	var actual_sprite_detections := PlayerVisualPerception.detect_sprite_templates(
-		actual_sprite_frame, actual_sprite_templates, 1, 0.98
-	)
+	for sy in sprite_image_fixture.get_height():
+		for sx in sprite_image_fixture.get_width():
+			actual_sprite_frame.set_pixel(17 + sx, 12 + sy, sprite_image_fixture.get_pixel(sx, sy))
+	var actual_sprite_detections: Array[Dictionary] = []
+	if not actual_sprite_templates.is_empty():
+		actual_sprite_detections = PlayerVisualPerception.detect_sprite_templates(
+			actual_sprite_frame, actual_sprite_templates, 1, 0.98
+		)
 	check("sprite_template_builder_detects_a_cropped_atlas_sprite_in_screen_pixels",
 		actual_sprite_detections.size() == 1
 		and str(actual_sprite_detections[0].get("template_id", "")) == "hero:test:idle_down:0"
@@ -208,7 +214,10 @@ func run(_main: Node) -> void:
 		not anvilward_templates.is_empty()
 		and str(anvilward_templates[0].get("kind", "")) == "boss"
 		and str(anvilward_templates[0].get("id", "")).begins_with("boss:anvilward:"))
-	var actual_anvilward_image: Image = anvilward_templates[0].get("image")
+	var actual_anvilward_image: Image = Image.create(4, 4, false, Image.FORMAT_RGBA8)
+	actual_anvilward_image.fill(Color(0.8, 0.3, 0.2, 1.0))
+	if not anvilward_templates.is_empty():
+		actual_anvilward_image = anvilward_templates[0].get("image")
 	var anvilward_render_fixture := Image.create(
 		actual_anvilward_image.get_width() + 32,
 		actual_anvilward_image.get_height() + 24,
@@ -220,9 +229,11 @@ func run(_main: Node) -> void:
 			var boss_pixel := actual_anvilward_image.get_pixel(sx, sy)
 			if boss_pixel.a > 0.0:
 				anvilward_render_fixture.set_pixel(13 + sx, 9 + sy, boss_pixel)
-	var actual_anvilward_match := PlayerVisualPerception.detect_sprite_templates(
-		anvilward_render_fixture, [anvilward_templates[0]], 1, 0.98
-	)
+	var actual_anvilward_match: Array[Dictionary] = []
+	if not anvilward_templates.is_empty():
+		actual_anvilward_match = PlayerVisualPerception.detect_sprite_templates(
+			anvilward_render_fixture, [anvilward_templates[0]], 1, 0.98
+		)
 	check("sprite_template_match_locates_actual_anvilward_sprite_art",
 		actual_anvilward_match.size() == 1
 		and str(actual_anvilward_match[0].get("template_id", "")) == str(anvilward_templates[0].get("id", ""))
