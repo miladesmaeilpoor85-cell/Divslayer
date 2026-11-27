@@ -28,7 +28,9 @@ static func capture_frame(viewport: Viewport) -> Dictionary:
 ## The source art is cropped to non-transparent pixels and resized with nearest-neighbour
 ## sampling to the scale used by the in-game AnimatedSprite2D.
 static func sprite_image_from_texture(texture: Texture2D, rendered_scale := 1.0 / 3.0) -> Image:
-	if texture == null or rendered_scale <= 0.0:
+	if texture == null or rendered_scale <= 0.0 or DisplayServer.get_name() == "headless":
+		# The dummy headless renderer has no texture readback backing store.
+		# Real SpriteFrames extraction is exercised by the Xvfb player journey.
 		return null
 	var source_image: Image = null
 	if texture is AtlasTexture:
@@ -155,6 +157,12 @@ static func match_template(frame: Image, template: Image, kind: String, sample_s
 		reduced_frame.resize(reduced_width, reduced_height, Image.INTERPOLATE_NEAREST)
 		reduced_template.resize(reduced_template_width, reduced_template_height, Image.INTERPOLATE_NEAREST)
 
+	# Do not downscale sparse pixel-art templates: reducing them can erase
+	# the only opaque samples and make every candidate score invalid.
+	if reduced_scale == 2 and _visible_sample_count(reduced_template, 1) < 8:
+		reduced_frame = frame.duplicate()
+		reduced_template = template.duplicate()
+		reduced_scale = 1
 	var coarse_step := maxi(2, sample_step)
 	if _visible_sample_count(reduced_template, coarse_step) < 8:
 		coarse_step = 1
