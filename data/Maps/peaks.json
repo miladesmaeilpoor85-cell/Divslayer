@@ -1076,5 +1076,6 @@
       },
       "mapKey": "peaks"
     }
-  ]
+  ],
+  "groundFile": "peaks_ground.svg"
 }

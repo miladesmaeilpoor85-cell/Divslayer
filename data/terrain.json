@@ -1,54 +1,36 @@
 {
- "textures": {
-  "meadow": {
-   "file": "meadow.webp",
-   "units": 300.0,
-   "gain": 0.9
+  "textures": {
+    "meadow": {
+      "file": "meadow.webp",
+      "units": 300,
+      "gain": 0.9
+    },
+    "dirtpath": {
+      "file": "dirtpath.webp",
+      "units": 320
+    },
+    "cobble": {
+      "file": "cobble.webp",
+      "units": 210
+    },
+    "forestfloor": {
+      "file": "forestfloor.webp",
+      "units": 260,
+      "gain": 1.22
+    }
   },
-  "dirtpath": {
-   "file": "dirtpath.webp",
-   "units": 320.0
-  },
-  "cobble": {
-   "file": "cobble.webp",
-   "units": 210.0
-  },
-  "forestfloor": {
-   "file": "forestfloor.webp",
-   "units": 260.0,
-   "gain": 1.22
+  "maps": {
+    "camp": {
+      "base": "meadow",
+      "r": "dirtpath",
+      "b": "forestfloor",
+      "sat": 0.84,
+      "edges": [
+        0.42,
+        0.18,
+        0.42
+      ],
+      "rough": 0.5
+    }
   }
- },
- "maps": {
-  "village": {
-   "base": "meadow",
-   "r": "dirtpath",
-   "g": "cobble",
-   "b": "forestfloor",
-   "sat": 0.84
-  },
-  "forest": {
-   "base": "meadow",
-   "r": "dirtpath",
-   "b": "forestfloor",
-   "sat": 0.84,
-   "edges": [
-    0.18,
-    0.18,
-    0.42
-   ]
-  },
-  "camp": {
-   "base": "meadow",
-   "r": "dirtpath",
-   "b": "forestfloor",
-   "sat": 0.84,
-   "edges": [
-    0.42,
-    0.18,
-    0.42
-   ],
-   "rough": 0.5
-  }
- }
 }

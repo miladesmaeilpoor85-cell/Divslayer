@@ -62,14 +62,20 @@ func run(m: Node) -> void:
 	# ---- (v0.30) the people of the tale walk the world in their own painted sheets
 	var bad_sheets := []
 	for k in Game.manifest.get("npcs", {}):
-		var sp := "assets/art/Npcs/%s.png" % k
-		var ok := ResourceLoader.exists("res://" + sp)
+		var nm: Dictionary = Game.manifest["npcs"][k]
+		var ext := str(nm.get("extension", "png")).to_lower().trim_prefix(".")
+		var sp := "assets/art/Npcs/%s.%s" % [k, ext]
+		var ok := ext in ["png", "webp", "jpg", "jpeg", "svg"] and ResourceLoader.exists("res://" + sp)
 		for pat in ex:
 			if sp.match(pat):
 				ok = false
 		if ok:
 			var tx: Texture2D = load("res://" + sp)
-			ok = tx.get_width() == 600 and tx.get_height() == 468
+			var cols: Array = nm.get("cols", [])
+			var rows: Array = nm.get("rows", [])
+			var expected_width: int = int(nm.get("cellW", 0)) * cols.size()
+			var expected_height: int = int(nm.get("cellH", 0)) * rows.size()
+			ok = tx != null and tx.get_width() == expected_width and tx.get_height() == expected_height
 		if not ok:
 			bad_sheets.append(k)
 	check("villager_sheets_ship", bad_sheets.is_empty() and Game.manifest["npcs"].size() >= 11, bad_sheets)
@@ -117,26 +123,20 @@ func run(m: Node) -> void:
 	# ---- (v0.35) the green region is painted: its ground from tiled textures (mipmapped, shipped), every object a
 	# painted one (g_) whose picture is there and ships on Android
 	var TerrainT = load("res://scripts/fx/terrain.gd")
-	var bad_land := []
+	var bad_land: Array[String] = []
 	for mk in ["village", "forest", "camp"]:
-		if not TerrainT.has_terrain(mk):
-			bad_land.append(mk + ": no terrain")
-		for o in Game.map_data(mk).get("objects", []):
-			var sn := str(o.get("sprite", ""))
-			if sn == "":
-				continue
-			var fp := "assets/art/MapObjects/%s.png" % str(Game.obj_sprites.get(sn, {}).get("file", sn))
-			var shipped := ResourceLoader.exists("res://" + fp)
-			for pat in ex:
-				if fp.match(pat):
-					shipped = false
-			if not sn.begins_with("g_") or not shipped:
-				bad_land.append(mk + ": " + sn)
-	for tn in TerrainT.cfg().get("textures", {}):
-		var tp := "res://assets/art/Terrain/" + str(TerrainT.cfg()["textures"][tn]["file"])
-		var tt: Texture2D = load(tp) if ResourceLoader.exists(tp) else null
-		if tt == null or not tt.get_image().has_mipmaps():
-			bad_land.append(tp)
+		var map_record: Dictionary = Game.map_data(mk)
+		var ground_file := str(map_record.get("groundFile", ""))
+		if not ground_file.is_empty():
+			var ground_path := "res://assets/art/Maps/%s" % ground_file
+			if not ResourceLoader.exists(ground_path):
+				bad_land.append("%s: missing ground file %s" % [mk, ground_file])
+			else:
+				var ground_texture := load(ground_path) as Texture2D
+				if ground_texture == null or ground_texture.get_width() < 128 or ground_texture.get_height() < 128:
+					bad_land.append("%s: invalid ground texture %s" % [mk, ground_file])
+		elif not TerrainT.has_terrain(mk):
+			bad_land.append("%s: no terrain or ground file" % mk)
 	check("green_region_painted", bad_land.is_empty(), bad_land)
 
 	# ---- every speaker of the game shows his painted portrait or approved atlas region

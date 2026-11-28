@@ -15,6 +15,10 @@ def png_bytes(width=2, height=3):
     return signature + ihdr + iend
 
 
+def svg_bytes(width=8, height=9):
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"></svg>').encode()
+
+
 def jpeg_bytes(width=4, height=5):
     frame = bytes([8]) + height.to_bytes(2, "big") + width.to_bytes(2, "big") + bytes([1, 1, 0x11, 0])
     return b"\xff\xd8\xff\xc0" + (11).to_bytes(2, "big") + frame + b"\xff\xd9"
@@ -51,11 +55,25 @@ class AssetAuditTests(unittest.TestCase):
                 "x.png": (png_bytes(2, 3), (2, 3)),
                 "x.jpg": (jpeg_bytes(4, 5), (4, 5)),
                 "x.webp": (webp_vp8x_bytes(6, 7), (6, 7)),
+                "x.svg": (svg_bytes(8, 9), (8, 9)),
             }
             for name, (payload, expected) in fixtures.items():
                 path = root / name
                 path.write_bytes(payload)
                 self.assertEqual(image_dimensions(path), expected)
+
+    def test_svg_viewbox_can_supply_missing_dimensions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "viewbox.svg"
+            path.write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 13"></svg>', encoding="utf-8")
+            self.assertEqual(image_dimensions(path), (11, 13))
+
+    def test_svg_rejects_active_content(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "unsafe.svg"
+            path.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="9"><script>alert(1)</script></svg>', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "active SVG content"):
+                image_dimensions(path)
 
     def test_clean_assets_pass_and_unverified_is_only_a_warning(self):
         root = self.make_repo()

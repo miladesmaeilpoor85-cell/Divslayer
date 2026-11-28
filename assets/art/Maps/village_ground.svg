@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1300" viewBox="0 0 900 650">
+<defs>
+ <linearGradient id="meadow" x2="0.18" y2="1"><stop stop-color="#71884f"/><stop offset=".48" stop-color="#536f42"/><stop offset="1" stop-color="#3d5d3a"/></linearGradient>
+ <radialGradient id="sunlit"><stop stop-color="#a6aa64" stop-opacity=".42"/><stop offset="1" stop-color="#8fa35c" stop-opacity="0"/></radialGradient>
+ <linearGradient id="road" x2="0" y2="1"><stop stop-color="#a77b4b"/><stop offset=".48" stop-color="#87603c"/><stop offset="1" stop-color="#67492f"/></linearGradient>
+ <pattern id="grass" width="46" height="38" patternUnits="userSpaceOnUse">
+  <path d="M7 28l-3-8m4 8l3-10m14 19l-2-9m3 9l5-12m8 1l-2-7" fill="none" stroke="#b2bd71" stroke-width="1.4" opacity=".42"/>
+  <circle cx="18" cy="8" r="1.5" fill="#d1bf79" opacity=".65"/><circle cx="37" cy="24" r="1.1" fill="#d6c98a" opacity=".65"/>
+  <path d="M29 4q3-4 5 0q-3 5-5 0" fill="#eee0a3" opacity=".55"/>
+ </pattern>
+ <pattern id="soil" width="32" height="28" patternUnits="userSpaceOnUse">
+  <circle cx="5" cy="7" r="1.4" fill="#d2a16a" opacity=".52"/><circle cx="22" cy="17" r="1.8" fill="#553d2c" opacity=".4"/>
+  <path d="M10 23l5-2m7-17l4 2" stroke="#d3aa78" stroke-width="1.3" opacity=".36"/>
+ </pattern>
+ <pattern id="cobble" width="42" height="32" patternUnits="userSpaceOnUse">
+  <path d="M2 4l10-3 9 5-2 10-13 1-5-6zM24 3l12 1 4 8-5 8-12-2-3-8zM8 21l10-2 7 7-4 6-13-1-4-5z" fill="#948b76" stroke="#5c594d" stroke-width="1.5"/>
+  <path d="M5 6l7-2 6 4m9-3l7 1m-21 19l7-1" fill="none" stroke="#d0c5a5" stroke-width="1.2" opacity=".55"/>
+ </pattern>
+ <pattern id="flowers" width="68" height="62" patternUnits="userSpaceOnUse">
+  <circle cx="12" cy="14" r="2" fill="#e4d18d"/><circle cx="15" cy="12" r="1.1" fill="#f2e5b1"/>
+  <circle cx="51" cy="42" r="2" fill="#d7c9e0"/><circle cx="55" cy="40" r="1.2" fill="#efe2ed"/>
+  <path d="M12 17l-2 8m41 20l-2 8" stroke="#b1b66a" stroke-width="1"/>
+ </pattern>
+ <pattern id="packed-earth" width="58" height="46" patternUnits="userSpaceOnUse">
+  <path d="M5 12q8-5 14 0m11 22q7-4 13-1m7-20l4 3-3 5" fill="none" stroke="#d2ae79" stroke-width="1.2" opacity=".32"/>
+  <ellipse cx="22" cy="39" rx="2.2" ry="1.2" fill="#4d3b2d" opacity=".4"/>
+  <circle cx="48" cy="8" r="1.3" fill="#d8c28d" opacity=".55"/>
+ </pattern>
+ <radialGradient id="market-warmth">
+  <stop stop-color="#dfbd79" stop-opacity=".18"/><stop offset=".65" stop-color="#b58a53" stop-opacity=".08"/><stop offset="1" stop-color="#8a6745" stop-opacity="0"/>
+ </radialGradient>
+</defs>
+<rect width="900" height="650" fill="url(#meadow)"/>
+<rect width="900" height="650" fill="url(#grass)" opacity=".7"/>
+<ellipse cx="430" cy="300" rx="510" ry="340" fill="url(#sunlit)"/>
+<path d="M0 0H900V650H0Z" fill="url(#flowers)" opacity=".18"/>
+<!-- Worn village lanes: dark earth edging, compacted ochre centre, scattered gravel -->
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <!-- The market paths bend around old trees and worn ground rather than forming a radial road diagram. -->
+ <g stroke="#40372c" opacity=".46" stroke-width="55">
+  <path d="M448 438C430 390 466 338 447 282S432 151 450 30"/>
+  <path d="M448 438C520 430 578 408 642 389S789 340 910 312"/>
+  <path d="M448 438C373 427 309 398 232 371S62 326 -15 315"/>
+  <path d="M448 438C392 389 345 348 294 297S157 149 90 92"/>
+  <path d="M448 438C479 391 501 345 537 291S612 203 652 162"/>
+ </g>
+ <g stroke="url(#road)" stroke-width="42">
+  <path d="M448 438C430 390 466 338 447 282S432 151 450 30"/>
+  <path d="M448 438C520 430 578 408 642 389S789 340 910 312"/>
+  <path d="M448 438C373 427 309 398 232 371S62 326 -15 315"/>
+  <path d="M448 438C392 389 345 348 294 297S157 149 90 92"/>
+  <path d="M448 438C479 391 501 345 537 291S612 203 652 162"/>
+ </g>
+ <!-- Short, broken wheel-worn edges replace a continuous dashed centre stripe. -->
+ <g fill="none" stroke="#d3ae79" stroke-width="1.7" stroke-linecap="round" opacity=".28">
+  <path d="M425 395q-8-26-1-45m-2-22q8-21-1-39m6-25q-8-25-1-42m-2-26q6-24 2-42"/>
+  <path d="M477 425q31-7 56-17m24-8q24-7 46-18m30-7q24-8 49-18"/>
+  <path d="M392 427q-30-8-52-18m-25-12q-22-8-40-18m-28-12q-25-11-45-22"/>
+ </g>
+</g>
+<g fill="url(#soil)" opacity=".82"><path d="M0 0H900V650H0Z"/></g>
+<circle cx="448" cy="438" r="131" fill="#574b38" opacity=".44"/>
+<circle cx="448" cy="438" r="124" fill="#b6a889" stroke="#5b5547" stroke-width="12"/>
+<circle cx="448" cy="438" r="116" fill="url(#cobble)" stroke="#d0c4a2" stroke-width="2" opacity=".98"/>
+<circle cx="448" cy="438" r="80" fill="none" stroke="#686451" stroke-width="5" opacity=".6"/>
+<circle cx="448" cy="438" r="46" fill="none" stroke="#d6c7a4" stroke-width="3" opacity=".7"/>
+<path d="M383 378l-13-10m160 26l16-8m-128 152l-7 12m109-8l14 9" stroke="#e2d5b4" stroke-width="4" opacity=".5"/>
+<!-- Uneven meadow clumps, stones, tufts and small flower beds -->
+<g fill="#273f2e" opacity=".35"><ellipse cx="90" cy="225" rx="42" ry="18"/><ellipse cx="740" cy="135" rx="52" ry="21"/><ellipse cx="210" cy="580" rx="62" ry="24"/><ellipse cx="790" cy="545" rx="58" ry="25"/></g>
+<g fill="#8e9560"><path d="M70 232q-18-25-5-39q19 11 5 39m0 0q8-31 26-28q-2 22-26 28m0 0q-5-27-22-20"/><path d="M745 139q-18-24-4-41q18 10 4 41m0 0q9-29 25-25q-2 20-25 25"/><path d="M210 583q-17-23-5-38q18 11 5 38m0 0q9-29 25-24q-3 19-25 24"/></g>
+<g fill="#c6b58a" stroke="#766d59" stroke-width="2"><path d="M96 92l13-8 16 5 3 10-17 9-17-5z"/><path d="M760 250l11-9 18 5 4 11-16 8-14-6z"/><path d="M324 92l9-8 12 4 4 8-11 7-12-4z"/><path d="M818 590l14-7 13 6-2 11-17 5-11-7z"/><path d="M175 405l9-6 12 6-2 9-13 3z"/><path d="M595 548l13-9 16 3 3 11-15 9-15-5z"/><path d="M36 480l8-7 14 4 1 9-11 7z"/></g>
+<g fill="none" stroke="#d5c17b" stroke-width="2" opacity=".55"><path d="M96 94l12-5 9 4m643 160l9-6 9 3m-171 298l10-6 10 2"/></g>
+<g fill="#e4d18d"><circle cx="138" cy="160" r="2"/><circle cx="152" cy="165" r="1.5"/><circle cx="290" cy="570" r="2"/><circle cx="305" cy="577" r="1.4"/><circle cx="690" cy="74" r="2"/><circle cx="702" cy="80" r="1.4"/><circle cx="825" cy="430" r="2"/></g>
+<!-- subtle worn edges and grass reclaiming the road margins -->
+<g fill="none" stroke="#c6ac76" stroke-width="3" opacity=".26"><path d="M420 300q-5-50 7-92m-91 196q-80-13-138-49m301 80q90-14 159-55m-204-7q-12-65 1-110"/></g>
+<!-- Hand-worn surface detail: dry-earth seams, irregular herb patches and sun-softened stone edges. -->
+<g id="village-detail-pass">
+ <rect width="900" height="650" fill="url(#packed-earth)" opacity=".26"/>
+ <ellipse cx="448" cy="438" rx="190" ry="178" fill="url(#market-warmth)"/>
+ <g fill="none" stroke="#392f27" stroke-width="2.2" stroke-linecap="round" opacity=".24">
+  <path d="M38 170q20-14 41-7l14 11m-42 18l-11 13m215 286q19-14 35-6m-9 19l17 9m-31-4l-10 15"/>
+  <path d="M690 105q15-11 30-5l14 10m-32 7l-8 13m90 421q-18-10-31 2m-12 12l13 11"/>
+  <path d="M560 585l12-8 11 2m-16 11l-9 12M146 360l9-10 13 2m-7 13l8 9"/>
+ </g>
+ <g fill="#293f2e" opacity=".34">
+  <path d="M38 253q18-38 46-29q26 8 22 31q-9 24-43 22q-25-3-25-24z"/>
+  <path d="M738 177q20-31 49-18q22 12 17 34q-10 25-42 21q-30-5-24-37z"/>
+  <path d="M108 552q21-34 50-21q21 11 15 33q-12 26-43 22q-25-5-22-34z"/>
+  <path d="M780 500q15-29 40-22q25 10 17 32q-8 25-37 24q-24-4-20-34z"/>
+ </g>
+ <g fill="#61794a" stroke="#34482e" stroke-width="2" opacity=".88">
+  <path d="M59 253q-18-30-3-41q19 8 10 29q12-29 30-20q-2 23-30 32q23-9 31 7q-20 15-38-7z"/>
+  <path d="M739 178q-17-28-2-39q18 9 9 28q12-25 28-17q-2 20-27 28q22-6 30 10q-19 13-38-10z"/>
+  <path d="M111 550q-15-26 0-36q17 9 8 25q13-22 28-14q-1 19-27 25q20-5 27 9q-18 12-36-9z"/>
+  <path d="M780 502q-14-24 0-34q16 8 8 23q11-21 25-13q-1 18-24 24q18-5 24 9q-17 11-33-9z"/>
+ </g>
+ <g fill="#d9c79b" stroke="#7a6d55" stroke-width="1.5" opacity=".92">
+  <path d="M278 117l9-7 12 3 4 8-9 8-13-4zM304 126l7-5 9 3 2 7-8 5-9-3z"/>
+  <path d="M640 552l10-8 13 4 2 9-10 7-13-4zM664 562l8-5 10 3 2 7-9 5-9-3z"/>
+  <path d="M76 430l8-7 11 3 3 8-9 6-11-3zM816 335l9-7 12 4 1 8-11 6-10-4z"/>
+ </g>
+ <g fill="none" stroke="#e7d7b6" stroke-width="1.4" opacity=".58">
+  <path d="M282 116l10-3 6 3m348 440l10-4 8 4M80 430l8-4 7 4M820 335l9-4 7 3"/>
+ </g>
+ <g fill="#d8bd7a" opacity=".72">
+  <circle cx="177" cy="205" r="2.2"/><circle cx="185" cy="211" r="1.4"/><circle cx="718" cy="95" r="1.9"/>
+  <circle cx="250" cy="610" r="2"/><circle cx="258" cy="615" r="1.2"/><circle cx="866" cy="462" r="1.8"/>
+ </g>
+</g>
+</svg>
