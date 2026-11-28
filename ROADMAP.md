@@ -47,7 +47,7 @@ See [Alborz art production brief](docs/ALBORZ_ART_PRODUCTION_BRIEF.md).
 ## 5. Asset rights and legal readiness / حقوق دارایی‌ها
 
 - [x] Create a per-image rights register covering the current image files.
-- [ ] Verify provenance and commercial-use status for all 399 currently registered image entries.
+- [ ] Verify provenance and commercial-use status for all 403 currently registered image entries.
 - [ ] Collect Suno/Hoosha receipts, generation IDs, dates, paid-plan evidence, API/download authorization, and dated terms for all 30 soundtrack tracks; current commercial-use evidence remains unverified.
 - [ ] Verify CC0 source/notice for each ambience and SFX file without extending those terms to unrelated assets.
 - [ ] Obtain qualified legal review of the license, CLA, privacy statements, and distribution terms before public contributions or commercial release.
@@ -64,6 +64,20 @@ See [Alborz art production brief](docs/ALBORZ_ART_PRODUCTION_BRIEF.md).
 - [ ] Decide on Google Play App Signing and preserve package/update continuity if already distributed.
 - [ ] Produce and verify a production AAB; do not substitute the QA package or key.
 - [ ] Complete physical-device install/update/save/lifecycle/touch/performance tests and owner approval before release.
+
+## Current quality iteration — 26 November 2026
+
+- [x] Record the owner-reported install and smoke test of the PR #65 QA APK on a physical Android phone; retain the limitation that this is not a complete device matrix.
+- [x] Diagnose the latest Mage agent failure as a blocked ranged casting lane and add a wall-aware reposition policy plus five regression assertions on PR #65.
+- [x] Add a first Warden material/body-motion revision while retaining the runtime sheet dimensions on PR #66.
+- [x] Refine the Zabol, Whispering Forest and Ashen Peaks ground-route drawings to reduce straight, broad path bands on PR #67.
+- [ ] Review fresh PR #65 all-four-class artifacts on the final head; the latest journey attempt failed before gameplay on a parse error, now corrected.
+- [ ] Review the Warden portrait/artwork and terrain revisions on a physical device; automated CI and clean-map previews are not final visual acceptance.
+- [ ] Review the revised Warden and terrain visuals from fresh contact sheets at native Android scale and in the physical-device encounter/map.
+- [x] Add a dedicated Alborz Scout dialogue portrait and wire it to the actual dialogue; register provenance with rights status `UNVERIFIED`.
+- [ ] Add unique Alborz wind ambience; verify commercial-use rights before promotion.
+- [ ] Reconcile the open visual/test PRs with the current main branch and close only after CI, visual, rights and owner-acceptance gates are genuinely satisfied.
+- [ ] Keep all 403 image and 30 music entries unverified until per-item commercial-use evidence and qualified review are supplied.
 
 ## 7. Art, audio, and performance quality / کیفیت هنری، صوتی و کارایی
 
