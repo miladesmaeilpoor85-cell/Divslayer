@@ -44,6 +44,14 @@ func talk(id: String) -> int:
 		return -1
 	main._on_interact(person)
 	await frames(2)
+	if id == "alborz_scout":
+		var scout_portrait = main.hud.dialogue.portrait
+		check("scout_dialogue_loads_dedicated_painted_portrait",
+			main.hud.dialogue.visible and scout_portrait.sheet == "alborz_scout"
+			and scout_portrait.art_facing == 1 and scout_portrait._tex != null
+			and scout_portrait._src.size == Vector2(256, 256),
+			{"sheet": scout_portrait.sheet, "loaded": scout_portrait._tex != null,
+				"source_size": scout_portrait._src.size, "art_facing": scout_portrait.art_facing})
 	var pages := await close_dialogue()
 	await frames(2)
 	return pages
@@ -87,6 +95,31 @@ func run(m: Node) -> void:
 	await frames(8)
 	main.player.invuln = 99999.0
 
+	var terrain_script = load("res://scripts/fx/terrain.gd")
+	var zabol_art := Game.map_data("village")
+	var forest_art := Game.map_data("forest")
+	var peaks_art := Game.map_data("peaks")
+	check("biome_ground_art_sources_are_registered",
+		str(zabol_art.get("groundFile", "")) == "zabol_ground.svg"
+		and str(forest_art.get("groundFile", "")) == "whispering_forest_ground.svg"
+		and str(peaks_art.get("groundFile", "")) == "peaks_ground.svg"
+		and ResourceLoader.exists("res://assets/art/Maps/zabol_ground.svg")
+		and ResourceLoader.exists("res://assets/art/Maps/whispering_forest_ground.svg")
+		and ResourceLoader.exists("res://assets/art/Maps/peaks_ground.svg"))
+	check("zabol_and_forest_have_dedicated_tiled_terrain",
+		terrain_script.has_terrain("village") and terrain_script.has_terrain("forest")
+		and ResourceLoader.exists("res://assets/art/Terrain/zabol_sandstone.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/zabol_dustpath.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/zabol_cobble.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/zabol_drygarden.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/whispering_moss.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/whispering_path.svg")
+		and ResourceLoader.exists("res://assets/art/Terrain/whispering_leaflitter.svg"))
+	check("new_zabol_and_forest_props_are_registered",
+		Game.obj_sprites.has("g_zabol_awning") and Game.obj_sprites.has("g_zabol_water_trough")
+		and Game.obj_sprites.has("g_zabol_clay_jars") and Game.obj_sprites.has("g_forest_root")
+		and Game.obj_sprites.has("g_forest_mushrooms") and Game.obj_sprites.has("g_forest_glow_fern"))
+
 	# The fourth chapter is unavailable until the third chapter has its saved completion state.
 	Game.Ch3.set_step("bound")
 	check("previous_chapter_dialogue_cannot_start_ch4", C.elder_lines().is_empty()
@@ -101,6 +134,32 @@ func run(m: Node) -> void:
 	main.goto_map("village", Vector2(600, 300))
 	await frames(4)
 	main.player.invuln = 99999.0
+	var zabol_world_ground: Sprite2D = main.world.get_node_or_null("Ground") as Sprite2D
+	check("zabol_tiled_ground_is_active_in_runtime",
+		main.world.get_node_or_null("Terrain") != null and zabol_world_ground != null
+		and not zabol_world_ground.visible)
+	var zabol_terrain_node: Node2D = main.world.get_node_or_null("Terrain") as Node2D
+	var zabol_material: ShaderMaterial = null
+	if zabol_terrain_node != null:
+		zabol_material = zabol_terrain_node.material as ShaderMaterial
+	var zabol_layers_ok := zabol_material != null
+	var zabol_layer_sizes: Array = []
+	for parameter in ["tex_base", "tex_r", "tex_g", "tex_b"]:
+		var value: Variant = zabol_material.get_shader_parameter(parameter) if zabol_material != null else null
+		var layer_texture := value as Texture2D
+		var layer_image: Image = layer_texture.get_image() if layer_texture != null else null
+		var layer_ok := layer_image != null and not layer_image.is_empty()
+		if layer_ok:
+			layer_ok = layer_image.get_width() >= 1024 and layer_image.get_height() >= 1024 and layer_image.has_mipmaps()
+		zabol_layers_ok = zabol_layers_ok and layer_ok
+		zabol_layer_sizes.append(layer_texture.get_size() if layer_texture != null else Vector2.ZERO)
+	check("zabol_four_painted_terrain_layers_load_with_mipmaps", zabol_layers_ok, zabol_layer_sizes)
+	var zabol_map_objects := {}
+	for object_data in zabol_art.get("objects", []):
+		zabol_map_objects[str(object_data.get("sprite", ""))] = true
+	check("zabol_dedicated_courtyard_props_are_used_in_map",
+		zabol_map_objects.has("g_zabol_awning") and zabol_map_objects.has("g_zabol_water_trough")
+		and zabol_map_objects.has("g_zabol_clay_jars"), zabol_map_objects.keys())
 	var pages := await talk("elder")
 	check("zal_starts_pass_objective", pages >= 3 and C.step() == "pass" and Game.region_open("alborz"), [pages, C.step()])
 	check("objective_points_to_peaks_exit", Game.objective() == C.line("o_pass") and C.target().get("map", "") == "peaks")
@@ -119,9 +178,11 @@ func run(m: Node) -> void:
 	var map_data := Game.map_data("alborz")
 	var data: Dictionary = map_data.get("data", {})
 	var scout_entry_found := false
+	var scout_look := ""
 	for npc_data in data.get("npcs", []):
 		if str(npc_data.get("id", "")) == "alborz_scout":
 			scout_entry_found = true
+			scout_look = str(npc_data.get("look", ""))
 	check("map_data_has_wind_scout_and_guards",
 		data.get("windGusts", []).size() == 1
 		and scout_entry_found
@@ -134,29 +195,83 @@ func run(m: Node) -> void:
 	check("entry_and_return_are_on_opposite_edges",
 		Vector2(float(data.get("playerStart", {}).get("x", 0)), float(data.get("playerStart", {}).get("y", 0))).y > 900.0
 		and return_exit_found)
-	check("map_uses_existing_ground_placeholder",
-		str(map_data.get("groundFile", "")) == "frostvale_ground.jpg"
-		and ResourceLoader.exists("res://assets/art/Maps/frostvale_ground.jpg"))
+	check("alborz_uses_dedicated_ground_art",
+		str(map_data.get("groundFile", "")) == "alborz_ground.svg"
+		and ResourceLoader.exists("res://assets/art/Maps/alborz_ground.svg"))
+	var alborz_ground_texture: Texture2D = load("res://assets/art/Maps/alborz_ground.svg")
+	var alborz_ground_image: Image = alborz_ground_texture.get_image() if alborz_ground_texture != null else null
+	check("alborz_svg_ground_rasterizes_with_visible_pixels",
+		alborz_ground_image != null and not alborz_ground_image.is_empty()
+		and alborz_ground_image.get_width() >= 1400 and alborz_ground_image.get_height() >= 1100)
+	var alborz_prop_count := 0
+	for object_data in map_data.get("objects", []):
+		var sprite_meta: Dictionary = Game.obj_sprites.get(str(object_data.get("sprite", "")), {})
+		if str(sprite_meta.get("extension", "")) == "svg":
+			alborz_prop_count += 1
+	check("alborz_uses_dedicated_vector_props", alborz_prop_count == map_data.get("objects", []).size() and alborz_prop_count >= 4, alborz_prop_count)
 	check("map_title_is_localized",
 		Game.map_title("alborz") == "گذرگاهِ البرز")
 
 	# The Peaks -> Alborz gate is truly connected, not just a graph-only link.
 	main.goto_map("peaks", Vector2(980, 180))
 	await frames(4)
+	var peaks_ground_node: Sprite2D = main.world.get_node_or_null("Ground") as Sprite2D
+	var peaks_runtime_data := Game.map_data("peaks")
+	check("ashen_peaks_dedicated_ground_is_visible_at_runtime",
+		peaks_ground_node != null and peaks_ground_node.visible
+		and peaks_ground_node.texture != null
+		and peaks_ground_node.texture.get_width() >= 2300
+		and peaks_ground_node.texture.get_height() >= 1840
+		and str(peaks_runtime_data.get("groundFile", "")) == "peaks_ground.svg")
+	var peak_vents := 0
+	var peak_bone_fields := 0
+	for object_data in peaks_runtime_data.get("objects", []):
+		var sprite_id := str(object_data.get("sprite", ""))
+		if sprite_id == "vent_80":
+			peak_vents += 1
+		elif sprite_id == "bones_79":
+			peak_bone_fields += 1
+	check("ashen_peaks_has_volcanic_vents_and_battlefield_remains",
+		peak_vents >= 5 and peak_bone_fields >= 3, [peak_vents, peak_bone_fields])
 	check("peaks_exit_opens_after_zal", exit_try("alborz") == "left")
 
 	# Enter the Alborz prototype; the map entry advances the quest and builds its wind controller and visual cues.
 	main.goto_map("alborz", Vector2(880, 1030))
 	await frames(10)
+	var wind_player: AudioStreamPlayer = Music.amb.get("wind")
+	check("alborz_uses_recorded_wind_ambience",
+		bool(Music._amb_want.get("wind", false)) and Music.amb_file.has("wind")
+		and wind_player != null and wind_player.stream is AudioStreamOggVorbis
+		and (wind_player.stream as AudioStreamOggVorbis).loop)
 	main.player.invuln = 99999.0
 	var w = main.world
 	check("alborz_world_builds", w.key == "alborz" and w.size == Vector2(1400, 1100), [w.key, w.size])
+	var alborz_ground_node: Sprite2D = w.get_node_or_null("Ground") as Sprite2D
+	check("alborz_dedicated_ground_is_visible_in_runtime",
+		alborz_ground_node != null and alborz_ground_node.visible and alborz_ground_node.texture != null
+		and w.get_node_or_null("Terrain") == null)
 	check("entry_advances_to_scout_rescue", C.step() == "rescue" and Game.objective() == C.line("o_scout"))
 	check("wind_zone_and_visual_load", w.wind_zones.size() == 1 and w.wind_visual != null
 		and w.wind_visual.name == "WindVisual", [w.wind_zones.size(), w.wind_visual])
 	check("scout_and_three_guard_types_spawn", npc("alborz_scout") != null
 		and w.stats["enemies"] == 3
 		and w.wall_rects.size() >= 10, [w.stats, w.wall_rects.size()])
+	var scout_node := npc("alborz_scout")
+	var scout_sprite: AnimatedSprite2D = scout_node.get_node_or_null("CharacterSprite") as AnimatedSprite2D if scout_node != null else null
+	var scout_frames: SpriteFrames = scout_sprite.sprite_frames if scout_sprite != null else null
+	var scout_sheet: Texture2D = load("res://assets/art/Npcs/alborz_scout.svg") as Texture2D
+	check("alborz_scout_uses_its_own_registered_look",
+		scout_look == "alborz_scout" and Game.manifest.get("npcs", {}).has("alborz_scout")
+		and ResourceLoader.exists("res://assets/art/Npcs/alborz_scout.svg")
+		and scout_frames != null and scout_frames.has_animation("walk_down")
+		and scout_frames.get_frame_count("walk_down") == 4,
+		{"look": scout_look, "manifest": Game.manifest.get("npcs", {}).has("alborz_scout"),
+			"sprite_exists": scout_sprite != null, "sprite_name": scout_sprite.name if scout_sprite != null else "",
+			"sprite_frames": scout_frames != null, "animation_names": scout_frames.get_animation_names() if scout_frames != null else [],
+			"sheet_exists": ResourceLoader.exists("res://assets/art/Npcs/alborz_scout.svg"),
+			"sheet_loaded": scout_sheet != null,
+			"sheet_size": [scout_sheet.get_width(), scout_sheet.get_height()] if scout_sheet != null else [],
+			"walk_frames": scout_frames.get_frame_count("walk_down") if scout_frames != null and scout_frames.has_animation("walk_down") else 0})
 
 	# Wind phase and cover are checked in logical map coordinates. The contribution never accumulates.
 	var controller = w.wind_zones[0]["controller"]
@@ -201,6 +316,7 @@ func run(m: Node) -> void:
 	# The report returns to Zal; the completed stage remains saved.
 	main.goto_map("village", Vector2(600, 300))
 	await frames(5)
+	check("wind_ambience_fades_after_leaving_high_altitude_region", not bool(Music._amb_want.get("wind", false)))
 	main.player.invuln = 99999.0
 	pages = await talk("elder")
 	check("zal_closes_the_rescue_chapter_and_unlocks_optional_hunt", pages >= 2 and C.step() == "done"
@@ -223,8 +339,28 @@ func run(m: Node) -> void:
 	check("high_eyrie_exit_is_physically_connected", exit_try("alborz_eyrie") == "left")
 	main.goto_map("alborz_eyrie", Vector2(80, 570))
 	await frames(10)
+	check("high_eyrie_uses_recorded_wind_ambience", bool(Music._amb_want.get("wind", false)))
 	main.player.invuln = 99999.0
+	var eyrie_data := Game.map_data("alborz_eyrie")
+	check("high_eyrie_uses_dedicated_ground_art",
+		str(eyrie_data.get("groundFile", "")) == "alborz_eyrie_ground.svg"
+		and ResourceLoader.exists("res://assets/art/Maps/alborz_eyrie_ground.svg"))
+	var eyrie_ground_texture: Texture2D = load("res://assets/art/Maps/alborz_eyrie_ground.svg")
+	var eyrie_ground_image: Image = eyrie_ground_texture.get_image() if eyrie_ground_texture != null else null
+	check("high_eyrie_svg_ground_rasterizes_with_visible_pixels",
+		eyrie_ground_image != null and not eyrie_ground_image.is_empty()
+		and eyrie_ground_image.get_width() >= 1000 and eyrie_ground_image.get_height() >= 820)
+	var eyrie_prop_count := 0
+	for object_data in eyrie_data.get("objects", []):
+		var sprite_meta: Dictionary = Game.obj_sprites.get(str(object_data.get("sprite", "")), {})
+		if str(sprite_meta.get("extension", "")) == "svg":
+			eyrie_prop_count += 1
+	check("high_eyrie_uses_dedicated_vector_props", eyrie_prop_count == eyrie_data.get("objects", []).size() and eyrie_prop_count >= 4, eyrie_prop_count)
 	var eyrie_world = main.world
+	var eyrie_ground_node: Sprite2D = eyrie_world.get_node_or_null("Ground") as Sprite2D
+	check("high_eyrie_dedicated_ground_is_visible_in_runtime",
+		eyrie_ground_node != null and eyrie_ground_node.visible and eyrie_ground_node.texture != null
+		and eyrie_world.get_node_or_null("Terrain") == null)
 	var gale_warden: Node = null
 	for enemy in get_tree().get_nodes_in_group("bosses"):
 		if is_instance_valid(enemy) and enemy.world == eyrie_world and enemy.type == "alborzwarden":
@@ -239,9 +375,70 @@ func run(m: Node) -> void:
 		check("gale_warden_uses_three_separate_telegraphed_lanes",
 			gale_warden.moves.has("crosswind") and eyrie_world.bossfx.tele.size() == 3,
 			{"moves": gale_warden.moves, "telegraphs": eyrie_world.bossfx.tele.size()})
-		check("gale_warden_has_three_health_phases_and_procedural_silhouette",
-			Game.boss_cfg("alborzwarden").get("phases", []) == [0.66, 0.33]
-			and gale_warden.over != null and (gale_warden.anim == null or not gale_warden.anim.visible))
+		var warden_meta: Dictionary = Game.manifest.get("enemies", {}).get("alborzwarden", {})
+		var warden_sprite_texture: Texture2D = preload("res://scripts/sheets.gd").load_base64_webp_parts("Enemies", warden_meta.get("base64Parts", []))
+		var warden_sprite_image: Image = warden_sprite_texture.get_image() if warden_sprite_texture != null else null
+		check("gale_warden_webp_atlas_loads_with_transparent_pixels",
+			warden_sprite_image != null and not warden_sprite_image.is_empty()
+			and warden_sprite_image.get_width() == 544 and warden_sprite_image.get_height() == 156
+			and warden_sprite_image.detect_alpha() != Image.ALPHA_NONE)
+		var warden_frames: SpriteFrames = gale_warden.anim.sprite_frames if gale_warden.anim != null else null
+		var warden_phases: Array = Game.boss_cfg("alborzwarden").get("phases", [])
+		check("gale_warden_has_three_health_phases",
+			warden_phases.size() == 2 and is_equal_approx(float(warden_phases[0]), 0.66)
+			and is_equal_approx(float(warden_phases[1]), 0.33), warden_phases)
+		check("gale_warden_boss_overlay_and_sprite_are_visible",
+			gale_warden.over != null and gale_warden.anim != null and gale_warden.anim.visible,
+			{"overlay": gale_warden.over != null, "anim": gale_warden.anim != null,
+				"visible": gale_warden.anim.visible if gale_warden.anim != null else false})
+		check("gale_warden_dedicated_four_frame_sprite_and_2x_scale",
+			warden_frames != null and warden_frames.has_animation("v0")
+			and warden_frames.get_frame_count("v0") == 4 and warden_frames.get_animation_speed("v0") > 0.0
+			and is_equal_approx(gale_warden.anim_base_scale.x, 0.5)
+			and absf(gale_warden.anim.scale.x - 0.5) < 0.08,
+			{"frames": warden_frames.get_frame_count("v0") if warden_frames else 0,
+				"base_scale": gale_warden.anim_base_scale, "current_scale": gale_warden.anim.scale})
+		gale_warden.call("_warden_pose_start", 0.74)
+		check("gale_warden_attack_uses_anticipation_pose",
+			gale_warden.anim.frame == 1 and gale_warden.warden_pose_step == 0)
+		gale_warden.call("_warden_pose_tick", 0.75)
+		check("gale_warden_attack_transitions_to_downstroke",
+			gale_warden.anim.frame == 2 and gale_warden.warden_pose_step == 1)
+		gale_warden.call("_warden_pose_tick", 0.19)
+		check("gale_warden_attack_transitions_to_recovery",
+			gale_warden.anim.frame == 3 and gale_warden.warden_pose_step == 2)
+		gale_warden.call("_warden_pose_tick", 0.55)
+		check("gale_warden_returns_to_idle_wing_cycle",
+			gale_warden.warden_pose_step == -1 and gale_warden.anim.is_playing()
+			and gale_warden.anim.animation == "v0")
+	main.goto_map("forest", Vector2(550, 425))
+	await frames(5)
+	var forest_ground_node: Sprite2D = main.world.get_node_or_null("Ground") as Sprite2D
+	check("whispering_forest_tiled_ground_is_active_at_runtime",
+		main.world.get_node_or_null("Terrain") != null and forest_ground_node != null
+		and not forest_ground_node.visible)
+	var forest_terrain_node: Node2D = main.world.get_node_or_null("Terrain") as Node2D
+	var forest_material: ShaderMaterial = null
+	if forest_terrain_node != null:
+		forest_material = forest_terrain_node.material as ShaderMaterial
+	var forest_layers_ok := forest_material != null
+	var forest_layer_sizes: Array = []
+	for parameter in ["tex_base", "tex_r", "tex_g", "tex_b"]:
+		var value: Variant = forest_material.get_shader_parameter(parameter) if forest_material != null else null
+		var layer_texture := value as Texture2D
+		var layer_image: Image = layer_texture.get_image() if layer_texture != null else null
+		var layer_ok := layer_image != null and not layer_image.is_empty()
+		if layer_ok:
+			layer_ok = layer_image.get_width() >= 1024 and layer_image.get_height() >= 1024 and layer_image.has_mipmaps()
+		forest_layers_ok = forest_layers_ok and layer_ok
+		forest_layer_sizes.append(layer_texture.get_size() if layer_texture != null else Vector2.ZERO)
+	check("whispering_forest_painted_terrain_layers_load_with_mipmaps", forest_layers_ok, forest_layer_sizes)
+	var forest_object_ids := {}
+	for object_data in Game.map_data("forest").get("objects", []):
+		forest_object_ids[str(object_data.get("sprite", ""))] = true
+	check("whispering_forest_unique_roots_mushrooms_and_glow_ferns_are_used",
+		forest_object_ids.has("g_forest_root") and forest_object_ids.has("g_forest_mushrooms")
+		and forest_object_ids.has("g_forest_glow_fern"), forest_object_ids.keys())
 	main.goto_map("alborz", Vector2(1290, 520))
 	await frames(5)
 

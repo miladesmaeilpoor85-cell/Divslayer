@@ -80,3 +80,7 @@ The next production tasks are final Alborz/Eyrie ground and prop art, a dedicate
 The Chapter IV completion branch now includes `main` commit `81b63f9c09e7b862a2b95e99bbb24d7db1885ef0` as a merge parent (integration merge `134fd6566c2c63f9a348656862c4f95de6095c7c`). The synced tree retains the High Eyrie and Gale Warden work while bringing in the main-branch hero attack assets, Rogue attack atlas/runtime support, updated Android QA workflow, and production-evidence audit tooling.
 
 The branch is no longer behind `main`. Godot headless CI and Android QA must pass on the post-sync head before PR #37 is merged. An emulator install/launch check is not a substitute for a physical-device playthrough of the Alborz route and Gale Warden encounter.
+
+## Dedicated Alborz and Warden art integration candidate — 2026-11-25
+
+The review branch feat/alborz-warden-dedicated-art-20261125 adds independent SVG ground art for Alborz Pass and High Eyrie, replacement regional props, and a four-frame Gale Warden sprite. The map data no longer points those two maps at frostvale_ground.jpg. The Warden now uses the registered animated enemy sprite when it loads; the old procedural drawing remains only as a defensive fallback. Godot 4.7.2 import/CI, phone-scale visual/performance review, and physical-device gameplay still need to pass. The new assets remain UNVERIFIED for commercial use.

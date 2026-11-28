@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2800" height="2200" viewBox="0 0 1400 1100">
+<defs>
+ <linearGradient id="ground" x2="0.14" y2="1"><stop stop-color="#354653"/><stop offset=".5" stop-color="#293b48"/><stop offset="1" stop-color="#1e303c"/></linearGradient>
+ <linearGradient id="cliff" x2=".7" y2="1"><stop stop-color="#71808a"/><stop offset=".34" stop-color="#4d606d"/><stop offset="1" stop-color="#263946"/></linearGradient>
+ <linearGradient id="snow" x2=".2" y2="1"><stop stop-color="#d5e0df" stop-opacity=".9"/><stop offset=".45" stop-color="#91a9b4" stop-opacity=".7"/><stop offset="1" stop-color="#526977" stop-opacity="0"/></linearGradient>
+ <linearGradient id="trail" x2="0" y2="1"><stop stop-color="#77858a"/><stop offset=".5" stop-color="#59686e"/><stop offset="1" stop-color="#3c515d"/></linearGradient>
+ <radialGradient id="coldGlow"><stop stop-color="#8eafbf" stop-opacity=".24"/><stop offset="1" stop-color="#8eafbf" stop-opacity="0"/></radialGradient>
+ <radialGradient id="snowdust" cx="50%" cy="50%" r="50%"><stop stop-color="#dce9e5" stop-opacity=".09"/><stop offset=".58" stop-color="#9cb7c0" stop-opacity=".045"/><stop offset="1" stop-color="#9cb7c0" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1400" height="1100" fill="url(#ground)"/>
+<ellipse cx="720" cy="470" rx="630" ry="470" fill="url(#coldGlow)"/>
+<!-- distant serrated Alborz ridges -->
+<path d="M0 310L86 246 142 270 230 166 294 216 382 110 456 198 530 128 620 226 703 132 786 204 878 105 952 190 1044 116 1128 213 1210 145 1306 240 1400 194V0H0Z" fill="#263947"/>
+<path d="M0 340L96 282 156 298 238 211 302 252 387 160 461 227 536 175 621 258 708 180 788 245 879 150 955 224 1047 166 1134 249 1218 198 1310 280 1400 232" fill="none" stroke="#80939d" stroke-width="9" opacity=".42"/>
+<path d="M210 219l28-8 14 18-35-4M363 165l24-10 23 25-35-7M689 183l19-12 23 20-29-4M863 151l18-11 25 19-28-3M1189 204l29-12 20 22-34-4" fill="#d8e3df" opacity=".38"/>
+<!-- high cliff shoulders -->
+<path d="M0 0H420L386 146 345 218 315 330 270 422 225 520 174 618 120 700 0 758Z" fill="url(#cliff)"/>
+<path d="M1400 0H1020L1044 126 1085 210 1112 320 1150 406 1190 520 1235 620 1290 704 1400 754Z" fill="url(#cliff)"/>
+<path d="M0 0H420L386 146 345 218 315 330 270 422 225 520 174 618 120 700 0 758Z"/>
+<path d="M1400 0H1020L1044 126 1085 210 1112 320 1150 406 1190 520 1235 620 1290 704 1400 754Z"/>
+<!-- fractured ledges, snow lips and wind-polished faces -->
+<g fill="none" stroke-linejoin="round">
+ <path d="M18 156l108 41 38-22 72 31 44-8 44 34M10 360l125-22 48 29 92-13 43 23M0 564l98-18 46 29 72-7 61 27M1380 176l-112 31-44-20-80 28-48-9-41 27M1400 382l-115-19-44 27-89-12-55 25M1400 570l-105-15-55 31-73-8-64 28" stroke="#b2c2c5" stroke-width="5" opacity=".28"/>
+ <path d="M42 244l71-28 44 9 42-23 57 8M18 460l87-24 55 12 62-19M1368 250l-76-25-44 13-53-22-53 8M1380 466l-87-22-60 14-63-18" stroke="#dbe4df" stroke-width="8" opacity=".22"/>
+ <path d="M45 696l78-46 54 14 39-23M1350 702l-73-50-49 14-40-24" stroke="#132a38" stroke-width="12" opacity=".3"/>
+</g>
+<!-- open pass lanes: broad readable stone-and-snow route, not baked collision -->
+<path d="M880 1095C864 1000 848 936 807 868S746 760 768 690 832 590 768 535 606 455 470 497 286 548 176 520" fill="none" stroke="#172c39" stroke-width="238" stroke-linecap="round" opacity=".55"/>
+<path d="M880 1095C864 1000 848 936 807 868S746 760 768 690 832 590 768 535 606 455 470 497 286 548 176 520" fill="none" stroke="url(#trail)" stroke-width="208" stroke-linecap="round"/>
+<path d="M880 1095C864 1000 848 936 807 868S746 760 768 690 832 590 768 535 606 455 470 497 286 548 176 520" fill="none" stroke="#b8c4c2" stroke-width="3" stroke-dasharray="4 20" stroke-linecap="round" opacity=".26"/>
+<path d="M768 535C890 500 1006 498 1120 520S1300 555 1405 526" fill="none" stroke="#172c39" stroke-width="220" stroke-linecap="round" opacity=".52"/>
+<path d="M768 535C890 500 1006 498 1120 520S1300 555 1405 526" fill="none" stroke="url(#trail)" stroke-width="190" stroke-linecap="round"/>
+<!-- exposed bedrock shelves in the pass -->
+<g fill="#62737a" stroke="#8c9a9b" stroke-width="5" opacity=".66">
+ <path d="M360 635l62-34 88 12 29 41-42 32-110-8z"/>
+ <path d="M1010 700l61-26 79 18 22 43-56 24-88-13z"/>
+ <path d="M107 842l59-33 51 22-7 39-81 18z"/>
+ <path d="M1090 330l56-25 60 26-19 38-75-6z"/>
+ <path d="M515 310l55-32 65 18-13 44-75 8z"/>
+</g>
+<g fill="none" stroke="#c1d0ce" stroke-width="4" opacity=".28">
+ <path d="M374 638l58-18 65 13M1028 704l59-17 60 13M125 847l45-23 32 15M1105 333l48-15 45 16"/>
+</g>
+<!-- wind-cut snow drifts along cliff feet -->
+<g fill="url(#snow)" opacity=".82">
+ <path d="M0 736C100 682 154 690 218 726S320 758 378 724 470 714 506 746L470 822H0Z"/>
+ <path d="M1400 748C1315 686 1265 695 1210 729S1107 759 1050 721 960 710 923 747L952 822H1400Z"/>
+ <path d="M280 145C355 108 414 128 456 165S530 192 565 160L550 208 410 230 300 205Z"/>
+ <path d="M930 150C1002 110 1060 130 1102 166S1174 186 1210 154L1190 204 1055 230 950 201Z"/>
+</g>
+<!-- recognizable wind shelters: rock alcoves, visually distinct but collision stays data-driven -->
+<g>
+ <path d="M825 474Q842 438 883 432Q927 431 951 468L948 540Q916 560 864 548L830 532Z" fill="#263b48" stroke="#92a3a6" stroke-width="9"/>
+ <path d="M847 493Q865 462 892 466Q920 470 929 504L924 535 856 533Z" fill="#142a38"/>
+ <path d="M835 477l25-25 24-9M931 468l19 20" fill="none" stroke="#d3dfdc" stroke-width="7" opacity=".62"/>
+ <path d="M574 640Q592 604 631 606Q667 607 686 643L684 705Q647 723 604 706L578 691Z" fill="#2b414e" stroke="#91a3a8" stroke-width="8"/>
+ <path d="M595 660Q612 630 638 634Q662 638 668 666L662 696 602 694Z" fill="#172d3a"/>
+ <path d="M581 642l24-24 23-7M669 638l18 20" fill="none" stroke="#d1dfdc" stroke-width="6" opacity=".58"/>
+</g>
+<!-- cairn trail markers and weathered alpine grass -->
+<g stroke-linecap="round">
+ <g transform="translate(310 690)"><path d="M0 0l-5-34M-15-34h22" stroke="#4a4034" stroke-width="5"/><path d="M-6-32q-23-10-33-2 14 13 33 9" fill="#a45f47"/><path d="M-7-31q17-12 31-5-9 14-31 12" fill="#d0a36b"/></g>
+ <g transform="translate(1190 820)"><path d="M0 0l4-40" stroke="#4a4034" stroke-width="5"/><path d="M3-37q-19-11-30-4 10 13 30 10" fill="#a45f47"/><path d="M3-37q20-11 31-3-11 13-31 10" fill="#d0a36b"/></g>
+ <g stroke="#899e84" stroke-width="3" opacity=".7"><path d="M155 920l-8-23m8 23 7-20m-7 20 18-17M1240 918l-10-25m10 25 7-22m-7 22 17-15M1170 275l-7-18m7 18 13-17"/></g>
+</g>
+<!-- Hand-authored stone grain and wind-swept snow marks; simple SVG geometry for reliable Godot import. -->
+<g fill="none" stroke-linecap="round">
+ <path d="M34 86l31-10m-18 25 22-7M114 407l27-9m-11 22 38-12M248 742l36-11m-13 25 31-9M1298 88l-32-9m15 24-25-8M1262 418l-35-10m17 26-37-11M1132 754l-34-10m14 24-29-8M518 278l20-7m-9 17 24-8M718 930l27-8m-13 20 20-6M970 288l-24-7m11 18-19-6" stroke="#d6e1df" stroke-width="3" opacity=".17"/>
+ <path d="M83 182l8-5 7 3m-12 7 8-2M1301 184l-8-5-7 3m12 7-8-2M201 1028l12-6 10 3m-8 9 7-2M1194 1040l-12-6-10 3m8 9-7-2" stroke="#8da3a7" stroke-width="5" opacity=".19"/>
+</g>
+<g fill="#dce7e2" opacity=".2">
+ <circle cx="182" cy="292" r="2.5"/><circle cx="334" cy="768" r="2"/><circle cx="512" cy="352" r="2.2"/>
+ <circle cx="1040" cy="784" r="2.4"/><circle cx="1220" cy="280" r="2.1"/><circle cx="908" cy="1010" r="2.3"/>
+</g>
+<!-- drifting powder and surface scratches -->
+<rect width="1400" height="1100" fill="url(#snowdust)" opacity=".56"/>
+<g fill="none" stroke="#e1e9e4" stroke-width="2" opacity=".18">
+ <path d="M50 770l55-12m-18 32 33-9M1320 760l-50-10m-12 32-35-8M95 300l38-9m-12 21 29-7M1310 300l-44-8m20 23-30-4"/>
+</g>
+<rect x="3" y="3" width="1394" height="1094" fill="none" stroke="#a7b8b8" stroke-opacity=".16" stroke-width="6"/>
+<g fill="none" stroke-linecap="round" opacity=".22">
+ <path d="M75 790l52-18 34 8m-28 19 34-8M1290 792l-50-18-36 9m21 18-35-8M202 85l36-12 24 8m-10 18 28-6M1196 95l-34-12-25 9m8 16-25-7" stroke="#e4eeea" stroke-width="4"/>
+ <path d="M520 820l31-9 28 5m-18 17 35-8M924 860l34-8 24 7M384 265l30-8 21 5M1020 270l-28-8-24 5" stroke="#1a2d37" stroke-width="7"/>
+ </g>
+ <g fill="#d9e5e0" opacity=".2"><circle cx="265" cy="576" r="3"/><circle cx="304" cy="594" r="2"/><circle cx="1084" cy="642" r="3"/><circle cx="1130" cy="610" r="2"/><circle cx="506" cy="265" r="2.5"/><circle cx="705" cy="920" r="3"/></g>
+</svg>

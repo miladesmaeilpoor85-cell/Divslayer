@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
+<defs><linearGradient id="stone" x2="0" y2="1"><stop stop-color="#c3ad88"/><stop offset="1" stop-color="#88775e"/></linearGradient>
+<pattern id="pave" width="128" height="96" patternUnits="userSpaceOnUse">
+ <rect x="4" y="5" width="54" height="38" rx="7" fill="#b7a07a" stroke="#6b604f" stroke-width="4"/>
+ <rect x="66" y="5" width="58" height="38" rx="6" fill="#988467" stroke="#5e5548" stroke-width="4"/>
+ <rect x="-28" y="51" width="52" height="39" rx="7" fill="#8e8068" stroke="#5e5548" stroke-width="4"/>
+ <rect x="32" y="51" width="65" height="39" rx="7" fill="#c2ad88" stroke="#71624d" stroke-width="4"/>
+ <rect x="105" y="51" width="52" height="39" rx="7" fill="#9f8a6c" stroke="#625a4b" stroke-width="4"/>
+ <path d="M12 17l18-5m50 8 17-7m-37 43 24-6m28 25 14-4" stroke="#e2d1ae" stroke-width="3" opacity=".4"/>
+</pattern></defs>
+<rect width="512" height="512" fill="url(#stone)"/><rect width="512" height="512" fill="url(#pave)"/>
+</svg>

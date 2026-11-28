@@ -47,7 +47,7 @@ var fountain: Node = null        # (v0.20) Zabol's fountain
 
 const WALL_LAYER := 1
 const NATURAL := ["tree", "pine", "bush", "rock", "stump", "willow", "deadtree", "reeds", "boulders"]   # (v0.35) may be mirrored
-const NPC_LOOKS := ["elder", "smith", "merchant", "alchemist", "brann", "keeper", "hesk", "qaren"]
+const NPC_LOOKS := ["elder", "smith", "merchant", "alchemist", "brann", "keeper", "hesk", "qaren", "alborz_scout"]
 ## villagers who can have news ("!" over their heads): the Elder (his quests, chapters 2 and 3), Sorush, Jamshid, Hom,
 ## (v0.23) Kaveh and his son Qaren
 const NEWS_NPCS := ["elder", "keeper", "brann", "hesk", "smith", "qaren", "rostam", "alborz_scout"]
@@ -275,7 +275,9 @@ func _object(o: Dictionary) -> void:
 		return
 	var spr := Sprite2D.new()
 	# identical pictures are stored once ("file" names the shared one)
-	spr.texture = load(Game.ART + "MapObjects/" + str(m.get("file", nm)) + ".png")
+	var sprite_file := str(m.get("file", nm))
+	var sprite_extension := str(m.get("extension", "png"))
+	spr.texture = load(Game.ART + "MapObjects/" + sprite_file + "." + sprite_extension)
 	spr.centered = false
 	spr.offset = Vector2(-float(m["w"]) * 0.5, -float(m["h"]) * (1.0 - float(m["pivot"][1])))
 	spr.scale = Vector2.ONE * Sheets.SCALE
@@ -425,6 +427,7 @@ func _npc(n: Dictionary) -> void:
 			hero_sheet = str(HERO_NPCS[id][0])
 	var ch: Dictionary = Sheets.character("heroes", hero_sheet) if hero_sheet != "" else Sheets.character("npcs", look)
 	var spr := AnimatedSprite2D.new()
+	spr.name = "CharacterSprite"
 	spr.sprite_frames = ch["frames"]
 	spr.animation = "idle_down"
 	spr.centered = false

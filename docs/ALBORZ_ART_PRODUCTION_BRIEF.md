@@ -39,3 +39,21 @@ A tester must be able to read the path, shelters, markers, enemies, and scout at
 ## Status
 
 The assets listed above have not been delivered by this brief. PR #36 remains a prototype using temporary reused assets until its art and physical-device acceptance tests are complete.
+
+## Draft visual implementation — 2026-11-25
+
+A dedicated high-altitude Alborz ground texture, a separate High Eyrie summit-arena ground texture, four Alborz prop assets, one High Eyrie rock-spire asset, and a redesigned four-frame Gale Warden SVG sprite with distinct spread, upstroke, downstroke, and folded-wing poses has been added on the review branch feat/alborz-warden-dedicated-art-20261125. The map data and runtime loaders now reference these assets, and the Chapter IV test checks the dedicated grounds, props, and animated boss sheet.
+
+This is a first integrated visual pass, not final approval. Godot import/CI, native-size visual inspection, mobile-scale readability, physical Android performance, and owner-side asset-rights review remain required. The Alborz Scout still uses the existing Hesk look; dedicated scout artwork/portrait and a bespoke gust-specific cue remain outstanding. The existing recorded wind loop (`assets/audio/amb/wind.ogg`, already listed in the audio credits) is now enabled automatically on Alborz and the High Eyrie and fades out when leaving those maps; no duplicate ambience file was added. All new vector art is registered as UNVERIFIED; no commercial-use clearance is claimed.
+
+## Dedicated Scout integration — 2026-11-26
+
+A separate three-direction `alborz_scout` character atlas is wired through the NPC art manifest and runtime loader. The Alborz map no longer requests Hesk for this character. The Chapter IV regression test checks the dedicated look registration and four-frame directional walk animation. The new asset remains `UNVERIFIED`; native Android-scale visual acceptance and owner-side rights review are still mandatory.
+
+## Gale Warden attack-state animation — 2026-11-26
+
+The four-frame Warden sprite now has a timed attack sequence: raised-wing anticipation, downstroke impact, folded-wing recovery, then return to the idle wing cycle. Each of the four signature attacks starts the sequence against its own telegraph timing. Regression checks cover the three pose transitions. This is a functional animation pass; visual review at actual mobile size remains required.
+
+## Dedicated biome art pass — 2026-11-26
+
+The Alborz Pass and High Eyrie ground compositions have received a detail pass, including snow/stone surface accents and a correction to the High Eyrie's opaque overlay that previously darkened the whole arena. The Zabol settlement and Whispering Forest now have dedicated ground reference illustrations, dedicated repeating terrain textures for their base/path/cover layers, and additional Persian-settlement / forest-floor props. Ashen Peaks now has a dedicated volcanic basalt-and-ash ground composition. The original map dimensions, exits, spawn points and collision geometry are unchanged; all new art remains internal QA material pending Godot/mobile-scale review and owner-side rights confirmation.

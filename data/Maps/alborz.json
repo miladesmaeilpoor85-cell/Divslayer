@@ -1,8 +1,8 @@
 {
-  "groundFile": "frostvale_ground.jpg",
+  "groundFile": "alborz_ground.svg",
   "groundScale": 2,
   "data": {
-    "name": "Alborz Pass — prototype ground",
+    "name": "Alborz Pass — dedicated high-altitude ground",
     "w": 1400,
     "h": 1100,
     "bg": "#253341",
@@ -130,7 +130,7 @@
     "npcs": [
       {
         "id": "alborz_scout",
-        "look": "hesk",
+        "look": "alborz_scout",
         "x": 226,
         "y": 520,
         "w": 26,
@@ -165,27 +165,27 @@
   },
   "objects": [
     {
-      "sprite": "boulders_86",
+      "sprite": "alborz_shelter_wall",
       "x": 868,
       "y": 560,
       "sort": 560,
-      "kind": "boulders",
+      "kind": "rock",
       "isWall": true,
       "animated": false,
       "smoke": null
     },
     {
-      "sprite": "spire_69",
+      "sprite": "alborz_cairn",
       "x": 648,
       "y": 706,
       "sort": 706,
-      "kind": "spire",
+      "kind": "stone",
       "isWall": true,
       "animated": false,
       "smoke": null
     },
     {
-      "sprite": "rock_74",
+      "sprite": "alborz_scree_boulder",
       "x": 440,
       "y": 432,
       "sort": 432,
@@ -195,17 +195,17 @@
       "smoke": null
     },
     {
-      "sprite": "deadtree_75",
+      "sprite": "alborz_streamer_pole",
       "x": 118,
       "y": 860,
       "sort": 860,
-      "kind": "deadtree",
+      "kind": "banner",
       "isWall": false,
       "animated": false,
       "smoke": null
     },
     {
-      "sprite": "rock_72",
+      "sprite": "alborz_scree_boulder",
       "x": 1280,
       "y": 220,
       "sort": 220,

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="816" height="234" viewBox="0 0 816 234">
+<defs>
+ <linearGradient id="gw-ice-metal" x1="0" y1="0" x2=".85" y2="1">
+  <stop stop-color="#effbff"/><stop offset=".18" stop-color="#a9d9e8"/><stop offset=".46" stop-color="#577f98"/><stop offset=".74" stop-color="#293e56"/><stop offset="1" stop-color="#111e31"/>
+ </linearGradient>
+ <linearGradient id="gw-deep-feather" x1="0" y1="0" x2="1" y2="1">
+  <stop stop-color="#d9f5fb"/><stop offset=".28" stop-color="#82b8d0"/><stop offset=".64" stop-color="#365b78"/><stop offset="1" stop-color="#17283f"/>
+ </linearGradient>
+ <linearGradient id="gw-feather-light" x1="0" y1="0" x2=".9" y2="1">
+  <stop stop-color="#f1ffff"/><stop offset=".36" stop-color="#a3d6e8"/><stop offset="1" stop-color="#426e8c"/>
+ </linearGradient>
+ <linearGradient id="gw-cloak" x1="0" y1="0" x2="1" y2="1">
+  <stop stop-color="#526f87"/><stop offset=".4" stop-color="#293d58"/><stop offset="1" stop-color="#111a2b"/>
+ </linearGradient>
+ <linearGradient id="gw-gold" x1="0" y1="0" x2="1" y2="1">
+  <stop stop-color="#fff0b2"/><stop offset=".25" stop-color="#d7ad62"/><stop offset=".58" stop-color="#8f6737"/><stop offset="1" stop-color="#f4d38a"/>
+ </linearGradient>
+ <radialGradient id="gw-core">
+  <stop stop-color="#ffffff"/><stop offset=".2" stop-color="#c8f7ff"/><stop offset=".48" stop-color="#65ddfa"/><stop offset="1" stop-color="#24799b" stop-opacity=".18"/>
+ </radialGradient>
+ <radialGradient id="gw-eye">
+  <stop stop-color="#fff"/><stop offset=".35" stop-color="#c8ffff"/><stop offset="1" stop-color="#44c5ef"/>
+ </radialGradient>
+ <filter id="gw-glow" x="-80%" y="-80%" width="260%" height="260%">
+  <feGaussianBlur stdDeviation="2.2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+ </filter>
+ <pattern id="gw-engrave" width="12" height="12" patternUnits="userSpaceOnUse">
+  <path d="M1 10Q5 2 11 4M-2 5Q3 -1 8 1" fill="none" stroke="#e9d19a" stroke-width=".7" opacity=".42"/>
+  <circle cx="6" cy="7" r=".8" fill="#d8f4f7" opacity=".42"/>
+ </pattern>
+ <g id="gw-wing-open">
+  <path d="M79 78C66 59 53 44 37 38Q27 29 9 29C17 42 24 50 22 58Q18 66 6 68Q22 75 19 85Q17 96 8 103Q26 105 29 116Q30 128 18 131C43 126 60 137 81 151C94 129 93 100 79 78Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
+  <path d="M74 80C52 58 34 44 10 30C24 55 40 75 69 99" fill="none" stroke="#e5f9fb" stroke-width="2" opacity=".72"/>
+  <path d="M67 92C43 72 25 71 7 82C29 93 44 103 73 111" fill="url(#gw-feather-light)" stroke="#6b9bb5" stroke-width="1.2"/>
+  <path d="M72 107C49 100 31 109 14 123C41 124 58 132 81 145" fill="url(#gw-deep-feather)" stroke="#94c1d3" stroke-width="1.2"/>
+  <path d="M61 72C43 50 31 41 17 36M56 90C36 77 25 76 13 81M62 112C43 111 30 117 19 124" fill="none" stroke="#d8f3f7" stroke-width="1.4" opacity=".62"/>
+  <path d="M72 80Q54 64 31 52M72 98Q48 88 26 88M77 120Q53 115 37 124" fill="none" stroke="#284761" stroke-width="1" opacity=".65"/>
+  <path d="M31 53q-9-12-17-15q7 19 18 30M27 86q-11-8-19-5q9 14 22 17M34 119q-10 1-17 7q16 5 27 2" fill="none" stroke="#effdff" stroke-width="1.2" opacity=".55"/>
+  <path d="M16 40Q29 50 44 67Q53 78 64 88M13 79Q29 83 46 96Q57 105 73 115M18 122Q36 119 51 129Q64 137 76 145" fill="none" stroke="#dff8ff" stroke-width="1.7" stroke-linecap="round" opacity=".78"/>
+  <path d="M7 68Q16 65 22 58M9 102Q18 99 28 103M18 131Q28 126 39 128" fill="none" stroke="#f4ffff" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+ </g>
+ <g id="gw-wing-raised">
+  <path d="M80 81C65 61 54 35 24 5Q29 23 19 37Q12 46 5 60Q23 63 20 73Q18 84 9 91Q29 92 25 106Q23 115 13 122C44 115 63 132 82 145C93 121 92 99 80 81Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
+  <path d="M75 79C59 52 44 28 25 7C32 36 45 61 70 93" fill="none" stroke="#e9fbff" stroke-width="2" opacity=".7"/>
+  <path d="M70 94C47 69 27 57 7 61C30 81 42 93 76 112" fill="url(#gw-feather-light)" stroke="#6b9bb5" stroke-width="1.2"/>
+  <path d="M72 111C50 94 29 99 13 105C41 116 59 130 82 140" fill="url(#gw-deep-feather)" stroke="#94c1d3" stroke-width="1.2"/>
+  <path d="M50 37L28 9M46 68L13 62M54 100L19 105" fill="none" stroke="#e5f8fb" stroke-width="1.4" opacity=".6"/>
+  <path d="M65 88Q45 65 29 49M70 111Q45 99 27 103" fill="none" stroke="#284761" stroke-width="1" opacity=".68"/>
+  <path d="M25 13Q34 31 44 43Q58 61 71 83M10 61Q26 65 43 81Q58 96 75 111M16 112Q34 109 51 126Q65 137 79 144" fill="none" stroke="#eafcff" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>
+ </g>
+ <g id="gw-wing-down">
+  <path d="M78 78C56 76 32 84 7 111Q26 109 29 120Q33 132 27 149C49 137 68 150 85 166C97 137 94 105 78 78Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
+  <path d="M74 85C52 92 31 103 9 111C37 112 54 121 82 143" fill="none" stroke="#e9fbff" stroke-width="2" opacity=".68"/>
+  <path d="M73 101C50 106 34 125 27 146C51 135 67 143 85 158" fill="url(#gw-feather-light)" stroke="#6b9bb5" stroke-width="1.2"/>
+  <path d="M67 116C49 125 43 143 43 157C61 150 74 158 86 165" fill="url(#gw-deep-feather)" stroke="#94c1d3" stroke-width="1.2"/>
+  <path d="M53 99Q33 108 15 119M60 122Q48 134 36 150M74 140Q64 151 58 160" fill="none" stroke="#e5f8fb" stroke-width="1.4" opacity=".58"/>
+  <path d="M11 111Q30 105 47 110Q65 117 82 145M29 145Q45 132 62 141Q73 147 84 160" fill="none" stroke="#e8fbff" stroke-width="1.8" stroke-linecap="round" opacity=".78"/>
+ </g>
+ <g id="gw-wing-fold">
+  <path d="M79 79C60 72 40 82 22 104Q42 99 47 111Q54 122 58 143C76 134 85 122 91 106Z" fill="url(#gw-deep-feather)" stroke="#b7dce8" stroke-width="2.4"/>
+  <path d="M77 84Q56 92 25 105Q53 105 78 130" fill="none" stroke="#e8fbff" stroke-width="1.8" opacity=".7"/>
+  <path d="M73 102Q52 111 56 140M80 107Q67 117 68 139" fill="none" stroke="#6d9fba" stroke-width="2" opacity=".8"/>
+  <path d="M25 104Q42 98 60 109Q72 119 84 133M57 141Q65 132 82 128" fill="none" stroke="#e6f9ff" stroke-width="1.6" stroke-linecap="round" opacity=".76"/>
+ </g>
+ <g id="gw-body">
+  <ellipse cx="102" cy="211" rx="59" ry="9" fill="#071522" opacity=".38"/>
+  <path d="M81 157Q68 176 61 207L80 218L99 190L117 218L142 205Q135 178 122 154Z" fill="url(#gw-cloak)" stroke="#8eafc0" stroke-width="2"/>
+  <path d="M81 168L69 209L81 202L98 180M119 166L136 207L122 202L108 181" fill="none" stroke="#b6d5df" stroke-width="1.5" opacity=".6"/>
+  <path d="M86 144Q74 156 78 183L93 202L104 188L115 202L131 180Q135 157 119 143Z" fill="url(#gw-ice-metal)" stroke="#d2ebf0" stroke-width="2.4"/>
+  <path d="M83 151L101 162L120 150L126 177L104 193L82 177Z" fill="#304c65" stroke="url(#gw-gold)" stroke-width="2"/>
+  <path d="M88 155Q103 165 118 155L114 174L103 185L92 174Z" fill="url(#gw-engrave)" opacity=".95"/>
+  <path d="M101 159L105 167L114 170L105 175L102 184L98 175L90 171L98 167Z" fill="url(#gw-gold)" stroke="#fff0c4" stroke-width="1"/>
+  <path d="M102 163L111 171L102 181L94 171Z" fill="url(#gw-core)" filter="url(#gw-glow)"/>
+  <path d="M83 146Q71 137 63 149L70 167L90 164Z" fill="url(#gw-ice-metal)" stroke="url(#gw-gold)" stroke-width="2"/>
+  <path d="M121 146Q134 136 143 150L136 169L116 164Z" fill="url(#gw-ice-metal)" stroke="url(#gw-gold)" stroke-width="2"/>
+  <path d="M67 154L76 158L82 170M139 154L130 158L124 170" fill="none" stroke="#e6faff" stroke-width="1.6"/>
+  <path d="M81 177L91 185L86 199M123 177L114 185L119 199" fill="none" stroke="#d4eaf1" stroke-width="1.3" opacity=".75"/>
+  <path d="M92 193L84 218L96 221L103 207L110 221L123 217L115 193Z" fill="#1c3048" stroke="#83aebf" stroke-width="1.8"/>
+  <path d="M86 208L77 224L93 225L100 210M119 208L127 224L111 225L104 210" fill="#17263a" stroke="#d0e6ec" stroke-width="1.7"/>
+  <path d="M76 222L68 229L95 230L98 224M128 222L136 229L110 230L107 224" fill="url(#gw-ice-metal)" stroke="url(#gw-gold)" stroke-width="1.2"/>
+  <path d="M91 132Q90 119 100 114L108 116Q116 122 114 135L120 146L103 158L84 145Z" fill="url(#gw-ice-metal)" stroke="#cfe8f0" stroke-width="2"/>
+  <path d="M91 129L102 120L113 129L109 145L102 151L93 144Z" fill="#21364d"/>
+  <path d="M91 130L83 136L96 141L101 137L98 130Z" fill="#d4ebef" stroke="#8eaebf" stroke-width="1.2"/>
+  <path d="M112 130L121 137L108 141L103 137L106 130Z" fill="#d4ebef" stroke="#8eaebf" stroke-width="1.2"/>
+  <path d="M99 138L105 138L104 147L100 147Z" fill="#162538"/>
+  <path d="M101 122Q88 111 92 98L101 107L106 91L111 107L121 99Q122 115 108 123Z" fill="url(#gw-feather-light)" stroke="#f1ffff" stroke-width="1.7"/>
+  <path d="M100 117L96 105M106 114L108 99M111 116L118 105" stroke="#47728d" stroke-width="1.2"/>
+  <path d="M95 130L89 134L96 136M110 130L116 134L109 136" fill="none" stroke="#a9d9e8" stroke-width="1.4"/>
+  <circle cx="94" cy="133" r="2.6" fill="url(#gw-eye)" filter="url(#gw-glow)"/><circle cx="111" cy="133" r="2.6" fill="url(#gw-eye)" filter="url(#gw-glow)"/>
+  <path d="M99 140L103 149L107 140L103 144Z" fill="#b9e8f3" stroke="#e7ffff" stroke-width="1"/>
+  <path d="M75 155Q66 157 63 170L72 182L88 169M130 154Q140 157 143 170L134 183L118 169" fill="none" stroke="#d9f3f7" stroke-width="3" stroke-linecap="round"/>
+  <path d="M70 178L65 192L76 187L84 176M136 178L141 192L130 187L122 176" fill="none" stroke="#8ec3d7" stroke-width="2.2"/>
+  <path d="M78 150Q68 144 59 151Q67 151 68 161Q61 155 52 162Q63 160 69 171Q76 162 87 163M126 149Q137 143 147 151Q138 151 137 161Q145 155 154 162Q143 160 137 171Q130 162 119 163" fill="url(#gw-feather-light)" stroke="#8bbdd0" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M57 155Q69 158 76 168M148 155Q136 158 129 168" fill="none" stroke="#f2ffff" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>
+  <path d="M79 147Q102 159 125 147" fill="none" stroke="url(#gw-gold)" stroke-width="1.6"/>
+  <path d="M80 184Q70 197 62 206Q77 203 83 194M124 184Q134 198 144 204Q132 204 120 194" fill="none" stroke="#9ed1e0" stroke-width="2.1" stroke-linecap="round" opacity=".9"/>
+  <!-- Small, irregular ice plates and frost scars break up the smooth vector armour at native scale. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M87 162q6 4 11 2m8 1q8 3 13-2M89 170q5-3 9 1m7 1q7-4 12-1M94 181q4 2 8-1m5 0q5 3 9-1" stroke="#e7fbff" stroke-width="1.35" opacity=".76"/>
+   <path d="M83 156q4 3 8 2m22 1q5 1 9-3M78 173q5 3 8 1m33 2q5 2 9-2" stroke="#416b85" stroke-width="1.1" opacity=".82"/>
+   <path d="M94 166l-3 5 5 3-2 4M114 166l3 5-4 3 2 4M101 187l-3 6 5 4 4-4-2-6" stroke="#9ed5e5" stroke-width="1.2" opacity=".8"/>
+   <path d="M71 157q-4 4-2 8m66-8q4 4 2 8M76 190q-5 7-7 12m57-11q7 7 10 12" stroke="#e2f7fb" stroke-width="1.4" opacity=".62"/>
+  </g>
+  <!-- Torn wool and layered shoulder plumage give the sentinel a less mechanical silhouette. -->
+  <g stroke-linejoin="round">
+   <path d="M73 146q-8-6-13-1q7 1 5 7q7-3 10 4q5-5 9-1l-4-8z" fill="#8eb8c8" stroke="#d8f4f8" stroke-width="1.1"/>
+   <path d="M131 145q9-6 14 0q-7 1-4 7q-7-3-10 4q-5-5-9-1l4-8z" fill="#719db3" stroke="#ccebf2" stroke-width="1.1"/>
+   <path d="M65 165l-7 5 8 2 4 7 4-8M140 165l7 5-8 2-4 7-4-8" fill="#36536d" stroke="#9bc9d8" stroke-width="1.2"/>
+   <path d="M84 215l-5 8 7-2 3 5 4-9M120 215l5 8-7-2-3 5-4-9" fill="#223b52" stroke="#c2e0e8" stroke-width="1.2"/>
+  </g>
+  <!-- Individually split frost talons make the feet and impact pose legible at mobile scale. -->
+  <g fill="#c9e8ed" stroke="#4d7186" stroke-width="1" stroke-linejoin="round">
+   <path d="M78 224l-7 5 10-1 2-4zM86 225l-3 6 8-3 1-3zM125 224l7 5-10-1-2-4zM117 225l3 6-8-3-1-3z"/>
+  </g>
+  <g fill="#8eddf0" opacity=".72">
+   <path d="M82 157l3-6 2 7zM126 156l4-6 1 7zM96 190l6 3-5 4zM111 190l-6 3 5 4z"/>
+  </g>
+ </g>
+</defs>
+<g transform="translate(0,0)">
+ <use href="#gw-wing-open"/><use href="#gw-wing-open" transform="translate(204,0) scale(-1,1)"/>
+ <use href="#gw-body"/>
+ <path d="M62 143Q44 150 36 170M142 143Q160 150 168 170" fill="none" stroke="#92d5eb" stroke-width="2.2" opacity=".65"/>
+</g>
+<g transform="translate(204,0)">
+ <use href="#gw-wing-raised"/><use href="#gw-wing-raised" transform="translate(204,0) scale(-1,1)"/>
+ <use href="#gw-body" transform="translate(0,-8) rotate(-11 102 158) scale(0.94,1.04)"/>
+ <path d="M67 63Q47 33 40 18M137 63Q157 33 164 18" fill="none" stroke="#95e8fa" stroke-width="2" opacity=".55"/>
+</g>
+<g transform="translate(408,0)">
+ <use href="#gw-wing-down"/><use href="#gw-wing-down" transform="translate(204,0) scale(-1,1)"/>
+ <use href="#gw-body" transform="translate(0,7) rotate(16 102 158) scale(1.06,1.04)"/>
+ <path d="M52 132Q40 145 36 163M152 132Q164 145 168 163" fill="none" stroke="#7ed8f0" stroke-width="2.4" opacity=".62"/>
+</g>
+<g transform="translate(612,0)">
+ <use href="#gw-wing-fold"/><use href="#gw-wing-fold" transform="translate(204,0) scale(-1,1)"/>
+ <use href="#gw-body" transform="translate(-3,4) rotate(-13 102 158) scale(0.94,0.98)"/>
+ <path d="M54 97Q34 81 27 91Q38 103 52 106M150 97Q170 81 177 91Q166 103 152 106" fill="none" stroke="#83e0f5" stroke-width="2.5" opacity=".7"/>
+</g>
+</svg>

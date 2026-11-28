@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
+<defs><linearGradient id="moss" x2=".2" y2="1"><stop stop-color="#344936"/><stop offset=".5" stop-color="#293e32"/><stop offset="1" stop-color="#1d332d"/></linearGradient>
+<pattern id="mottle" width="80" height="80" patternUnits="userSpaceOnUse">
+ <path d="M10 22q19-23 34-2-7 22-34 2M51 63q4-22 24-14-2 21-24 14" fill="#60734c" opacity=".42"/>
+ <circle cx="22" cy="60" r="3" fill="#a0a26b" opacity=".26"/><circle cx="68" cy="18" r="2" fill="#a9b78a" opacity=".3"/>
+ <path d="M36 47l12-4m-9 12 10-3" stroke="#172a23" stroke-width="3" opacity=".4"/>
+</pattern></defs>
+<rect width="512" height="512" fill="url(#moss)"/><rect width="512" height="512" fill="url(#mottle)"/>
+</svg>

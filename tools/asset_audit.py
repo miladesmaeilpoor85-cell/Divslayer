@@ -14,15 +14,26 @@ import json
 import re
 import struct
 import sys
+import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
 AUDIO_EXTENSIONS = {".ogg", ".wav", ".mp3", ".flac"}
 AUDIO_ROOT = Path("assets/audio")
 REGISTER = Path("docs/ASSET_RIGHTS_REGISTER.csv")
 ATLAS_PAYLOAD_ROOT = Path("assets/art/Heroes/attack_atlas_data")
+BASE64_ARTWORK_GROUPS = {
+    Path("assets/art/Enemies/alborzwarden"): {
+        "parts": ("part_00.b64", "part_01.b64", "part_02.b64", "part_03.b64", "part_04.b64", "part_05a.b64", "part_05b.b64"),
+        "dimensions": (544, 156),
+    },
+    Path("assets/art/Portraits/alborz_scout"): {
+        "parts": ("part_00.b64", "part_01.b64", "part_02.b64", "part_03.b64"),
+        "dimensions": (256, 256),
+    },
+}
 LARGE_FILE_BYTES = 8 * 1024 * 1024
 LARGE_IMAGE_PIXELS = 64_000_000
 
@@ -84,31 +95,70 @@ def _jpeg_dimensions(path: Path) -> tuple[int, int]:
     raise ValueError("JPEG dimensions could not be found")
 
 
+def _webp_dimensions_from_bytes(payload: bytes) -> tuple[int, int]:
+    if len(payload) < 30 or payload[:4] != b"RIFF" or payload[8:12] != b"WEBP":
+        raise ValueError("invalid or truncated WebP container")
+    declared_size = int.from_bytes(payload[4:8], "little") + 8
+    if declared_size != len(payload):
+        raise ValueError("WebP RIFF payload size does not match the decoded bytes")
+    chunk = payload[12:16]
+    size = int.from_bytes(payload[16:20], "little")
+    data = payload[20:30]
+    if chunk == b"VP8X" and size >= 10 and len(data) >= 10:
+        width = 1 + int.from_bytes(data[4:7], "little")
+        height = 1 + int.from_bytes(data[7:10], "little")
+    elif chunk == b"VP8 " and size >= 10 and len(data) >= 10 and data[3:6] == b"\x9d\x01\x2a":
+        width = int.from_bytes(data[6:8], "little") & 0x3FFF
+        height = int.from_bytes(data[8:10], "little") & 0x3FFF
+    elif chunk == b"VP8L" and size >= 5 and len(data) >= 5 and data[0] == 0x2F:
+        b1, b2, b3, b4 = data[1:5]
+        width = 1 + b1 + ((b2 & 0x3F) << 8)
+        height = 1 + ((b2 >> 6) & 0x03) + (b3 << 2) + ((b4 & 0x0F) << 10)
+    else:
+        raise ValueError("unsupported or truncated WebP image header")
+    if not width or not height:
+        raise ValueError("WebP has zero dimensions")
+    return width, height
+
+
 def _webp_dimensions(path: Path) -> tuple[int, int]:
-    with path.open("rb") as stream:
-        head = stream.read(30)
-        if len(head) < 30 or head[:4] != b"RIFF" or head[8:12] != b"WEBP":
-            raise ValueError("invalid or truncated WebP container")
-        declared_size = int.from_bytes(head[4:8], "little") + 8
-        stream.seek(0, 2)
-        if declared_size > stream.tell():
-            raise ValueError("truncated WebP RIFF payload")
-        chunk, size, data = head[12:16], int.from_bytes(head[16:20], "little"), head[20:]
-        if chunk == b"VP8X" and size >= 10 and len(data) >= 10:
-            width = 1 + int.from_bytes(data[4:7], "little")
-            height = 1 + int.from_bytes(data[7:10], "little")
-        elif chunk == b"VP8 " and size >= 10 and len(data) >= 10 and data[3:6] == b"\x9d\x01\x2a":
-            width = int.from_bytes(data[6:8], "little") & 0x3FFF
-            height = int.from_bytes(data[8:10], "little") & 0x3FFF
-        elif chunk == b"VP8L" and size >= 5 and len(data) >= 5 and data[0] == 0x2F:
-            b1, b2, b3, b4 = data[1:5]
-            width = 1 + b1 + ((b2 & 0x3F) << 8)
-            height = 1 + ((b2 >> 6) & 0x03) + (b3 << 2) + ((b4 & 0x0F) << 10)
-        else:
-            raise ValueError("unsupported or truncated WebP image header")
-        if not width or not height:
-            raise ValueError("WebP has zero dimensions")
-        return width, height
+    return _webp_dimensions_from_bytes(path.read_bytes())
+
+
+def _svg_dimensions(path: Path) -> tuple[int, int]:
+    """Read a passive SVG canvas size; reject active embedded content."""
+    raw = path.read_text(encoding="utf-8")
+    if "<!DOCTYPE" in raw.upper() or "<!ENTITY" in raw.upper():
+        raise ValueError("SVG document types and entities are not allowed")
+    root = ET.fromstring(raw)
+    if root.tag.split("}")[-1] != "svg":
+        raise ValueError("document root is not an SVG element")
+    for node in root.iter():
+        if node.tag.split("}")[-1] in {"script", "foreignObject"}:
+            raise ValueError("active SVG content is not allowed")
+
+    def dimension(value: str | None) -> int | None:
+        if value is None:
+            return None
+        match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)(?:px)?\s*", value)
+        return round(float(match.group(1))) if match else None
+
+    width = dimension(root.get("width"))
+    height = dimension(root.get("height"))
+    if width is None or height is None:
+        view_box = re.split(r"[\s,]+", (root.get("viewBox") or "").strip())
+        if len(view_box) != 4:
+            raise ValueError("SVG needs numeric width/height or a four-value viewBox")
+        try:
+            view_width = round(float(view_box[2]))
+            view_height = round(float(view_box[3]))
+        except ValueError as exc:
+            raise ValueError("SVG viewBox dimensions are invalid") from exc
+        width = width or view_width
+        height = height or view_height
+    if width < 1 or height < 1:
+        raise ValueError("SVG has zero dimensions")
+    return width, height
 
 
 def image_dimensions(path: Path) -> tuple[int, int]:
@@ -119,6 +169,8 @@ def image_dimensions(path: Path) -> tuple[int, int]:
         return _jpeg_dimensions(path)
     if suffix == ".webp":
         return _webp_dimensions(path)
+    if suffix == ".svg":
+        return _svg_dimensions(path)
     raise ValueError(f"unsupported image extension: {suffix}")
 
 
@@ -189,6 +241,47 @@ def audit_atlas_payloads(root: Path) -> tuple[list[Path], int, list[str]]:
     return payload_files, checked, errors
 
 
+
+def audit_base64_artwork_payloads(root: Path) -> tuple[list[Path], int, list[str]]:
+    """Validate ordered Base64 WebP image parts used by dedicated game artwork."""
+    payload_files: list[Path] = []
+    checked = 0
+    errors: list[str] = []
+    for relative_dir, spec in BASE64_ARTWORK_GROUPS.items():
+        directory = root / relative_dir
+        if not directory.is_dir():
+            continue
+        actual = {path.name: path for path in directory.glob("*.b64") if path.is_file()}
+        payload_files.extend(actual.values())
+        expected_parts = tuple(spec["parts"])
+        if set(actual) != set(expected_parts):
+            missing = sorted(set(expected_parts) - set(actual))
+            unexpected = sorted(set(actual) - set(expected_parts))
+            errors.append(
+                f"Base64 artwork parts are missing or unexpected in {relative_dir.as_posix()}: "
+                f"missing={missing}, unexpected={unexpected}"
+            )
+            continue
+        try:
+            encoded = "".join(
+                (directory / name).read_text(encoding="ascii").strip()
+                for name in expected_parts
+            )
+            decoded = base64.b64decode(encoded, validate=True)
+            dimensions = _webp_dimensions_from_bytes(decoded)
+        except (OSError, UnicodeError, ValueError) as exc:
+            errors.append(f"invalid Base64 WebP artwork payload in {relative_dir.as_posix()}: {exc}")
+            continue
+        expected_dimensions = tuple(spec["dimensions"])
+        if dimensions != expected_dimensions:
+            errors.append(
+                f"Base64 WebP artwork has unexpected dimensions {dimensions[0]}x{dimensions[1]} "
+                f"in {relative_dir.as_posix()}; expected {expected_dimensions[0]}x{expected_dimensions[1]}"
+            )
+            continue
+        checked += 1
+    return payload_files, checked, errors
+
 def audit_repository(root: Path) -> dict[str, Any]:
     root = root.resolve()
     errors: list[str] = []
@@ -201,7 +294,9 @@ def audit_repository(root: Path) -> dict[str, Any]:
         and not excluded_dirs.intersection(p.relative_to(root).parts)
     )
     atlas_payload_files, atlas_payloads_checked, atlas_payload_errors = audit_atlas_payloads(root)
+    base64_art_files, base64_art_assets_checked, base64_art_errors = audit_base64_artwork_payloads(root)
     errors.extend(atlas_payload_errors)
+    errors.extend(base64_art_errors)
 
     registry_path = root / REGISTER
     rows: dict[str, str] = {}
@@ -241,7 +336,9 @@ def audit_repository(root: Path) -> dict[str, Any]:
             errors.append(f"could not read rights register: {exc}")
 
     image_paths = {p.relative_to(root).as_posix() for p in images}
-    payload_paths = {p.relative_to(root).as_posix() for p in atlas_payload_files}
+    atlas_payload_paths = {p.relative_to(root).as_posix() for p in atlas_payload_files}
+    base64_art_paths = {p.relative_to(root).as_posix() for p in base64_art_files}
+    payload_paths = atlas_payload_paths | base64_art_paths
     actual = image_paths | payload_paths
     for rel in sorted(actual - set(rows)):
         label = "atlas payload part" if rel in payload_paths else "artwork file"
@@ -249,6 +346,8 @@ def audit_repository(root: Path) -> dict[str, Any]:
     for rel in sorted(set(rows) - actual):
         if rel.startswith(ATLAS_PAYLOAD_ROOT.as_posix() + "/"):
             errors.append(f"registered atlas payload part is missing: {rel}")
+        elif any(rel.startswith(directory.as_posix() + "/") for directory in BASE64_ARTWORK_GROUPS):
+            errors.append(f"registered Base64 artwork part is missing: {rel}")
         else:
             errors.append(f"registered artwork is not a supported image file: {rel}")
 
@@ -294,7 +393,10 @@ def audit_repository(root: Path) -> dict[str, Any]:
         "registered_artwork_files": len(set(rows) & image_paths),
         "atlas_payload_parts": len(atlas_payload_files),
         "atlas_payloads_checked": atlas_payloads_checked,
-        "registered_atlas_payload_parts": len(set(rows) & payload_paths),
+        "base64_art_parts": len(base64_art_files),
+        "base64_art_assets_checked": base64_art_assets_checked,
+        "registered_atlas_payload_parts": len(set(rows) & atlas_payload_paths),
+        "registered_base64_art_parts": len(set(rows) & base64_art_paths),
         "artwork_rights_status_counts": dict(sorted(rights_counts.items())),
         "audio_files_checked": len(audio_files),
         "image_dimensions": dimensions,

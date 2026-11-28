@@ -67,6 +67,7 @@ func _menu_backdrop() -> void:
 	menu_bg.atmos.calm = true
 	menu_bg.atmos.set_weather("")
 	Music.set_boss(false)
+	Music.ambience("wind", false)
 	Music.play_region("title")
 	var cam := Camera2D.new()
 	cam.position = Vector2(300, 330)
@@ -160,6 +161,7 @@ func goto_map(key: String, feet: Vector2) -> void:
 	hud.refresh()
 	Music.set_boss(false)
 	Music.play_region(key)
+	Music.ambience("wind", key == "alborz" or key == "alborz_eyrie")
 	switching = false
 	if not hud.shop.bought.is_connected(player.refresh_look):
 		hud.shop.bought.connect(player.refresh_look)
@@ -440,7 +442,7 @@ func _on_interact(npc: Node) -> void:
 		"qaren":
 			_talk_qaren(who)
 		"alborz_scout":
-			hud.dialogue.open(who, Game.Ch4.scout_lines(world), "hesk")
+			hud.dialogue.open(who, Game.Ch4.scout_lines(world), "alborz_scout")
 			hud.dialogue.finished.connect(_after_alborz_scout.bind(world), CONNECT_ONE_SHOT)
 		"rostam":
 			_talk_rostam(who)

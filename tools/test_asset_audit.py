@@ -15,6 +15,10 @@ def png_bytes(width=2, height=3):
     return signature + ihdr + iend
 
 
+def svg_bytes(width=8, height=9):
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"></svg>').encode()
+
+
 def jpeg_bytes(width=4, height=5):
     frame = bytes([8]) + height.to_bytes(2, "big") + width.to_bytes(2, "big") + bytes([1, 1, 0x11, 0])
     return b"\xff\xd8\xff\xc0" + (11).to_bytes(2, "big") + frame + b"\xff\xd9"
@@ -51,11 +55,25 @@ class AssetAuditTests(unittest.TestCase):
                 "x.png": (png_bytes(2, 3), (2, 3)),
                 "x.jpg": (jpeg_bytes(4, 5), (4, 5)),
                 "x.webp": (webp_vp8x_bytes(6, 7), (6, 7)),
+                "x.svg": (svg_bytes(8, 9), (8, 9)),
             }
             for name, (payload, expected) in fixtures.items():
                 path = root / name
                 path.write_bytes(payload)
                 self.assertEqual(image_dimensions(path), expected)
+
+    def test_svg_viewbox_can_supply_missing_dimensions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "viewbox.svg"
+            path.write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 13"></svg>', encoding="utf-8")
+            self.assertEqual(image_dimensions(path), (11, 13))
+
+    def test_svg_rejects_active_content(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "unsafe.svg"
+            path.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="9"><script>alert(1)</script></svg>', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "active SVG content"):
+                image_dimensions(path)
 
     def test_clean_assets_pass_and_unverified_is_only_a_warning(self):
         root = self.make_repo()
@@ -136,6 +154,53 @@ class AssetAuditTests(unittest.TestCase):
 
         report = audit_repository(root)
         self.assertTrue(any("missing or out of order" in error for error in report["errors"]))
+
+    def test_base64_warden_and_scout_webp_parts_reassemble_and_are_registered(self):
+        root = self.make_repo()
+        groups = [
+            (
+                "assets/art/Enemies/alborzwarden",
+                ("part_00.b64", "part_01.b64", "part_02.b64", "part_03.b64", "part_04.b64", "part_05a.b64", "part_05b.b64"),
+                webp_vp8x_bytes(544, 156),
+            ),
+            (
+                "assets/art/Portraits/alborz_scout",
+                ("part_00.b64", "part_01.b64", "part_02.b64", "part_03.b64"),
+                webp_vp8x_bytes(256, 256),
+            ),
+        ]
+        rows = []
+        for directory, names, payload in groups:
+            folder = root / directory
+            folder.mkdir(parents=True)
+            encoded = base64.b64encode(payload).decode("ascii")
+            chunk_size = max(4, (len(encoded) // len(names)) // 4 * 4)
+            for index, name in enumerate(names):
+                part = encoded[index * chunk_size : (index + 1) * chunk_size] if index < len(names) - 1 else encoded[index * chunk_size :]
+                rel = f"{directory}/{name}"
+                (root / rel).write_text(part, encoding="ascii")
+                rows.append({"asset_path": rel, "commercial_use_status": "UNVERIFIED"})
+        self.write_registry(root, rows)
+
+        report = audit_repository(root)
+        self.assertEqual(report["errors"], [])
+        self.assertEqual(report["base64_art_parts"], 11)
+        self.assertEqual(report["base64_art_assets_checked"], 2)
+        self.assertEqual(report["registered_base64_art_parts"], 11)
+
+    def test_base64_warden_missing_part_fails(self):
+        root = self.make_repo()
+        directory = root / "assets/art/Enemies/alborzwarden"
+        directory.mkdir(parents=True)
+        encoded = base64.b64encode(webp_vp8x_bytes(544, 156)).decode("ascii")
+        for name in ("part_00.b64", "part_02.b64"):
+            (directory / name).write_text(encoded[:16], encoding="ascii")
+        self.write_registry(root, [
+            {"asset_path": f"assets/art/Enemies/alborzwarden/{name}", "commercial_use_status": "UNVERIFIED"}
+            for name in ("part_00.b64", "part_02.b64")
+        ])
+        report = audit_repository(root)
+        self.assertTrue(any("missing or unexpected" in error for error in report["errors"]))
 
     def test_path_traversal_is_rejected(self):
         root = self.make_repo()

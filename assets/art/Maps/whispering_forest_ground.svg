@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1700" viewBox="0 0 1100 850">
+<defs>
+ <linearGradient id="floor" x2=".1" y2="1"><stop stop-color="#334738"/><stop offset=".45" stop-color="#253d35"/><stop offset="1" stop-color="#182d2c"/></linearGradient>
+ <radialGradient id="clearing"><stop stop-color="#70805a" stop-opacity=".48"/><stop offset="1" stop-color="#536446" stop-opacity="0"/></radialGradient>
+ <linearGradient id="mud" x2=".1" y2="1"><stop stop-color="#8b7756"/><stop offset=".5" stop-color="#6e674c"/><stop offset="1" stop-color="#4a5744"/></linearGradient>
+ <linearGradient id="water" x2=".2" y2="1"><stop stop-color="#577c75"/><stop offset="1" stop-color="#243f42"/></linearGradient>
+ <pattern id="leaf" width="74" height="74" patternUnits="userSpaceOnUse">
+  <path d="M13 18q17-18 26 0-8 16-26 0M49 53q-1-20 18-17-1 17-18 17" fill="#60774c" opacity=".32"/>
+  <path d="M9 56l9-6m38-41 8 5" stroke="#b0a36b" stroke-width="2" opacity=".22"/>
+  <circle cx="34" cy="38" r="2" fill="#bac18a" opacity=".25"/>
+ </pattern>
+</defs>
+<rect width="1100" height="850" fill="url(#floor)"/>
+<rect width="1100" height="850" fill="url(#leaf)"/>
+<ellipse cx="540" cy="414" rx="520" ry="380" fill="url(#clearing)"/>
+<!-- deep forest beds at the margin, lighter glades around the route -->
+<g fill="#102723" opacity=".65">
+ <path d="M0 0H1100V82Q1020 130 955 94T820 101T680 70T512 113T350 74T190 112T0 83Z"/>
+ <path d="M0 850V757Q100 718 171 762T330 745T493 786T681 750T872 770T1100 739V850Z"/>
+ <path d="M0 0Q80 190 46 350T71 620T0 850Z"/>
+ <path d="M1100 0Q1015 190 1050 350T1028 620T1100 850Z"/>
+</g>
+<!-- moss and fern islands -->
+<g fill="#566d48" opacity=".47">
+ <path d="M95 176q70-45 137 3t-5 95q-87 26-132-34z"/>
+ <path d="M824 153q86-33 132 33t-45 80q-95 2-119-53z"/>
+ <path d="M140 610q70-62 148-10t-4 91q-100 23-145-24z"/>
+ <path d="M780 637q78-53 153 4t-17 82q-94 10-136-41z"/>
+ <path d="M440 70q73-30 108 17t-44 53q-60-11-64-70z"/>
+</g>
+<!-- forked footpath links five entrances and leaves the centre legible -->
+<path d="M-25 325C110 318 184 342 280 367S445 412 545 403 720 372 825 405 1010 449 1125 438" fill="none" stroke="#122a27" stroke-width="168" stroke-linecap="round" opacity=".62"/>
+<path d="M-25 325C110 318 184 342 280 367S445 412 545 403 720 372 825 405 1010 449 1125 438" fill="none" stroke="url(#mud)" stroke-width="144" stroke-linecap="round"/>
+<path d="M560 -25C550 100 565 207 558 303S552 362 545 403" fill="none" stroke="#102824" stroke-width="120" stroke-linecap="round" opacity=".62"/>
+<path d="M560 -25C550 100 565 207 558 303S552 362 545 403" fill="none" stroke="url(#mud)" stroke-width="100" stroke-linecap="round"/>
+<path d="M590 875C587 760 571 644 552 550S548 440 545 403" fill="none" stroke="#102824" stroke-width="122" stroke-linecap="round" opacity=".62"/>
+<path d="M590 875C587 760 571 644 552 550S548 440 545 403" fill="none" stroke="url(#mud)" stroke-width="102" stroke-linecap="round"/>
+<!-- shallow stream follows the southern edge of the clearing -->
+<path d="M34 687Q150 624 253 679T469 690 660 659 846 692 1098 640" fill="none" stroke="#102625" stroke-width="58" opacity=".55"/>
+<path d="M34 678Q150 615 253 670T469 681 660 650 846 683 1098 631" fill="none" stroke="url(#water)" stroke-width="42"/>
+<path d="M97 666q42-17 74-9m220 26q38-16 68-8m253-9q45-14 78-6m179-8q42-14 74-6" fill="none" stroke="#9fc3ac" stroke-width="3" opacity=".34"/>
+<!-- roots cross the soil near paths without covering the route -->
+<g fill="none" stroke-linecap="round">
+ <path d="M170 203q45 33 54 85t58 59m-58-59q-29 21-52 18M867 219q-38 31-47 78t-50 57m50-57q27 17 50 14M160 556q48-12 81-56t57-35m-57 35q-2 29 12 49M915 555q-45-8-73-48t-48-28m48 28q7 27-6 47" stroke="#152a22" stroke-width="18" opacity=".72"/>
+ <path d="M170 203q45 33 54 85t58 59M867 219q-38 31-47 78t-50 57M160 556q48-12 81-56t57-35M915 555q-45-8-73-48t-48-28" stroke="#81906a" stroke-width="5" opacity=".48"/>
+</g>
+<!-- soft bioluminescence at the glade margins -->
+<g fill="#9dbd78" opacity=".2">
+ <circle cx="360" cy="242" r="4"/><circle cx="372" cy="259" r="2"/><circle cx="750" cy="258" r="3"/>
+ <circle cx="764" cy="273" r="2"/><circle cx="298" cy="573" r="3"/><circle cx="786" cy="572" r="4"/>
+ <circle cx="819" cy="557" r="2"/><circle cx="248" cy="289" r="2.5"/>
+</g>
+<!-- weathered earth, fern traces and pools of moss -->
+<g fill="none" stroke-linecap="round">
+ <path d="M83 115l37-12m-15 29 31-8M987 119l-38-11m16 29-28-8M84 740l39-12m-17 27 29-8M1000 740l-39-11m15 27-27-8" stroke="#b2b88c" stroke-width="3" opacity=".24"/>
+ <path d="M308 490l22-6m-13 18 31-7M760 473l28-8m-13 18 21-6M405 745l21-6" stroke="#15271f" stroke-width="4" opacity=".3"/>
+</g>
+<rect x="2" y="2" width="1096" height="846" fill="none" stroke="#a7b58b" stroke-opacity=".15" stroke-width="5"/>
+</svg>

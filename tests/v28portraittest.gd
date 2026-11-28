@@ -1,5 +1,5 @@
 extends Node
-## v0.28 checks on the painted dialogue portraits (eleven since 0.28.1, with Qaren): every portrait file exists and ships on Android, each speaker shows his
+## Painted dialogue portrait checks, including the dedicated Alborz Scout portrait: every portrait file exists and ships on Android, each speaker shows his
 ## painting (heroes of the tale by their look), a speaker with no painting keeps his sprite face, the painted face turns
 ## toward the text in both languages, Jamshid's painting is not tinted twice, and the HUD's own hero portrait is untouched.
 ##   godot --headless --fixed-fps 60 --path . -- --test res://tests/v28portraittest.gd
@@ -42,34 +42,45 @@ func run(m: Node) -> void:
 	var missing := []
 	var left_out := []
 	var no_mip := []
+	var low_res_vector := []
 	var ex := excludes("Android")
 	for k in Portrait.ART:
-		var path: String = Portrait.ART_DIR % Portrait.ART[k][0]
+		var path: String = Portrait.art_path(k)
 		if not ResourceLoader.exists(path):
 			missing.append(path)
 			continue
 		for pat in ex:
 			if path.trim_prefix("res://").match(pat):
 				left_out.append(path)
-		var t: Texture2D = load(path)
-		if not t.get_image().has_mipmaps():
+		var tx: Texture2D = load(path)
+		if path.get_extension().to_lower() == "svg":
+			if tx == null or tx.get_width() < 768 or tx.get_height() < 768:
+				low_res_vector.append([path, tx.get_width() if tx else 0, tx.get_height() if tx else 0])
+		elif tx == null or not tx.get_image().has_mipmaps():
 			no_mip.append(path)
-	check("eleven_portraits", Portrait.ART.size() == 11, Portrait.ART.size())
+	check("twelve_portraits_including_alborz_scout", Portrait.ART.size() == 12 and Portrait.has_art("alborz_scout"), Portrait.ART.size())
 	check("portrait_files_exist", missing.is_empty(), missing)
 	check("portraits_ship_on_android", left_out.is_empty(), left_out)
-	check("portraits_have_mipmaps", no_mip.is_empty(), no_mip)
+	check("raster_portraits_have_mipmaps", no_mip.is_empty(), no_mip)
+	check("scout_vector_portrait_imports_at_high_resolution", low_res_vector.is_empty(), low_res_vector)
 
 	# ---- (v0.30) the people of the tale walk the world in their own painted sheets
 	var bad_sheets := []
 	for k in Game.manifest.get("npcs", {}):
-		var sp := "assets/art/Npcs/%s.png" % k
-		var ok := ResourceLoader.exists("res://" + sp)
+		var nm: Dictionary = Game.manifest["npcs"][k]
+		var ext := str(nm.get("extension", "png")).to_lower().trim_prefix(".")
+		var sp := "assets/art/Npcs/%s.%s" % [k, ext]
+		var ok := ext in ["png", "webp", "jpg", "jpeg", "svg"] and ResourceLoader.exists("res://" + sp)
 		for pat in ex:
 			if sp.match(pat):
 				ok = false
 		if ok:
 			var tx: Texture2D = load("res://" + sp)
-			ok = tx.get_width() == 600 and tx.get_height() == 468
+			var cols: Array = nm.get("cols", [])
+			var rows: Array = nm.get("rows", [])
+			var expected_width: int = int(nm.get("cellW", 0)) * cols.size()
+			var expected_height: int = int(nm.get("cellH", 0)) * rows.size()
+			ok = tx != null and tx.get_width() == expected_width and tx.get_height() == expected_height
 		if not ok:
 			bad_sheets.append(k)
 	check("villager_sheets_ship", bad_sheets.is_empty() and Game.manifest["npcs"].size() >= 11, bad_sheets)
@@ -125,16 +136,21 @@ func run(m: Node) -> void:
 			var sn := str(o.get("sprite", ""))
 			if sn == "":
 				continue
-			var fp := "assets/art/MapObjects/%s.png" % str(Game.obj_sprites.get(sn, {}).get("file", sn))
-			var shipped := ResourceLoader.exists("res://" + fp)
+			var sprite_meta: Dictionary = Game.obj_sprites.get(sn, {})
+			var sprite_file := str(sprite_meta.get("file", sn))
+			var sprite_ext := str(sprite_meta.get("extension", "png")).to_lower().trim_prefix(".")
+			var fp := "assets/art/MapObjects/%s.%s" % [sprite_file, sprite_ext]
+			var prop_path := "res://" + fp
+			var sprite_texture: Texture2D = load(prop_path) as Texture2D if sprite_ext in ["png", "webp", "jpg", "jpeg", "svg"] else null
+			var shipped := sprite_texture != null
 			for pat in ex:
 				if fp.match(pat):
 					shipped = false
 			if not sn.begins_with("g_") or not shipped:
-				bad_land.append(mk + ": " + sn)
+				bad_land.append([mk, sn, fp, sprite_texture != null, FileAccess.file_exists(prop_path)])
 	for tn in TerrainT.cfg().get("textures", {}):
 		var tp := "res://assets/art/Terrain/" + str(TerrainT.cfg()["textures"][tn]["file"])
-		var tt: Texture2D = load(tp) if ResourceLoader.exists(tp) else null
+		var tt: Texture2D = TerrainT.load_terrain_texture(tp) if ResourceLoader.exists(tp) else null
 		if tt == null or not tt.get_image().has_mipmaps():
 			bad_land.append(tp)
 	check("green_region_painted", bad_land.is_empty(), bad_land)
@@ -147,7 +163,7 @@ func run(m: Node) -> void:
 	var dl = main.hud.dialogue
 	var p = dl.portrait
 	var sheets := ["elder", "merchant", "alchemist", "brann", "keeper", "hesk", "smith", "qaren",
-		"hero:warrior_endgame:npc_rostam", "hero:paladin_endgame:npc_siavash", "hero:rogue_endgame:npc_gordafarid"]
+		"hero:warrior_endgame:npc_rostam", "hero:paladin_endgame:npc_siavash", "hero:rogue_endgame:npc_gordafarid", "alborz_scout"]
 	var wrong := []
 	for s in sheets:
 		dl.open("x", ["..."], s)
@@ -158,9 +174,16 @@ func run(m: Node) -> void:
 		if user_portrait:
 			var spec: Array = Portrait.USER_ART[key]
 			wrong_source = p._tex != Portrait.USER_ART_ATLAS or p._src != Rect2(spec[0], Vector2(192, 192))
+		elif key == "alborz_scout":
+			wrong_source = (
+				p._tex == null
+				or p._tex.get_width() != 256
+				or p._tex.get_height() != 256
+				or p._src != Rect2(Vector2.ZERO, Vector2(256, 256))
+			)
 		else:
-			var want: String = Portrait.ART[key][0]
-			wrong_source = p._tex == null or not str(p._tex.resource_path).ends_with(want + ".webp")
+			var want: String = Portrait.art_path(key).trim_prefix("res://")
+			wrong_source = p._tex == null or not str(p._tex.resource_path).ends_with(want)
 		if p.art_facing == 0 or wrong_source or p.face.material != null:
 			wrong.append([s, p.art_facing, p._tex.resource_path if p._tex else null, p._src])
 		dl.visible = false

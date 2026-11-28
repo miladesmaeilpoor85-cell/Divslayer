@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1300" viewBox="0 0 900 650">
+<defs>
+ <linearGradient id="earth" x2=".18" y2="1"><stop stop-color="#c4a06b"/><stop offset=".48" stop-color="#a77d4f"/><stop offset="1" stop-color="#785a3f"/></linearGradient>
+ <linearGradient id="road" x2=".1" y2="1"><stop stop-color="#c9ad7a"/><stop offset=".55" stop-color="#b28d60"/><stop offset="1" stop-color="#8e704f"/></linearGradient>
+ <radialGradient id="oasis"><stop stop-color="#9da66e" stop-opacity=".68"/><stop offset="1" stop-color="#899260" stop-opacity="0"/></radialGradient>
+ <linearGradient id="water" x2="0" y2="1"><stop stop-color="#7ba5a1"/><stop offset="1" stop-color="#365f65"/></linearGradient>
+ <pattern id="dust" width="58" height="58" patternUnits="userSpaceOnUse"><circle cx="8" cy="12" r="1.6" fill="#ecd0a0" opacity=".3"/><circle cx="38" cy="43" r="2" fill="#614b36" opacity=".2"/><path d="M17 31l9-3m15-18 6-2" stroke="#edd7ad" stroke-width="1.4" opacity=".2"/></pattern>
+</defs>
+<rect width="900" height="650" fill="url(#earth)"/>
+<rect width="900" height="650" fill="url(#dust)"/>
+<ellipse cx="430" cy="320" rx="380" ry="260" fill="url(#oasis)"/>
+<!-- Dry garden beds at the perimeter -->
+<g fill="#777e4c" opacity=".58">
+ <path d="M0 0H900V46Q810 62 758 42T620 52T470 37T300 56T130 38T0 55Z"/>
+ <path d="M0 612Q120 586 245 610T460 602T670 614T900 590V650H0Z"/>
+ <path d="M0 50Q40 128 22 212T38 356T18 512L0 560Z"/>
+ <path d="M900 64Q860 146 880 232T865 398T886 540L900 585Z"/>
+</g>
+<!-- Main packed-earth route to the eastern woodland gate -->
+<path d="M-20 318C110 303 184 310 272 331S397 372 486 344 610 282 704 289 830 320 920 300" fill="none" stroke="#6f523b" stroke-width="126" stroke-linecap="round" opacity=".42"/>
+<path d="M-20 310C110 296 184 304 272 325S397 363 486 337 610 276 704 282 830 313 920 292" fill="none" stroke="url(#road)" stroke-width="112" stroke-linecap="round"/>
+<path d="M425 668C417 570 419 508 430 448S446 365 486 337" fill="none" stroke="#71533b" stroke-width="110" stroke-linecap="round" opacity=".35"/>
+<path d="M425 668C417 570 419 508 430 448S446 365 486 337" fill="none" stroke="url(#road)" stroke-width="96" stroke-linecap="round"/>
+<!-- Central meeting court deliberately open for NPCs and player -->
+<ellipse cx="438" cy="397" rx="185" ry="117" fill="#c9a979" opacity=".5"/>
+<ellipse cx="438" cy="397" rx="174" ry="106" fill="none" stroke="#6e533a" stroke-width="4" stroke-dasharray="2 13" opacity=".25"/>
+<path d="M267 390Q320 345 378 354M493 350Q562 342 607 387M307 447Q372 477 431 463M497 464Q558 443 591 415" fill="none" stroke="#e1c18c" stroke-width="5" opacity=".33"/>
+<!-- Shallow irrigation rill on the southern quarter, away from the player start -->
+<path d="M580 533Q640 503 683 526T780 518" fill="none" stroke="#4e4635" stroke-width="38" opacity=".3"/>
+<path d="M580 528Q640 498 683 521T780 513" fill="none" stroke="url(#water)" stroke-width="25"/>
+<path d="M595 526q30-10 52-1m36 1q25-7 43 1" fill="none" stroke="#c1d0b0" stroke-width="2" opacity=".5"/>
+<!-- Small walled garden plots -->
+<g fill="#6c7549" stroke="#a8a06b" stroke-width="5" opacity=".78">
+ <path d="M26 95l133-8 18 75-119 24z"/><path d="M34 465l104-27 40 78-118 35z"/>
+ <path d="M730 78l126 18-21 79-112-23z"/><path d="M733 563l117-28 31 61-126 32z"/>
+</g>
+<g fill="#8f9a61" opacity=".65">
+ <circle cx="60" cy="120" r="12"/><circle cx="105" cy="105" r="10"/><circle cx="92" cy="510" r="12"/>
+ <circle cx="790" cy="119" r="13"/><circle cx="813" cy="575" r="12"/><circle cx="768" cy="599" r="9"/>
+</g>
+<!-- Sun baked stone slabs, worn edges and wind blown dust -->
+<g fill="none" stroke-linecap="round">
+ <path d="M215 245l33-11 27 9m-46 16 34-8M620 211l36-8 19 12m-42 10 32-7M210 560l40-9 16 7m-42 16 34-6M704 448l42-9 18 12m-42 10 38-8" stroke="#e4c99b" stroke-width="3" opacity=".3"/>
+ <path d="M54 278l18-6m-8 17 25-6m693-50 19-6m-6 18 26-7M359 575l20-5m-9 17 23-6" stroke="#594633" stroke-width="2" opacity=".22"/>
+</g>
+<rect x="2" y="2" width="896" height="646" fill="none" stroke="#dfbf8d" stroke-opacity=".25" stroke-width="4"/>
+</svg>

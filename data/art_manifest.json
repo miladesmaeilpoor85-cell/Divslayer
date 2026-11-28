@@ -932,6 +932,41 @@
     "w": 30,
     "h": 20
    }
+  },
+  "alborzwarden": {
+   "cellW": 136,
+   "cellH": 156,
+   "frames": 4,
+   "variants": 1,
+   "logicalW": 68,
+   "logicalH": 78,
+   "pxPerUnitLogical": 2,
+   "pivot": [
+    0.5,
+    0.01282051282051282
+   ],
+   "timedMs": 160,
+   "stride": 0,
+   "alpha": 1,
+   "gameSize": {
+    "w": 68,
+    "h": 78
+   },
+   "file": "alborzwarden",
+   "extension": "svg",
+   "fallbackPxPerUnitLogical": 3,
+   "base64Parts": [
+    "alborzwarden/part_00.b64",
+    "alborzwarden/part_01.b64",
+    "alborzwarden/part_02.b64",
+    "alborzwarden/part_03.b64",
+    "alborzwarden/part_04.b64",
+    "alborzwarden/part_05a.b64",
+    "alborzwarden/part_05b.b64"
+   ],
+   "fallbackCellW": 204,
+   "fallbackCellH": 234,
+   "trailingPx": 0
   }
  },
  "heroes": {
@@ -1478,6 +1513,33 @@
     0.038461538461538464
    ],
    "flipSideForLeft": true
+  },
+  "alborz_scout": {
+   "cellW": 120,
+   "cellH": 156,
+   "rows": [
+    "down",
+    "up",
+    "side"
+   ],
+   "cols": [
+    "walk0",
+    "walk1",
+    "walk2",
+    "walk3",
+    "attack"
+   ],
+   "logicalW": 40,
+   "logicalH": 52,
+   "pxPerUnitLogical": 3,
+   "pivot": [
+    0.5,
+    0.038461538461538464
+   ],
+   "flipSideForLeft": true,
+   "walkFps": 7.5,
+   "attackFps": 12,
+   "extension": "svg"
   },
   "rostam": {
    "cellW": 120,

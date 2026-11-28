@@ -32,6 +32,30 @@ static func _load_base64_attack_sheet(folder: String, parts: Array) -> Texture2D
 		return null
 	return ImageTexture.create_from_image(image)
 
+## Load a WebP atlas from text-safe Base64 parts packaged in the Android PCK.
+static func load_base64_webp_parts(folder: String, parts: Array) -> Texture2D:
+	var encoded := ""
+	for relative_path in parts:
+		var path := Game.ART + folder + "/" + str(relative_path)
+		var source := FileAccess.open(path, FileAccess.READ)
+		if source == null:
+			push_error("base64 WebP asset part missing from the build: " + path)
+			return null
+		encoded += source.get_as_text().strip_edges()
+	if encoded.is_empty():
+		push_error("base64 WebP asset has no encoded data")
+		return null
+	var bytes := Marshalls.base64_to_raw(encoded)
+	if bytes.is_empty():
+		push_error("base64 WebP asset could not be decoded")
+		return null
+	var image := Image.new()
+	var error := image.load_webp_from_buffer(bytes)
+	if error != OK:
+		push_error("base64 data is not a valid WebP image (error " + str(error) + ")")
+		return null
+	return ImageTexture.create_from_image(image)
+
 static func _atlas(tex: Texture2D, x: float, y: float, w: float, h: float) -> AtlasTexture:
 	var a := AtlasTexture.new()
 	a.atlas = tex
@@ -171,7 +195,11 @@ static func character(group: String, sheet: String) -> Dictionary:
 	if group == "heroes" and sheet == "warrior_starter":
 		tex = WarriorStarterArt.atlas_texture()
 	if tex == null:
-		tex = load(Game.ART + folder + "/" + sheet + ".png")
+		var sheet_extension := str(meta.get("extension", "png")).to_lower().trim_prefix(".")
+		if sheet_extension not in ["png", "webp", "jpg", "jpeg", "svg"]:
+			push_error("unsupported character sheet extension for " + group + "/" + sheet)
+			return {"frames": SpriteFrames.new(), "offset": Vector2.ZERO, "meta": meta}
+		tex = load(Game.ART + folder + "/" + sheet + "." + sheet_extension)
 	var attack_texture: Texture2D = null
 	if meta.has("attackSheetBase64Parts"):
 		attack_texture = _load_base64_attack_sheet(folder, meta["attackSheetBase64Parts"])
@@ -215,12 +243,29 @@ static func enemy(type: String) -> Dictionary:
 	if not meta.has("cellW"):
 		_cache[key] = {}
 		return {}
-	var tex: Texture2D = load(Game.ART + "Enemies/" + type + ".png")
+	var enemy_file := str(meta.get("file", type))
+	var enemy_extension := str(meta.get("extension", "png"))
+	var base64_parts: Array = meta.get("base64Parts", [])
+	var tex: Texture2D = load_base64_webp_parts("Enemies", base64_parts) if not base64_parts.is_empty() else null
+	var source_density := float(meta.get("pxPerUnitLogical", 3.0))
+	var used_fallback := false
 	if tex == null:
-		push_error("sheet missing from the build: Enemies/%s.png" % type)
+		# Existing SVG/PNG remains as a safe fallback with its original atlas cell geometry and density.
+		tex = load(Game.ART + "Enemies/" + enemy_file + "." + enemy_extension)
+		source_density = float(meta.get("fallbackPxPerUnitLogical", 3.0))
+		used_fallback = true
+	if tex == null:
+		push_error("sheet missing from the build: Enemies/" + enemy_file + "." + enemy_extension)
+		_cache[key] = {}
+		return {}
+	var runtime_meta: Dictionary = meta.duplicate(true)
+	runtime_meta["pxPerUnitLogical"] = source_density
+	if used_fallback:
+		runtime_meta["cellW"] = int(meta.get("fallbackCellW", meta["cellW"]))
+		runtime_meta["cellH"] = int(meta.get("fallbackCellH", meta["cellH"]))
 	var sf := SpriteFrames.new()
-	var cw := float(meta["cellW"])
-	var ch := float(meta["cellH"])
+	var cw := float(runtime_meta["cellW"])
+	var ch := float(runtime_meta["cellH"])
 	var fps := 7.0
 	if meta.get("timedMs", null) != null:
 		fps = 1000.0 / float(meta["timedMs"])
@@ -230,7 +275,7 @@ static func enemy(type: String) -> Dictionary:
 		sf.set_animation_speed(a, fps)
 		for f in int(meta.get("frames", 1)):
 			sf.add_frame(a, _atlas(tex, f * cw, v * ch, cw, ch))
-	var out := {"frames": sf, "offset": pivot_offset(meta), "meta": meta}
+	var out := {"frames": sf, "offset": pivot_offset(runtime_meta), "meta": runtime_meta}
 	_cache[key] = out
 	return out
 
